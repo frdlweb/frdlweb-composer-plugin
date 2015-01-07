@@ -69,15 +69,15 @@ class SourceLoader
 	protected $mode;
 	
 	
-  protected $dir_autoload;
-	protected $config_source;
-  protected $autoloaders = array();
+       protected $dir_autoload;
+       protected $config_source;
+       protected $autoloaders = array();
 	
 		
-	protected $interface;
+       protected $interface;
 	
 	 
-	protected $buf = array(
+       protected $buf = array(
 	      'config' => array(),
           'opt' => array(),
           'sources' => array(),
