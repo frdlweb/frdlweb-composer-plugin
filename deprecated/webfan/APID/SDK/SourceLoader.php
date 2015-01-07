@@ -515,24 +515,6 @@ class SourceLoader
     public function stream_lock($operation){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
     public function stream_set_option($option , $arg1 , $arg2){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
     public function stream_stat(){
-    	/**
-		 * Array
-(
-    [dev] => 771
-    [ino] => 488704
-    [mode] => 33188
-    [nlink] => 1
-    [uid] => 0
-    [gid] => 0
-    [rdev] => 0
-    [size] => 1114
-    [atime] => 1061067181
-    [mtime] => 1056136526
-    [ctime] => 1056136526
-    [blksize] => 4096
-    [blocks] => 8
-)
-		 */
 		 return array(  
 		          'mode' => $this->mode,
 		          'size' => strlen($this->data) * 8,
