@@ -63,9 +63,9 @@ class SourceLoader
 	protected $mode;
 	
 	
-    protected $dir_autoload;
+        protected $dir_autoload;
 	protected $config_source;
-    protected $autoloaders = array();
+        protected $autoloaders = array();
 	
 		
 	protected $interface;
