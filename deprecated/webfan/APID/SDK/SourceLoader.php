@@ -31,10 +31,10 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @copyright 	2014 Copyright (c) Till Wehowski
  *  @version 	1.0   
- *  @link 		http://www.webfan.de/install/ Webfan - die Internetseite
+ *  @link 	http://www.webfan.de/install/ Webfan - die Internetseite
  *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
  *  @package    webfan\APID\SDK\SourceLoader This class can unwrap webfan soure packages and autoload classes from Webfan Source API server. 
- *  @OID		1.3.6.1.4.1.37553.8.1.8.8 Webfan Software
+ *  @OID	1.3.6.1.4.1.37553.8.1.8.8 Webfan Software
  *  @requires	PHP_VERSION 5.3 >= 
  *  @requires   webfan://frdl.webfan.App.code
  *  @api        http://interface.api.webfan.de/v1/public/software/get/webfan/
