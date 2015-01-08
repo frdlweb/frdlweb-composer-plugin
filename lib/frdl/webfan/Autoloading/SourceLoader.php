@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/get/webfan/frdl.webfan.Autoloading.SourceLoader/class.php
- *  @version 	0.9.2
+ *  @version 	0.9.2.2
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -66,13 +66,15 @@ class SourceLoader
 	protected $read = 0; 
 	public static $id_repositroy;
 	public static $id_interface;	
+	public static $user;
+	public static $pass;	
 	protected $eof = false;
 	protected $mode;
 	
 	
-        protected $dir_autoload;
+    protected $dir_autoload;
 	protected $config_source;
-        protected $autoloaders = array();
+    protected $autoloaders = array();
 	
 		
 	protected $interface;
@@ -94,6 +96,8 @@ class SourceLoader
 	   $this->dir_autoload = '';	
 	   self::$id_repositroy =  'webfan';	 
 	   self::$id_interface =  'public';	 
+	   self::$user = '';
+	   self::$pass = '';
 	   $this->Defaults(true);
 	   $this->set_pass($pass);
 	 }
@@ -477,8 +481,8 @@ class SourceLoader
                           'software',
                           array(),  //post
                           array(),  //cookie
-                          '',
-                          '',
+                          self::$user,
+                          self::$pass,
                           'class',
                           'php',   //format ->hier: "php"
                           'source',
