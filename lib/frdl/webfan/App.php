@@ -264,8 +264,8 @@ class App
     public function mkdir($path , $mode , $options){return  call_user_func(array($this->Controller, __FUNCTION__), $path , $mode , $options );}
     public function rename($path_from , $path_to){return  call_user_func(array($this->Controller, __FUNCTION__), $path_from , $path_to );}
     public function rmdir($path , $options){return  call_user_func(array($this->Controller, __FUNCTION__), $path , $options );}
- 	  public function stream_cast($cast_as){return  call_user_func(array($this->Controller, __FUNCTION__), $cast_as );}
- 	  public function stream_close(){return  call_user_func(array($this->Controller, __FUNCTION__) );}
+    public function stream_cast($cast_as){return  call_user_func(array($this->Controller, __FUNCTION__), $cast_as );}
+    public function stream_close(){return  call_user_func(array($this->Controller, __FUNCTION__) );}
     function stream_eof(){return  call_user_func(array($this->Controller, __FUNCTION__) );}
     public function stream_flush(){return  call_user_func(array($this->Controller, __FUNCTION__) );}
     public function stream_lock($operation){return  call_user_func(array($this->Controller, __FUNCTION__), $operation );}
