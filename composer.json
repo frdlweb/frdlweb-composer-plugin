@@ -1,0 +1,24 @@
+{
+    "name": "frdl/webfan",
+    "type": "library",
+    "description": "create websites, developing projects, compose applications",
+    "keywords": ["websites","pragmamx"],
+    "homepage": "https://github.com/frdl/webfan",
+    "license": "BSD",
+    "authors": [
+        {
+            "name": "Till Wehowski",
+            "email": "software@frdl.de",
+            "homepage": "http://www.webfan.de",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-8": {
+            "frdl": "lib"
+        }
+    }
+}
