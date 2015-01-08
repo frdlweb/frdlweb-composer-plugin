@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/get/webfan/frdl.webfan.Autoloading.SourceLoader/class.php
- *  @version 	0.9 d-dev
+ *  @version 	0.9.2
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -70,9 +70,9 @@ class SourceLoader
 	protected $mode;
 	
 	
-  protected $dir_autoload;
+        protected $dir_autoload;
 	protected $config_source;
-  protected $autoloaders = array();
+        protected $autoloaders = array();
 	
 		
 	protected $interface;
