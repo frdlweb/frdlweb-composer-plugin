@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	0.9.3
+ *  @version 	0.9.4
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -376,15 +376,23 @@ class SourceLoader
           $url = $opt['CERT'];
            if(!isset(self::$rtc['CERTS'][$hash]) && ($u === false || !isset(self::$rtc['CERTS'][$url])))
                {
-                    if($u !== false ){
+                    if($u !== false && count($u) >1 && !preg_match("/CERTIFICATE/", $opt['CERT']) ){
                      if(isset($u['scheme']) && isset($u['host'])){
                 $h = explode('.',$u['host']);
                  $h = array_reverse($h);
                  if($h[0] === 'de' && ($h[1] === 'webfan' || $h[1] === 'frdl' )){
+                 if(class_exists('\webdof\Http\Client')){
                  $Http = new \webdof\Http\Client();
                 $post = array();
                 $send_cookies = array();
                 $r = $Http->request($opt['CERT'], 'GET', $post, $send_cookies, E_USER_WARNING);
+                }else{
+                	$c = file_get_contents($opt['CERT']);
+					$r = array();
+					$r['status'] = (preg_match("/CERTIFICATE/",$c)) ? 200 : 400;
+					$r['body'] = $c;
+                }
+				
                 if(intval($r['status'])===200){
                $CERT = trim($r['body']);
                }else{
@@ -395,25 +403,28 @@ class SourceLoader
            }else{
                    $CERT = trim(file_get_contents($opt['CERT']));
                 }
-            $key = $url;
-              if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
-            self::$rtc['CERTS'][$key]['crt'] = $CERT;
+                   $key = $url;
+                  if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
+                 self::$rtc['CERTS'][$key]['crt'] = $CERT;
              }else{
-             $key = $hash;
-               if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
-               self::$rtc['CERTS'][$key]['crt'] = $opt['CERT'];
+                    $key = $hash;
+                    if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
+                    $CERT = $opt['CERT'];
+					$CERT=$this->loadPK($CERT);
+					$CERT=$this->save($CERT, self::B_CERTIFICATE, self::E_CERTIFICATE);
+					self::$rtc['CERTS'][$key]['crt'] =$CERT;
               }
                  }elseif(isset(self::$rtc['CERTS'][$hash])){
-              $key = $hash;
-      }elseif(isset(self::$rtc['CERTS'][$url])){
-         $key = $url;
+                     $key = $hash;
+                  }elseif(isset(self::$rtc['CERTS'][$url])){
+                  $key = $url;
            }
 
 
             $this->setLib(1);
         if(!isset(self::$rtc['CERTS'][$key]['PublicKey'])){
               $PublicKey = $this->getPublKeyByCRT(self::$rtc['CERTS'][$key]['crt']);
-           self::$rtc['CERTS'][$key]['PublicKey'] = $PublicKey;
+             self::$rtc['CERTS'][$key]['PublicKey'] = $PublicKey;
            }
             $success = $this->decrypt($opt['pass'],self::$rtc['CERTS'][$key]['PublicKey'],$new_pass) ;
           if($success === true){
@@ -421,6 +432,7 @@ class SourceLoader
            $opt['pwdstate'] = 'decrypted';
             }else{
              $opt['pwdstate'] = 'error';
+		
             }
            return $success;
     } 
