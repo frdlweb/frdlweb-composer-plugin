@@ -33,14 +33,14 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/get/webfan/frdl.webfan.App/class.php
- *  @version 	0.9.2
+ *  @version 	0.9.2.2
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
  *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
  *  @license    http://look-up.webfan.de/webdof-license webdof-license 1.3.6.1.4.1.37553.8.1.8.4.5
- *  @link 	http://interface.api.webfan.de/v1/public/software/get/1/webfan.App/skeleton.html metadata
- *  @OID	1.3.6.1.4.1.37553.8.1.8.8 webfan-software
+ *  @link 		http://interface.api.webfan.de/v1/public/software/get/webfan/frdl.webfan.App/doc.html
+ *  @OID		1.3.6.1.4.1.37553.8.1.8.8 webfan-software
  *  @requires	PHP_VERSION 5.3 >= 
  *  @requires   webfan://webfan.Autoloading.SourceLoader.code
  *  @api        http://interface.api.webfan.de/v1/public/software/get/1/
@@ -57,7 +57,7 @@ namespace frdl\webfan;
 class App
 {
 	
-	const VERSION = '0.9.2';
+	const VERSION = '0.9.2.2';
 	
 	const NS = __NAMESPACE__;
 	const DS = DIRECTORY_SEPARATOR;
@@ -139,6 +139,12 @@ class App
 	   if($init === true)$this->init();
 	}
 	
+	
+   public static function God($init = false, $name = ''){
+        return self::getInstance($init, $name);
+   }
+	
+	
    public static function getInstance($init = false, $name = '')
      {
        if (NULL === self::$instance) {
@@ -147,7 +153,7 @@ class App
        return self::$instance;
      }
 	 	
-    
+ 		
 	public function __toString(){
 		return (string)$this->name;
 	}		
@@ -264,8 +270,8 @@ class App
     public function mkdir($path , $mode , $options){return  call_user_func(array($this->Controller, __FUNCTION__), $path , $mode , $options );}
     public function rename($path_from , $path_to){return  call_user_func(array($this->Controller, __FUNCTION__), $path_from , $path_to );}
     public function rmdir($path , $options){return  call_user_func(array($this->Controller, __FUNCTION__), $path , $options );}
-    public function stream_cast($cast_as){return  call_user_func(array($this->Controller, __FUNCTION__), $cast_as );}
-    public function stream_close(){return  call_user_func(array($this->Controller, __FUNCTION__) );}
+ 	public function stream_cast($cast_as){return  call_user_func(array($this->Controller, __FUNCTION__), $cast_as );}
+ 	public function stream_close(){return  call_user_func(array($this->Controller, __FUNCTION__) );}
     function stream_eof(){return  call_user_func(array($this->Controller, __FUNCTION__) );}
     public function stream_flush(){return  call_user_func(array($this->Controller, __FUNCTION__) );}
     public function stream_lock($operation){return  call_user_func(array($this->Controller, __FUNCTION__), $operation );}
