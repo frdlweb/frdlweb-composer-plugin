@@ -54,6 +54,42 @@ namespace frdl\webfan\Autoloading;
 
 class SourceLoader
 {
+	
+	/**
+	 * PKI
+	 */
+	const DISABLED = 0;
+    const OPENSSL = 1;
+    const PHPSECLIB = 2;
+
+    const E_NORSA = 'No RSA library selected or supported';
+    const E_NOTIMPLEMENTED = 'Sorry thisd is not implemented yet';    
+    
+
+    const B_SIGNATURE = "-----BEGIN SIGNATURE-----\r\n";
+    const E_SIGNATURE = "-----END SIGNATURE-----";
+
+    const B_CERTIFICATE = "-----BEGIN CERTIFICATE-----\r\n";
+    const E_CERTIFICATE = "-----END CERTIFICATE-----";
+
+    const B_PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----\r\n";
+    const E_PUBLIC_KEY = "-----END PUBLIC KEY-----";
+
+    const B_RSA_PRIVATE_KEY = "-----BEGIN RSA PRIVATE KEY-----\r\n";
+    const E_RSA_PRIVATE_KEY = "-----END RSA PRIVATE KEY-----";
+
+    const B_KEY = "-----BEGIN KEY-----\r\n";
+    const E_KEY = "-----END KEY-----";
+ 
+    const B_LICENSEKEY = "-----BEGIN LICENSEKEY-----\r\n";
+    const E_LICENSEKEY = "-----END LICENSEKEY-----";
+
+
+
+    protected $lib;
+	
+	
+	 
 	/**
 	 * Stream Properties
 	 */
@@ -72,9 +108,9 @@ class SourceLoader
 	protected $mode;
 	
 	
-        protected $dir_autoload;
+    protected $dir_autoload;
 	protected $config_source;
-        protected $autoloaders = array();
+    protected $autoloaders = array();
 	
 		
 	protected $interface;
@@ -332,66 +368,61 @@ class SourceLoader
 	 
 
     public function make_pass_3(&$opt){
-    	if(isset($opt['pwdstate']) && $opt['pwdstate'] === 'decrypted')return true;
-    	if(isset($opt['pwdstate']) && $opt['pwdstate'] === 'error')return false;
-	
-		if(!isset(self::$rtc['CERTS']))self::$rtc['CERTS'] = array();
-		
-		$hash = sha1($opt['CERT']);		
-		$u = parse_url($opt['CERT']);
-		$url = $opt['CERT'];
-		
-		if(!isset(self::$rtc['CERTS'][$hash]) && ($u === false || !isset(self::$rtc['CERTS'][$url])))
-		{
-		if($u !== false ){
-			if(isset($u['scheme']) && isset($u['host'])){
-			$h = explode('.',$u['host']);
-			$h = array_reverse($h);
-			if($h[0] === 'de' && ($h[1] === 'webfan' || $h[1] === 'frdl' )){
-			   $Http = new \webdof\Http\Client();
-			   $post = array();
-	           $send_cookies = array();
-			   $r = $Http->request($opt['CERT'], 'GET', $post, $send_cookies, E_USER_WARNING);
-			   if(intval($r['status'])===200){
-	  	          $CERT = trim($r['body']);
-		       }else{
-		       	  $opt['pwdstate'] = '404';
-				  return false;
-		       }
-		    }
-		    }else{
-			        $CERT = trim(file_get_contents($opt['CERT']));
-	         	}
+             if(isset($opt['pwdstate']) && $opt['pwdstate'] === 'decrypted')return true;
+             if(isset($opt['pwdstate']) && $opt['pwdstate'] === 'error')return false;
+            if(!isset(self::$rtc['CERTS']))self::$rtc['CERTS'] = array();
+            $hash = sha1($opt['CERT']);
+            $u = parse_url($opt['CERT']);
+          $url = $opt['CERT'];
+           if(!isset(self::$rtc['CERTS'][$hash]) && ($u === false || !isset(self::$rtc['CERTS'][$url])))
+               {
+                    if($u !== false ){
+                     if(isset($u['scheme']) && isset($u['host'])){
+                $h = explode('.',$u['host']);
+                 $h = array_reverse($h);
+                 if($h[0] === 'de' && ($h[1] === 'webfan' || $h[1] === 'frdl' )){
+                 $Http = new \webdof\Http\Client();
+                $post = array();
+                $send_cookies = array();
+                $r = $Http->request($opt['CERT'], 'GET', $post, $send_cookies, E_USER_WARNING);
+                if(intval($r['status'])===200){
+               $CERT = trim($r['body']);
+               }else{
+                 $opt['pwdstate'] = '404';
+                return false;
+              }
+               }
+           }else{
+                   $CERT = trim(file_get_contents($opt['CERT']));
+                }
+            $key = $url;
+              if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
+            self::$rtc['CERTS'][$key]['crt'] = $CERT;
+             }else{
+             $key = $hash;
+               if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
+               self::$rtc['CERTS'][$key]['crt'] = $opt['CERT'];
+              }
+                 }elseif(isset(self::$rtc['CERTS'][$hash])){
+              $key = $hash;
+      }elseif(isset(self::$rtc['CERTS'][$url])){
+         $key = $url;
+           }
 
-           $key = $url;
-           if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
-           self::$rtc['CERTS'][$key]['crt'] = $CERT;
-		}else{
-		   $key = $hash;
-           if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
-           self::$rtc['CERTS'][$key]['crt'] = $opt['CERT'];			
-		}
-		}elseif(isset(self::$rtc['CERTS'][$hash])){
-			$key = $hash;
-		}elseif(isset(self::$rtc['CERTS'][$url])){
-			$key = $url;
-		}	
-		
-				
-		$PKI = new \frdl\webfan\Crypt\PKI(1);
-		if(!isset(self::$rtc['CERTS'][$key]['PublicKey'])){
-		     $PublicKey = $PKI->getPublKeyByCRT(self::$rtc['CERTS'][$key]['crt']);
-			 self::$rtc['CERTS'][$key]['PublicKey'] = $PublicKey;
-	    }
-	    $success = $PKI->decrypt($opt['pass'],self::$rtc['CERTS'][$key]['PublicKey'],$new_pass) ;
-	    if($success === true){
-	    	$opt['pass'] = $new_pass;
-			$opt['pwdstate'] = 'decrypted';
-	    }else{
-	    	$opt['pwdstate'] = 'error';
-	    }
-		
-		return $success;
+
+            $this->setLib(1);
+        if(!isset(self::$rtc['CERTS'][$key]['PublicKey'])){
+              $PublicKey = $this->getPublKeyByCRT(self::$rtc['CERTS'][$key]['crt']);
+           self::$rtc['CERTS'][$key]['PublicKey'] = $PublicKey;
+           }
+            $success = $this->decrypt($opt['pass'],self::$rtc['CERTS'][$key]['PublicKey'],$new_pass) ;
+          if($success === true){
+            $opt['pass'] = $new_pass;
+           $opt['pwdstate'] = 'decrypted';
+            }else{
+             $opt['pwdstate'] = 'error';
+            }
+           return $success;
     } 
 
     protected function load(&$code, Array &$config = null, &$opt = array('pass' => null, 'rot1' => 5, 'rot2' => 3), $class = null){
@@ -535,8 +566,159 @@ class SourceLoader
 	function __destruct() {foreach(array_keys(get_object_vars($this)) as $value){unset($this->$value);}}
 	
 	
-	
-	
+	/**
+	 * PKI
+	 */ 
+
+   public function setLib($lib)
+     {
+        $this->lib = $lib;
+     } 
+
+   public function save($data, $begin = "-----BEGIN SIGNATURE-----\r\n", $end = '-----END SIGNATURE-----')
+     {
+        return $begin . chunk_split(base64_encode($data)) . $end;
+     }
+
+
+   public function loadPK($str)
+     {
+       $data = preg_replace('#^(?:[^-].+[\r\n]+)+|-.+-|[\r\n]#', '', $str);
+       return preg_match('#^[a-zA-Z\d/+]*={0,2}$#', $data) ? utf8_decode (base64_decode($data) ) : false;
+     }
+
+  public function error($error, $mod = E_USER_ERROR, $info = TRUE)
+    {
+      trigger_error($error.(($info === TRUE) ? ' in '.__METHOD__.' line '.__LINE__ : ''), $mod);
+      return FALSE;
+    }
+    
+    
+  public function verify($data, $sigBin, $publickey, $algo = 'sha256WithRSAEncryption')
+     {
+        switch($this->lib)
+          {
+           case self::OPENSSL :
+                  return $this->verify_openssl($data, $sigBin, $publickey, $algo);
+                break;
+
+           case self::PHPSECLIB :
+                  return $this->verify_phpseclib($data, $sigBin, $publickey, $algo);
+                break;
+           case self::DISABLED :
+           default :
+                  return $this->error(self::E_NORSA, E_USER_ERROR);
+                break;
+
+          }
+
+     }
+    
+	    
+  public function getPublKeyByCRT($cert)
+     {
+        switch($this->lib)
+          {
+           case self::OPENSSL :
+                  return $this->getPublKeyByCRT_openssl($cert);
+                break;
+
+           case self::PHPSECLIB :
+                  return $this->error(self::E_NOTIMPLEMENTED, E_USER_ERROR);
+                break;
+           case self::DISABLED :
+           default :
+                  return $this->error(self::E_NORSA, E_USER_ERROR);
+                break;
+
+          }
+
+     }
+	 
+  public function encrypt($data,$PrivateKey,&$out)
+     {
+        switch($this->lib)
+          {
+           case self::OPENSSL :
+                  return $this->encrypt_openssl($data,$PrivateKey,$out);
+                break;
+        case self::PHPSECLIB :
+                  return $this->error(self::E_NOTIMPLEMENTED, E_USER_ERROR);
+                break;
+           case self::DISABLED :
+           default :
+                  return $this->error(self::E_NORSA, E_USER_ERROR);
+                break;
+
+          }
+
+     }
+	 
+
+  public function decrypt($decrypted,$PublicKey,&$out)
+     {
+        switch($this->lib)
+          {
+           case self::OPENSSL :
+                  return $this->decrypt_openssl($decrypted,$PublicKey,$out);
+                break;
+        case self::PHPSECLIB :
+                  return $this->error(self::E_NOTIMPLEMENTED, E_USER_ERROR);
+                break;
+           case self::DISABLED :
+           default :
+                  return $this->error(self::E_NORSA, E_USER_ERROR);
+                break;
+
+          }
+
+     }
+	 	 
+  protected function encrypt_openssl($data,$PrivateKey,&$out) {  
+     $PrivKeyRes = openssl_pkey_get_private($PrivateKey);
+     return openssl_private_encrypt($data,$out,$PrivKeyRes); 
+  }
+  
+  protected function decrypt_openssl($decrypted,$PublicKey,&$out) {  
+        $pub_key = openssl_get_publickey($PublicKey);
+        $keyData = openssl_pkey_get_details($pub_key);
+        $pub = $keyData['key'];
+        $successDecrypted = openssl_public_decrypt(base64_decode($decrypted),$out,$PublicKey, OPENSSL_PKCS1_PADDING);
+		return $successDecrypted; 
+  }
+  
+
+
+  protected function getPublKeyByCRT_openssl($cert)
+    {
+       $res = openssl_pkey_get_public($cert);
+       $keyDetails = openssl_pkey_get_details($res);
+       return $keyDetails['key'];
+    }
+
+     
+
+  protected function verify_phpseclib($data, $sigBin, $publickey, $algo = 'sha256WithRSAEncryption')
+      {
+         $isHash = preg_match("/^([a-z]+[0-9]).+/", $algo, $hashinfo);
+         $hash = ($isHash) ? $hashinfo[1] : 'sha256';
+
+         $rsa = new Crypt_RSA();
+         $rsa->setHash($hash);
+         $rsa->setSignatureMode(CRYPT_RSA_SIGNATURE_PKCS1);
+         $rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+         $rsa->loadKey($publickey);
+         return (($rsa->verify($data, $sigBin) === TRUE) ? TRUE : FALSE);
+      }
+
+
+   protected function verify_openssl($data, $sigBin, $publickey, $algo = 'sha256WithRSAEncryption')
+      {
+        return ((openssl_verify($data, $sigBin, $publickey, $algo) == 1) ? TRUE : FALSE);
+      }
+	  
+	  
+	  	
 	
 	/**
 	 * Streaming Methods
