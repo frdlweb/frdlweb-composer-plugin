@@ -32,18 +32,18 @@
  * 
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
- *  @uri        /v1/public/software/get/webfan/frdl.webfan.Autoloading.SourceLoader/class.php
- *  @version 	0.9.2.2
+ *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
+ *  @version 	0.9.3
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
  *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
  *  @license    http://look-up.webfan.de/webdof-license webdof-license 1.3.6.1.4.1.37553.8.1.8.4.5
- *  @link 	http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/doc.html
- *  @OID	1.3.6.1.4.1.37553.8.1.8.8 webfan-software
+ *  @link 	    http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/doc.html
+ *  @OID	    1.3.6.1.4.1.37553.8.1.8.8 webfan-software
  *  @requires	PHP_VERSION 5.3 >= 
  *  @requires   webfan://frdl.webfan.App.code
- *  @api        http://interface.api.webfan.de/v1/public/software/get/webfan/
+ *  @api        http://interface.api.webfan.de/v1/public/software/class/webfan/
  *  @reference  http://www.webfan.de/install/
  *  @implements StreamWrapper
  * 
@@ -79,6 +79,11 @@ class SourceLoader
 		
 	protected $interface;
 	
+	/**
+	 *  "Run Time Cache" / Buffer
+	 */
+	protected static $rtc;
+	
 	 
 	protected $buf = array(
 	      'config' => array(),
@@ -92,6 +97,8 @@ class SourceLoader
 	   $this->config_source = array( 
 	     'install' =>  false,
          'dir_lib' => null,
+         'session' => false,
+         'zip_stream' => true,
 	   );
 	   $this->dir_autoload = '';	
 	   self::$id_repositroy =  'webfan';	 
@@ -324,6 +331,69 @@ class SourceLoader
 	}
 	 
 
+    public function make_pass_3(&$opt){
+    	if(isset($opt['pwdstate']) && $opt['pwdstate'] === 'decrypted')return true;
+    	if(isset($opt['pwdstate']) && $opt['pwdstate'] === 'error')return false;
+	
+		if(!isset(self::$rtc['CERTS']))self::$rtc['CERTS'] = array();
+		
+		$hash = sha1($opt['CERT']);		
+		$u = parse_url($opt['CERT']);
+		$url = $opt['CERT'];
+		
+		if(!isset(self::$rtc['CERTS'][$hash]) && ($u === false || !isset(self::$rtc['CERTS'][$url])))
+		{
+		if($u !== false ){
+			if(isset($u['scheme']) && isset($u['host'])){
+			$h = explode('.',$u['host']);
+			$h = array_reverse($h);
+			if($h[0] === 'de' && ($h[1] === 'webfan' || $h[1] === 'frdl' )){
+			   $Http = new \webdof\Http\Client();
+			   $post = array();
+	           $send_cookies = array();
+			   $r = $Http->request($opt['CERT'], 'GET', $post, $send_cookies, E_USER_WARNING);
+			   if(intval($r['status'])===200){
+	  	          $CERT = trim($r['body']);
+		       }else{
+		       	  $opt['pwdstate'] = '404';
+				  return false;
+		       }
+		    }
+		    }else{
+			        $CERT = trim(file_get_contents($opt['CERT']));
+	         	}
+
+           $key = $url;
+           if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
+           self::$rtc['CERTS'][$key]['crt'] = $CERT;
+		}else{
+		   $key = $hash;
+           if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
+           self::$rtc['CERTS'][$key]['crt'] = $opt['CERT'];			
+		}
+		}elseif(isset(self::$rtc['CERTS'][$hash])){
+			$key = $hash;
+		}elseif(isset(self::$rtc['CERTS'][$url])){
+			$key = $url;
+		}	
+		
+				
+		$PKI = new \frdl\webfan\Crypt\PKI(1);
+		if(!isset(self::$rtc['CERTS'][$key]['PublicKey'])){
+		     $PublicKey = $PKI->getPublKeyByCRT(self::$rtc['CERTS'][$key]['crt']);
+			 self::$rtc['CERTS'][$key]['PublicKey'] = $PublicKey;
+	    }
+	    $success = $PKI->decrypt($opt['pass'],self::$rtc['CERTS'][$key]['PublicKey'],$new_pass) ;
+	    if($success === true){
+	    	$opt['pass'] = $new_pass;
+			$opt['pwdstate'] = 'decrypted';
+	    }else{
+	    	$opt['pwdstate'] = 'error';
+	    }
+		
+		return $success;
+    } 
+
     protected function load(&$code, Array &$config = null, &$opt = array('pass' => null, 'rot1' => 5, 'rot2' => 3), $class = null){
 	      $p = $this->_unwrap_code(((is_string($code)) ? $code : $code['c']));
 		  
@@ -338,7 +408,15 @@ class SourceLoader
  	      if($config['encrypted'] === true && intval($config['e_method']) === 2){
  		     $p = trim($this->crypt($p, 'decrypt', $opt['pass'], $opt['rot1'], $opt['rot2']));
  	      }	 	
-		  		  	
+		  
+ 	      if($config['encrypted'] === true && intval($config['e_method']) === 3){
+ 	      	 if($this->make_pass_3($opt) == false){
+		   	 trigger_error('Cannot decrypt password properly in '.__METHOD__.' '.__LINE__,$config['ERROR']);
+		       return false;	      	 	
+ 	      	 }
+ 		     $p = trim($this->crypt($p, 'decrypt', $opt['pass'], $opt['rot1'], $opt['rot2']));
+ 	      }	
+		  		  		  	
 		   if(isset($code['s']) && $code['s'] !== sha1($p)){
 	          	 $errordetail = ($config['ini']['display_errors_details'] === true)
 			                  ? '<pre>'.sha1($p).'</pre><pre>'.$code['s'].'</pre><pre>'.$opt['pass'].' '.$opt['rot1'].' '.$opt['rot2'].'</pre>'
@@ -448,7 +526,8 @@ class SourceLoader
 
    
     public function unwrap_namespace($s){
-    	return preg_replace("/^(namespace ([A-Za-z0-9\_".preg_quote('\\')."]+);){1}/", '${1}'."\n", $s);
+    	$s = preg_replace("/^(namespace ([A-Za-z0-9\_".preg_quote('\\')."]+);){1}/", '${1}'."\n", $s);
+		return preg_replace("/(\nuse ([A-Za-z0-9\_".preg_quote('\\')."]+);)/", '${1}'."\n", $s);
     }
     	
     public function _unwrap_code($c){return trim(gzuncompress(gzuncompress(base64_decode(str_replace("\r\n\t","", $c))))," \r\n");}		
