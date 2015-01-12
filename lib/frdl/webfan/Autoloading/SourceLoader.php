@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	0.9.4
+ *  @version 	0.9.5
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -49,7 +49,7 @@
  * 
  */
 namespace frdl\webfan\Autoloading;
-
+use frdl;
 
 
 class SourceLoader
@@ -102,8 +102,8 @@ class SourceLoader
 	protected $read = 0; 
 	public static $id_repositroy;
 	public static $id_interface;	
-	public static $user;
-	public static $pass;	
+	public static $api_user;
+	public static $api_pass;	
 	protected $eof = false;
 	protected $mode;
 	
@@ -139,8 +139,8 @@ class SourceLoader
 	   $this->dir_autoload = '';	
 	   self::$id_repositroy =  'webfan';	 
 	   self::$id_interface =  'public';	 
-	   self::$user = '';
-	   self::$pass = '';
+	   self::$api_user = '';
+	   self::$api_pass = '';
 	   $this->Defaults(true);
 	   $this->set_pass($pass);
 	 }
@@ -494,7 +494,7 @@ class SourceLoader
 			   }
 			 }		
 		     $filename = $dir.str_replace('\\', \frdl\webfan\App::DS, $class).'.php';
-			 $bs = new \webdof\Serialize\Binary\bin();
+			 $bs = new \frdl\webfan\Serialize\Binary\bin();
 			 $d = $bs->unserialize($this->unpack_license($code['d']));
 			 $fp = fopen($filename, 'wb+');
 	         fwrite($fp,'<?php '."\n
@@ -754,8 +754,8 @@ class SourceLoader
                           'software',
                           array(),  //post
                           array(),  //cookie
-                          self::$user,
-                          self::$pass,
+                          self::$api_user,
+                          self::$api_pass,
                           'class',
                           'php',   //format ->hier: "php"
                           'source',
