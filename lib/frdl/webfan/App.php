@@ -11,9 +11,6 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *   must display the following acknowledgement:
- *    This product includes software developed by the <organization>.
  * 4. Neither the name of frdl/webfan nor the
  *    names of its contributors may be used to endorse or promote products
  *    derived from this software without specific prior written permission.
@@ -39,8 +36,8 @@
  *  @copyright 	2015 Copyright (c) Till Wehowski
  *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
  *  @license    http://look-up.webfan.de/webdof-license webdof-license 1.3.6.1.4.1.37553.8.1.8.4.5
- *  @link 		http://interface.api.webfan.de/v1/public/software/get/webfan/frdl.webfan.App/doc.html
- *  @OID		1.3.6.1.4.1.37553.8.1.8.8 webfan-software
+ *  @link 	http://interface.api.webfan.de/v1/public/software/get/webfan/frdl.webfan.App/doc.html
+ *  @OID	1.3.6.1.4.1.37553.8.1.8.8 webfan-software
  *  @requires	PHP_VERSION 5.3 >= 
  *  @requires   webfan://webfan.Autoloading.SourceLoader.code
  *  @api        http://interface.api.webfan.de/v1/public/software/get/1/
