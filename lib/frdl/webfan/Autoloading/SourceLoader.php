@@ -36,8 +36,8 @@
  *  @copyright 	2015 Copyright (c) Till Wehowski
  *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
  *  @license    http://look-up.webfan.de/webdof-license webdof-license 1.3.6.1.4.1.37553.8.1.8.4.5
- *  @link 	    http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/doc.html
- *  @OID	    1.3.6.1.4.1.37553.8.1.8.8 webfan-software
+ *  @link 	http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/doc.html
+ *  @OID	1.3.6.1.4.1.37553.8.1.8.8 webfan-software
  *  @requires	PHP_VERSION 5.3 >= 
  *  @requires   webfan://frdl.webfan.App.code
  *  @api        http://interface.api.webfan.de/v1/public/software/class/webfan/
