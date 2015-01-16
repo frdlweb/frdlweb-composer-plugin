@@ -32,7 +32,7 @@
  * 
  *  @author 	Till Wehowski <software@frdl.de>
  *  @copyright 	2014 Copyright (c) Till Wehowski
- *  @version 	2.0   
+ *  @version 	2.2   
  */
 namespace webfan\InstallShield\PragmaMx;
 use frdl;
@@ -50,7 +50,8 @@ class Installer implements \frdl\webfan\Config\Install\Installable
 		 $this->lid = null;
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.1.2')$this->lid = 66;
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.0')$this->lid = 83;		 
-		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.1')$this->lid = 84;		 		 
+		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.1')$this->lid = 84;		
+		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.1.2 download from pragmamx.org')$this->lid = 0;	 		 
 	}
 	
 	
@@ -88,15 +89,34 @@ class Installer implements \frdl\webfan\Config\Install\Installable
 		
 
 			 
-	  $post = array();
-	  $send_cookies = array();			 
+     if($this->lid !== 0){			 
       $html.= $this->I->webfan_downloads_download($this->lid, $r );
 	  if(intval($r['status'])!==200){
 	  	$html.= $this->e($this->lang('__DOWNLOAD_FAILED__').' 1#'.__LINE__);
 		return $html;	
 	  }			 
 	  $zipcont = &$r['body'];
-	  		 			 
+	  
+	 }else{
+	 	 $C = new \webdof\Http\Client();
+		 $post = array();
+		 $send_cookies = array();
+		 $r = $C->request('http://download.pragmamx.org/pmx/pragmaMx_2.1_2014-11-01--11-53_full.zip', 'GET', $post, $send_cookies, E_USER_WARNING);
+	     if(intval($r['status'])!==200){
+	     	$html.= $this->e($this->lang('__DOWNLOAD_FAILED__').' 1#'.__LINE__);
+		   return $html;	
+	     }		
+		$zipcont = &$r['body'];
+		
+		if(sha1($zipcont) !== '292db3260c07e79bfda7f907fa10076c08f2a09a')         
+		     {
+             	$r['status'] = 409; 
+	            $html.= $this->e($this->lang('__CHECKSUM_INVALID__'));
+	        	return $html;
+             }	  
+	 }
+	 
+	   		 			 
 	  chmod($dir,0755);
 	  $zipfile = $this->I->dir_install_temp.'PragmaMx.zip';
 	  $fp = fopen($zipfile, 'wb+');
@@ -129,7 +149,9 @@ class Installer implements \frdl\webfan\Config\Install\Installable
 	  
 	  $html.= 'Start setup...'."\n";	
 	  $url = $_POST['SETUP_URL'].'setup/';
-	  
+	  if(file_exists($dir.'setup'.\frdl\webfan\App::DS.'.htaccess')){
+	  	unlink($dir.'setup'.\frdl\webfan\App::DS.'.htaccess');
+	  }
 	  
 	  $html.='<a name="PMX"></a>';
 	  $html.='<iframe src="'.$url.'" style="border:none;width:100%;height:850px;">Ihr Browser kann keine iframes!</iframe>';
