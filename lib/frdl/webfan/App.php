@@ -32,15 +32,15 @@
  * 
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
- *  @uri        /v1/public/software/get/webfan/frdl.webfan.App/class.php
+ *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
  *  @version 	0.9.2.2
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
  *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
  *  @license    http://look-up.webfan.de/webdof-license webdof-license 1.3.6.1.4.1.37553.8.1.8.4.5
- *  @link 		http://interface.api.webfan.de/v1/public/software/get/webfan/frdl.webfan.App/doc.html
- *  @OID		1.3.6.1.4.1.37553.8.1.8.8 webfan-software
+ *  @link 	http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.App/doc.html
+ *  @OID	1.3.6.1.4.1.37553.8.1.8.8 webfan-software
  *  @requires	PHP_VERSION 5.3 >= 
  *  @requires   webfan://webfan.Autoloading.SourceLoader.code
  *  @api        http://interface.api.webfan.de/v1/public/software/get/1/
