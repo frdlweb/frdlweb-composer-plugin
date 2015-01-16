@@ -9,6 +9,11 @@ Homepage
 http://frdl.github.io/webfan/
 
 
+Language Files
+===
+https://github.com/frdl/translations
+
+
 License
 ===
 Copyright (c) 2015, Till Wehowski
