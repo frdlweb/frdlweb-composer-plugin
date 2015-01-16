@@ -39,15 +39,3 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-History
-===
-
-````
-+change:
--status: Developement
--current : API Building
--antecedent : http://install.interface.api.webfan.de/v1/public/meta/endpoints/list.html
--previous works : http://www.webfan.de/pragmamx-online-installer/
--current : Repository Building
-````
