@@ -12,7 +12,7 @@
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *   must display the following acknowledgement:
+ *    must display the following acknowledgement:
  *    This product includes software developed by the frdl/webfan.
  * 4. Neither the name of frdl/webfan nor the
  *    names of its contributors may be used to endorse or promote products
@@ -39,8 +39,8 @@
  *  @copyright 	2015 Copyright (c) Till Wehowski
  *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
  *  @license    http://look-up.webfan.de/webdof-license webdof-license 1.3.6.1.4.1.37553.8.1.8.4.5
- *  @link 	http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/doc.html
- *  @OID	1.3.6.1.4.1.37553.8.1.8.8 webfan-software
+ *  @link 	    http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/doc.html
+ *  @OID	    1.3.6.1.4.1.37553.8.1.8.8 webfan-software
  *  @requires	PHP_VERSION 5.3 >= 
  *  @requires   webfan://frdl.webfan.App.code
  *  @api        http://interface.api.webfan.de/v1/public/software/class/webfan/
@@ -49,12 +49,14 @@
  * 
  */
 namespace frdl\webfan\Autoloading;
-use frdl;
+
 
 
 class SourceLoader
 {
-	
+	const NS = __NAMESPACE__;
+	const DS = DIRECTORY_SEPARATOR;
+		
 	/**
 	 * PKI
 	 */
@@ -109,7 +111,7 @@ class SourceLoader
 	
 	
     protected $dir_autoload;
-	protected $config_source;
+	protected static $config_source;
     protected $autoloaders = array();
 	
 		
@@ -130,11 +132,13 @@ class SourceLoader
 	function __construct($pass = null) 
 	 {
 	   $this->interface = null;	
-	   $this->config_source = array( 
+	   self::$config_source = array( 
 	     'install' =>  false,
-         'dir_lib' => null,
+         'dir_lib' => false,
          'session' => false,
-         'zip_stream' => true,
+         'zip_stream' => false,
+         'append_eval_to_file' => false,
+         
 	   );
 	   $this->dir_autoload = '';	
 	   self::$id_repositroy =  'webfan';	 
@@ -150,16 +154,16 @@ class SourceLoader
   }	 
 	 
   public function config_source($key = null, $value = null){
-  	   if(!is_string($key))return $this->config_source;
-	   if(!isset($this->config_source[$key]))return false;
-	   $this->config_source[$key] = $value;
+  	   if(!is_string($key))return self::$config_source;
+	   if(!isset(self::$config_source[$key]))return false;
+	   self::$config_source[$key] = $value;
 	   return true;
   }  
 	 
   public function setAutloadDirectory($dir){
   	 if(!is_dir($dir))return false;
 	 $this->dir_autoload = $dir;
-	 if(substr($this->dir_autoload,-1,1) !== DIRECTORY_SEPARATOR)$this->dir_autoload.=DIRECTORY_SEPARATOR;
+	 if(substr($this->dir_autoload,-1,1) !== self::DS)$this->dir_autoload.=self::DS;
 	 return true;	
   }	 
 	 
@@ -174,7 +178,7 @@ class SourceLoader
   'source' => $this->config_source(),
   'ERROR' => E_USER_WARNING,
   'ini' => array( 
-      'display_errors_details' => true,
+      'display_errors_details' => false,
       'pev' => array( 
            'CUSTOM' => null,
            'REQUEST' => true,
@@ -182,8 +186,12 @@ class SourceLoader
 	     //  'IPs' => $App->getServerIp(),
 	       'PATH' => null,
 	   ),
-  ),
-          ); 
+	  ), 
+ 
+     
+	); 
+	
+	
 		  
 		  if($set === true){
 		  	  $this->set_config($config); 	
@@ -206,9 +214,60 @@ class SourceLoader
 	
 	public function set_config(&$config){
 		$this->config = (is_array($config)) ? $config : $this->buf['config'];
-		if(isset($this->config['source']) && is_array($this->config['source']))$this->config_source = &$this->config['source'];
+		if(isset($this->config['source']) && is_array($this->config['source']))self::$config_source = &$this->config['source'];
 	}
 	 
+
+
+
+    public function installSource($class,&$code, &$error ='', &$config_source = null){
+    	if($config_source === null)$config_source = &self::$config_source;
+		if($config_source['install'] !== true)return null;
+		if(!isset($code['php']))return false;
+		if(isset($code['installed']) && $code['installed'] === true)return true;
+		
+	     $bs = new \frdl\webfan\Serialize\Binary\bin();
+		 $code['doc'] = $bs->unserialize($this->unpack_license($code['d']));
+			 		
+		 $error = '';
+		 $r = false;
+		 
+	    if(isset($config_source['dir_lib']) && is_string($config_source['dir_lib']) && is_dir($config_source['dir_lib'])){
+	         $dir  = rtrim($config_source['dir_lib'],  self::DS . ' '). self::DS ;	
+		     $filename = $dir.str_replace('\\', self::DS, $class).'.php'; 
+			 $dir = realpath(dirname($filename)).self::DS;	
+			 if(!is_dir($dir)){
+			   if(!mkdir($dir, 0755, true)){
+			   	  $error = 'Cannot create directory '.$dir.' and cannot save class '.$class.' in '.__METHOD__.' '.__LINE__;
+			   	  trigger_error($error,E_USER_WARNING);
+			   }
+			 }		
+             
+			 if($error === ''){
+               $file_header = "/**\n* File generated by frdl Application Composer : class : ".__CLASS__."\n**/\n";
+			   $code = '<?php '."\n".$file_header."\n\$filemtime = ;\n\$class_documentation = ".var_export($code['doc'], true).";\n".$code['php']."\n";
+			 
+			   $fp = fopen($filename, 'wb+');
+	           fwrite($fp,$code);
+	           fclose($fp);
+			   if(file_exists($filename)){
+			     $code['installed'] = true;
+				 $r = true;  
+			   }else{
+			      $error = 'Cannot create file '.$filename.' and cannot save class '.$class.' in '.__METHOD__.' '.__LINE__;
+			   	  trigger_error($error,E_USER_WARNING);
+			   }
+			 }
+		}
+			 
+			 
+			 
+			 
+	   return $r;	
+    }
+
+
+
 	
 	public function patch_autoload_function($class){
 		if(function_exists('__autoload'))return __autoload($class);
@@ -232,7 +291,7 @@ class SourceLoader
     public function addNamespace($prefix, $base_dir, $prepend = false)
     {
        $prefix = trim($prefix, '\\') . '\\';
-       $base_dir = rtrim($base_dir, DIRECTORY_SEPARATOR) . '/';
+       $base_dir = rtrim($base_dir, self::DS) .self::DS;
        if(isset($this->autoloaders[$prefix]) === false) {
             $this->autoloaders[$prefix] = array();
         }
@@ -266,7 +325,7 @@ class SourceLoader
         }
         foreach ($this->autoloaders[$prefix] as $base_dir) {
             $file = $base_dir
-                  . str_replace('\\', DIRECTORY_SEPARATOR, $relative_class)
+                  . str_replace('\\', self::DS, $relative_class)
                   . '.php';
 
             if ($this->inc($file)) {
@@ -406,19 +465,30 @@ class SourceLoader
                    $key = $url;
                   if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
                  self::$rtc['CERTS'][$key]['crt'] = $CERT;
-             }else{
-                    $key = $hash;
+             }elseif(preg_match("/CERTIFICATE/", $opt['CERT'])){
+             	    $key = $hash;
                     if(!isset(self::$rtc['CERTS'][$key]))self::$rtc['CERTS'][$key] = array();
-                    $CERT = $opt['CERT'];
+                    $CERT = utf8_encode($opt['CERT']);
 					$CERT=$this->loadPK($CERT);
+					if($CERT===false){
+				   	  trigger_error('Cannot procces certificate info in '.__METHOD__.' line '.__LINE__, E_USER_WARNING);
+					  return false;
+				   }
 					$CERT=$this->save($CERT, self::B_CERTIFICATE, self::E_CERTIFICATE);
 					self::$rtc['CERTS'][$key]['crt'] =$CERT;
-              }
+				   
+              }else{
+				   	  trigger_error('Cannot procces certificate info in '.__METHOD__.' line '.__LINE__, E_USER_WARNING);
+					  return false;
+				   }
                  }elseif(isset(self::$rtc['CERTS'][$hash])){
                      $key = $hash;
                   }elseif(isset(self::$rtc['CERTS'][$url])){
-                  $key = $url;
-           }
+                      $key = $url;
+                  }else{
+                  	 trigger_error('Cannot procces certificate info in '.__METHOD__.' line '.__LINE__, E_USER_WARNING);
+					 return false;
+                  }
 
 
             $this->setLib(1);
@@ -485,29 +555,14 @@ class SourceLoader
 			   unset($code['c']);
 		  } 
 		  
-		  if(isset($code['php']) && is_string($class) && $this->config_source['install'] === true && is_dir($this->config_source['dir_lib'])){
-		  	 $dir  = rtrim($this->config_source['dir_lib'],  \frdl\webfan\App::DS.' ').\frdl\webfan\App::DS;	
-			 if(!is_dir($dir)){
-			   if(!mkdir($dir, 0755, true)){
-			   	  trigger_error('Cannot create directory '.$dir.' and cannot saver class '.$class.' in '.__METHOD__.' '.__LINE__,E_USER_WARNING);
-				  return true;
-			   }
-			 }		
-		     $filename = $dir.str_replace('\\', \frdl\webfan\App::DS, $class).'.php';
-			 $bs = new \frdl\webfan\Serialize\Binary\bin();
-			 $d = $bs->unserialize($this->unpack_license($code['d']));
-			 $fp = fopen($filename, 'wb+');
-	         fwrite($fp,'<?php '."\n
-	         /**
-	         ".print_r($d, true)."\n
-	         **/
-	         ".$code['php']);
-	         fclose($fp);
-		  }
+		  $error = '';
+		  $config_source = (isset($config['source'])) ? $config['source'] : self::$config_source;
+		  $installed = $this->installSource($class,$code, $error, $config_source);
 		  
 		  usleep(50);
 		  return true; 	
     }
+
 
     public function loadSource(&$code, Array &$config = null, &$opt = array('pass' => null, 'rot1' => 5, 'rot2' => 3), $class = null){
     	 return $this->load($code, $config, $opt, $class );
@@ -517,6 +572,7 @@ class SourceLoader
        $this->set_config($config); 	
        $this->mkp($config);	
        foreach($sources as $class => $code){
+       	  if(class_exists($class))continue;
 	      if($this->load($code, $config, $opt, $class) === false){
 	      	return false;
 	      }
