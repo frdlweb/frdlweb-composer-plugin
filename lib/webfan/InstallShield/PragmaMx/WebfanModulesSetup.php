@@ -120,8 +120,8 @@ class WebfanModulesSetup implements \frdl\webfan\Config\Install\Installable
 	        	return $html;
       }	  
 	  	 
-	 
-	    \frdl\webfan\Compress\zip\ZipFile::removeFile('html/install.php',$zipfile);
+	 	//   $Z = new \frdl\webfan\Compress\zip\ZipFile();
+	   \frdl\webfan\Compress\zip\ZipFile::removeFile('html/install.php',$zipfile);
 	   $files = \frdl\webfan\Compress\zip\ZipFile::getArchiveFilenames($zipfile);
 	   $pfx = 'html/';
 	   $len = strlen($pfx);
@@ -169,7 +169,7 @@ class WebfanModulesSetup implements \frdl\webfan\Config\Install\Installable
 			      }else{
 			      	$html.= $this->e($this->I->lang('__CHECKSUM_INVALID__').': '.$file);
 			      }
-			     \frdl\webfan\Compress\zip\ZipFile::removeFile($file,$zipfile);
+			    \frdl\webfan\Compress\zip\ZipFile::removeFile($file,$zipfile);
 	   	   }
 	   }
 	 
