@@ -51,7 +51,7 @@ class Installer implements \frdl\webfan\Config\Install\Installable
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.1.2')$this->lid = 66;
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.0')$this->lid = 83;		 
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.1')$this->lid = 84;		
-		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.1.2 download from pragmamx.org')$this->lid = 0;	 		 
+	//	 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.1.2 download from pragmamx.org')$this->lid = 0;	 		 
 	}
 	
 	
@@ -83,42 +83,25 @@ class Installer implements \frdl\webfan\Config\Install\Installable
            @chmod($dir,0755);
            if(!is_writable($dir)){
         	  $html.= $this->e($dir.' '.$this->I->lang('__IS_NOT_WRITABLE__') );
-			//  return $html;
+			  return $html;
           }   	
         }   		
 		
 
 			 
-     if($this->lid !== 0){			 
+
       $html.= $this->I->webfan_downloads_download($this->lid, $r );
 	  if(intval($r['status'])!==200){
 	  	$html.= $this->e($this->lang('__DOWNLOAD_FAILED__').' 1#'.__LINE__);
 		return $html;	
-	  }			 
-	  $zipcont = &$r['body'];
-	  
-	 }else{
-	 	 $C = new \webdof\Http\Client();
-		 $post = array();
-		 $send_cookies = array();
-		 $r = $C->request('http://download.pragmamx.org/pmx/pragmaMx_2.1_2014-11-01--11-53_full.zip', 'GET', $post, $send_cookies, E_USER_WARNING);
-	     if(intval($r['status'])!==200){
-	     	$html.= $this->e($this->lang('__DOWNLOAD_FAILED__').' 1#'.__LINE__);
-		   return $html;	
-	     }		
-		$zipcont = &$r['body'];
-		
-		if(sha1($zipcont) !== '292db3260c07e79bfda7f907fa10076c08f2a09a')         
-		     {
-             	$r['status'] = 409; 
-	            $html.= $this->e($this->lang('__CHECKSUM_INVALID__'));
-	        	return $html;
-             }	  
-	 }
+	  }		
+		$zipcont = $r['body'];
+
 	 
 	   		 			 
 	  chmod($dir,0755);
 	  $zipfile = $this->I->dir_install_temp.'PragmaMx.zip';
+	  
 	  $fp = fopen($zipfile, 'wb+');
 	  if(!$fp)
              {
@@ -127,18 +110,23 @@ class Installer implements \frdl\webfan\Config\Install\Installable
              }	  
 	  fwrite($fp,$zipcont);
 	  fclose($fp);
+
+	   
       if(!file_exists($zipfile)){
 	          	$html.= $this->e($this->I->lang('__CANNOT_WRITE_FILE__').' '.$zipfile);
 	        	return $html;
       }	  
-	  
-	  \frdl\webfan\Compress\zip\ZipFile::removeFile('install.php',$zipfile);
-	  \frdl\webfan\Compress\zip\ZipFile::removeFile('INSTALL.php',$zipfile);
+
+	
+	 
+	//  FEHLER:  $Z = new \frdl\webfan\Compress\zip\ZipFile();
+	 \frdl\webfan\Compress\zip\ZipFile::removeFile('install.php',$zipfile);
+     \frdl\webfan\Compress\zip\ZipFile::removeFile('INSTALL.php',$zipfile);
 	  
 	  	  
 	  $html.= 'Unpack...'."\n";	
-	  //$Z = new \frdl\webfan\Compress\zip\ZipFile();
-	  $success = \frdl\webfan\Compress\zip\ZipFile::unzip($zipfile, $dir);
+	 
+	  $success =\frdl\webfan\Compress\zip\ZipFile::unzip($zipfile, $dir);
 	  unlink($zipfile);
       if($success !== true){
 	          	$html.= $this->e($this->I->lang('__CANNOT_UNZIP_FILE__').' '.$zipfile);
