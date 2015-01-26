@@ -352,7 +352,7 @@ class SourceLoader
 		 	if(strpos($str, $s)!== false)return false;
 		 }
 		 
-		 if(substr($str,0,strlen($start)) !== $start)returnfalse;
+		 if(substr($str,0,strlen($start)) !== $start)return false;
 		 if(!preg_match('/[a-f0-9]{40}/', $str))return false;
 		 
 		 
