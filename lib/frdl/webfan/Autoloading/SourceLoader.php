@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	0.9.6
+ *  @version 	0.9.8
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -56,7 +56,7 @@ class SourceLoader
 {
 	const NS = __NAMESPACE__;
 	const DS = DIRECTORY_SEPARATOR;
-		
+    const SESSKEY = __CLASS__;			
 	/**
 	 * PKI
 	 */
@@ -141,13 +141,19 @@ class SourceLoader
          
 	   );
 	   $this->dir_autoload = '';	
-	   self::$id_repositroy =  'frdl';	 
+	   self::repository(((!isset($_SESSION[self::SESSKEY]['id_repository']))?'webfan':null));	 
 	   self::$id_interface =  'public';	 
 	   self::$api_user = '';
 	   self::$api_pass = '';
 	   $this->Defaults(true);
 	   $this->set_pass($pass);
 	 }
+	 
+  public static function repository($id = null){
+  	if($id !== null)$_SESSION[self::SESSKEY]['id_repository'] = $id;
+	self::$id_repositroy = &$_SESSION[self::SESSKEY]['id_repository'];
+	return self::$id_repositroy;
+  }	 
 	 
   public function set_interface(Array &$interface = null){
   	 $this->interface = (is_array($interface)) ? $interface : null;
