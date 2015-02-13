@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	0.9.5
+ *  @version 	0.9.6
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -141,7 +141,7 @@ class SourceLoader
          
 	   );
 	   $this->dir_autoload = '';	
-	   self::$id_repositroy =  'webfan';	 
+	   self::$id_repositroy =  'frdl';	 
 	   self::$id_interface =  'public';	 
 	   self::$api_user = '';
 	   self::$api_pass = '';
@@ -274,7 +274,7 @@ class SourceLoader
 	}
 		 
 	public function autoload_register(){
-        $this->addLoader(array($this,'loadClass'), true, false);		
+        $this->addLoader(array($this,'loadClass'), true, true);		
         $this->addLoader(array($this,'autoloadClassFromServer'), true, false);
         $this->addLoader(array($this,'patch_autoload_function'), true, false);		
 	} 
@@ -291,7 +291,7 @@ class SourceLoader
     public function addNamespace($prefix, $base_dir, $prepend = false)
     {
        $prefix = trim($prefix, '\\') . '\\';
-       $base_dir = rtrim($base_dir, self::DS) .self::DS;
+       $base_dir = rtrim($base_dir, self::DS) . self::DS;	   
        if(isset($this->autoloaders[$prefix]) === false) {
             $this->autoloaders[$prefix] = array();
         }
@@ -320,7 +320,8 @@ class SourceLoader
 	
     protected function routeLoaders($prefix, $relative_class)
     {
-        if (isset($this->autoloaders[$prefix]) === false) {
+
+        if (!isset($this->autoloaders[$prefix])) {
             return false;
         }
         foreach ($this->autoloaders[$prefix] as $base_dir) {
@@ -338,7 +339,7 @@ class SourceLoader
     protected function inc($file)
     {
         if (file_exists($file)) {
-            require $file;
+             require $file;
             return true;
         }
         return false;
@@ -630,7 +631,7 @@ class SourceLoader
     }
     	
     public function _unwrap_code($c){return trim(gzuncompress(gzuncompress(base64_decode(str_replace("\r\n\t","", $c))))," \r\n");}		
-    public function unpack_license($l){return gzuncompress(gzuncompress(base64_decode(str_replace("\r\\n", "", $l))));} 	
+    public function unpack_license($l){return gzuncompress(gzuncompress(base64_decode(str_replace("\r\n", "", $l))));} 	
 	function __destruct() {foreach(array_keys(get_object_vars($this)) as $value){unset($this->$value);}}
 	
 	
