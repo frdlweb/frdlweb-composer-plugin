@@ -51,7 +51,7 @@ require $dir_lib . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'.DIRECTORY_SEPARATOR .
  /** 
  * Alias class mapping
  */
- frdl\webfan\App::God() -> addClass('frdl\aSQL\Engines\Terminal\WebConsole', 'frdl\Terminal',  true );
+ frdl\webfan\App::God() -> addClass('frdl\aSQL\Engines\Terminal\WebConsole', 'Terminal',  true );
 			 
  /**
   * class mapping autoloading example
@@ -66,7 +66,7 @@ require $dir_lib . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'.DIRECTORY_SEPARATOR .
 
  $cmd = '$install --host=localhost --dir=/var/www/dir/lib/ --package="frdl/webfan" -w --update -urstuvwxyz --db="LIQ:php;db=alias.ApplicationComposer" + # > log.default; ';
 
- $Terminal = new frdl\Terminal();
+ $Terminal = new Terminal();
  echo '<pre>
  BEGIN
  '.$cmd.'
