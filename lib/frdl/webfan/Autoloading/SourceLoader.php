@@ -33,14 +33,14 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	0.9.10
+ *  @version 	0.9.12
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
  *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
  *  @license    http://look-up.webfan.de/webdof-license webdof-license 1.3.6.1.4.1.37553.8.1.8.4.5
- *  @link 	    http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/doc.html
- *  @OID	    1.3.6.1.4.1.37553.8.1.8.8 webfan-software
+ *  @link 	http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/doc.html
+ *  @OID	1.3.6.1.4.1.37553.8.1.8.8 webfan-software
  *  @requires	PHP_VERSION 5.3 >= 
  *  @requires   webfan://frdl.webfan.App.code
  *  @api        http://interface.api.webfan.de/v1/public/software/class/webfan/
@@ -54,13 +54,13 @@ namespace frdl\webfan\Autoloading;
 
 class SourceLoader
 {
-	const NS = __NAMESPACE__;
-	const DS = DIRECTORY_SEPARATOR;
+    const NS = __NAMESPACE__;
+    const DS = DIRECTORY_SEPARATOR;
     const SESSKEY = __CLASS__;			
 	/**
 	 * PKI
 	 */
-	const DISABLED = 0;
+    const DISABLED = 0;
     const OPENSSL = 1;
     const PHPSECLIB = 2;
 
@@ -157,6 +157,7 @@ class SourceLoader
 	 
   public function set_interface(Array &$interface = null){
   	 $this->interface = (is_array($interface)) ? $interface : null;
+	 return $this;
   }	 
 	 
   public function config_source($key = null, $value = null){
@@ -216,11 +217,13 @@ class SourceLoader
 	public function mkp(){
 		
 		$this->set_pass(null);
+	     return $this;
 	}
 	
 	public function set_config(&$config){
 		$this->config = (is_array($config)) ? $config : $this->buf['config'];
 		if(isset($this->config['source']) && is_array($this->config['source']))self::$config_source = &$this->config['source'];
+        return $this;		
 	}
 	 
 
@@ -281,18 +284,21 @@ class SourceLoader
 		 
 	public function autoload_register(){
         $this->addLoader(array($this,'loadClass'), true, true);		
-		$this->addLoader(array($this,'classMapping'), true, false);	
+	$this->addLoader(array($this,'classMapping'), true, false);	
         $this->addLoader(array($this,'patch_autoload_function'), true, false);	
         $this->addLoader(array($this,'autoloadClassFromServer'), true, false);	
+        return $this;
 	} 
     
     public function addLoader($Autoloader, $throw = true, $prepend = false){
        spl_autoload_register($Autoloader, $throw, $prepend);
+	   return $this;
     }
 
     public function unregister( $Autoloader)
      {
         spl_autoload_unregister($Autoloader);
+		return $this;
      } 	
 			 
     public function addNamespace($prefix, $base_dir, $prepend = false)
@@ -308,6 +314,8 @@ class SourceLoader
         } else {
             array_push($this->autoloaders[$prefix], $base_dir);
         }
+		
+		return $this;
     }
 	 
     
@@ -322,17 +330,20 @@ class SourceLoader
 	}
 	
 	
-	public function class_mapping_add($class, $file){
+	public function class_mapping_add($class, $file, &$success){
 		if(file_exists($file)){
 		    $this->classmap[$class] = $file;
-			return true;
+			$success = true;
 	    }else{
-			return false;
+			$success = false;
 	    }
+		
+	   return $this;
 	}
     
 	public function class_mapping_remove($class){
 		if(isset($this->classmap[$class]))unset($this->classmap[$class]);
+	    return $this;
 	}	
     
     public function loadClass($class)
@@ -674,6 +685,7 @@ class SourceLoader
    public function setLib($lib)
      {
         $this->lib = $lib;
+	   return $this;
      } 
 
    public function save($data, $begin = "-----BEGIN SIGNATURE-----\r\n", $end = '-----END SIGNATURE-----')
@@ -824,7 +836,7 @@ class SourceLoader
 	/**
 	 * Streaming Methods
 	 */
-	public function init(){$args = func_get_args();}
+	public function init(){$args = func_get_args(); /** todo ... */ return $this;}
     public function DEFRAG(){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
     public function stream_open($url, $mode, $options = STREAM_REPORT_ERRORS, &$opened_path = null){
     	$u = parse_url($url);
