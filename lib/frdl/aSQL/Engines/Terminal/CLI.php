@@ -152,7 +152,7 @@ REGEX;
     }
    }   
    
-   echo '<pre>'.print_r($args,true).'</pre>';
+   
    $args = $this->arguments( $args );
    return $args; 
  }
