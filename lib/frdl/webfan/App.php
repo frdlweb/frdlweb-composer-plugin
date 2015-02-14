@@ -12,7 +12,7 @@
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *   must display the following acknowledgement:
+ *    must display the following acknowledgement:
  *    This product includes software developed by the frdl/webfan.
  * 4. Neither the name of frdl/webfan nor the
  *    names of its contributors may be used to endorse or promote products
@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
- *  @version 	0.9.2.2
+ *  @version 	0.9.2.3
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -94,8 +94,8 @@ class App
 		   });
            $this->wrap = array( 
 		         'c' => array(
-				        '\webfan\Loader' =>  array('\frdl\webfan\Autoloading\SourceLoader', false),
-				
+				        'webfan\Loader' =>  array('frdl\webfan\Autoloading\SourceLoader', false),
+				       /*  '\frdl\Terminal' =>  array('\frdl\aSQL\Engines\Terminal\WebConsole', false), */
 				 ),
 		         'f' => array( 
 	                    'test' => (function ($test = ''){
@@ -108,7 +108,7 @@ class App
 	  $this->wrappers = array(  
 	      'webfan' => array(
 		         'tld' => array(   
-				        'code' => '\frdl\webfan\Autoloading\SourceLoader',
+				        'code' => '\webfan\Loader',
 				        
 				 ),
 		  ),
@@ -208,10 +208,7 @@ class App
 	
 	
    public function addClass($Instance, $Virtual, $autoload = TRUE ) {
-   	    if(class_exists($Virtual)){
-   	    	trigger_error('Class '.$Virtual.' already defined. '.__METHOD__.' '.__LINE__,E_USER_NOTICE);
-			return false;
-   	    }  
+
     	$success =  class_alias( $Instance, $Virtual, $autoload);
 		$this->wrap['c'][$Virtual]= array( (is_object($Instance)) ? get_class($Instance) : $Instance, $success);
         return $success;
