@@ -101,7 +101,7 @@ abstract class CLI
  abstract public function add_command($command, callable $callable);
  abstract public function add_option_handler(mixed $settings);
  abstract public function add_flag(mixed $settings);
- abstract public function add_operator(\Closure $closure);
+ abstract public function add_operator($operator, \Closure $closure);
  
 
  
