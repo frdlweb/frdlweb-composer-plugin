@@ -39,7 +39,7 @@ class WebConsole extends CLI
     public function add_command($command, callable $callable){}
     public function add_option_handler(mixed $settings){}
     public function add_flag(mixed $settings){}
-    public function add_operator(\Closure $closure){}
+    public function add_operator($operator, \Closure $closure){}
  
 	public function test_query()
 	{
