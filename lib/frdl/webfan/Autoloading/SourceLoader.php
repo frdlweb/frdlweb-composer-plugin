@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	0.9.12
+ *  @version 	0.9.13
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -330,7 +330,7 @@ class SourceLoader
 	}
 	
 	
-	public function class_mapping_add($class, $file, &$success){
+	public function class_mapping_add($class, $file, &$success = null){
 		if(file_exists($file)){
 		    $this->classmap[$class] = $file;
 			$success = true;
