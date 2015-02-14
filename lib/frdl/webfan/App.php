@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
- *  @version 	0.9.2.3
+ *  @version 	0.9.2.4
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -95,6 +95,7 @@ class App
            $this->wrap = array( 
 		         'c' => array(
 				        'webfan\Loader' =>  array('frdl\webfan\Autoloading\SourceLoader', false),
+				        'Loader' =>  array('frdl\webfan\Autoloading\SourceLoader', false),
 				       /*  '\frdl\Terminal' =>  array('\frdl\aSQL\Engines\Terminal\WebConsole', false), */
 				 ),
 		         'f' => array( 
