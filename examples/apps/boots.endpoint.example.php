@@ -84,9 +84,9 @@ require $dir_lib . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'.DIRECTORY_SEPARATOR .
 
 
 /**
- echo file_get_contents('http://shell.frdl.de/');
-$Install = new \webfan\Install('frdl');
-$Install->run();
-
+ *  echo file_get_contents('http://shell.frdl.de/');
+ * Install = new \webfan\Install('frdl');
+ * $Install->run();
+ * 
  * 
  */
