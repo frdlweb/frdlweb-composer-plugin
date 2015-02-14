@@ -64,7 +64,7 @@ require $dir_lib . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'.DIRECTORY_SEPARATOR .
     .DIRECTORY_SEPARATOR.'MyClass.class.php',
   $success);
 
- $cmd = '$install --host=localhost --dir=/var/www/dir/lib/ --package="frdl/webfan" -w --update --db="LIQ:php;db=alias.ApplicationComposer" + # > log.default; ';
+ $cmd = '$install --host=localhost --dir=/var/www/dir/lib/ --package="frdl/webfan" -w --update -urstuvwxyz --db="LIQ:php;db=alias.ApplicationComposer" + # > log.default; ';
 
  $Terminal = new frdl\Terminal();
  echo '<pre>
