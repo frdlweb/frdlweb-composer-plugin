@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	0.9.8
+ *  @version 	0.9.10
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -113,7 +113,7 @@ class SourceLoader
     protected $dir_autoload;
 	protected static $config_source;
     protected $autoloaders = array();
-	
+	protected $classmap = array();
 		
 	protected $interface;
 	
@@ -281,8 +281,9 @@ class SourceLoader
 		 
 	public function autoload_register(){
         $this->addLoader(array($this,'loadClass'), true, true);		
-        $this->addLoader(array($this,'autoloadClassFromServer'), true, false);
-        $this->addLoader(array($this,'patch_autoload_function'), true, false);		
+		$this->addLoader(array($this,'classMapping'), true, false);	
+        $this->addLoader(array($this,'patch_autoload_function'), true, false);	
+        $this->addLoader(array($this,'autoloadClassFromServer'), true, false);	
 	} 
     
     public function addLoader($Autoloader, $throw = true, $prepend = false){
@@ -293,7 +294,7 @@ class SourceLoader
      {
         spl_autoload_unregister($Autoloader);
      } 	
-	 
+			 
     public function addNamespace($prefix, $base_dir, $prepend = false)
     {
        $prefix = trim($prefix, '\\') . '\\';
@@ -309,6 +310,31 @@ class SourceLoader
         }
     }
 	 
+    
+	public function classMapping($class){
+		if(isset($this->classmap[$class])){
+            if ($this->inc($this->classmap[$class])) {
+                return $this->classmap[$class];
+            }			
+		}
+		
+		return false;
+	}
+	
+	
+	public function class_mapping_add($class, $file){
+		if(file_exists($file)){
+		    $this->classmap[$class] = $file;
+			return true;
+	    }else{
+			return false;
+	    }
+	}
+    
+	public function class_mapping_remove($class){
+		if(isset($this->classmap[$class]))unset($this->classmap[$class]);
+	}	
+    
     public function loadClass($class)
     {
         $prefix = $class;
