@@ -33,7 +33,7 @@ namespace frdl\aSQL\Engines\Terminal;
 class WebConsole extends CLI
 {
 	
-	protected function boot(){}
+    protected function boot(){}
     protected function _exec($args){}
     protected function force_state($state){}
     public function add_command($command, callable $callable){}
