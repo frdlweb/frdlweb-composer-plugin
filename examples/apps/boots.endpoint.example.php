@@ -21,14 +21,14 @@ require $dir_lib . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'.DIRECTORY_SEPARATOR .
  *    ->autoload_register()
  *  registers the following autoloaders: 
  * 
- 
- 	public function autoload_register(){
-        $this->addLoader(array($this,'loadClass'), true, true);		
-	    $this->addLoader(array($this,'classMapping'), true, false);	
-        $this->addLoader(array($this,'patch_autoload_function'), true, false);	
-        $this->addLoader(array($this,'autoloadClassFromServer'), true, false);	
-        return $this;
-	} 
+ *  
+ *   	public function autoload_register(){
+ *         $this->addLoader(array($this,'loadClass'), true, true);		
+ * 	   $this->addLoader(array($this,'classMapping'), true, false);	
+ *         $this->addLoader(array($this,'patch_autoload_function'), true, false);	
+ *         $this->addLoader(array($this,'autoloadClassFromServer'), true, false);	
+ *         return $this;
+ * 	} 
  
  */
 
