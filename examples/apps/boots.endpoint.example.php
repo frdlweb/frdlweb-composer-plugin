@@ -29,7 +29,6 @@ require $dir_lib . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'.DIRECTORY_SEPARATOR .
  *         $this->addLoader(array($this,'autoloadClassFromServer'), true, false);	
  *         return $this;
  * 	} 
- 
  */
 
 /**
