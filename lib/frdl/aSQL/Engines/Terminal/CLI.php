@@ -278,7 +278,7 @@ REGEX;
       $value = trim($value , '"\'');
 	  if(empty($value))$value = true;
 
-      $ret['options'][$com] = array(
+      $ret['options'][] = array(
 	        'opt' => $com,
 	        'value' => $value,
 	        'pos' => $k,
@@ -299,7 +299,7 @@ REGEX;
       continue;
     }
 
-    $ret['commands'][$arg] =array( 'cmd' => $arg, 'pos' => $k,);
+    $ret['commands'][] =array( 'cmd' => $arg, 'pos' => $k,);
     continue;
   }
 
