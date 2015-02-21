@@ -33,7 +33,7 @@
  *  @role       Command Line Parser
  *  @copyright 	2015 Copyright (c) Till Wehowski
  *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
- *  @link 	    http://interface.api.webfan.de/v1/public/software/class/frdl/frdl.aSQL.Engines.Terminal.CLI/doc.html
+ *  @link 	http://interface.api.webfan.de/v1/public/software/class/frdl/frdl.aSQL.Engines.Terminal.CLI/doc.html
  *  @OID        1.3.6.1.4.1.37553.8.1.8.8 webfan-software
  *  @requires	PHP_VERSION 5.3 >= 
  *  @requires   webfan://frdl.webfan.Autoloading.SourceLoader.code
