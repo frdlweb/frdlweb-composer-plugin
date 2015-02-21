@@ -93,7 +93,7 @@ REGEX;
  function __construct(){
  	  $this->IN = '';
 	  $this->batch = array();
-      $this->mode = (PHP_SAPI === 'cli')  ? self::MODE_CLI : self::MODE_HTTP;
+          $this->mode = (PHP_SAPI === 'cli')  ? self::MODE_CLI : self::MODE_HTTP;
 	  $this->boot();
  }
  
