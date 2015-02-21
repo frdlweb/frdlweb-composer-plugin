@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	0.9.13
+ *  @version 	0.9.14
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -141,7 +141,7 @@ class SourceLoader
          
 	   );
 	   $this->dir_autoload = '';	
-	   self::repository(((!isset($_SESSION[self::SESSKEY]['id_repository']))?'webfan':null));	 
+	   self::repository(((!isset($_SESSION[self::SESSKEY]['id_repository']))?'webfan':$_SESSION[self::SESSKEY]['id_repository']));	 
 	   self::$id_interface =  'public';	 
 	   self::$api_user = '';
 	   self::$api_pass = '';
@@ -284,7 +284,7 @@ class SourceLoader
 		 
 	public function autoload_register(){
         $this->addLoader(array($this,'loadClass'), true, true);		
-	$this->addLoader(array($this,'classMapping'), true, false);	
+	//$this->addLoader(array($this,'classMapping'), true, false);	
         $this->addLoader(array($this,'patch_autoload_function'), true, false);	
         $this->addLoader(array($this,'autoloadClassFromServer'), true, false);	
         return $this;
@@ -568,7 +568,7 @@ class SourceLoader
 		  
  	      if($config['encrypted'] === true && intval($config['e_method']) === 3){
  	      	 if($this->make_pass_3($opt) == false){
-		   	 trigger_error('Cannot decrypt password properly in '.__METHOD__.' '.__LINE__,$config['ERROR']);
+		   	 trigger_error('Cannot decrypt password properly [1] from '.self::$id_repositroy.' for '.$class.' in '.__METHOD__.' '.__LINE__,$config['ERROR']);
 		       return false;	      	 	
  	      	 }
  		     $p = trim($this->crypt($p, 'decrypt', $opt['pass'], $opt['rot1'], $opt['rot2']));
@@ -578,8 +578,10 @@ class SourceLoader
 	          	 $errordetail = ($config['ini']['display_errors_details'] === true)
 			                  ? '<pre>'.sha1($p).'</pre><pre>'.$code['s'].'</pre><pre>'.$opt['pass'].' '.$opt['rot1'].' '.$opt['rot2'].'</pre>'
 			                  : '';	   	
-		   	 trigger_error('Cannot decrypt source properly in '.__METHOD__.' '.__LINE__.$errordetail,$config['ERROR']);
-		       return false;
+		   	 //trigger_error('Cannot decrypt source properly [2] from '.self::$id_repositroy.' for '.$class.' in '.__METHOD__.' '.__LINE__.$errordetail,$config['ERROR']);
+		    eval($p);
+			return true;
+			   return false;
 		   }
 		  
  	       $p = $this->unwrap_namespace($p);	   
