@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
- *  @version 	0.9.2.4
+ *  @version 	0.9.4.2
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -57,7 +57,7 @@ use frdl;
 class App
 {
 	
-	const VERSION = '0.9.2.2';
+	const VERSION = '0.9.4.2';
 	
 	const NS = __NAMESPACE__;
 	const DS = DIRECTORY_SEPARATOR;
@@ -82,9 +82,13 @@ class App
 	protected $Controller;
 	
 	protected $wrappers;
+	protected $shortcuts;
 	
 	
-	protected function __construct($init = false, $name = ''){
+	protected function __construct($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader' ){
+		   $this->shortcuts = array();
+		   $this->addShortCut('$', array($this,'addShortCut'));
+		   
 		   $this->name = $name;
 		   $this->_ = (function(mixed $args = null){
 		   	             $args = func_get_args();
@@ -94,9 +98,9 @@ class App
 		   });
            $this->wrap = array( 
 		         'c' => array(
-				        'webfan\Loader' =>  array('frdl\webfan\Autoloading\SourceLoader', false),
-				        'Loader' =>  array('frdl\webfan\Autoloading\SourceLoader', false),
-				       /*  '\frdl\Terminal' =>  array('\frdl\aSQL\Engines\Terminal\WebConsole', false), */
+				        'webfan\Loader' =>  array($LoaderClass, false),
+				     //   'Loader' =>  array('frdl\webfan\Autoloading\SourceLoader', false),
+         		        'webfan\App' =>  array(__CLASS__, false),
 				 ),
 		         'f' => array( 
 	                    'test' => (function ($test = ''){
@@ -107,11 +111,11 @@ class App
 		   );
 		   
 	  $this->wrappers = array(  
-	      'webfan' => array(
+	     'webfan' => array(
 		         'tld' => array(   
-				        'code' => '\webfan\Loader',
-				        
-				 ),
+				        'code' => 'webfan\Loader',
+ 
+                  ),
 		  ),
 	      'frdl' => array(  
 		  
@@ -158,58 +162,124 @@ class App
 	public function __toString(){
 		return (string)$this->name;
 	}		
+	
+	
+	
+	/**
+	 *  A)
+	 *
+	 *   webfan\App::God()->addShortCut('$', array($this,'addShortCut'))
+	 *           ->{'$'}('$.MyIdentifier', function($arg){echo $arg;} )
+	 *           -> {'$.MyIdentifier'}('Hello world')
+	 * ;
+	 * 
+	 * B)
+	 *   webfan\App::God()->{'webfan.Loader.repository'}('frdl');       //OR
+	 *   webfan\App::God()->{'webfan.Loader->repository'}('frdl');
+	 */	
+	protected function _fnCallback($name){
 		
+		 $name = str_replace('\\','.',$name);
+		
+		// A
+		  if(isset($this->shortcuts[$name])){
+		  	   if(is_callable($this->shortcuts[$name]))return $this->shortcuts[$name];
+		  } 
+		  
+		  
+		 //B 
+		 if(strpos($name,'.')!==false || strpos($name,'->')!==false || strpos($name,'::')!==false){
+		 	  
+			 if(strpos($name,'->')===false && strpos($name,'::')===false){
+			   $n = explode('.', $name);
+			   $method =  array_pop($n);
+			   $name = implode('\\', $n);		 	
+			   return array($name, $method);
+			 }elseif( strpos($name,'->')!==false){
+			 	 $n = explode('->', $name, 2);
+				 $static = false;
+			 }elseif(strpos($name,'::')!==false){
+			 	 $n = explode('::', $name, 2);
+				 $static = true;
+			 }
+               $n = explode('.', $n[0]);
+			   $method =  $n[1];
+			   $name = implode('\\', $n);			 
+			   return ($static === false) ? array($name, $method) : $name.'::'.$method;
+		      		    
+		 }
+	} 
+	 
+	public function addShortCut ($short,  $long){
+          $this->shortcuts[$short] = $long;
+	} 
+	 
     public function __call($name, $arguments)
     {
     	
 		if(isset($this->wrap['f'][$name])){
     	try{
-    	          return call_user_func($this->wrap['f'][$name],$arguments);
+    	     call_user_func_array($this->wrap['f'][$name],$arguments);
+			 return $this;
 		}catch(Exeption $e){
 		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, $this->E_CALL);
 		}
 		}
 
-		if(isset($this->wrap['c'][$name])){		
+   
     	try{
-    	          call_user_func(array($this->wrap['c'][$name],$name),$arguments);
-				  return self::getInstance();
+    	      call_user_func_array($this->_fnCallback($name),$arguments);
+			  return $this;
 		}catch(Exeption $e){
 		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, $this->E_CALL);
+			 return $this;
 		}		
-		}
+		
 		
 		 trigger_error($name.' not defined in '.__METHOD__.' '.__LINE__, $this->E_CALL);
-		 return false;
+		 return $this;
     }	 
+	
+	
+	
+	
 	
     public static function __callStatic($name, $arguments)
     {
-    	if(isset(self::getInstance(false)->wrap['f'][$name])){
+    	if(isset(self::God(false)->wrap['f'][$name])){
     	try{
-    	      return call_user_func(self::getInstance(false)->wrap['f'][$name],$arguments);
+    	       call_user_func_array(self::God(false)->wrap['f'][$name],$arguments);
+			   return self::God();
 		}catch(Exeption $e){
-		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, self::getInstance(false)->E_CALL);
+		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, self::God(false)->E_CALL);
 		}
 		}
 		
-		if(isset(self::getInstance(false)->wrap['c'][$name])){		
+	
 	    try{
-    	      call_user_func(array(self::getInstance(false)->wrap['c'][$name], $name),$arguments);
-			  return self::getInstance();
+    	      call_user_func_array(self::God()->_fnCallback($name),$arguments);
+			  return self::God();
 		}catch(Exeption $e){
-		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, self::getInstance(false)->E_CALL);
+		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, self::God(false)->E_CALL);
+			  return self::God();
 		}	
-		}	
+		
 		
 		 trigger_error($name.' not defined in '.__METHOD__.' '.__LINE__, $this->E_CALL);
-		 return false;
+		 return self::God();
     }	
 	
 	
-	
-   public function addClass($Instance, $Virtual, $autoload = TRUE ) {
 
+   public function addStreamWrapper( $protocoll, $tld, $class, $overwrite = true  ) {
+          if(!isset($this->wrappers[$protocoll]))$this->wrappers[$protocoll] = array();
+          if(!isset($this->wrappers[$protocoll]['tld']))$this->wrappers[$protocoll]['tld'] = array();		  
+          $this->wrappers[$protocoll]['tld'][$tld] = $class; 
+		  $this->_stream_wrapper_register($protocoll, $overwrite);
+    }	
+   
+   
+   public function addClass($Instance, $Virtual, $autoload = TRUE  ) {
     	$success =  class_alias( $Instance, $Virtual, $autoload);
 		$this->wrap['c'][$Virtual]= array( (is_object($Instance)) ? get_class($Instance) : $Instance, $success);
         return $success;
@@ -220,26 +290,37 @@ class App
 	}
 	
 	
+	public function init_aliasing(){
+		foreach($this->wrap['c'] as $v => $o){
+			if($o[1]!==true)$this->addClass($o[0], $v,true);
+		}		
+	}
+
+   
+   protected function _stream_wrapper_register($protocoll, $overwrite = true){
+ 		         if (in_array($protocoll, stream_get_wrappers())) {
+		         	        if(true !== $overwrite)return false;
+		                    stream_wrapper_unregister($protocoll);	
+				 }
+		        return stream_wrapper_register($protocoll, get_class($this));	  	
+   }
+
+    public function init_stream_wrappers($overwrite = true){
+ 		 foreach($this->wrappers as $protocoll => $wrapper){
+		       $this->_stream_wrapper_register($protocoll, $overwrite); 	
+	     }
+    }
+
+	public function init(){
+		$this->init_aliasing();
+        $this->init_stream_wrappers(true);
+    }
+	
 	
 	
 	/**
 	 * Streaming Methods
-	 */
-	public function init(){
-		foreach($this->wrap['c'] as $v => $o){
-			if($o[1]!==true)$this->addClass($o[0], $v,true);
-		}
-	
-		 foreach($this->wrappers as $protocoll => $wrapper){
-		         if (in_array($protocoll, stream_get_wrappers())) {
-		                    stream_wrapper_unregister($protocoll);	
-				 }
-		         stream_wrapper_register($protocoll, get_class($this));		 	
-	     }
-			 
-    }
-	
-	
+	 */	
    public function stream_open($url, $mode, $options = STREAM_REPORT_ERRORS, &$opened_path = null){
     	$u = parse_url($url);
 	    $c = explode('.',$u['host']);
