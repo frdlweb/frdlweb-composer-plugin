@@ -35,8 +35,36 @@ abstract class CLI
 
  const MODE_CLI = 1;
  const MODE_HTTP = 2;
+/** 
+ const REGEX_CML = <<<REGEX
+/
+(?:
+  " ((?:(?<=\\\\)"|[^"])*) "
+|
+  ' ((?:(?<=\\\\)'|[^'])*) '
+|
+  (\S+)
+)
+/x
+REGEX;
+
+ * */
+ const REGEX_CML = <<<REGEX
+/
+(?:
+  " ((?:(?<=\\\\)"|[^"])*) "
+|
+  ' ((?:(?<=\\\\)'|[^'])*) '
+|
+  (\S+)
+)
+/x
+REGEX;
  
- public $buf = null;
+ 
+ const REGEX_DELIM = '/^;|\|$/';
+ 
+ 
  protected $state;
 
 
@@ -51,37 +79,19 @@ abstract class CLI
             'operators' => array(),
     );
 		
- protected $cml;
- protected $args;
- protected $core = array('exit', 'quit', 'stop', 'help', 'pause', 'debug', 'about'); 
+ protected $IN;
+ protected $tokens;
+ protected $batch;
+ 
 	
- /**
-  * env
-  */	
- protected $env= array( 
- /**
-  * User Interfaces
-  */
-      'UI' => array(),
-      
-  /**
-   * Devices
-   */	   
-      'DEV' => array(), 
-      
-	  'CACHE' => array( ),
-  ); 
-  
- protected $config = array( 
-      
-  ); 	
  
  /**
   * processing
   */	
  	
  function __construct(){
- 	  $this->state = 'booting';
+ 	  $this->IN = '';
+	  $this->batch = array();
       $this->mode = (PHP_SAPI === 'cli')  ? self::MODE_CLI : self::MODE_HTTP;
 	  $this->boot();
  }
@@ -95,13 +105,15 @@ abstract class CLI
  abstract protected function boot();
  abstract protected function _exec($args);
  abstract protected function force_state($state);
+ abstract public function parseQuery();  
+ abstract public function validateQuery(); 
  /**
   * Build CLI
   */
- abstract public function add_command($command, callable $callable);
- abstract public function add_option_handler(mixed $settings);
+ abstract public function add_command(mixed $settings);
+ abstract public function add_option(mixed $settings);
  abstract public function add_flag(mixed $settings);
- abstract public function add_operator($operator, \Closure $closure);
+ abstract public function add_argument(mixed $settings);
  
 
  
@@ -112,7 +124,7 @@ abstract class CLI
   
  public function state($state = null){
  	 if($state !== null)$this->force_state($state);
-	 return $state;
+	 return $this->state;
  }
   
  
@@ -123,46 +135,61 @@ abstract class CLI
  
  
 
- public function parse($cml){
-   $this->state = 'parsing';
-   //$args = explode(' ', $this->normalize($cml));
+ public function parse($cml = null){
+   $cml = (null === $cml) ? $this->IN : $cml;
    
-   // from stackoverflow !!! 
-$pattern = <<<REGEX
-/
-(?:
-  " ((?:(?<=\\\\)"|[^"])*) "
-|
-  ' ((?:(?<=\\\\)'|[^'])*) '
-|
-  (\S+)
-)
-/x
-REGEX;
+   $cml = rtrim($cml, ';| ');
+   $cml .= ';';
    
-   preg_match_all($pattern, $cml, $matches, PREG_SET_ORDER);
+   $batch = array();
+   $p = 0; 
+   $batch[$p] = array();
+     
+   preg_match_all(self::REGEX_CML, $cml, $matches, PREG_SET_ORDER);
+   
    $args = array();
-   foreach ($matches as $match) {
+
+   foreach ($matches as $pos => $match) {
     if (isset($match[3])) {
-        $args[] = $match[3];
+        $a = $match[3];
     } elseif (isset($match[2])) {
-        $args[] = str_replace(array('\\\'', '\\\\'), array("'", '\\'), $match[2]);
+        $a = str_replace(array('\\\'', '\\\\'), array("'", '\\'), $match[2]);
     } else {
-        $args[] = str_replace(array('\\"', '\\\\'), array('"', '\\'), $match[1]);
+        $a = str_replace(array('\\"', '\\\\'), array('"', '\\'), $match[1]);
     }
+	
+      if(preg_match(self::REGEX_DELIM, $a)){
+	  	 $batch[$p] = $this->arguments( $args );
+		 $args = array();
+	     $p++;
+	  }elseif(substr($a,-1)===';' || substr($a,-1)==='|'){
+     	 $a = rtrim($a, ';|');
+		 $args[] = $a;
+	  	 $batch[$p] = $this->arguments( $args );
+		 $args = array();
+	     $p++;
+	  }else{	  	
+	 	  $args[] = $a;
+	  }
+	  
    }   
    
    
-   $args = $this->arguments( $args );
-   return $args; 
+   $this->batch = $batch;
+   return $batch; 
  }
  
  
  public function exe($cml = ''){
  	 global $argv;
- 	 $this->state = 'preparing';
- 	 $this->args = ($this->mode === self::MODE_CLI) ? $this->arguments( $argv ) : $this->parse($cml);
-	 $this->state = 'executing';
+	 
+	 $this->IN = $cml;
+	 if($this->mode === self::MODE_CLI){
+	 	$this->batch = array();
+		$this->batch[] =  $this->arguments( $argv );
+	 }else{
+	 	$this->parse();
+	 }
 	 $this->_exec($this->args);
 	 
 	 return $this;
