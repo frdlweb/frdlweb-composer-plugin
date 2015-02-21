@@ -35,20 +35,7 @@ abstract class CLI
 
  const MODE_CLI = 1;
  const MODE_HTTP = 2;
-/** 
- const REGEX_CML = <<<REGEX
-/
-(?:
-  " ((?:(?<=\\\\)"|[^"])*) "
-|
-  ' ((?:(?<=\\\\)'|[^'])*) '
-|
-  (\S+)
-)
-/x
-REGEX;
 
- * */
  const REGEX_CML = <<<REGEX
 /
 (?:
