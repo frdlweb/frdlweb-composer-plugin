@@ -51,7 +51,7 @@ require $dir_lib . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'.DIRECTORY_SEPARATOR .
  /** 
  * Alias class mapping
  */
- frdl\webfan\App::God() -> addClass('frdl\aSQL\Engines\Terminal\WebConsole', 'Terminal',  true );
+ frdl\webfan\App::God() -> addClass('frdl\aSQL\Engines\Terminal\Test', 'Terminal',  true );
 			 
  /**
   * class mapping autoloading example
