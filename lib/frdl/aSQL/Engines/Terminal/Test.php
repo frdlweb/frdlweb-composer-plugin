@@ -41,14 +41,31 @@ class Test extends CLI
  /**
   * Build CLI
   */
-  public function add_command(mixed $settings){}
+  public function add_command($command, callable $callable){}
   public function add_option(mixed $settings){}
   public function add_flag(mixed $settings){}
   public function add_argument(mixed $settings){}
 	
-	public function test_query()
-	{
-		return $this->batch;
-	}
+public function test()
+{
+		header("Content-Type: text/plain");
+		 $cmd = 'build `DB`.`TABLE` PDO 127.0.0.1:44 :1234 @username:password `FIELD`=VALUE;
+testcommand safsaf --test=\'test "in \'qoutes\'" faf as f" ayf\' -u| testccmd3 safsaf --rk1,fieldX=aValueMatchBool ---sort=FIELD:VALUE --+kaField,NameField --dir=/var/www/dir/lib/ --package="frdl/webfan" -w --update -urstuvwxyz |
+select something from any --product=\'frdl/webfan\' --test=u -dur BY=name LIMIT=10,20
+ ';
+
+
+ $batch = $this->parse($cmd);
+ echo 'Test command line:'."\n\n".$cmd."\n\n".'Parsed:'."\n"
+     .print_r($batch,true);
+ echo "\n"; 
+ echo 'Unparsed:'."\n\n";
+ $u =  $this->unparse($batch);
+ echo $u;
+ echo "\n";
+ $batch = $this->parse($u);
+ echo 'Test-Re-Parsing:'."\n"
+     .print_r($batch,true); 
+}
 	
 }
