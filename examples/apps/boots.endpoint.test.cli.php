@@ -9,10 +9,9 @@ error_reporting(E_ALL);
  /**
   * boot.inc
   */
-$file_autoloader = __DIR__. DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR 
-         . 'frdl' . DIRECTORY_SEPARATOR . 'webfan' . DIRECTORY_SEPARATOR 
-         . 'Autoloading'  . DIRECTORY_SEPARATOR . 'SourceLoader.php';
-$dir_lib =  __DIR__. DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR ;
+$dir_lib =  __DIR__. DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR. 'lib'  . DIRECTORY_SEPARATOR; 
+
+$file_autoloader = $dir_lib.'frdl' .DIRECTORY_SEPARATOR.'webfan'.DIRECTORY_SEPARATOR. 'Autoloading'.DIRECTORY_SEPARATOR.'SourceLoader.php';
 
 require $file_autoloader;
 require $dir_lib . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'.DIRECTORY_SEPARATOR . 'App.php';
@@ -64,29 +63,8 @@ require $dir_lib . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'.DIRECTORY_SEPARATOR .
     .DIRECTORY_SEPARATOR.'MyClass.class.php',
   $success);
 
- $cmd = '$install --host=localhost --dir=/var/www/dir/lib/ --package="frdl/webfan" -w --update -urstuvwxyz --db="LIQ:php;db=alias.ApplicationComposer" + # > log.default; ';
-
  $Terminal = new Terminal();
- echo '<pre>
- BEGIN
- '.$cmd.'
- '.print_r($Terminal->parse($cmd),true).'</pre>';
- 
- 
- echo '<pre>
- >Script end.
- END;
- </pre>';
- 
- echo '<b>Source</b>:<br />';
- highlight_file(__FILE__);
+ $Terminal->test();
 
 
 
-/**
- *  echo file_get_contents('http://shell.frdl.de/');
- * Install = new \webfan\Install('frdl');
- * $Install->run();
- * 
- * 
- */
