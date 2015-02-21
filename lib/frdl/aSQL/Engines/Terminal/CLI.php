@@ -28,12 +28,12 @@
  *  @author 	Till Wehowski <software@frdl.de>
  *  @package    webfan://frdl.aSQL.Engines.Terminal.CLI.code
  *  @uri        /v1/public/software/class/webfan/frdl.aSQL.Engines.Terminal.CLI/source.php
- *  @version 	1.0.0.0
+ *  @version 	1.0.0.2
  *  @file       frdl\aSQL\Engines\Terminal\CLI.code.php
  *  @role       Command Line Parser
  *  @copyright 	2015 Copyright (c) Till Wehowski
  *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
- *  @link 	http://interface.api.webfan.de/v1/public/software/class/frdl/frdl.aSQL.Engines.Terminal.CLI/doc.html
+ *  @link 	    http://interface.api.webfan.de/v1/public/software/class/frdl/frdl.aSQL.Engines.Terminal.CLI/doc.html
  *  @OID        1.3.6.1.4.1.37553.8.1.8.8 webfan-software
  *  @requires	PHP_VERSION 5.3 >= 
  *  @requires   webfan://frdl.webfan.Autoloading.SourceLoader.code
@@ -231,7 +231,7 @@ REGEX;
   if(!is_array($args) && is_array($this->args))$args = $this->args;	
 	
   if($this->mode === self::MODE_CLI)array_shift( $args );
-
+  $escape = false;
 
   $ret = array
     (
@@ -260,15 +260,20 @@ REGEX;
        }
 
      $quotes = ''; 
+	 
      if( (substr($value, 0, 1) === '"' || substr($value, 0, 1) === "'") && substr($value, strlen($value)-1, 1) !== "'"  && substr($value, strlen($value)-1, 1) !== '"' )
       {
         $quotes = substr($value, 0, 1);
         while(count($args) > 0)
          {
            $v = array_shift($args);
-           $value .= $v.self::SPACE;
-           if((strpos($v,'"') !== FALSE && substr($value, 0, 1) === '"') || (strpos($v,"'") !== FALSE && substr($value, 0, 1) === "'"))break;
+		   if(strpos($v,'\\') !== FALSE)$escape = true;
+           $value .= $v.self::SPACE;  
+           
+           if($escape = false && ((strpos($v,'"') !== FALSE && $quotes === '"') || (strpos($v,"'") !== FALSE && $quotes === "'")))break;
+		   if($escape = true && ((strpos($v,'"') !== FALSE && $quotes === '"') || (strpos($v,"'") !== FALSE && $quotes === "'")))$escape = false;
          }
+		 
         $value = trim($value, self::SPACE);
         $value = trim($value, '"');
         $value = trim($value, "'");
