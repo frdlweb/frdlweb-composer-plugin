@@ -25,7 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- *  @role       Template [CLI]
+ *  @author 	Till Wehowski <software@frdl.de>
+ *  @package    webfan://frdl.aSQL.Engines.Terminal.CLI.code
+ *  @uri        /v1/public/software/class/webfan/frdl.aSQL.Engines.Terminal.CLI/source.php
+ *  @version 	1.0.0.0
+ *  @file       frdl\aSQL\Engines\Terminal\CLI.code.php
+ *  @role       Command Line Parser
+ *  @copyright 	2015 Copyright (c) Till Wehowski
+ *  @license 	http://look-up.webfan.de/bsd-license bsd-License 1.3.6.1.4.1.37553.8.1.8.4.9
+ *  @link 	    http://interface.api.webfan.de/v1/public/software/class/frdl/frdl.aSQL.Engines.Terminal.CLI/doc.html
+ *  @OID        1.3.6.1.4.1.37553.8.1.8.8 webfan-software
+ *  @requires	PHP_VERSION 5.3 >= 
+ *  @requires   webfan://frdl.webfan.Autoloading.SourceLoader.code
+ *  @api        http://api.webfan.de
+ *  @reference  http://www.webfan.de/install/
  * 
  */
 namespace frdl\aSQL\Engines\Terminal;
@@ -50,7 +63,8 @@ REGEX;
  
  
  const REGEX_DELIM = '/^;|\|$/';
- 
+ const DELIM = ';';
+ const SPACE = ' ';
  
  protected $state;
 
@@ -97,7 +111,7 @@ REGEX;
  /**
   * Build CLI
   */
- abstract public function add_command(mixed $settings);
+ abstract public function add_command($command, callable $callable);
  abstract public function add_option(mixed $settings);
  abstract public function add_flag(mixed $settings);
  abstract public function add_argument(mixed $settings);
@@ -122,10 +136,45 @@ REGEX;
  
  
 
+ public function unparse_args($args){
+ 	$tokens = array();
+
+ 	$tokens[$args['command']['pos']] = $args['command']['cmd'];
+
+	
+    foreach($args['options'] as $k => $opt){
+ 		$tokens[$opt['pos']] = '--'.$opt['opt'].'='.$opt['quotes'].$opt['value'].$opt['quotes'];
+ 		// $tokens[$opt['pos']] = '--'.$opt['opt'].'="'.$opt['value'].'"';
+ 	}
+	
+    foreach($args['flags'] as $k => $f){
+    	 if(!isset($tokens[$f['pos']]))$tokens[$f['pos']] = '-'; 
+ 		 $tokens[$f['pos']] .= $f['flag'];
+ 	}		
+	
+   foreach($args['arguments'] as $k => $c){
+ 		 $tokens[$c['pos']] = $c['cmd'];
+ 	}	
+	
+	
+	ksort($tokens);
+	return implode(self::SPACE, $tokens);
+ } 
+ 
+
+ public function unparse($batch){
+ 	$s = array();
+ 	foreach($batch as $pos => $args){
+ 		$s[] = $this->unparse_args($args);
+ 	}
+	return implode(self::DELIM."\r\n", $s);
+ } 
+ 
+ 
  public function parse($cml = null){
    $cml = (null === $cml) ? $this->IN : $cml;
    
-   $cml = rtrim($cml, ';| ');
+   $cml = rtrim($cml, ';|'.self::SPACE);
    $cml .= ';';
    
    $batch = array();
@@ -169,16 +218,9 @@ REGEX;
  
  public function exe($cml = ''){
  	 global $argv;
-	 
-	 $this->IN = $cml;
-	 if($this->mode === self::MODE_CLI){
-	 	$this->batch = array();
-		$this->batch[] =  $this->arguments( $argv );
-	 }else{
-	 	$this->parse();
-	 }
+	 $this->IN = ($this->mode === self::MODE_CLI) ? implode(self::DELIM, $argv) : $cml;
+	 $this->parse();
 	 $this->_exec($this->args);
-	 
 	 return $this;
  }
  
@@ -189,34 +231,25 @@ REGEX;
   if(!is_array($args) && is_array($this->args))$args = $this->args;	
 	
   if($this->mode === self::MODE_CLI)array_shift( $args );
-  $command = array_shift( $args );
-  $endofoptions = FALSE;
+
 
   $ret = array
     (
+    'command' => array(),
     'commands' => array(),
     'options' => array(),
     'flags'    => array(),
     'arguments' => array(),
     );
+ 
+   $k = -1;
 
   while( $arg = array_shift($args) )
   {
-
-    if($endofoptions)
-    {
-      $ret['arguments'][] = $arg;
-      continue;
-    }
+   $k++;
 
     if ( substr( $arg, 0, 2 ) === '--' )
     {
-
-      if(!isset ($arg[3]))
-      {
-        $endofoptions = true; 
-        continue;
-      }
 
       $value = "";
       $com   = substr( $arg, 2 );
@@ -226,24 +259,31 @@ REGEX;
           list($com,$value) = explode("=",$com,2);
        }
 
-
+     $quotes = ''; 
      if( (substr($value, 0, 1) === '"' || substr($value, 0, 1) === "'") && substr($value, strlen($value)-1, 1) !== "'"  && substr($value, strlen($value)-1, 1) !== '"' )
       {
+        $quotes = substr($value, 0, 1);
         while(count($args) > 0)
          {
            $v = array_shift($args);
-           $value .= $v.' ';
-           if(strpos($v,'"') !== FALSE || strpos($v,"'") !== FALSE)break;
+           $value .= $v.self::SPACE;
+           if((strpos($v,'"') !== FALSE && substr($value, 0, 1) === '"') || (strpos($v,"'") !== FALSE && substr($value, 0, 1) === "'"))break;
          }
-        $value = trim($value, ' ');
+        $value = trim($value, self::SPACE);
         $value = trim($value, '"');
         $value = trim($value, "'");
      }
 
 
-      $value = trim($value , '"');
+      $value = trim($value , '"\'');
+	  if(empty($value))$value = true;
 
-      $ret['options'][$com] = !empty($value) ? $value : true;
+      $ret['options'][$com] = array(
+	        'opt' => $com,
+	        'value' => $value,
+	        'pos' => $k,
+	        'quotes'=>$quotes,
+	   );
       continue;
 
     }
@@ -251,26 +291,22 @@ REGEX;
     if ( substr( $arg, 0, 1 ) === '-' && substr( $arg, 0, 2 ) != '--')
     {
       for ($i = 1; isset($arg[$i]) ; $i++)
-        $ret['flags'][] = $arg[$i];
+        $ret['flags'][$arg[$i]] = array(
+               'flag' =>  $arg[$i],
+               'pos' => $k,
+	  
+	     );
       continue;
     }
 
-    $ret['commands'][] = $arg;
+    $ret['commands'][$arg] =array( 'cmd' => $arg, 'pos' => $k,);
     continue;
   }
 
+ $ret['arguments'] = $ret['commands'];
+ $ret['command'] = array_shift($ret['arguments']);
+ unset($ret['commands']);
 
- array_unshift($ret['commands'], $command);
-
- if(count($ret['commands']) > 1)
- {
-   foreach($ret['commands'] as $k => $com)
-    {
-      if($k <= 0)continue;
-      $ret['arguments'][] = $com;
-      unset($ret['commands'][$k]);
-    }
- }
 
  return $ret;
  }
