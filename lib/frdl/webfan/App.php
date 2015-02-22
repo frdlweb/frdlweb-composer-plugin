@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
- *  @version 	0.9.4.3
+ *  @version 	1.0.0.0
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -56,9 +56,7 @@ use frdl;
 
 class App
 {
-	
-	const VERSION = '0.9.4.2';
-	
+		
 	const NS = __NAMESPACE__;
 	const DS = DIRECTORY_SEPARATOR;
 	
@@ -87,7 +85,7 @@ class App
 	protected $shortcuts;
 	
 	
-	protected function __construct($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader' ){
+	protected function __construct($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', $initAutoloader = true ){
 		   $this->shortcuts = array();
 		   $this->addShortCut('$', array($this,'addShortCut'));
 		   
@@ -142,26 +140,27 @@ class App
 		  ),		       
 	  );	   
 		   
-	   if($init === true)$this->init();
+	   if($init === true)return $this->init($initAutoloader);
 	}
 	
 	
 	
-   public function init_autoloader(&$Loader = null){
+   public function init_autoloader($expose = false){
 	 $Loader = (class_exists('\\'.self::LOADER) ) ? call_user_func('\\'.self::LOADER.'::top') : call_user_func('\\'.$this->wrap['c'][self::LOADER][0].'::top') ;
-	 return $this;
+	 $Loader -> autoload_register();
+	 return (true === $expose) ? $Loader : $this;
    }
 	
 	
-   public static function God($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader'){
-        return self::getInstance($init, $name, $LoaderClass);
+   public static function God($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', $initAutoloader = true){
+        return self::getInstance($init, $name, $LoaderClass, $initAutoloader);
    }
 	
 	
-   public static function getInstance($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader')
+   public static function getInstance($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', $initAutoloader = true)
      {
        if (NULL === self::$instance) {
-           self::$instance = new self($init, $name, $LoaderClass);
+           self::$instance = new self($init, $name, $LoaderClass, $initAutoloader);
        }
        return self::$instance;
      }
@@ -171,31 +170,19 @@ class App
 		return (string)$this->name;
 	}		
 	
-	
-	
-	/**
-	 *  A)
-	 *
-	 *   webfan\App::God()->addShortCut('$', array($this,'addShortCut'))
-	 *           ->{'$'}('$.MyIdentifier', function($arg){echo $arg;} )
-	 *           -> {'$.MyIdentifier'}('Hello world')
-	 * ;
-	 * 
-	 * B)
-	 *   webfan\App::God()->{'webfan.Loader.repository'}('frdl');       //OR
-	 *   webfan\App::God()->{'webfan.Loader->repository'}('frdl');
-	 */	
+
 	protected function _fnCallback($name){
-		
-		 $name = str_replace('\\','.',$name);
-		
 		// A
 		  if(isset($this->shortcuts[$name])){
 		  	   if(is_callable($this->shortcuts[$name]))return $this->shortcuts[$name];
 		  } 
-		  
-		  
-		 //B 
+			  
+			  
+			  
+		 //B 	  
+		  	
+		 $name = str_replace('\\','.',$name);
+
 		 if(strpos($name,'.')!==false || strpos($name,'->')!==false || strpos($name,'::')!==false){
 		 	  
 			 if(strpos($name,'->')===false && strpos($name,'::')===false){
@@ -210,8 +197,9 @@ class App
 			 	 $n = explode('::', $name, 2);
 				 $static = true;
 			 }
-               $n = explode('.', $n[0]);
-			   $method =  $n[1];
+             
+			   $method =  array_pop($n);
+			   $n = explode('.', $n[0]);
 			   $name = implode('\\', $n);			 
 			   return ($static === false) ? array($name, $method) : $name.'::'.$method;
 		      		    
@@ -237,7 +225,8 @@ class App
 
    
     	try{
-    	      call_user_func_array($this->_fnCallback($name),$arguments);
+    		  $c = $this->_fnCallback($name);
+    	      if(is_callable($c))call_user_func_array($c,$arguments);
 			  return $this;
 		}catch(Exeption $e){
 		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, $this->E_CALL);
@@ -266,7 +255,8 @@ class App
 		
 	
 	    try{
-    	      call_user_func_array(self::God()->_fnCallback($name),$arguments);
+	    	  $c = self::God()->_fnCallback($name);
+    	      if(is_callable($c))call_user_func_array(self::God()->_fnCallback($name),$arguments);
 			  return self::God();
 		}catch(Exeption $e){
 		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, self::God(false)->E_CALL);
@@ -325,13 +315,14 @@ class App
 		return $this;
     }
 
-	public function init(){
-		$this
-		 ->init_autoloader()
+	public function init($autoload = false, $expose = false){
+	  if($autoload === true)$Loader = $this->init_autoloader(true);
+	
+		$this	 
  		 ->init_aliasing()
          ->init_stream_wrappers(true)
 		;
-		return $this;
+		return (true === $expose && isset($Loader)) ? $Loader : $this;
     }
 	
 	
