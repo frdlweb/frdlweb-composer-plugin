@@ -1,3 +1,4 @@
+<?php
 error_reporting(E_ALL);
 
 $dir_lib =  realpath(__DIR__. DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
