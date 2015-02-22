@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
- *  @version 	1.0.0.0
+ *  @version 	1.0.0.2
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -50,7 +50,7 @@
  * 
  */
 namespace frdl\webfan;
-use frdl;
+
 
 
 
@@ -106,6 +106,15 @@ class App
 		                       echo 'Test: '.$test."\n";
 	                    }),
 	                    
+				 ),
+				 
+				 'aliasing' => array( 
+				      'c' => array(
+					      'Autoloader' => self::LOADER,
+					      'Application Global Connector' => 'webfan\App',
+					      'CLI cmd processor' => 'webfan\Terminal',
+					       
+					  ),
 				 ),
 		   );
 		   
@@ -216,8 +225,7 @@ class App
     	
 		if(isset($this->wrap['f'][$name])){
     	try{
-    	     call_user_func_array($this->wrap['f'][$name],$arguments);
-			 return $this;
+    	     return call_user_func_array($this->wrap['f'][$name],$arguments);
 		}catch(Exeption $e){
 		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, $this->E_CALL);
 		}
@@ -246,8 +254,7 @@ class App
     {
     	if(isset(self::God(false)->wrap['f'][$name])){
     	try{
-    	       call_user_func_array(self::God(false)->wrap['f'][$name],$arguments);
-			   return self::God();
+    	       return call_user_func_array(self::God(false)->wrap['f'][$name],$arguments);
 		}catch(Exeption $e){
 		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, self::God(false)->E_CALL);
 		}
