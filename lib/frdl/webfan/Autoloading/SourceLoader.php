@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	0.9.15
+ *  @version 	0.9.16
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -115,6 +115,7 @@ class SourceLoader
 	protected static $config_source;
     protected $autoloaders = array();
 	protected $classmap = array();
+	protected $isAutoloadersRegistered = false;
 		
 	protected $interface;
 	
@@ -154,6 +155,11 @@ class SourceLoader
 	   $this->Defaults(true);
 	   $this->set_pass($pass);
 	 }
+
+
+  public function j(){
+  	 return \webfan\App::God();
+  }
 	 
 	 
   public static function top(){
@@ -300,10 +306,15 @@ class SourceLoader
 	}
 		 
 	public function autoload_register(){
+		if(false !== $this->isAutoloadersRegistered){
+		      trigger_error('Autoloadermapping is already registered.',E_USER_NOTICE);
+			  return $this;
+		}
         $this->addLoader(array($this,'loadClass'), true, true);		
-	//$this->addLoader(array($this,'classMapping'), true, false);	
+	    $this->addLoader(array($this,'classMapping'), true, false);	
         $this->addLoader(array($this,'patch_autoload_function'), true, false);	
         $this->addLoader(array($this,'autoloadClassFromServer'), true, false);	
+        $this->isAutoloadersRegistered = true;
         return $this;
 	} 
     
@@ -562,8 +573,8 @@ class SourceLoader
             $opt['pass'] = $new_pass;
            $opt['pwdstate'] = 'decrypted';
             }else{
-             $opt['pwdstate'] = 'error';
-		
+               $opt['pwdstate'] = 'error';
+		      // unset(self::$rtc['CERTS'][$key]);
             }
            return $success;
     } 
@@ -592,9 +603,12 @@ class SourceLoader
  	      }	
 		  		  		  	
 		   if(isset($code['s']) && $code['s'] !== sha1($p)){
+		   	
+			
 	          	 $errordetail = ($config['ini']['display_errors_details'] === true)
 			                  ? '<pre>'.sha1($p).'</pre><pre>'.$code['s'].'</pre><pre>'.$opt['pass'].' '.$opt['rot1'].' '.$opt['rot2'].'</pre>'
 			                  : '';	   	
+													  
 		   	   trigger_error('Cannot decrypt source properly [2] from '.self::$id_repositroy.' for '.$class.' in '.__METHOD__.' '.__LINE__.$errordetail,$config['ERROR']);
 
 			   return false;
@@ -621,7 +635,7 @@ class SourceLoader
 		  $config_source = (isset($config['source'])) ? $config['source'] : self::$config_source;
 		  $installed = $this->installSource($class,$code, $error, $config_source);
 		  
-		  usleep(50);
+		  usleep(75);
 		  return true; 	
     }
 
