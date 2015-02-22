@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
- *  @version 	0.9.4.2
+ *  @version 	0.9.4.3
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -61,6 +61,8 @@ class App
 	
 	const NS = __NAMESPACE__;
 	const DS = DIRECTORY_SEPARATOR;
+	
+	const LOADER = 'webfan\Loader';
 	
 	public static $instance = null;
 	
@@ -98,8 +100,7 @@ class App
 		   });
            $this->wrap = array( 
 		         'c' => array(
-				        'webfan\Loader' =>  array($LoaderClass, false),
-				     //   'Loader' =>  array('frdl\webfan\Autoloading\SourceLoader', false),
+				        self::LOADER =>  array($LoaderClass, false), 
          		        'webfan\App' =>  array(__CLASS__, false),
 				 ),
 		         'f' => array( 
@@ -145,15 +146,22 @@ class App
 	}
 	
 	
-   public static function God($init = false, $name = ''){
-        return self::getInstance($init, $name);
+	
+   public function init_autoloader(&$Loader = null){
+	 $Loader = (class_exists('\\'.self::LOADER) ) ? call_user_func('\\'.self::LOADER.'::top') : call_user_func('\\'.$this->wrap['c'][self::LOADER][0].'::top') ;
+	 return $this;
    }
 	
 	
-   public static function getInstance($init = false, $name = '')
+   public static function God($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader'){
+        return self::getInstance($init, $name, $LoaderClass);
+   }
+	
+	
+   public static function getInstance($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader')
      {
        if (NULL === self::$instance) {
-           self::$instance = new self($init, $name);
+           self::$instance = new self($init, $name, $LoaderClass);
        }
        return self::$instance;
      }
@@ -212,6 +220,7 @@ class App
 	 
 	public function addShortCut ($short,  $long){
           $this->shortcuts[$short] = $long;
+		 return $this;
 	} 
 	 
     public function __call($name, $arguments)
@@ -276,44 +285,53 @@ class App
           if(!isset($this->wrappers[$protocoll]['tld']))$this->wrappers[$protocoll]['tld'] = array();		  
           $this->wrappers[$protocoll]['tld'][$tld] = $class; 
 		  $this->_stream_wrapper_register($protocoll, $overwrite);
+          return $this;
     }	
    
    
-   public function addClass($Instance, $Virtual, $autoload = TRUE  ) {
+   public function addClass($Instance, $Virtual, $autoload = TRUE, &$success = null  ) {
     	$success =  class_alias( $Instance, $Virtual, $autoload);
 		$this->wrap['c'][$Virtual]= array( (is_object($Instance)) ? get_class($Instance) : $Instance, $success);
-        return $success;
+        return $this;
     }
    
 	public function addFunc($name, \Closure $func){
-		$this->wrap['f'][$name] = $func;
+		$this->wrap['f'][$name] = $func; 
+		return $this; 	
 	}
 	
 	
 	public function init_aliasing(){
 		foreach($this->wrap['c'] as $v => $o){
 			if($o[1]!==true)$this->addClass($o[0], $v,true);
-		}		
+		}		 
+		return $this; 	
 	}
 
    
-   protected function _stream_wrapper_register($protocoll, $overwrite = true){
+   protected function _stream_wrapper_register($protocoll, $overwrite = true, &$success = null){
  		         if (in_array($protocoll, stream_get_wrappers())) {
 		         	        if(true !== $overwrite)return false;
 		                    stream_wrapper_unregister($protocoll);	
 				 }
-		        return stream_wrapper_register($protocoll, get_class($this));	  	
+		        $success = stream_wrapper_register($protocoll, get_class($this));	 
+		return $this; 	
    }
 
     public function init_stream_wrappers($overwrite = true){
  		 foreach($this->wrappers as $protocoll => $wrapper){
 		       $this->_stream_wrapper_register($protocoll, $overwrite); 	
 	     }
+		return $this;
     }
 
 	public function init(){
-		$this->init_aliasing();
-        $this->init_stream_wrappers(true);
+		$this
+		 ->init_autoloader()
+ 		 ->init_aliasing()
+         ->init_stream_wrappers(true)
+		;
+		return $this;
     }
 	
 	
