@@ -35,8 +35,8 @@ require $dir_lib . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'.DIRECTORY_SEPARATOR .
  * init.app
  * load.Psr 
  * 
- * psr-8
- * psr-8 load.__vendorplugin
+ * psr-4
+ * psr-4 load.__vendorplugin
  */
  $SourceLoader = new frdl\webfan\Autoloading\SourceLoader(); 
  $App = frdl\webfan\App::getInstance(true, "dev-test");
