@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
- *  @version 	1.0.0.2
+ *  @version 	1.0.0.3
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -263,7 +263,7 @@ class App
 	
 	    try{
 	    	  $c = self::God()->_fnCallback($name);
-    	      if(is_callable($c))call_user_func_array(self::God()->_fnCallback($name),$arguments);
+    	      if(is_callable($c))call_user_func_array($c,$arguments);
 			  return self::God();
 		}catch(Exeption $e){
 		     trigger_error($e->getMesage().' '.__METHOD__.' '.__LINE__, self::God(false)->E_CALL);
