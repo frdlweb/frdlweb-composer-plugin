@@ -21,7 +21,7 @@ https://github.com/frdl/translations
 
 Author
 =
-http://frdl.de/
+Till Wehowski [http://frdl.de/]
 
 License
 =
