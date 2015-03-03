@@ -1,26 +1,26 @@
 webfan
-======
+=
 
 create websites, developing projects, compose applications
 
 
 Homepage
-===
+======
 http://frdl.github.io/webfan/
 
 
 Documentation
-===
+======
 https://github.com/frdl/webfan/wiki
 
 
 Language Files
-===
+======
 https://github.com/frdl/translations
 
 
 License
-===
+======
 Copyright (c) 2015, Till Wehowski
 All rights reserved.
 
