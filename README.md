@@ -9,6 +9,11 @@ Homepage
 http://frdl.github.io/webfan/
 
 
+Documentation
+===
+https://github.com/frdl/webfan/wiki
+
+
 Language Files
 ===
 https://github.com/frdl/translations
