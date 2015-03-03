@@ -19,6 +19,10 @@ Language Files
 https://github.com/frdl/translations
 
 
+Author
+=
+http://frdl.de/
+
 License
 =
 Copyright (c) 2015, Till Wehowski
