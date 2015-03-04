@@ -13,6 +13,14 @@ Documentation
 =
 https://github.com/frdl/webfan/wiki
 
+@implements        Autoloading psr-4               https://github.com/frdl/webfan/wiki/Autoloading
+@implements        Lambada Overloading Syntax      https://github.com/frdl/webfan/wiki/Lambada-Overloading-Syntax
+@implements        Aliasing mapping                https://github.com/frdl/webfan/wiki/Aliasing
+
+@ToDo              Package Installation
+@ToDo              Application Building
+
+
 
 Language Files
 =
