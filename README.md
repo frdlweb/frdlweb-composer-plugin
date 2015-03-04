@@ -13,11 +13,13 @@ Documentation
 =
 https://github.com/frdl/webfan/wiki
 
-@implements        Autoloading psr-4               https://github.com/frdl/webfan/wiki/Autoloading
+@requires          PHP >= 5.3
 
-@implements        Lambada Overloading Syntax      https://github.com/frdl/webfan/wiki/Lambada-Overloading-Syntax
+@implements        Autoloading psr-4       https://github.com/frdl/webfan/wiki/Autoloading
 
-@implements        Aliasing mapping                https://github.com/frdl/webfan/wiki/Aliasing
+@implements        Lambada Overloading Syntax  https://github.com/frdl/webfan/wiki/Lambada-Overloading-Syntax
+
+@implements        Aliasing mapping            https://github.com/frdl/webfan/wiki/Aliasing
 
 @ToDo              Package Installation
 
