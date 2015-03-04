@@ -1,4 +1,4 @@
-Application Composer
+Application Composer (frdl/webfan)
 =
 
 create websites, developing projects, compose applications
