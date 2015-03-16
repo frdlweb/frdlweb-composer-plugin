@@ -11,7 +11,9 @@ http://frdl.github.io/webfan/
 
 Documentation
 =
+
 * Read the online documentation at: https://github.com/frdl/webfan/wiki
+
 
 @requires          PHP >= 5.3
 
