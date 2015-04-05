@@ -50,7 +50,7 @@ public function test()
 {
 		header("Content-Type: text/plain");
 		 $cmd = 'build `DB`.`TABLE` PDO 127.0.0.1:44 :1234 @username:password `FIELD`=VALUE `another_field`=123456-abcdef --option=val -c;
-testcommand safsaf --test=\'test "in \'qoutes\'" faf as f" ayf\' -u| testccmd3 safsaf --rk1,fieldX=aValueMatchBool ---sort=FIELD:VALUE --+kaField,NameField --dir=/var/www/dir/lib/ --package="frdl/webfan" -w --update -urstuvwxyz |
+testcommand safsaf --test=\'test "in \'qoutes\' faf" as f" ayf\' -u| testccmd3 safsaf --rk1,fieldX=aValueMatchBool ---sort=FIELD:VALUE --+kaField,NameField --dir=/var/www/dir/lib/ --package="frdl/webfan" -w --update -urstuvwxyz |
 select something from any --product=\'frdl/webfan\' --test=u -dur BY=name LIMIT=10,20
  ';
 

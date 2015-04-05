@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	0.9.16
+ *  @version 	1.2.0
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -111,9 +111,10 @@ class SourceLoader
 	protected $mode;
 	
 	
-    protected $dir_autoload;
+        protected $dir_autoload;
 	protected static $config_source;
-    protected $autoloaders = array();
+        protected $autoloaders = array();
+        protected $autoloadersPsr0 = array();
 	protected $classmap = array();
 	protected $isAutoloadersRegistered = false;
 		
@@ -128,7 +129,7 @@ class SourceLoader
 	
 	 
 	protected $buf = array(
-	      'config' => array(),
+	  'config' => array(),
           'opt' => array(),
           'sources' => array(),
 	);
@@ -140,7 +141,7 @@ class SourceLoader
 	   
 	   $this->interface = null;	
 	   self::$config_source = array( 
-	     'install' =>  false,
+	 'install' =>  false,
          'dir_lib' => false,
          'session' => false,
          'zip_stream' => false,
@@ -148,7 +149,7 @@ class SourceLoader
          
 	   );
 	   $this->dir_autoload = '';	
-	   self::repository(((!isset($_SESSION[self::SESSKEY]['id_repository']))?'webfan':$_SESSION[self::SESSKEY]['id_repository']));	 
+	   self::repository(((!isset($_SESSION[self::SESSKEY]['id_repository']))?'frdl':$_SESSION[self::SESSKEY]['id_repository']));	 
 	   self::$id_interface =  'public';	 
 	   self::$api_user = '';
 	   self::$api_pass = '';
@@ -190,12 +191,7 @@ class SourceLoader
 	   return true;
   }  
 	 
-  public function setAutloadDirectory($dir){
-  	 if(!is_dir($dir))return false;
-	 $this->dir_autoload = $dir;
-	 if(substr($this->dir_autoload,-1,1) !== self::DS)$this->dir_autoload.=self::DS;
-	 return true;	
-  }	 
+
 	 
   public function Defaults($set = false){
           $config = array( 
@@ -310,7 +306,8 @@ class SourceLoader
 		      trigger_error('Autoloadermapping is already registered.',E_USER_NOTICE);
 			  return $this;
 		}
-        $this->addLoader(array($this,'loadClass'), true, true);		
+        $this->addLoader(array($this,'Psr4'), true, true);	
+        $this->addLoader(array($this,'Psr0'), true, false);				
 	    $this->addLoader(array($this,'classMapping'), true, false);	
         $this->addLoader(array($this,'patch_autoload_function'), true, false);	
         $this->addLoader(array($this,'autoloadClassFromServer'), true, false);	
@@ -328,10 +325,38 @@ class SourceLoader
         spl_autoload_unregister($Autoloader);
 		return $this;
      } 	
-			 
-    public function addNamespace($prefix, $base_dir, $prepend = false)
+	 
+	 
+	/**
+	 * Psr-0
+	 */ 				 
+    public function addPsr0($prefix, $base_dir, $prepend = false)
     {
        $prefix = trim($prefix, '\\') . '\\';
+       $base_dir = rtrim($base_dir, self::DS) . self::DS;	   
+       if(isset($this->autoloadersPsr0[$prefix]) === false) {
+            $this->autoloadersPsr0[$prefix] = array();
+        }
+
+      if($prepend) {
+            array_unshift($this->autoloadersPsr0[$prefix], $base_dir);
+        } else {
+            array_push($this->autoloadersPsr0[$prefix], $base_dir);
+        }
+		
+		return $this;
+    }
+	
+	/**
+	 * Psr-4
+	 */ 			 
+    public function addNamespace($prefix, $base_dir, $prepend = false)
+    {
+       return $this->addPsr4($prefix, $base_dir, $prepend);
+    }
+    public function addPsr4($prefix, $base_dir, $prepend = false)
+    {
+        $prefix = trim($prefix, '\\') . '\\';
        $base_dir = rtrim($base_dir, self::DS) . self::DS;	   
        if(isset($this->autoloaders[$prefix]) === false) {
             $this->autoloaders[$prefix] = array();
@@ -343,10 +368,122 @@ class SourceLoader
             array_push($this->autoloaders[$prefix], $base_dir);
         }
 		
-		return $this;
-    }
-	 
+		return $this;   	
+	}	 
     
+
+
+    
+    public function Psr4($class)
+    {
+        $prefix = $class;
+        while (false !== $pos = strrpos($prefix, '\\')) {
+            $prefix = substr($class, 0, $pos + 1);
+            $relative_class = substr($class, $pos + 1);
+            $file = $this->routeLoaders($prefix, $relative_class);
+            if ($file) {
+                return $file;
+            }
+            $prefix = rtrim($prefix, '\\');   
+        }
+        return false;       
+    } 
+    public function loadClass($class)
+    {
+       return $this->Psr4($class);
+    }	
+	
+	
+	
+   public function Psr0($class)
+    {
+        $prefix = $class;
+        while (false !== $pos = strrpos($prefix, '\\')) {
+            $prefix = substr($class, 0, $pos + 1);
+            $relative_class = substr($class, $pos + 1);
+            $file = $this->routeLoadersPsr0($prefix, $relative_class);
+            if ($file) {
+                return $file;
+            }
+            $prefix = rtrim($prefix, '\\');   
+        }
+        return false;  
+    }
+  		
+    protected function routeLoadersPsr0($prefix, $relative_class)
+    {
+        if (!isset($this->autoloadersPsr0[$prefix])) {
+            return false;
+        }
+        foreach ($this->autoloadersPsr0[$prefix] as $base_dir) {		
+          if (null === $prefix || $prefix.'\\' === substr($relative_class, 0, strlen($prefix.'\\'))) {
+            $fileName = '';
+            $namespace = '';
+            if (false !== ($lastNsPos = strripos($relative_class,  '\\'))) {
+                $namespace = substr($relative_class, 0, $lastNsPos);
+                $relative_class = substr($relative_class, $lastNsPos + 1);
+                $fileName = str_replace('\\', self::DS, $namespace) . self::DS;
+            }
+            $fileName .= str_replace('_', self::DS, $relative_class) /* . '.php'  */;
+            $file = ($base_dir !== null ? $base_dir . self::DS : '') . $fileName;
+            if ($this->inc($file)) {
+                return $file;
+            }
+          }
+		}
+	   return false;
+    }		
+
+
+    public function setAutloadDirectory($dir){
+  	   if(!is_dir($dir))return false;
+	   $this->dir_autoload = $dir;
+	   if(substr($this->dir_autoload,-1,1) !== self::DS)$this->dir_autoload.=self::DS;
+	   return true;	
+    }	 
+  		
+    protected function routeLoaders($prefix, $relative_class)
+    {
+
+        if (!isset($this->autoloaders[$prefix])) {
+            return false;
+        }
+        foreach ($this->autoloaders[$prefix] as $base_dir) {
+            $file = $base_dir
+                  . str_replace('\\', self::DS, $relative_class)
+                  /* . '.php'  */
+				   ;
+
+            if ($this->inc($file)) {
+                return $file;
+            }
+        }
+        return false;
+    }	
+	
+    protected function inc($file)
+    {
+    	if(substr($file,-4,-0) === '.php'){
+    		$file = $file; 
+    	}else{
+    		$file.= '.php';
+    	}
+		$file2= substr($file,0,-4).'.inc';
+		
+        if(file_exists($file)) {
+             require $file;
+            return true;
+        }elseif(file_exists($file2)) {
+             require $file2;
+            return true;
+        }
+		
+		
+        return false;
+    }	
+		 
+		 
+	
 	public function classMapping($class){
 		if(isset($this->classmap[$class])){
             if ($this->inc($this->classmap[$class])) {
@@ -373,48 +510,8 @@ class SourceLoader
 		if(isset($this->classmap[$class]))unset($this->classmap[$class]);
 	    return $this;
 	}	
-    
-    public function loadClass($class)
-    {
-        $prefix = $class;
-        while (false !== $pos = strrpos($prefix, '\\')) {
-            $prefix = substr($class, 0, $pos + 1);
-            $relative_class = substr($class, $pos + 1);
-            $file = $this->routeLoaders($prefix, $relative_class);
-            if ($file) {
-                return $file;
-            }
-            $prefix = rtrim($prefix, '\\');   
-        }
-        return false;
-    }
-	
-    protected function routeLoaders($prefix, $relative_class)
-    {
-
-        if (!isset($this->autoloaders[$prefix])) {
-            return false;
-        }
-        foreach ($this->autoloaders[$prefix] as $base_dir) {
-            $file = $base_dir
-                  . str_replace('\\', self::DS, $relative_class)
-                  . '.php';
-
-            if ($this->inc($file)) {
-                return $file;
-            }
-        }
-        return false;
-    }	
-	
-    protected function inc($file)
-    {
-        if (file_exists($file)) {
-             require $file;
-            return true;
-        }
-        return false;
-    }	
+    		 
+		 
 		 
 	protected function source_check($str){	 
 		 $start = 'array';
@@ -603,8 +700,6 @@ class SourceLoader
  	      }	
 		  		  		  	
 		   if(isset($code['s']) && $code['s'] !== sha1($p)){
-		   	
-			
 	          	 $errordetail = ($config['ini']['display_errors_details'] === true)
 			                  ? '<pre>'.sha1($p).'</pre><pre>'.$code['s'].'</pre><pre>'.$opt['pass'].' '.$opt['rot1'].' '.$opt['rot2'].'</pre>'
 			                  : '';	   	
@@ -868,7 +963,7 @@ class SourceLoader
 	/**
 	 * Streaming Methods
 	 */
-	public function init(){$args = func_get_args(); /** todo ... */ return $this;}
+    public function init(){$args = func_get_args(); /** todo ... */ return $this;}
     public function DEFRAG(){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
     public function stream_open($url, $mode, $options = STREAM_REPORT_ERRORS, &$opened_path = null){
     	$u = parse_url($url);
@@ -879,7 +974,10 @@ class SourceLoader
 		
 		if($c[0]==='code')$tld = array_shift($c);
 		
-		$this->Client = new \webdof\Webfan\APIClient();
+		/**
+		 * ToDo: APICLient
+		 */
+		$this->Client = new \frdl\Client\RESTapi();
 		$this->Client->prepare( 'http',
                           'interface.api.webfan.de',
                           'GET',

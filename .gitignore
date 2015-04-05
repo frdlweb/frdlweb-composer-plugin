@@ -11,6 +11,7 @@
 # Composer PHAR
 /composer.phar
 
+auth.json
 
 # frdl/webfan
 *.project
@@ -21,7 +22,7 @@ wpmxdir.php
 /servers/*/production/
 /shared/
 /data/
-
+*/packages/
 
 *.crt
 *.ir

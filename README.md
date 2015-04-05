@@ -1,4 +1,4 @@
-webfan
+Application Composer (frdl/webfan)
 =
 
 create websites, developing projects, compose applications
@@ -11,13 +11,17 @@ http://frdl.github.io/webfan/
 
 Documentation
 =
-https://github.com/frdl/webfan/wiki
 
-@implements        Autoloading psr-4               https://github.com/frdl/webfan/wiki/Autoloading
+* Read the online documentation at: https://github.com/frdl/webfan/wiki
 
-@implements        Lambada Overloading Syntax      https://github.com/frdl/webfan/wiki/Lambada-Overloading-Syntax
 
-@implements        Aliasing mapping                https://github.com/frdl/webfan/wiki/Aliasing
+@requires          PHP >= 5.3
+
+@implements        Autoloading psr-4       https://github.com/frdl/webfan/wiki/Autoloading
+
+@implements        LOS                     https://github.com/frdl/webfan/wiki/Lambada-Overloading-Syntax
+
+@implements        Aliasing mapping        https://github.com/frdl/webfan/wiki/Aliasing
 
 @ToDo              Package Installation
 

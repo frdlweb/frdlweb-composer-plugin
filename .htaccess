@@ -1,0 +1,6 @@
+RewriteEngine on
+
+RewriteRule ^(.*)$ index.php [L]
+
+
+
