@@ -308,7 +308,7 @@ class SourceLoader
 		}
         $this->addLoader(array($this,'Psr4'), true, true);	
         $this->addLoader(array($this,'Psr0'), true, false);				
-	    $this->addLoader(array($this,'classMapping'), true, false);	
+	$this->addLoader(array($this,'classMapping'), true, false);	
         $this->addLoader(array($this,'patch_autoload_function'), true, false);	
         $this->addLoader(array($this,'autoloadClassFromServer'), true, false);	
         $this->isAutoloadersRegistered = true;
@@ -977,7 +977,7 @@ class SourceLoader
 		/**
 		 * ToDo: APICLient
 		 */
-		$this->Client = new \frdl\Client\RESTapi();
+		$this->Client = new \webdof\Webfan\APIClient();
 		$this->Client->prepare( 'http',
                           'interface.api.webfan.de',
                           'GET',

@@ -102,7 +102,7 @@ class App
            $this->wrap = array( 
 		         'c' => array(
 				        self::LOADER =>  array($LoaderClass, null), 
-         		        'webfan\App' =>  array(__CLASS__, null),
+         		                'webfan\App' =>  array(__CLASS__, null),
 				 ),
 		         'f' => array( 
 	                    'test' => (function ($test = ''){
@@ -116,13 +116,7 @@ class App
 					      'Autoloader' => array('alias' => self::LOADER, 'default' => 'frdl\webfan\Autoloading\SourceLoader'),
 					      'Application Global Connector' => array('alias' => 'webfan\App','default' => 'frdl\webfan\App'),
 					      'CLI cmd processor' => array('alias' => 'webfan\Terminal','default' =>'frdl\aSQL\Engines\Terminal\aSQLCommand'),
-					   
-					   /**
-					    * ToDo..
-					    */
 					      'ApplicationComposer' => array('alias' => 'frdl\AC','default' => 'frdl\ApplicationComposer\ApplicationComposerBootstrap'),
-					   
-					   
 					      /**
 						   * Deprecated:
 						   */
