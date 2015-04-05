@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
- *  @version 	1.0.0.3
+ *  @version 	1.0.2.0
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -85,7 +85,10 @@ class App
 	protected $shortcuts;
 	
 	
-	protected function __construct($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', $initAutoloader = true ){
+	protected function __construct($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', 
+	    $initAutoloader = true, $setAliasingDefaults = false, $initAliasingDefaults = false, $setAliasingDefaultsCore = true )
+	    {
+	    	
 		   $this->shortcuts = array();
 		   $this->addShortCut('$', array($this,'addShortCut'));
 		   
@@ -98,8 +101,8 @@ class App
 		   });
            $this->wrap = array( 
 		         'c' => array(
-				        self::LOADER =>  array($LoaderClass, false), 
-         		        'webfan\App' =>  array(__CLASS__, false),
+				        self::LOADER =>  array($LoaderClass, null), 
+         		                'webfan\App' =>  array(__CLASS__, null),
 				 ),
 		         'f' => array( 
 	                    'test' => (function ($test = ''){
@@ -109,15 +112,26 @@ class App
 				 ),
 				 
 				 'aliasing' => array( 
-				      'c' => array(
-					      'Autoloader' => self::LOADER,
-					      'Application Global Connector' => 'webfan\App',
-					      'CLI cmd processor' => 'webfan\Terminal',
-					       
+				      'schema' => array(
+					      'Autoloader' => array('alias' => self::LOADER, 'default' => 'frdl\webfan\Autoloading\SourceLoader'),
+					      'Application Global Connector' => array('alias' => 'webfan\App','default' => 'frdl\webfan\App'),
+					      'CLI cmd processor' => array('alias' => 'webfan\Terminal','default' =>'frdl\aSQL\Engines\Terminal\aSQLCommand'),
+					      'ApplicationComposer' => array('alias' => 'frdl\AC','default' => 'frdl\ApplicationComposer\ApplicationComposerBootstrap'),
+					      /**
+						   * Deprecated:
+						   */
+						  'REST API CLient' => array('alias' => 'frdl\Client\RESTapi', 'default' => '\webdof\Webfan\APIClient'), 
 					  ),
 				 ),
 		   );
-		   
+      /**
+	   * init core defaults
+	   */ 	
+	  if($init ===true && true === $setAliasingDefaultsCore){ 	   
+	    $this	 
+ 		 ->init_aliasing(true);
+	  }
+	      
 	  $this->wrappers = array(  
 	     'webfan' => array(
 		         'tld' => array(   
@@ -149,27 +163,21 @@ class App
 		  ),		       
 	  );	   
 		   
-	   if($init === true)return $this->init($initAutoloader);
+	   if($init === true)return $this->init($initAutoloader, $setAliasingDefaults, $initAliasingDefaults);
 	}
 	
-	
-	
-   public function init_autoloader($expose = false){
-	 $Loader = (class_exists('\\'.self::LOADER) ) ? call_user_func('\\'.self::LOADER.'::top') : call_user_func('\\'.$this->wrap['c'][self::LOADER][0].'::top') ;
-	 $Loader -> autoload_register();
-	 return (true === $expose) ? $Loader : $this;
+
+   public static function God($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', 
+   $initAutoloader = true, $setAliasingDefaults = false, $initAliasingDefaults = false, $setAliasingDefaultsCore = true){
+        return self::getInstance($init, $name, $LoaderClass, $initAutoloader, $setAliasingDefaults = false, $initAliasingDefaults = false);
    }
 	
 	
-   public static function God($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', $initAutoloader = true){
-        return self::getInstance($init, $name, $LoaderClass, $initAutoloader);
-   }
-	
-	
-   public static function getInstance($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', $initAutoloader = true)
+   public static function getInstance($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', 
+   $initAutoloader = true, $setAliasingDefaults = false, $initAliasingDefaults = false, $setAliasingDefaultsCore = true)
      {
        if (NULL === self::$instance) {
-           self::$instance = new self($init, $name, $LoaderClass, $initAutoloader);
+           self::$instance = new self($init, $name, $LoaderClass, $initAutoloader, $setAliasingDefaults, $initAliasingDefaults, $setAliasingDefaultsCore);
        }
        return self::$instance;
      }
@@ -287,7 +295,7 @@ class App
    
    
    public function addClass($Instance, $Virtual, $autoload = TRUE, &$success = null  ) {
-    	$success =  class_alias( $Instance, $Virtual, $autoload);
+    	$success =  ($Instance !== $Virtual) ? class_alias( $Instance, $Virtual, $autoload) : true;
 		$this->wrap['c'][$Virtual]= array( (is_object($Instance)) ? get_class($Instance) : $Instance, $success);
         return $this;
     }
@@ -297,14 +305,6 @@ class App
 		return $this; 	
 	}
 	
-	
-	public function init_aliasing(){
-		foreach($this->wrap['c'] as $v => $o){
-			if($o[1]!==true)$this->addClass($o[0], $v,true);
-		}		 
-		return $this; 	
-	}
-
    
    protected function _stream_wrapper_register($protocoll, $overwrite = true, &$success = null){
  		         if (in_array($protocoll, stream_get_wrappers())) {
@@ -321,16 +321,52 @@ class App
 	     }
 		return $this;
     }
-
-	public function init($autoload = false, $expose = false){
-	  if($autoload === true)$Loader = $this->init_autoloader(true);
 	
+		
+	public function aliasing_set_default($apply = false){
+		foreach($this->wrap['aliasing'] as $title => $map){
+			$this->wrap['c'][$map['alias']] = array($map['default'],null);
+			if(true===$apply){
+				$this->addClass($map['default'], $map['alias'],TRUE, $success );
+			}
+		}
+		return $this; 	
+	}
+	
+	
+   public function init_autoloader($expose = false){
+	 $Loader = (class_exists('\\'.self::LOADER) ) ? call_user_func('\\'.self::LOADER.'::top') : call_user_func('\\'.$this->wrap['c'][self::LOADER][0].'::top') ;
+	 $Loader -> autoload_register();
+	 return (true === $expose) ? $Loader : $this;
+   }
+	
+		
+	public function init_aliasing($retry = false){
+		foreach($this->wrap['c'] as $v => $o){
+			if(null === $o[1] || (true === $retry && false === $o[1]))$this->addClass($o[0], $v,true, $success);
+		}		 
+		return $this; 	
+	}
+
+
+
+	public function init($autoload = false, $setAliasingDefaults = false, $initAliasingDefaults = false, $expose = false){
+	  if($autoload === true)$Loader = $this->init_autoloader(true);
+
+      if(true===$setAliasingDefaults ){
+			$this ->aliasing_set_default($initAliasingDefaults);
+		}
+			
 		$this	 
- 		 ->init_aliasing()
+ 		 ->init_aliasing(false)
          ->init_stream_wrappers(true)
 		;
+
+		
 		return (true === $expose && isset($Loader)) ? $Loader : $this;
     }
+	
+	
 	
 	
 	
