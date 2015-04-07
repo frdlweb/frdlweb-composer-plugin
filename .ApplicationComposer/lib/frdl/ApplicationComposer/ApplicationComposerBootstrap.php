@@ -36,7 +36,8 @@
  *    
  */
 namespace frdl\ApplicationComposer;
-
+use frdl\ApplicationComposer\ApplicationMap;
+use frdl;
 
 class ApplicationComposerBootstrap
 {
@@ -92,23 +93,23 @@ class ApplicationComposerBootstrap
 			require self::$baseconfig['file_app'];
 	
 	
-	
-	\frdl\webfan\App::God(self::$baseconfig['skipConfig'], self::$baseconfig['name'], self::$baseconfig['psr8_initial'], 
-   self::$baseconfig['AutoloadersRegisterOnBoot'], $setAliasingDefaults = false, $initAliasingDefaults = false, $setAliasingDefaultsCore = true)
-          ->{'$'}('L!', '\webfan\Loader::top')
-		  ->{'L!'}()
-		  
-		  /**
-		   * 
-		   * ToDo: Load class/autoload mapping...
-		   * 
-		   */
-          //   -> addPsr4('frdl\\', $dir_lib . 'frdl'.DIRECTORY_SEPARATOR,  false)  
-          //   -> addPsr4('webfan\\', $dir_lib . 'webfan'.DIRECTORY_SEPARATOR,  false)
-          //   -> addPsr4('webdof\\', $dir_lib . 'webdof'.DIRECTORY_SEPARATOR,  false)
-         -> addPsr4('\\', $args['dir_lib'],  true)  
-              ->j()	
+	//$init = false, $LoaderClass = self::LOADER, $name = '', $branch = 'dev-master', 
+	//   $version = 'v1.0.2-beta.1', $meta = array()
+	\frdl\webfan\App::God(self::$baseconfig['initOnBoot'],  self::$baseconfig['psr8_initial'], self::$baseconfig['name'],
+   self::$baseconfig['branch'],   self::$baseconfig['version'],   self::$baseconfig['meta'])
+   	     ->{'$'}('L!', '\webfan\Loader::top')
+	  //    ->{'L!'}()
+		->Autoloader(true)
+             -> addPsr4('frdl\\', self::$baseconfig['dir_lib'] . 'frdl'.DIRECTORY_SEPARATOR,  false)  
+             -> addPsr4('webfan\\', self::$baseconfig['dir_lib'] . 'webfan'.DIRECTORY_SEPARATOR,  false)
+             -> addPsr4('webdof\\', self::$baseconfig['dir_lib'] . 'webdof'.DIRECTORY_SEPARATOR,  false)
+             -> addPsr4('', self::$baseconfig['dir_lib'],  false)  
+		 
+		
+		
          //  -> addClass('frdl\aSQL\Engines\Terminal\aSQLCommand', 'Terminal',  true )
+         
+
        ;
 			
 			/**
@@ -117,7 +118,7 @@ class ApplicationComposerBootstrap
 			 */  
 			
 		}catch(Exception $e){
-			//todo log...
+			echo $e->getMessage();
 		}
 		
 		return $this;
@@ -126,18 +127,26 @@ class ApplicationComposerBootstrap
 
 	protected function defaultConfig($dir_lib = null){
 		$c =  array(  
-		   'name' => 'Setup - frdl Application Composer Initial',
-		   'psr8_initial' => 'frdl\webfan\Autoloading\SourceLoader',
-		   'AutoloadersRegisterOnBoot' => true,
+		   'name' => 'Setup',
+		   'branch' => 'dev-master',
+		   'version' => 'v1.0.2-beta.1',
 		   
+		   'package' => 'frdl/webfan#setup',
+		   	      
+		   'meta' => array(),
+		   
+		   'config' => array(),
+		   
+		   'cmd' => 'setup',
+		   
+		   'initOnBoot' => true,		   
+		   'psr8_initial' => 'frdl\webfan\Autoloading\SourceLoader',
+	   
 		   'dir_lib' => (null!==$dir_lib && is_dir($dir_lib)) ? $dir_lib : realpath(__DIR__ . DIRECTORY_SEPARATOR .'..' .DIRECTORY_SEPARATOR . '..'. DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR,
 	       'wd' => getcwd(),
-	       
-		   'skipConfig' => false,
-		   
-		   'version' => null,
+  	   
 		   'UI' => PHP_SAPI,
-		   'modus' => 'install',
+		   
 		   
 		);
 		

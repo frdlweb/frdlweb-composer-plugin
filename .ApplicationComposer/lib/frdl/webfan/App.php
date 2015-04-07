@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
- *  @version 	1.0.2.0
+ *  @version 	1.2.0.0
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -62,9 +62,9 @@ class App
 	
 	const LOADER = 'webfan\Loader';
 	
-	public static $instance = null;
+	protected static $instance = null;
 	
-	protected $name;
+	protected $app;
 	
 	protected $E_CALL = E_USER_ERROR;
 	protected $wrap;
@@ -84,55 +84,105 @@ class App
 	protected $wrappers;
 	protected $shortcuts;
 	
+	protected $LoaderClass =null;
 	
-	protected function __construct($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', 
-	    $initAutoloader = true, $setAliasingDefaults = false, $initAliasingDefaults = false, $setAliasingDefaultsCore = true )
-	    {
-	    	
-		   $this->shortcuts = array();
-		   $this->addShortCut('$', array($this,'addShortCut'));
-		   
-		   $this->name = $name;
-		   $this->_ = (function(mixed $args = null){
-		   	             $args = func_get_args();
-						 $method = array_shift($args); 
-                          trigger_error('Not fully implmented yet '.__METHOD__.' '.__CLASS__.' '.__LINE__, E_USER_WARNING);
-		   	             return call_user_func(array(self::getInstance(false),$method),$args);
+	
+
+	
+	protected function __construct($init = false, $LoaderClass = self::LOADER, $name = '', $branch = 'dev-master', 
+	   $version = 'v1.0.2-beta.1', $meta = array())
+	 {
+        $this->app->name = $name;
+		$this->app->branch = $branch;
+		$this->app->version = $version;
+		$this->app->meta = $meta;
+		$this->wrap = array();
+		$this->shortcuts = array();
+        $this->setAutoloader($LoaderClass);
+	    if($init === true)$this->init();
+	}
+	 
+
+    public static function God($init = false, $LoaderClass = self::LOADER, $name = '', $branch = 'dev-master', 
+	   $version = 'v1.0.2-beta.1', $meta = array()){
+        return self::getInstance( $init, $LoaderClass, $name, $branch ,   $version, $meta );
+   }
+	 
+
+  	public function init(){
+	 $this->addShortCut('$', array($this,'addShortCut'))
+	   
+	  ;		
+	$this->_ = (function(){
+			     return call_user_func_array(array($this,'$'), func_get_args());
 		   });
-           $this->wrap = array( 
+	
+     $this->wrap = array( 
 		         'c' => array(
-				        self::LOADER =>  array($LoaderClass, null), 
-         		                'webfan\App' =>  array(__CLASS__, null),
+				        self::LOADER=>  array($this->LoaderClass, null), 
+         		        'webfan\App' =>  array(__CLASS__, null),
 				 ),
-		         'f' => array( 
-	                    'test' => (function ($test = ''){
-		                       echo 'Test: '.$test."\n";
-	                    }),
-	                    
-				 ),
-				 
-				 'aliasing' => array( 
+		         'f' => array( ),
+		);
+
+      $this ->applyAliasMap(true)
+            ->mapWrappers(null)
+			->init_stream_wrappers(true) 
+			->Autoloader(true) 
+		       ->autoload_register() 
+		       -> j()
+			   
+		/**	   
+		 *
+		 * //  set by application:
+		     ->setAliasMap(null)
+			 ->applyAliasMap(true)
+ 	        
+		 * */ 
+		;
+
+		return $this;
+    }
+	
+	  
+	public function setAlias($component, $alias, $default, $abstract_parent, $interfaces = array()){
+		$this->wrap['aliasing']['schema'][$component] = array(
+		   'alias' => $alias, 'default' => $default, 'abstract_parent' =>$abstract_parent, 
+		   'interfaces' => $interfaces
+		 );
+		return $this;
+	}
+	
+	//todo : compinent registry
+	public function setAliasMap($aliasing = null){
+		$this->wrap['aliasing'] = (is_array($aliasing)) ? $aliasing
+		 : array( 
 				      'schema' => array(
-					      'Autoloader' => array('alias' => self::LOADER, 'default' => 'frdl\webfan\Autoloading\SourceLoader'),
-					      'Application Global Connector' => array('alias' => 'webfan\App','default' => 'frdl\webfan\App'),
-					      'CLI cmd processor' => array('alias' => 'webfan\Terminal','default' =>'frdl\aSQL\Engines\Terminal\aSQLCommand'),
-					      'ApplicationComposer' => array('alias' => 'frdl\AC','default' => 'frdl\ApplicationComposer\ApplicationComposerBootstrap'),
-					      /**
-						   * Deprecated:
-						   */
-						  'REST API CLient' => array('alias' => 'frdl\Client\RESTapi', 'default' => '\webdof\Webfan\APIClient'), 
+					      '1.3.6.1.4.1.37553.8.1.8.8.5.65.8.1.1' => array('name' => 'Autoloader', 'alias' => self::LOADER, 'default' => &$this->LoaderClass,
+					                           'abstract_parent' => 'frdl\webfan\Autoloading\SourceLoader', 
+					                           'interfaces' => array() ),
+					      '1.3.6.1.4.1.37553.8.1.8.8.5.65.8.1.2' => array('name' => 'Application Main Controller', 'alias' => 'webfan\App','default' => 'frdl\webfan\App',
+					                           'abstract_parent' => 'frdl\webfan\App', 
+					                           'interfaces' => array() ),
+					      '1.3.6.1.4.1.37553.8.1.8.8.5.65.8.1.3' => array('name' => 'cmd parser', 'alias' => 'webfan\Terminal','default' =>'frdl\aSQL\Engines\Terminal\Test',
+					                           'abstract_parent' => 'frdl\aSQL\Engines\Terminal\CLI', 
+					                           'interfaces' => array() ),
+					      '1.3.6.1.4.1.37553.8.1.8.8.5.65.8.1.4' => array('name' => 'BootLoader', 'alias' => 'frdl\AC','default' => 'frdl\ApplicationComposer\ApplicationComposerBootstrap',
+					                           'abstract_parent' => 'frdl\ApplicationComposer\ApplicationComposerBootstrap', 
+					                           'interfaces' => array() ),
+						  '1.3.6.1.4.1.37553.8.1.8.8.5.65.8.1.5' => array('name' => 'API REST CLient', 'alias' => 'frdl\Client\RESTapi', 'default' => 'webdof\Webfan\APIClient',
+					                           'abstract' => null, 
+					                           'interfaces' => array() ), 
 					  ),
-				 ),
-		   );
-      /**
-	   * init core defaults
-	   */ 	
-	  if($init ===true && true === $setAliasingDefaultsCore){ 	   
-	    $this	 
- 		 ->init_aliasing(true);
-	  }
-	      
-	  $this->wrappers = array(  
+				 );
+				 
+		return $this;		 
+	}
+
+
+    public function mapWrappers($wrappers  = null){
+    	$this->wrappers = (is_array($wrappers)) ? $wrappers
+    	  : array(  
 	     'webfan' => array(
 		         'tld' => array(   
 				        'code' => 'webfan\Loader',
@@ -155,40 +205,88 @@ class App
 		  
 		  ),	 
 	      
-		       	 
-	      
-
 	      'wehowski' => array(  
 		  
-		  ),		       
-	  );	   
-		   
-	   if($init === true)return $this->init($initAutoloader, $setAliasingDefaults, $initAliasingDefaults);
-	}
-	
-
-   public static function God($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', 
-   $initAutoloader = true, $setAliasingDefaults = false, $initAliasingDefaults = false, $setAliasingDefaultsCore = true){
-        return self::getInstance($init, $name, $LoaderClass, $initAutoloader, $setAliasingDefaults = false, $initAliasingDefaults = false);
+		  ),		
+	      'till' => array(  
+		  
+		  ),		        
+	  );
+		
+		return $this;		 
    }
 	
+
+   public function setAutoloader($LoaderClass = self::LOADER, &$success = false){
+      $this->LoaderClass = $LoaderClass;
+	  return $this;
+   }
+
+
+
+    public function init_stream_wrappers($overwrite = true){
+ 		 foreach($this->wrappers as $protocoll => $wrapper){
+		       $this->_stream_wrapper_register($protocoll, $overwrite); 	
+	     }
+		return $this;
+    }
 	
-   public static function getInstance($init = false, $name = '', $LoaderClass = 'frdl\webfan\Autoloading\SourceLoader', 
-   $initAutoloader = true, $setAliasingDefaults = false, $initAliasingDefaults = false, $setAliasingDefaultsCore = true)
+		
+	public function mapAliasing($apply = false){
+		foreach($this->wrap['aliasing']['schema'] as $OID => $map){
+			$this->wrap['c'][$map['alias']] = array($map['default'],null, $OID);
+			if(true===$apply){
+				$this->addClass($map['default'], $map['alias'],TRUE, $success );
+			}
+		}
+		return $this; 	
+	}
+	
+	
+   public function Autoloader($expose = false){
+     $component = '1.3.6.1.4.1.37553.8.1.8.8.5.65.8.1.1';
+	 
+	 if(null===$this->LoaderClass){
+	  foreach($this->wrap['c'] as $alias => $info){
+	 	if($component !== $info[2] || true !== $info[1] )continue;
+             $this->LoaderClass = $info[0];
+		 break;
+	  }
+	 }
+	$Loader = (class_exists('\\'.$this->LoaderClass) ) ? call_user_func('\\'.$this->LoaderClass.'::top') 
+		          : call_user_func('\\'.$this->wrap['aliasing']['schema'][$component]['default'].'::top') ;
+				 
+	 return (true === $expose) ? $Loader : $this;
+   }
+	
+		
+	public function applyAliasMap($retry = false){
+    	foreach($this->wrap['c'] as $v => $o){
+			if(null === $o[1] || (true === $retry && false === $o[1]))$this->addClass($o[0], $v,true, $success);
+		}		 
+		return $this; 	
+	}
+
+	
+	 		
+	public function __toString(){
+		return (string)$this->app->name;
+	}		
+	
+	
+	
+   public static function getInstance($init = false, $LoaderClass = self::LOADER, $name = '', $branch = 'dev-master', 
+	   $version = 'v1.0.2-beta.1', $meta = array())
      {
        if (NULL === self::$instance) {
-           self::$instance = new self($init, $name, $LoaderClass, $initAutoloader, $setAliasingDefaults, $initAliasingDefaults, $setAliasingDefaultsCore);
+           self::$instance = new self($init, $LoaderClass, $name, $branch, $version , $meta);
        }
        return self::$instance;
      }
 	 	
- 		
-	public function __toString(){
-		return (string)$this->name;
-	}		
-	
-
-	protected function _fnCallback($name){
+		
+		
+   protected function _fnCallback($name){
 		// A
 		  if(isset($this->shortcuts[$name])){
 		  	   if(is_callable($this->shortcuts[$name]))return $this->shortcuts[$name];
@@ -307,66 +405,18 @@ class App
 	
    
    protected function _stream_wrapper_register($protocoll, $overwrite = true, &$success = null){
- 		         if (in_array($protocoll, stream_get_wrappers())) {
-		         	        if(true !== $overwrite)return false;
-		                    stream_wrapper_unregister($protocoll);	
+   		         if (in_array($protocoll, stream_get_wrappers())) {
+		         	        if(true !== $overwrite){
+                                $success = false;
+								return $this;
+						    }		         	        		
+		         	        stream_wrapper_unregister($protocoll);	
 				 }
 		        $success = stream_wrapper_register($protocoll, get_class($this));	 
 		return $this; 	
    }
 
-    public function init_stream_wrappers($overwrite = true){
- 		 foreach($this->wrappers as $protocoll => $wrapper){
-		       $this->_stream_wrapper_register($protocoll, $overwrite); 	
-	     }
-		return $this;
-    }
-	
-		
-	public function aliasing_set_default($apply = false){
-		foreach($this->wrap['aliasing'] as $title => $map){
-			$this->wrap['c'][$map['alias']] = array($map['default'],null);
-			if(true===$apply){
-				$this->addClass($map['default'], $map['alias'],TRUE, $success );
-			}
-		}
-		return $this; 	
-	}
-	
-	
-   public function init_autoloader($expose = false){
-	 $Loader = (class_exists('\\'.self::LOADER) ) ? call_user_func('\\'.self::LOADER.'::top') : call_user_func('\\'.$this->wrap['c'][self::LOADER][0].'::top') ;
-	 $Loader -> autoload_register();
-	 return (true === $expose) ? $Loader : $this;
-   }
-	
-		
-	public function init_aliasing($retry = false){
-		foreach($this->wrap['c'] as $v => $o){
-			if(null === $o[1] || (true === $retry && false === $o[1]))$this->addClass($o[0], $v,true, $success);
-		}		 
-		return $this; 	
-	}
 
-
-
-	public function init($autoload = false, $setAliasingDefaults = false, $initAliasingDefaults = false, $expose = false){
-	  if($autoload === true)$Loader = $this->init_autoloader(true);
-
-      if(true===$setAliasingDefaults ){
-			$this ->aliasing_set_default($initAliasingDefaults);
-		}
-			
-		$this	 
- 		 ->init_aliasing(false)
-         ->init_stream_wrappers(true)
-		;
-
-		
-		return (true === $expose && isset($Loader)) ? $Loader : $this;
-    }
-	
-	
 	
 	
 	
@@ -379,10 +429,13 @@ class App
 		$c = array_reverse($c);
 		
 		$this->Controller = null;
+		$cN = (isset(self::God()->wrappers[$u['scheme']]['tld'][$c[0]]))
+		          ?self::God()->wrappers[$u['scheme']]['tld'][$c[0]]
+				  :false;
 		
-		if(isset($this->wrappers[$u['scheme']]['tld'][$c[0]])){
+		if(false!==$cN){
 			try{
-			  $this->Controller = new $this->wrappers[$u['scheme']]['tld'][$c[0]];
+			  $this->Controller = new $cN;
 			}catch(Exception $e){
 				trigger_error($e->getMessage(), E_USER_NOTICE);
 				return false;

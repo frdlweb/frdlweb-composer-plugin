@@ -42,6 +42,8 @@
  *  @OID	    1.3.6.1.4.1.37553.8.1.8.8 webfan-software
  *   
  */
+error_reporting(E_ALL);
+ 
 echo '<pre>';
  
 echo 'Test: bootstrap.php' ;
@@ -50,4 +52,5 @@ require __DIR__ . DIRECTORY_SEPARATOR . '.ApplicationComposer' . DIRECTORY_SEPAR
 
 echo 'Test: app.php' ;
 echo "\r\n";
+
 

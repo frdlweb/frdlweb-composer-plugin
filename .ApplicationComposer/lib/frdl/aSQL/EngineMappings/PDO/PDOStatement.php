@@ -28,7 +28,7 @@
  */
 namespace frdl\aSQL\EngineMappings\PDO;
 
-class PDOStatementTemplate implements \Traversable {
+class PDOStatement implements \Traversable {
 
     public $queryString;
 
@@ -51,7 +51,7 @@ class PDOStatementTemplate implements \Traversable {
     public function nextRowset () {}
     public function closeCursor () {}
     public function debugDumpParams () {}
-      public function __wakeup () {}
-      public function __sleep () {}
+    final public function __wakeup () {}
+    final public function __sleep () {}
 
 }

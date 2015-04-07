@@ -11,9 +11,6 @@ modification, are permitted provided that the following conditions are met:
   this list of conditions and the following disclaimer in the documentation
   and/or other materials provided with the distribution.
 
-* All advertising materials mentioning features or use of this software must display the following acknowledgement:
-  This product includes software developed by Webfan.de . 
-
 * Neither the name of frdl/Webfan nor the names of its
   contributors may be used to endorse or promote products derived from
   this software without specific prior written permission.

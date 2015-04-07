@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	1.2.0
+ *  @version 	1.2.1
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -308,7 +308,7 @@ class SourceLoader
 		}
         $this->addLoader(array($this,'Psr4'), true, true);	
         $this->addLoader(array($this,'Psr0'), true, false);				
-	$this->addLoader(array($this,'classMapping'), true, false);	
+	    $this->addLoader(array($this,'classMapping'), true, false);	
         $this->addLoader(array($this,'patch_autoload_function'), true, false);	
         $this->addLoader(array($this,'autoloadClassFromServer'), true, false);	
         $this->isAutoloadersRegistered = true;
@@ -356,19 +356,20 @@ class SourceLoader
     }
     public function addPsr4($prefix, $base_dir, $prepend = false)
     {
-        $prefix = trim($prefix, '\\') . '\\';
+    
+       $prefix = trim($prefix, '\\') . '\\';
        $base_dir = rtrim($base_dir, self::DS) . self::DS;	   
        if(isset($this->autoloaders[$prefix]) === false) {
             $this->autoloaders[$prefix] = array();
         }
-
+	
       if($prepend) {
             array_unshift($this->autoloaders[$prefix], $base_dir);
         } else {
             array_push($this->autoloaders[$prefix], $base_dir);
         }
 		
-		return $this;   	
+		return $this;
 	}	 
     
 
@@ -376,16 +377,18 @@ class SourceLoader
     
     public function Psr4($class)
     {
+    
         $prefix = $class;
         while (false !== $pos = strrpos($prefix, '\\')) {
             $prefix = substr($class, 0, $pos + 1);
             $relative_class = substr($class, $pos + 1);
             $file = $this->routeLoaders($prefix, $relative_class);
-            if ($file) {
+			if ($file) {
                 return $file;
             }
             $prefix = rtrim($prefix, '\\');   
         }
+		
         return false;       
     } 
     public function loadClass($class)
@@ -449,11 +452,13 @@ class SourceLoader
             return false;
         }
         foreach ($this->autoloaders[$prefix] as $base_dir) {
+        	
             $file = $base_dir
                   . str_replace('\\', self::DS, $relative_class)
                   /* . '.php'  */
 				   ;
 
+		
             if ($this->inc($file)) {
                 return $file;
             }
@@ -463,14 +468,14 @@ class SourceLoader
 	
     protected function inc($file)
     {
-    	if(substr($file,-4,-0) === '.php'){
+    	if(substr($file,-4,4) === '.php'){
     		$file = $file; 
     	}else{
     		$file.= '.php';
     	}
 		$file2= substr($file,0,-4).'.inc';
-		
-        if(file_exists($file)) {
+	
+       if(file_exists($file)) {
              require $file;
             return true;
         }elseif(file_exists($file2)) {
@@ -976,8 +981,9 @@ class SourceLoader
 		
 		/**
 		 * ToDo: APICLient
+		 *    $this->Client = new \frdl\Client\RESTapi();
 		 */
-		$this->Client = new \webdof\Webfan\APIClient();
+	    $this->Client = new \webdof\Webfan\APIClient();
 		$this->Client->prepare( 'http',
                           'interface.api.webfan.de',
                           'GET',
