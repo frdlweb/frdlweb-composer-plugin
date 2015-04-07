@@ -1,3 +1,7 @@
+Important notice: Current version will be re-coded imediatly today, please use a stable version so far:
+https://github.com/frdl/webfan/releases
+
+
 Application Composer (frdl/webfan)
 =
 
