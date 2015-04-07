@@ -131,16 +131,12 @@ class App
 			->Autoloader(true) 
 		       ->autoload_register() 
 		       -> j()
-			   
-		/**	   
-		 *
-		 * //  set by application:
-		     ->setAliasMap(null)
-			 ->applyAliasMap(true)
- 	        
-		 * */ 
-		;
-
+	        ;
+                /**
+                 * ToDo: Load Application Config and Components...
+                 * */
+                 
+                 
 		return $this;
     }
 	
