@@ -16,7 +16,7 @@ frdl\webfan\App::God(true, "dev-test", 'frdl\webfan\Autoloading\SourceLoader', f
     -> addNamespace('webdof\\', $dir_lib . 'webdof'.DIRECTORY_SEPARATOR,  false)
     -> addNamespace('', $dir_lib,  true)  
  ->j()	
-   -> addClass('frdl\aSQL\Engines\Terminal\aSQLCommand', 'Terminal',  true )
+   -> addClass('frdl\aSQL\Engines\Terminal\Test', 'Terminal',  true )
 ;
 
 $cmd = 'erstelle FS localhost @username:password `/path/to/`.`file` `FIELD`=VALUE -c --opt=val';
