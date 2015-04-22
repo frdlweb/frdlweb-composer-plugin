@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	1.2.1
+ *  @version 	1.2.2
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -979,12 +979,19 @@ class SourceLoader
 		
 		if($c[0]==='code')$tld = array_shift($c);
 		
+		
+		
 		/**
 		 * ToDo: APICLient
 		 *    $this->Client = new \frdl\Client\RESTapi();
+		 * 
+		 *  URL Pattern / e.g. this Class:
+		 *  http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
+		 * 
 		 */
-	    $this->Client = new \webdof\Webfan\APIClient();
-		$this->Client->prepare( 'http',
+		if(class_exists('\webdof\Webfan\APIClient')){ 
+	      $this->Client = new \webdof\Webfan\APIClient();
+		  $this->Client->prepare( 'http',
                           'interface.api.webfan.de',
                           'GET',
                           self::$id_interface,  //  i1234 
@@ -1001,17 +1008,27 @@ class SourceLoader
                           1,
                           E_USER_WARNING);
 						  
-		$this->eof = false;
-		$this->pos = 0;
-    	try{
+		 $this->eof = false;
+		 $this->pos = 0;
+    	 try{
                $r = $this->Client->request();
 			   if(intval($r['status']) !== 200)return false;
 			   $this->data = $r['body'];
 	
-		}catch(Exception $e){
+		 }catch(Exception $e){
 			trigger_error('Cannot process the request to '.$url, E_USER_WARNING);
 			return false;
-		}  			  
+		 }  	
+	   }else{
+	      $url = 'http://interface.api.webfan.de/v1/'.self::$id_interface.'/software/class/'.self::$id_repositroy.'/'.implode(".",array_reverse($c)).'/source.php';
+		  $data = file_get_contents($url);
+		  if(false === $data){
+		  	 return false;			  
+		  }else{
+		  	 $this->data = $data;
+		  }
+	   }
+				  
 	    return true;					  
     }
     public function dir_closedir(){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
