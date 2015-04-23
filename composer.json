@@ -63,7 +63,7 @@
   ],
 
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.3.3",
         "gettext/languages": "dev-master",
         "gettext/gettext": "dev-master",
         "phpseclib/phpseclib": ">=0.3.10",
