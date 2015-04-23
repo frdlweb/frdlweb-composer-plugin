@@ -129,7 +129,28 @@
     },
 
    
+  "scripts": {
 
+        "pre-install-cmd": [
+            "webfan\\InstallShield\\bridge\\ComposerBridge"
+        ],
+
+        "post-create-project-cmd": [
+            "webfan\\InstallShield\\bridge\\ComposerBridge"
+        ],
+        "post-root-package-install": [
+            "webfan\\InstallShield\\bridge\\ComposerBridge"
+        ],
+        "pre-file-download": [
+            "webfan\\InstallShield\\bridge\\ComposerBridge"
+        ],
+        "pre-package-uninstall": [
+            "webfan\\InstallShield\\bridge\\ComposerBridge"
+        ]
+
+    },
+    
+    
     "extra": { 
         "frdl" : true,
         "frdl-apc-type" : "core", 
