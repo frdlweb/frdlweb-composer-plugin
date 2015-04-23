@@ -29,6 +29,11 @@
 
   "repositories":
   [
+
+    { 
+       "type": "composer",
+       "url": "http:\/\/interface.api.webfan.de/v1/public/software/mirror/vendors/"
+    },
   	
       {
         "type": "vcs",
@@ -67,7 +72,7 @@
 
     { 
        "type": "composer",
-       "url": "http:\/\/www.jsclasses.org\/\/"
+       "url": "http:\/\/www.jsclasses.org\/"
     },
 
     {
