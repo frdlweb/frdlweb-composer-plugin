@@ -1,6 +1,6 @@
 {
     "name": "frdl/webfan",
-    "type": "library",
+    "type": "project",
     "description": "create websites, developing projects, compose applications",
     "keywords": ["php", "packages", "pluginsystem", "development", "websites", "webfan", "frdl", "api", "pragmamx"],
     "homepage": "http://frdl.github.io/webfan/",
