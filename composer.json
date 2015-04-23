@@ -3,7 +3,7 @@
     "type": "library",
     "description": "create websites, developing projects, compose applications",
     "keywords": ["php", "packages", "pluginsystem", "development", "websites", "webfan", "frdl", "api", "pragmamx"],
-    "homepage": "https://github.com/frdl/webfan",
+    "homepage": "http://frdl.github.io/webfan/",
     "license":  [ "BSD-4-Clause", "BSD-3-Clause" ],
     "support": {
         "email": "support@webfan.de",
