@@ -87,6 +87,14 @@
         "phpclasses/httpclient": "Original source of a fork"
     },
 
+    "conflict": {
+        "microsoft/frontpage" : "*",
+        "frdl/webfan" : "<1.0.2"
+    },    
+    
+    "provide" : {
+        "phpclasses/source-loader": ">=0.9.17"
+    },
 
     "autoload": {
     	"files": [".ApplicationComposer/lib/frdl/webfan/Autoloading/SourceLoader.php", ".ApplicationComposer/lib/frdl/webfan/App.php"],
@@ -122,7 +130,15 @@
 
    
 
-    "extra": { "test": "test" }
+    "extra": { 
+        "frdl" : true,
+        "frdl-apc-type" : "core", 
+        "ref" : "frdl/webfan",
+        "installers": {
+           "pmx-1" : "webfan\\Install",
+           "frdl-1": "- ToDo"
+        }
+    }
 
 }
 
