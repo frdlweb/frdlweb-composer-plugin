@@ -73,9 +73,7 @@
     },
 
     "require-dev": {
-        "phine/phar" : "*",
-        "ext-webfan" : "proprietary builder",
-        "frdl/PkiCA" : "proprietary class Workflow\\webdof\\API\\REST\\v1\\Endpoint\\software\\PkiCA"
+        "phine/phar" : "*"
     },
 
 
@@ -88,8 +86,7 @@
     },
 
     "conflict": {
-        "microsoft/frontpage" : "*",
-        "frdl/webfan" : "<1.0.2"
+        "microsoft/frontpage" : "*"
     },    
     
     "provide" : {
