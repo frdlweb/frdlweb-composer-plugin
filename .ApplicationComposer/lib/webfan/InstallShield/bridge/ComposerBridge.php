@@ -40,11 +40,11 @@
     protected $success = false;
     protected $type;
     protected $_event;
-    protected $_events = array(
+    protected $events = array(
            'pre-install-cmd' => null,
            'post-create-project-cmd' => null,
            'post-root-package-install' => null,
-           'pre-file-download' => array($this,'onPreFileDownload'),
+           'pre-file-download' => 'onPreFileDownload',
            'pre-package-uninstall' => null,
            
     );
@@ -60,21 +60,39 @@
            try{
               $Event = new self($event->getName(), $event);
            }catch(Exception $e){
-              $Event = self;
+              $Event = new self('error', null);
+              trigger_error('Error using brige Composer->frdl/webfan in '.$e->getMessage().'<br />'.$e->getFile().' '.$e->getLine(), E_USER_WARNING);
            }
+        
+         if(isset($Event->events[$Event->type]) && null !== $Event->events[$Event->type]){
+           try{
+               return call_user_func_array($Event->events[$Event->type], func_get_args());
+           }catch(Exception $e){
+              trigger_error('Error dispatching event in '.$e->getMessage().'<br />'.$e->getFile().' '.$e->getLine(), E_USER_WARNING);
+           }        
+         }
+       } 
            
        return $Event;     
     }
   
   
   public function __get($name){
-      if('_' !== substr($name,0,1))return $this->name;
+      if(isset($this->{$name}))return $this->{$name};
       return null;
   }
+  
+  
+  public function __set($name, $value){
+      if('_' !== substr($name,0,1) && isset($this->{$name}))return $this->{$name} = $value;
+        trigger_error('Accessing protected property in '.__METHOD__.' '.__LINE__, E_USER_WARNING);
+      return null;
+  } 
  
- 
- protected function onPreFileDownload(\Composer\Plugin\PreFileDownloadEvent $event){
- 
+ public function onPreFileDownload(\Composer\Plugin\PreFileDownloadEvent $event){
+ /**
+ * ToDo..
+ */ 
  }
  
  
