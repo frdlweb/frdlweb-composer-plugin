@@ -71,7 +71,7 @@
               trigger_error('Error dispatching event in '.$e->getMessage().'<br />'.$e->getFile().' '.$e->getLine(), E_USER_WARNING);
            }        
          }
-       } 
+      
            
        return $Event;     
     }

@@ -51,6 +51,7 @@ class Installer implements \frdl\webfan\Config\Install\Installable
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.1.2')$this->lid = 66;
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.0')$this->lid = 83;		 
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.1')$this->lid = 84;		
+		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.2')$this->lid = 85;			 
 	//	 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.1.2 download from pragmamx.org')$this->lid = 0;	 		 
 	}
 	
