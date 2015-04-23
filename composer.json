@@ -45,35 +45,37 @@
         "url": "https://github.com/pachanka/ptty"
       },
     
-    {
-      "type": "composer",
-      "url": "http:\/\/www.phpclasses.org\/"
-    },
+     {
+       "type": "composer",
+       "url": "http:\/\/www.phpclasses.org\/"
+     },
 
-       {
-	  "type": "composer",
-	  "url": "http://www.jsclasses.org/"
-	},
+    { 
+       "type": "composer",
+       "url": "http://www.jsclasses.org/"
+    },
 
     {
       "packagist": true
     }
 
 
-  ],
+ ],
 
     "require": {
         "php": ">=5.3.3",
+        "crodas/php-git":"*",
         "gettext/languages": "dev-master",
         "gettext/gettext": "dev-master",
         "phpseclib/phpseclib": ">=0.3.10",
         "pachanka/ptty":">=0.0.3",
-        "jquery/jquery-ui":"*",
-        "crodas/php-git":"*"
+        "jquery/jquery-ui":"*"
     },
 
     "require-dev": {
-        "phine/phar" : "*"
+        "phine/phar" : "*",
+        "ext-webfan" : "proprietary builder",
+        "frdl/PkiCA" : "proprietary class Workflow\\webdof\\API\\REST\\v1\\Endpoint\\software\\PkiCA"
     },
 
 
@@ -87,6 +89,7 @@
 
 
     "autoload": {
+    	"files": [".ApplicationComposer/lib/frdl/webfan/Autoloading/SourceLoader.php", ".ApplicationComposer/lib/frdl/webfan/App.php"],
         "psr-4": {
             "frdl\\": ".ApplicationComposer/lib/frdl/",
             "webfan\\": ".ApplicationComposer/lib/webfan/",
@@ -96,7 +99,7 @@
     },
 
     "autoload-dev": {
-        "psr-4": { "": "tests/" }
+        "psr-4": { "": ".ApplicationComposer/lib/Tests" }
     },
 
     "prefer-stable": true,
@@ -109,11 +112,15 @@
         "github-oauth": {"github.com": "oauthtoken"},
         "github-domains": ["github.com"],
         "vendor-dir" : ".ApplicationComposer/vendor",
-        "cache-dir" : "cache",
+        "cache-dir" : ".ApplicationComposer/cache",
+        "cache-files-dir":".ApplicationComposer/packages",
         "cache-files-ttl": "15552000",
-        "prepend-autoloader": true,
+        "prepend-autoloader": false,
+        "classmap-authoritative": true,
         "notify-on-install": true
     },
+
+   
 
     "extra": { "test": "test" }
 
