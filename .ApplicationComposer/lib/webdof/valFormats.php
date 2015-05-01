@@ -12,7 +12,7 @@
 *    - static methods changed to non-static, fixed
 *    - enables to call all methods as static (Backward compatibillity)
 *    - add and overwrite validation rules dynamically
-*    - closures as rules support
+*    - closures/callables as rules support
 * 
 * Test / Example :
 *<?php
