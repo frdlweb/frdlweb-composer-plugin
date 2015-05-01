@@ -1,83 +1,83 @@
 <?php
 /**
-  class valFormats
-  by T. Wehowski http://www.webfan.de
-  License: Do What The Fuck You Want To Public License, some funcs
-           by users from stackoverflow or php.net
-
-  Version: 5.0.0
- 
-  Change Log:
-    - fixed isint
-    - static methods changed to non-static, fixed
-    - enables to call all methods as static (Backward compatibillity)
-  
- * 
- * Test / Example :
-<?php
-
-require 'valFormats.php';
-
-webdof\valFormats::create() 
-      -> test()
- ;	  
-
- * 
- * 
-  This class is a collection of the following methods:
- 
-  @Input - string [,options -boolean]
-  
-::class-Methods.
-  - create @returns new instance of self
- 
-::validation-Methods:  => @returns MIXED :(or) FALSE
-  - isFilename   ? ^[a-zA-Z0-9\.-_ ]+$ =>  true : false
-  - isint ? integer => true : false
-  - isurl ? url => ARRAY : false
-  - ismail ? email => true : false
-  - ismd5 ? md5 => true : false
-  - issha1 ? sha1 => true : false
-  - isUUID ? UUID => true : false
-  - isUUIDVersion ? UUID => UUID version : false
-  - isCSSPositionLength ? CSS positioning => true : false
-  - isCSSPositionLengthColor ? CSS positioning or color => true : false
-  - isCSSColor ? CSS color value => true : false
-  - isCSSTextAlign ? CSS text-align value ( left|center|right|justify )  => true : false
-  - isCSSVerticalAlign ? CSS vertical-align value ( top|middle|bottom|baseline|sub|super|text-top|text-bottom )  => true : false
-  - isCSSPosition ? CSS position value ( static|relative|absolute|fixed )  => true : false
-  - isOID ? OID (like "1.3.6.1.4.1.37553.8") => true : false
-  - isbase64 ? base64 encoded => true : false
-  - valAdress ?    Straßenname 123
-                || Straßenname 1a
-                || Straßenname 2-b
-                || Müster-/GÄsse 123/b
-                || 2.nd Street 99d        => true : false
-  - germanNameTitle  ? /^[\w\sÄÖÜäöüß,\)\(\.\-]+$/      => true : false
-  - deppenS ? name ends with "s"   =>   returns "s"  : ""
-  - valVersion ? IP => false : ip version
- 
-::formatting-Methods
-  - ip2long  =>  IP to INT/LONGINT
-                ip6 : http://stackoverflow.com/questions/18276757/php-convert-ipv6-to-number
-                ip4 : http://php.net/manual/de/function.ip2long.php
-
-                list(, $ip) = unpack('l',pack('l',ip2long('200.200.200.200')));
-
-               $ip  = 'fe80:0:0:0:202:b3ff:fe1e:8329';
-               $dec = valFormats::ip2long_v6($ip);
-               $ip2 = valFormats::long2ip_v6($dec);
-
-              // $ip  = fe80:0:0:0:202:b3ff:fe1e:8329
-              // $dec = 338288524927261089654163772891438416681
-              // $ip2 = fe80::202:b3ff:fe1e:8329
-  - long2ip_v6 => LONGINT  TO IPv6
-  - fromCamelCaseToWhiteSpace => http://stackoverflow.com/questions/4519739/split-camelcase-word-into-words-with-php-preg-match-regular-expression
-
- * 
- *   @requires php >=5.3
- *   @license  1.3.6.1.4.1.37553.8.1.8.4.4 http://look-up.webfan.de/webfan-do-what-the-fuck-you-want-to-public-license
- *   @source   http://interface.api.webfan.de/v1/public/software/class/frdl/webdof.valFormats/source.php
+*  class valFormats
+*  by T. Wehowski http://www.webfan.de
+*  License: Do What The Fuck You Want To Public License, some funcs
+*           by users from stackoverflow or php.net
+*
+*  Version: 5.0.0
+* 
+*  Change Log:
+*    - fixed isint
+*    - static methods changed to non-static, fixed
+*    - enables to call all methods as static (Backward compatibillity)
+*  
+* 
+* Test / Example :
+*<?php
+*
+*require 'valFormats.php';
+*
+*webdof\valFormats::create() 
+*      -> test()
+* ;	  
+*
+* 
+* 
+*  This class is a collection of the following methods:
+* 
+*  @Input - string [,options -boolean]
+*  
+*::class-Methods.
+*  - create @returns new instance of self
+* 
+*::validation-Methods:  => @returns MIXED :(or) FALSE
+*  - isFilename   ? ^[a-zA-Z0-9\.-_ ]+$ =>  true : false
+*  - isint ? integer => true : false
+*  - isurl ? url => ARRAY : false
+*  - ismail ? email => true : false
+*  - ismd5 ? md5 => true : false
+*  - issha1 ? sha1 => true : false
+*  - isUUID ? UUID => true : false
+*  - isUUIDVersion ? UUID => UUID version : false
+*  - isCSSPositionLength ? CSS positioning => true : false
+*  - isCSSPositionLengthColor ? CSS positioning or color => true : false
+*  - isCSSColor ? CSS color value => true : false
+*  - isCSSTextAlign ? CSS text-align value ( left|center|right|justify )  => true : false
+*  - isCSSVerticalAlign ? CSS vertical-align value ( top|middle|bottom|baseline|sub|super|text-top|text-bottom )  => true : false
+*  - isCSSPosition ? CSS position value ( static|relative|absolute|fixed )  => true : false
+*  - isOID ? OID (like "1.3.6.1.4.1.37553.8") => true : false
+*  - isbase64 ? base64 encoded => true : false
+*  - valAdress ?    Straßenname 123
+*                || Straßenname 1a
+*                || Straßenname 2-b
+*                || Müster-/GÄsse 123/b
+*                || 2.nd Street 99d        => true : false
+*  - germanNameTitle  ? /^[\w\sÄÖÜäöüß,\)\(\.\-]+$/      => true : false
+*  - deppenS ? name ends with "s"   =>   returns "s"  : ""
+*  - valVersion ? IP => false : ip version
+* 
+*::formatting-Methods
+*  - ip2long  =>  IP to INT/LONGINT
+*                ip6 : http://stackoverflow.com/questions/18276757/php-convert-ipv6-to-number
+*                ip4 : http://php.net/manual/de/function.ip2long.php
+*
+*                list(, $ip) = unpack('l',pack('l',ip2long('200.200.200.200')));
+*
+*               $ip  = 'fe80:0:0:0:202:b3ff:fe1e:8329';
+*               $dec = valFormats::ip2long_v6($ip);
+*               $ip2 = valFormats::long2ip_v6($dec);
+*
+*              // $ip  = fe80:0:0:0:202:b3ff:fe1e:8329
+*              // $dec = 338288524927261089654163772891438416681
+*              // $ip2 = fe80::202:b3ff:fe1e:8329
+*  - long2ip_v6 => LONGINT  TO IPv6
+*  - fromCamelCaseToWhiteSpace => http://stackoverflow.com/questions/4519739/split-camelcase-word-into-words-with-php-preg-match-regular-expression
+*
+* 
+*   @requires php >=5.3
+*   @license  1.3.6.1.4.1.37553.8.1.8.4.4 http://look-up.webfan.de/webfan-do-what-the-fuck-you-want-to-public-license
+*   @source   http://interface.api.webfan.de/v1/public/software/class/frdl/webdof.valFormats/source.php
 */
 namespace webdof;
 
