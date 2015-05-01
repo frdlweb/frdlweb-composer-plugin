@@ -11,6 +11,7 @@
 *    - fixed isint
 *    - static methods changed to non-static, fixed
 *    - enables to call all methods as static (Backward compatibillity)
+*    - add and overwrite validation rules dynamically
 *  
 * 
 * Test / Example :
