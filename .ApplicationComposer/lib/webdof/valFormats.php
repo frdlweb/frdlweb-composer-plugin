@@ -163,6 +163,10 @@ $code = <<<EO
 \$TEST = \webdof\\valFormats::create();
 \$TEST->addRule('apidurl', "(http|https)\:\/\/interface\.api\.webfan\.de\/v([0-9]+)\/(public|i[0-9]+)\/software\/class\/frdl\/([\w\.]+)\/source\.php");
 \$TEST->addRule('me', "/".preg_quote("Till Wehowski")."/i", false);	
+\$TEST->addRule('URL.phpclasses.org', function(\$in){
+         	 \$r = \webdof\\valFormats::is(\$in,'url'); return (false !== \$r && isset(\$r['host']) && \$r['host'] === 'www.phpclasses.org') ? true : false;
+    });	
+
 \$testResult = \$TEST->is('TILL wehowski' , 'me');
 echo print_r(\$testResult, true);
 EO;
@@ -185,9 +189,9 @@ EO;
 			}
        }	
 	echo "VALIDATE METHODS (added dynamically):\r\n";
-	echo __CLASS__."::is\t\tFormat\t\tRegex\r\n";		
+	echo __CLASS__."::is\t\tFormat\t\tRule\r\n";		
 	foreach($TEST->rules as $format => $regex){
-	    echo "\t\t\t\t".$format."\t\t".$regex."\r\n";		
+	    echo "\t\t\t\t".$format."\t\t".((!is_callable($regex))?$regex:'callable')."\r\n";		
 	}	
 		
     echo "\r\n\r\n";
@@ -262,6 +266,23 @@ EO;
  } 
 
 
+ public function formats(){
+ 	 $formats = array();
+     $ref = new \ReflectionClass(get_class($this));
+     $methods = $ref->getMethods();	 	
+		foreach($methods as $index => $m){
+			if('is' === substr($m->name,1,2) && 'is' !== $m->name  && '_is' !== $m->name  ){
+				$format = substr($m->name,3,strlen($m->name));
+			    $formats[$format] = 'Built in';
+			}
+        }		
+        foreach($this->rules as $format => $regex){
+	         $formats[$format] = 'Dynamically added';		
+	    }		 
+	
+	return $formats;	 
+ }
+ 
  
 
  public function is($in, $format = null){
@@ -309,7 +330,7 @@ EO;
 
  
  public function addRule($format, $regex, $addLimiters = true){
- 	if(true === $addLimiters){
+ 	if(!is_callable($regex) && true === $addLimiters){
  	  $regex = ltrim($regex, '/^ ');
  	  $regex = rtrim($regex, '$/ ');	
 	  $regex = '/^'.$regex.'$/';
@@ -415,7 +436,11 @@ EO;
 	
  
  protected function _is($in, $format){
-    return (preg_match($this->rules[$format], $in)) ? true : false;
+ 	if(is_callable($this->rules[$format])){
+ 		return call_user_func($this->rules[$format], $in);
+ 	}else{
+      return (preg_match($this->rules[$format], $in)) ? true : false;
+   }
  }
 
  public function deppenS($name)
