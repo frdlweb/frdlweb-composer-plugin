@@ -5,14 +5,14 @@
 *  License: Do What The Fuck You Want To Public License, some funcs
 *           by users from stackoverflow or php.net
 *
-*  Version: 5.0.0
+*  Version: 5.2.0
 * 
 *  Change Log:
 *    - fixed isint
 *    - static methods changed to non-static, fixed
 *    - enables to call all methods as static (Backward compatibillity)
 *    - add and overwrite validation rules dynamically
-*    - closures/callables as rules support
+*  
 * 
 * Test / Example :
 *<?php
@@ -99,38 +99,229 @@ class valFormats
 
  protected $mode = null;
 
- function __construct(){
+ function __construct($defaults = true, $defaultAddons = true){
+    $this->clear();
+	
  	$this->deprecated = array(
         'valAdress' => '_isaddress',
         'germanNameTitle' => '_isname',        
         'valVersion' => '_isip',          
-		'ip2long' => '_ip2long',      
-		'ip2long_v4' => '_ip2long_v4',              
-		'ip2long_v6' => '_ip2long_v6',         
-		'long2ip_v6' => '_long2ip_v6',
+	//	'ip2long' => '_ip2long',      
+	//	'ip2long_v4' => '_ip2long_v4',              
+	//	'ip2long_v6' => '_ip2long_v6',         
+	//	'long2ip_v6' => '_long2ip_v6',
         
         
 		'fromCamelCaseToWhiteSpace' => '_camelcase2whitespace'
     );
 	
 	
-    $this->clear();
+	 if(true === $defaults)$this->defaults();	
+	 if(true === $defaultAddons)$this->defaultAddons();	 	 
  } 
 
+ public function defaultAddons(){
+ 	/**
+	 * some addons...
+	 *  - private enterprise number
+	 *  - WEID enabled OID
+	 *  - german method alias...
+	 */
+	 $this->addRule('oid.pen', function($in){
+	 	   $tok = '1.3.6.1.4.1';
+		   $tl = strlen($tok);
+		   $l = strlen($in);
+	 	   $r = \webdof\valFormats::is($in,'oid'); 
+	 	   return (false !== $r && $tok === substr($in,0,$tl) && $l > $tl) ? true : false;
+	 });
+	 
+	 $this->addRule('oid.weid', function($in){
+	 	   $tok = '1.3.6.1.4.1.37553.8';
+	 	   $r = \webdof\valFormats::is($in,'oid'); 
+	 	   return (false !== $r && $tok === substr($in,0,strlen($tok))) ? true : false;
+	 });	
+	 
+	 $this->addRule('impolite', function($in){
+	 	 return (preg_match("/porn|fucker|sex|asshole/i", $in)) ? true : false;
+	 });	
+	 
+	 
+	 /**
+	  * german aliasis
+	  */
+	 $this->addRule('ungerade', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'odd');
+	 });	 	 
+
+	 $this->addRule('gerade', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'even');
+	 });
+	 
+
+	 $this->addRule('primzahl', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'prime');
+	 });	
+	 
+	 return $this;		 		 	
+ }
+ 
+ 
+ 
+ public function defaults(){
+	 
+	 $this->addRule('float', function($in){
+	 	  return (preg_match("/^[0-9]{1,}\.[0-9]{1,}$/", $in)) ? true : false;
+	 });		
+	 
+	 $this->addRule('uuid.timebased', function($in){
+	 	   return (intval(\webdof\valFormats::is($in,'uuidversion')) === 1) ? true : false;
+	 });		
+	 $this->addRule('uuid.random', function($in){
+	 	   return (intval(\webdof\valFormats::is($in,'uuidversion')) === 4) ? true : false;
+	 });		
+	 $this->addRule('uuid.namebased.md5', function($in){
+	 	   return (intval(\webdof\valFormats::is($in,'uuidversion')) === 3) ? true : false;
+	 });		
+	 $this->addRule('uuid.namebased.sha1', function($in){
+	 	   return (intval(\webdof\valFormats::is($in,'uuidversion')) === 5) ? true : false;
+	 });		   
+	 $this->addRule('uuid.DCE', function($in){
+	 	   return (intval(\webdof\valFormats::is($in,'uuidversion')) === 2) ? true : false;
+	 });		   
+	 
+	 
+	 
+	 
+	 $this->addRule('integer.int8_t', function($in){
+	 	   if(!\webdof\valFormats::is($in,'int')) return false; 
+		   if($in < -128 || $in > 127)return false;
+	 	   return true;
+	 });	
+	 $this->addRule('byte', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'integer.int8_t');
+	 });	
+	 
+	 $this->addRule('integer.uint8_t', function($in){
+	 	   if(!\webdof\valFormats::is($in,'int')) return false; 
+		   if($in < 0 || $in > 255)return false;
+	 	   return true;
+	 });	
+	 $this->addRule('byte.unsigned', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'integer.uint8_t');
+	 });	
+	 
+		  
+		  
+	 
+	 
+	 $this->addRule('integer.int16_t', function($in){
+	 	   if(!\webdof\valFormats::is($in,'int') )return false; 
+		   if($in < -32768 || $in > 32767)return false;
+	 	   return true;
+	 });	
+	 $this->addRule('word', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'integer.int16_t');
+	 });	
+	 
+	 $this->addRule('integer.uint16_t', function($in){
+	 	   if(!\webdof\valFormats::is($in,'int')) return false; 
+		   if($in < 0 || $in > 65535)return false;
+	 	   return true;
+	 });	
+	 $this->addRule('word.unsigned', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'integer.uint16_t');
+	 });	
+	 		  
+		  
+		 
+	 
+	 $this->addRule('integer.int32_t', function($in){
+	 	   if(!\webdof\valFormats::is($in,'int') )return false; 
+		   if($in < -2147483648 || $in > 2147483647)return false;
+	 	   return true;
+	 });	
+	 $this->addRule('double', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'integer.int32_t');
+	 });	
+	 
+	 $this->addRule('integer.uint32_t', function($in){
+	 	   if(!\webdof\valFormats::is($in,'int')) return false; 
+		   if($in < 0 || $in > 4294967295)return false;
+	 	   return true;
+	 });	
+	 $this->addRule('double.unsigned', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'integer.uint32_t');
+	 });	
+	 		  
+		 
+	 
+	 $this->addRule('integer.int64_t', function($in){
+	 	   if(!\webdof\valFormats::is($in,'int') )return false; 
+		   if($in < -9223372036854775808 || $in > 9223372036854775807)return false;
+	 	   return true;
+	 });	
+	 $this->addRule('long', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'integer.int64_t');
+	 });	
+	 
+	 $this->addRule('integer.uint64_t', function($in){
+	 	   if(!\webdof\valFormats::is($in,'int')) return false; 
+		   if($in < 0 || $in > 18446744073709551615)return false;
+	 	   return true;
+	 });	
+	 $this->addRule('long.unsigned', function($in){
+	 	   return \webdof\valFormats::create()->is($in, 'integer.uint64_t');
+	 });	
+	 		  
+			  
+			  
+	 $this->addRule('odd', function($in){
+	 	   return (false !== \webdof\valFormats::is($in,'int') && $in % 2 !== 0) ? true : false;
+	 });		
+	 $this->addRule('even', function($in){
+	 	  return (false !==\webdof\valFormats::is($in,'int') && $in % 2 === 0) ? true : false;
+	 });			 
+			  
+			  
+	 $this->addRule('prime', function($in){
+	  if(!\webdof\valFormats::is($in,'int')) return false; 
+	  $in = intval($in);
+	  if($in < 0)return false;
+      if($in === 1)return false;
+      if($in === 2)return true;
+      if($in % 2 === 0)return false;
+       for($i = 3; $i <= ceil(sqrt($in)); $i = $i + 2) {
+           if($in % $i === 0)return false;
+        }
+      return true;
+	 });
+	 
+	 	 			  	
+	return $this;
+  }
 
  /**
   * Mock method, comment out when  tested !?
   */
  public function test(){
- 	if('cli' !== strtolower(PHP_SAPI))echo '<h1>Testing '.__CLASS__.'</h1>';
+ 	 $cli = ('cli' === strtolower(PHP_SAPI)) ? true : false;
+ 	if(true !== $cli)echo '<h1>Testing '.__CLASS__.'</h1>';
      $ref = new \ReflectionClass(get_class($this));
      $methods = $ref->getMethods();	
+	 ksort($methods);
 	 
   $highlight_num = function($file)
    {
-    $lines = implode(range(1, count(file($file))), '<br />');
-    $content = highlight_file($file, true);
-
+   	if(file_exists($file)){
+      $lines = implode(range(1, count(file($file))), '<br />');
+      $content = highlight_file($file, true);
+	}else{
+	  $file = ltrim($file, '<?php ');
+	  $file = "<?php\r\n".$file;	
+      $lines = implode(range(1, count(preg_split("/[\r\n]+/",$file))), '<br />');
+      $content = highlight_string($file, true);		
+	}
+	
   echo '
     <style type="text/css">
         .num {
@@ -154,49 +345,37 @@ class valFormats
    };
 
 	
- 	if('cli' !== strtolower(PHP_SAPI))echo '<pre>';
-	echo "\t\t\t\t\t\t\t\t\r\n";
-	echo "Add rules dynamically, examples (NOTE: Overwrites existing built in method if exists), and validate an example rule:\r\n";	
-	 echo "\r\n\r\n";
+ 	if(true !== $cli)echo '<pre>';
+	echo "The following example code\n- adds rules dynamically (NOTE: The added rule overwrites the built in method if exists),\r\n- and validate some tests:";	
 	//http://interface.api.webfan.de/v1/public/software/class/frdl/webdof.valFormats/source.php
 $code = <<<EO
-\$TEST = \webdof\\valFormats::create();
-\$TEST->addRule('apidurl', "(http|https)\:\/\/interface\.api\.webfan\.de\/v([0-9]+)\/(public|i[0-9]+)\/software\/class\/frdl\/([\w\.]+)\/source\.php");
-\$TEST->addRule('me', "/".preg_quote("Till Wehowski")."/i", false);	
-\$TEST->addRule('URL.phpclasses.org', function(\$in){
+\$TEST = \webdof\\valFormats::create()
+ ->addRule('url.API-D', '(http|https)\:\/\/interface\.api\.webfan\.de\/v([0-9]+)\/(public|i[0-9]+)\/software\/class\/frdl\/([\w\.]+)\/source\.php')
+ ->addRule('me', "Jon Doe", true)
+ ->addRule('me.mention', "/Jon Doe/i", false)
+ ->addRule('url.www.phpclasses.org', function(\$in){
          	 \$r = \webdof\\valFormats::is(\$in,'url'); return (false !== \$r && isset(\$r['host']) && \$r['host'] === 'www.phpclasses.org') ? true : false;
     });	
 
-\$testResult = \$TEST->is('TILL wehowski' , 'me');
-echo print_r(\$testResult, true);
+echo print_r(\$TEST->is('A string with JON doe' , 'me'), true)."\\r\\n";             //false
+echo print_r(\$TEST->is('A string with JON doe' , 'me.mention'), true)."\\r\\n";     //true
+echo print_r(\$TEST->is('Jon Doe' , 'me'), true);                                   //true
 EO;
 
-    echo $code;
-	echo "\r\n\r\nOutputs:\r\n";	
+    echo $highlight_num($code);
+	echo "Outputs:\r\n";	
 	eval($code);
 
     echo "\r\n\r\n";
 
-	echo "VALIDATE METHODS (built in):\r\n";
-	echo __CLASS__."::is\t\tFormat\t\t\t\tMethod\r\n";
-
-
-		foreach($methods as $index => $m){
-			if('is' === substr($m->name,1,2) && 'is' !== $m->name  && '_is' !== $m->name  ){
-			    $format = substr($m->name,3,strlen($m->name));		
-				if(strlen($format <= 7))$format .= "\t\t\t\t";		
-			    echo "\t\t\t\t".$format."\t".$m->name."\r\n";		
-			}
-       }	
-	echo "VALIDATE METHODS (added dynamically):\r\n";
-	echo __CLASS__."::is\t\tFormat\t\tRule\r\n";		
-	foreach($TEST->rules as $format => $regex){
-	    echo "\t\t\t\t".$format."\t\t".((!is_callable($regex))?$regex:'callable')."\r\n";		
-	}	
+		
+	echo "VALIDATE METHODS (summary):\r\n";	
+    echo print_r($TEST->formats(),true);
+	
 		
     echo "\r\n\r\n";
     echo "\r\n\r\n";
-	echo "FORMAT:\r\n";		
+	echo "FORMATTING METHODS:\r\n";		
 	echo __CLASS__."::from2to\t\tFrom\t\t\t\tTo\t\t\t\tMethod\r\n";
 		foreach($methods as $index => $m){
 		    $f = explode('2',$m->name, 2);
@@ -212,13 +391,20 @@ EO;
 	echo "TESTING SOME STRINGS:\r\n";	
 	echo "\r\n\r\n";			
  	$str = array(
+ 	  'Any U&$tring% with $ome noise: *+~#\'"hello world"',
 	   'http://www.phpclasses.org/package/8412-PHP-Validate-string-values-in-different-formats.html',
 	   'http://interface.api.webfan.de/v1/public/software/class/frdl/webdof.valFormats/source.php',
 	   'php.support@webfan.de',
 	   'Till Wehowski',
+	   'Herr Dr. Otto Mueller (MdB)',
+	   'Dr. Otto Mueller, jr.',
+	   'Frau Emma Meyer',
 	   'Wattenscheiderstraße 59',
+	   '1.3.6.1.4.1.0',
 	   '1.3.6.1.4.1.37553.8.1.8.8',
+	   '8e1441db-9bbd-4d29-ba06-3d797b63b5b6',
 	   'ffffff9a-1e7d-5547-8ede-5aee3c939a37',
+	   'ffffff9a-1e7d-9547-8ede-5aee3c939a37',
 	   'd41d8cd98f00b204e9800998ecf8427e',
 	   'da39a3ee5e6b4b0d3255bfef95601890afd80709',
 	   '16px',
@@ -231,39 +417,129 @@ EO;
 	   '93.184.216.34',
 	   '2001:0db8:0000:08d3:0000:8a2e:0070:7344',
 	   base64_encode(mt_rand(10000,999999).$_SERVER['SERVER_NAME'].'test1230x00'),
+	   base64_encode('My String 1234567890'),
       '~test1-123.zip' ,
-	   3,
-	   	   
-	   '34367',
-	   'dölfkltgß5   ö4ü359',
-	   'z435 j4894  rk ftz',
-	   '1234 Müller',
+	   97,
+	   3.5,
+	   65535,
+	   -2147483648,
+	   -129,
+	   -128,
+	   '10000000097',
+	   10000000098,   	   
+	  'A sexy sentence by a porn spammer asshole...',
+		   
+	   'Otto Müller',	   //valid
+	   'dölfkltgß5   ö4ü359',  //INVALID
+	   'Müller, Otto',                      //valid
+	   'z435 j4894  rk ftz',   //INVALID
+	   '1234 Müller',          //INVALID
 	   
    );
-   foreach($str as $num => $s){
-	   echo "Testing:\t\t\$TEST->is('".$s."');\r\n";
-	   $r = $TEST->is($s);
-	    foreach($r as $format => $result){
-	   	   if(false === $result)unset($r[$format]);
-	    }
-	   if(is_array($r) && 0 === count($r)){
-	   	 $r = false;
-	   }	   
-		   	
-   	   echo ((is_array($r))?print_r($r,true):' - not validated successfully')."\r\n\r\n";
-	   echo "\r\n\r\n";
-   }
-   
-   
+    foreach($str as $num => $s){
+	    echo 'Test '.((true !== $cli) ? '<strong>STRICT</strong>' : 'STRICT').":\t\t\$TEST->is('".((true !== $cli) ? '<strong>'.$s.'</strong>' : $s)."');\r\n";
+	    $r = $TEST->is($s);
+	     foreach($r as $format => $result){
+	    	   if(false === $result || empty($result)){
+	    	   	   unset($r[$format]);
+			   }else{
+			   	  if(true===$result)$result =  (true !== $cli) ? '<strong style="color:green;">OK</strong>' : 'OK';
+			   	  if(is_array($result))$result = (true !== $cli) ? '<strong style="color:green;">'.print_r($result,true).'</strong>' : print_r($result,true); 
+			   	  $r[$format] = $result;
+			   }
+		 }
+	    if(is_array($r) && 0 === count($r)){
+	   	  $r = false;
+	    }	   
+
+   	   $nvstr = (true !== $cli) ? '<strong style="color:red;"> - not validated successfully</strong>' : '- not validated successfully';		   	
+   	   echo ((is_array($r)) ? print_r($r,true) : $nvstr);
+        echo "\r\n";
+		
+	 if(false === $r){	
+	    echo 'Try '.((true !== $cli) ? '<strong>NONE-STRICT</strong>' : 'NONE-STRICT').":\t\t\$TEST->is('".((true !== $cli) ? '<strong>'.$s.'</strong>' : $s)."', null, false);\r\n";
+	    $r = $TEST->is($s, null, false);
+	     foreach($r as $format => $result){
+	    	   if(false === $result || empty($result)){
+	    	    	$r[$format] = false;
+	    	   	   unset($r[$format]);
+			   }else{
+			   	  if(true===$result)$result =  (true !== $cli) ? '<strong style="color:green;">OK</strong>' : 'OK';
+			   	  if(is_array($result))$result = (true !== $cli) ? '<strong style="color:green;">'.print_r($result,true).'</strong>' : print_r($result,true); 
+			   	  $r[$format] = $result;
+			   }
+		 }
+	    if(is_array($r) && 0 === count($r)){
+	   	  $r = false;
+	    }	   
+
+   	   $nvstr = (true !== $cli) ? '<strong style="color:red;"> - not validated successfully</strong>' : '- not validated successfully';		   	
+   	   echo ((is_array($r)) ? print_r($r,true) : $nvstr);
+        echo "\r\n\r\n";		
+      }
+      }
+
+ 	echo "\r\n\r\n";	  
+   	echo "TESTING MISC.:\r\n";	
+	
+$code = <<<EO
+ echo print_r(\$TEST->is('8e1441db-9bbd-4d29-ba06-3d797b63b5b6','uuidversion',true), true)."\r\n";
+ echo print_r(\$TEST->is('8e1441db-9bbd-zd29-ba06-3d797b63b5b6','uuidversion',true), true)."\r\n";
+ echo print_r(\$TEST->is('8e1441db-9bbd-zd29-ba06-3d797b63b5b6','uuidversion',false), true)."\r\n";
+EO;
+    echo $highlight_num($code);
+	echo "Outputs:\r\n";	
+	eval($code);		
+	
+	
+$code = <<<EO
+ echo print_r(\$TEST->ip2long('fe80:0:0:0:202:b3ff:fe1e:8329'), true);
+ echo "\r\n";	 
+ echo print_r(\$TEST->ip2long('93.184.216.34'), true);
+EO;
+
+    echo $highlight_num($code);
+	echo "Outputs:\r\n";	
+	eval($code);	
+	
+	
+$code = <<<EO
+ echo print_r(\$TEST->long2ip_v6('338288524927261089654163772891438416681'), true);
+EO;
+    echo $highlight_num($code);
+	echo "Outputs:\r\n";	
+	eval($code);	
+	
+	
+$code = <<<EO
+ \$teststring = 'MyCamelCasedString';
+ echo \$TEST->camelcase2whitespace(\$teststring);
+ echo "\r\n";	 
+ echo \$TEST->camelcase2whitespace(\$teststring, "_");
+EO;
+    echo $highlight_num($code);
+	echo "Outputs:\r\n";	
+	eval($code);	
+	
+	
+$code = <<<EO
+ \$teststring = 'My Camel-Cased String';
+ echo \$TEST->string2CamelCase(\$teststring);
+EO;
+    echo $highlight_num($code);
+	echo "Outputs:\r\n";	
+	eval($code);	
+			
+		
 	echo "\r\n\r\n";		
     echo "\r\n\r\n";			
-	if('cli' !== strtolower(PHP_SAPI))echo "<h1>SOURCECODE</h1>\r\n";   
-   if('cli' !== strtolower(PHP_SAPI))echo '</pre>';
+	if(true !== $cli)echo "<h1>SOURCECODE</h1>\r\n";   
+    if(true !== $cli)echo '</pre>';
    
-   if('cli' !== strtolower(PHP_SAPI))$highlight_num(__FILE__);
+    if(true !== $cli)$highlight_num(__FILE__);
    
 	return $this;
- } 
+ }
 
 
  public function formats(){
@@ -274,18 +550,29 @@ EO;
 			if('is' === substr($m->name,1,2) && 'is' !== $m->name  && '_is' !== $m->name  ){
 				$format = substr($m->name,3,strlen($m->name));
 			    $formats[$format] = 'Built in';
+				$formats[$format] = ('cli' !== strtolower(PHP_SAPI)) ? '<i>built in</i>' : 'built in';		
 			}
         }		
         foreach($this->rules as $format => $regex){
-	         $formats[$format] = 'Dynamically added';		
+	         $formats[$format] = ('cli' !== strtolower(PHP_SAPI)) ? '<strong>Dynamically added</strong>' : 'dynamically added';		
 	    }		 
 	
+	ksort($formats);
 	return $formats;	 
  }
  
+ 	
+ 
+ protected function _is($in, $format = null){
+ 	if(is_callable($this->rules[$format])){
+ 		return call_user_func($this->rules[$format], $in);
+ 	}else{
+      return (preg_match($this->rules[$format], $in)) ? true : false;
+   }
+ }
  
 
- public function is($in, $format = null){
+ public function is($in, $format = null, $strict = true){
    $r = false;
    try{
   	if(is_string($format)){
@@ -293,13 +580,13 @@ EO;
   			$r = $this->_is($in, $format);
  		}else{
  	    	$method = '_is'.strtolower($format);
-		    $r = $this->{$method}($in);
+		    $r = $this->{$method}($in, $strict);
 		}
  	}elseif(is_array($format)){
  		$r = array();
 		foreach($format as $pos => $f){
 			$method = '_is'.strtolower($f);
-			$r[$f] = $this->{$method}($in);
+			$r[$f] = $this->{$method}($in, $strict);
 		}
     }elseif(null === $format){
     	$ref = new \ReflectionClass(get_class($this));
@@ -313,17 +600,18 @@ EO;
 		foreach($methods as $index => $m){
 			if('is' === substr($m->name,1,2) && 'is' !== $m->name  && '_is' !== $m->name ){
          		$method = '_is'.substr($m->name,3,strlen($m->name));
-			    $r[substr($m->name,3,strlen($m->name))] = $this->{$method}($in);				
+			    $r[substr($m->name,3,strlen($m->name))] = $this->{$method}($in, $strict);				
 			}
        }
     }
 	
+   if(is_array($r) && 0 === count($r))$r = false;	
 	
    }catch(Exception $e){
    	 throw new Exception($e->getMessage());
    }
   
-  if(is_array($r) && 0 === count($r))$r = false;
+
   
   return $r;
  }
@@ -399,8 +687,10 @@ EO;
 	$this->mode = ('is' === substr($name,1,2)) ? self::MODE_VALIDATE : ((2 === count($f)) ? self::MODE_FORMAT : null);
 	if(self::MODE_FORMAT === $this->mode){
 		$this->from = ltrim($f[0],'_ ');
+		$this->from = ('' === $this->from || 'str' === $this->from) ? 'string' : $this->from;
 	    $this->to = $f[1];
 		$this->format = $this->from;
+		$name = '_'.$this->from.'2'.$this->to;
 	}elseif(self::MODE_VALIDATE === $this->mode){
 		$this->format = substr($name,3,strlen($name));
 	}
@@ -411,6 +701,7 @@ EO;
 	   $call = array($this,'_is');
 	   $args = array($this->in, $this->format);		
 	}
+
 
 	if(!is_callable($call) ){
 	    $trace = debug_backtrace();
@@ -433,15 +724,6 @@ EO;
 	 	
 	return $result;	
  }
-	
- 
- protected function _is($in, $format){
- 	if(is_callable($this->rules[$format])){
- 		return call_user_func($this->rules[$format], $in);
- 	}else{
-      return (preg_match($this->rules[$format], $in)) ? true : false;
-   }
- }
 
  public function deppenS($name)
     {
@@ -455,13 +737,13 @@ EO;
 
  protected function _isfullname($name)
    {
-	  return ( preg_match("/^([A-Z]([\w]+)(\,\s|\s)[A-Z]([\w\,\)s(\.\-]+))$/", $name)) ? true : false;
+	  return ( preg_match("/^[A-ZÄÖÜ]([\wÄÖÜaöüßéè]+)(\.)?(\,\s|\s)[A-ZÄÖÜ]([\wÄÖÜaöüßéè\,\)(\s[\wÄÖÜaöüßéè\,\)s(\.\-]+){1,1}?$/", $name)) ? true : false;
    }
 	
 
  protected function _isname($name)
    {
-	  return (!is_numeric($name) && preg_match("/^[A-Z][\w\,\)\s(\.\-]+$/", $name)) ? true : false;
+	  return (!is_numeric($name) && preg_match("/^[A-ZÄÖÜ][\A-Za-zÄÖÜaöüßéè\,\)\s(\.\-]+$/", $name)) ? true : false;
    }
 
 
@@ -488,18 +770,17 @@ EO;
 
 
 
-
-
   protected function _isint($str)
    {
-   	 return (preg_match("/^[0-9]{1,}$/", $str)) ? true : false;
+   	 return (is_numeric($str) && preg_match("/^((\+|\-)?([0-9]{1,}))$/", $str)) ? true : false;
    }
+
 
 
   protected function _isurl($str)
    {
      $c = parse_url($str);
-     if(is_array($c) && isset($c['scheme'])){return $c;}else{return FALSE;}
+     if(is_array($c) && isset($c['scheme']) && !is_numeric($c['scheme'])){return $c;}else{return FALSE;}
    }
 
   protected function _ismail($str)
@@ -523,8 +804,7 @@ EO;
 
 
  protected function _isuuid($in){
- 	 $c = $this->_isuuidversion($in, true);
- 	 return (false !== $c && preg_match("/^[0-5]{1,1}$/",$c))?true:false;	 	
+ 	 return (!$this->_isuuidversion($in, true))?false:true;	 	
  }
  
  /**
@@ -532,39 +812,34 @@ EO;
  */
  protected function _isuuidversion($in, $strict = true)
    {
+
      if(false !== $strict)
       {
-        if(!preg_match("/\-/", $in) || !preg_match("/^[0-9a-f-]+$/s",$in) )return false;
+      	  $in = strtolower($in );
+      	  $alphanums = "a-f";	
       }else{
-             if(!preg_match("/\-/", $in) || !preg_match("/^[0-9a-z-]+$/s",$in) )return true;
+             $alphanums = "a-z";	
            }
+	 
+	 if(!preg_match("/^[0-9$alphanums]{8}-[0-9$alphanums]{4}-(?<version>[0-9$alphanums]{1})[0-9$alphanums]{3}-[0-9$alphanums]{4}-[0-9$alphanums]{12}$/i",$in, $matches) )return false;
 
-     $u = explode('-', $in);
-     if(
-            count($u) !== 5
-        ||  strlen($u[0]) !==  8
-        ||  strlen($u[1]) !==  4
-        ||  strlen($u[2]) !==  4
-        ||  strlen($u[3]) !==  4
-        ||  strlen($u[4]) !==  12
-     ){
-       return false;
-     }else{
-             return (string)$u[2][0].'';
-          }
-  }
+     $version = $matches['version'];
+     if(false !== $strict && (empty($version) || !$this->_isint($version) || intval($version)<1 ||  intval($version)> 6))return false;
+	
+	return $version;
+   }
 
 
 
   protected function _iscsspositionlength($str)
    {
-      return !empty($str) && preg_match('/^auto$|^[+-]?[0-9]+\\.?([0-9]+)?(px|em|ex|%|in|cm|mm|pt|pc)?$/', $str);
+      return !empty($str) && preg_match('/^auto$|^[+-]?[0-9]+\\.?([0-9]+)?(px|em|ex|%|in|cm|mm|pt|pc)$/', $str);
    }
 
 
   protected function _iscsspositionlengthcolor($str)
    {
-      return !empty($str) && preg_match('/^auto|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow$|^[+-]?[A-Fa-f0-9]+\\.?([0-9]+)?(px|em|ex|%|in|cm|mm|pt|pc)?$/', $str);
+      return !empty($str) && preg_match('/^auto|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow$|^[+-]?\#[A-Fa-f0-9]+\\.?([0-9]+)?(px|em|ex|%|in|cm|mm|pt|pc)$/', $str);
    }
 
 
@@ -614,7 +889,7 @@ EO;
 
 
 
- protected function _isfilename($str, $allowSpace = true){
+ protected function _isfilename($str, $allowSpace = false){
  	if(true === $allowSpace)$str = preg_replace("/\s/", '~', $str);
  	return ((preg_match("/^[A-Za-z0-9\.\-\_\~]+$/", $str)  && preg_match("/[\.]/", $str) && preg_match("/[a-z]/", strtolower($str))) ? TRUE : FALSE); 
  } 
@@ -627,6 +902,14 @@ EO;
      return FALSE;
   }
   
+  
+  
+  
+ /**
+  * END VALIDATE METHODS, BEGIN FORMATTING METHODS ...
+  */
+ 
+
  
  /**
   * http://stackoverflow.com/questions/4519739/split-camelcase-word-into-words-with-php-preg-match-regular-expression
@@ -634,12 +917,16 @@ EO;
   * @param $camelCaseString
   * @return string
   */
-  protected function _camelcase2whitespace($camelCaseString){
+  protected function _camelcase2whitespace($camelCaseString, $space = " "){
   	    $re = '/(?<=[a-z])(?=[A-Z])/x';
         $a = preg_split($re, $camelCaseString);
-        return join($a, " " );
+        return join($a, $space);
   }
  
+  protected function _string2camelcase($str, $split = "/[\s\-\.\_]/"){
+  	 $a = preg_split($split, $str);
+     return join($a, "");
+  }
  
  /**
   * IP Addresses...
