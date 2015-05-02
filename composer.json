@@ -32,23 +32,9 @@
 
     { 
        "type": "composer",
-       "url": "http:\/\/interface.api.webfan.de/v1/public/software/mirror/"
+       "url": "http:\/\/interface.api.webfan.de\/v1\/public\/software\/mirror\/"
     },
-  	
-      {
-        "type": "vcs",
-        "url": "https:\/\/github.com\/gettext\/languages"
-      },	
-  	
-      {
-        "type": "vcs",
-        "url": "https:\/\/github.com\/gettext\/gettext"
-      },
-      
-      {
-        "type": "vcs",
-        "url": "https:\/\/github.com\/crodas\/php-git"
-      },	
+ 
   	
       {
         "type": "vcs",
@@ -122,7 +108,10 @@
     },
 
     "autoload": {
-    	"files": [".ApplicationComposer/lib/frdl/webfan/Autoloading/SourceLoader.php", ".ApplicationComposer/lib/frdl/webfan/App.php"],
+    	"files": [
+    	          ".ApplicationComposer/lib/frdl/webfan/Autoloading/SourceLoader.php",
+    	          ".ApplicationComposer/lib/frdl/webfan/App.php"
+    	         ],
         "psr-4": {
             "frdl\\": ".ApplicationComposer/lib/frdl/",
             "webfan\\": ".ApplicationComposer/lib/webfan/",
@@ -135,7 +124,7 @@
         "psr-4": { "": ".ApplicationComposer/lib/Tests" }
     },
 
-    "prefer-stable": true,
+    "prefer-stable": false,
 
     "config": {
         "bin-dir": "packages/bin",
@@ -179,10 +168,9 @@
     "extra": { 
         "frdl" : true,
         "frdl-apc-type" : "core", 
-        "ref" : "frdl/webfan",
         "installers": {
-           "pmx-1" : "webfan\\Install",
-           "frdl-1": "- ToDo"
+           "pmx-webdof" : "webfan\\Install",
+           "frdl-webfan": "- ToDo"
         }
     }
 
