@@ -5,7 +5,7 @@
 *  License: Do What The Fuck You Want To Public License, some funcs
 *           by users from stackoverflow or php.net
 *
-*  Version: 5.2.0
+*  Version: 5.2.3
 * 
 *  Change Log:
 *    - fixed isint
@@ -76,6 +76,9 @@
 *  - fromCamelCaseToWhiteSpace => http://stackoverflow.com/questions/4519739/split-camelcase-word-into-words-with-php-preg-match-regular-expression
 *
 * 
+ *   Bugs/ToDo:
+ *    - long2ip_v6
+ * 
 *   @requires php >=5.3
 *   @license  1.3.6.1.4.1.37553.8.1.8.4.4 http://look-up.webfan.de/webfan-do-what-the-fuck-you-want-to-public-license
 *   @source   http://interface.api.webfan.de/v1/public/software/class/frdl/webdof.valFormats/source.php
@@ -286,8 +289,7 @@ class valFormats
 	 $this->addRule('prime', function($in){
 	  if(!\webdof\valFormats::is($in,'int')) return false; 
 	  $in = intval($in);
-	  if($in < 0)return false;
-      if($in === 1)return false;
+      if($in <= 1)return false;
       if($in === 2)return true;
       if($in % 2 === 0)return false;
        for($i = 3; $i <= ceil(sqrt($in)); $i = $i + 2) {
@@ -349,7 +351,7 @@ class valFormats
 	echo "The following example code\n- adds rules dynamically (NOTE: The added rule overwrites the built in method if exists),\r\n- and validate some tests:";	
 	//http://interface.api.webfan.de/v1/public/software/class/frdl/webdof.valFormats/source.php
 $code = <<<EO
-\$TEST = \webdof\\valFormats::create()
+\$TEST = \webdof\\valFormats::create(true,true)
  ->addRule('url.API-D', '(http|https)\:\/\/interface\.api\.webfan\.de\/v([0-9]+)\/(public|i[0-9]+)\/software\/class\/frdl\/([\w\.]+)\/source\.php')
  ->addRule('me', "Jon Doe", true)
  ->addRule('me.mention', "/Jon Doe/i", false)
@@ -523,8 +525,9 @@ EO;
 	
 	
 $code = <<<EO
- \$teststring = 'My Camel-Cased String';
- echo \$TEST->string2CamelCase(\$teststring);
+ \$teststring = 'My Camel-Cased Test_string';
+ echo \$TEST->str2CamelCase(\$teststring)."\r\n";
+ echo \$TEST->string2CamelCase('font-size');
 EO;
     echo $highlight_num($code);
 	echo "Outputs:\r\n";	
@@ -924,8 +927,13 @@ EO;
   }
  
   protected function _string2camelcase($str, $split = "/[\s\-\.\_]/"){
-  	 $a = preg_split($split, $str);
-     return join($a, "");
+  	 $a = preg_replace($split, " ", $str);
+	 $a = ucwords($a);
+  	  if (ctype_lower($str[0])) {
+  	  	$a[0] = strtolower($a[0]);
+  	  }
+	 $a = preg_split($split, $a);
+     return join($a,  "");
   }
  
  /**
@@ -981,6 +989,7 @@ EO;
 
 
  protected function _long2ip_v6($dec) {
+ 	$dec = intval($dec);
     if (function_exists('gmp_init')) {
         $bin = gmp_strval(gmp_init($dec, 10), 2);
     } elseif (function_exists('bcadd')) {
