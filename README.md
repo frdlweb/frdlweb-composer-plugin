@@ -38,6 +38,7 @@ Authors
 =
 
  @wehowski@frdl Till Wehowski, Webfan.de (Owner, Team Leader)
+ 
  @shortymc Mahel Plasson, TradeZone.fr (Chief-Translator)
 
 
