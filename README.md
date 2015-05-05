@@ -37,9 +37,9 @@ https://github.com/frdl/translations
 Authors
 =
 
- @wehowski@frdl Till Wehowski, Webfan.de (Owner, Team Leader)
+Till Wehowski, http://webfan.de (Owner, Team Leader)
  
- @shortymc Mahel Plasson, TradeZone.fr (Chief-Translator)
+Mahel Plasson, http://tradezone.fr (Chief-Translator, French Translator)
 
 
 License
