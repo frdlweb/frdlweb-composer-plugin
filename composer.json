@@ -50,6 +50,13 @@
         "type": "vcs",
         "url": "https:\/\/github.com\/nathansmith\/jQuery-Desktop"
       },
+      
+     {
+        "type": "vcs",
+        "url": "https:\/\/github.com\/frdl\/JsonRPC"
+      },      
+      
+      
         
      {
        "type": "composer",
@@ -71,7 +78,8 @@
     "require": {
         "php": ">=5.3.3",
         "gettext/languages": "dev-master",
-        "gettext/gettext": "dev-master"
+        "gettext/gettext": "dev-master",
+        "fguillot/json-rpc": "dev-fork-frdl"
     },
 
     "require-dev": {
@@ -104,7 +112,8 @@
     },    
     
     "provide" : {
-        "phpclasses/source-loader": ">=0.9.17"
+        "phpclasses/source-loader": ">=0.9.17",
+        "phpclasses/validate-formats": "5.0.4"
     },
 
     "autoload": {
