@@ -92,13 +92,14 @@ class App
 	protected function __construct($init = false, $LoaderClass = self::LOADER, $name = '', $branch = 'dev-master', 
 	   $version = 'v1.0.2-beta.1', $meta = array())
 	 {
-        $this->app->name = $name;
-		$this->app->branch = $branch;
-		$this->app->version = $version;
-		$this->app->meta = $meta;
-		$this->wrap = array();
-		$this->shortcuts = array();
-        $this->setAutoloader($LoaderClass);
+	    $this->app = new \stdclass;	
+            $this->app->name = $name;
+	    $this->app->branch = $branch;
+	    $this->app->version = $version;
+	    $this->app->meta = $meta;
+	    $this->wrap = array();
+	    $this->shortcuts = array();
+            $this->setAutoloader($LoaderClass);
 	    if($init === true)$this->init();
 	}
 	 
