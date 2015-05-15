@@ -181,7 +181,10 @@
            "pmx-webdof" : "webfan\\Install",
            "frdl-webfan": "- ToDo"
         }
-    }
+    },
+    
+   "notify":"http:\/\/interface.api.webfan.de\/v1\/public\/software\/mirror\/csr\/download\/frdl\/webfan\/",
+   "notify-batch":"http:\/\/interface.api.webfan.de\/v1\/public\/software\/mirror\/csr\/download\/"
 
 }
 
