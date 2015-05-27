@@ -2,23 +2,12 @@ Application Composer (frdl/webfan)
 =
 
 create websites, developing projects, compose applications
+* @requires          PHP >= 5.3
+* [Homepage](http://frdl.github.io/webfan/)
+* [Documentation](https://github.com/frdl/webfan/wiki)
 
 
-Homepage
-=
-http://frdl.github.io/webfan/
-
-
-Documentation
-=
-
-* [Read the online documentation at: https://github.com/frdl/webfan/wiki](https://github.com/frdl/webfan/wiki)
-
-
-@requires          PHP >= 5.3
-
-
-Language Files
+Language Files and Translation Project
 =
 https://github.com/frdl/translations
 
@@ -26,9 +15,8 @@ https://github.com/frdl/translations
 Authors
 =
 
-Till Wehowski, http://domainundhomepagespeicher.de (Owner, Team Leader)
- 
-Mahel Plasson, http://tradezone.fr (Chief-Translator, French Translator)
+* Till Wehowski, http://domainundhomepagespeicher.de (Owner, Team Leader)
+* Mahel Plasson, http://tradezone.fr (Chief-Translator, French Translator)
 
 
 License
