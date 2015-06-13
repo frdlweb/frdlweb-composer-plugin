@@ -35,10 +35,15 @@
  *  @version 	1.0
  *    
  */
-require __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'ApplicationComposer'.DIRECTORY_SEPARATOR.'ApplicationComposerBootstrap.php';
+require __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan' . DIRECTORY_SEPARATOR .  'App.php';
+require __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'. DIRECTORY_SEPARATOR . 'Autoloading' . DIRECTORY_SEPARATOR . 'SourceLoader.php';
+
+frdl\webfan\Autoloading\SourceLoader::top() 
+  -> addPsr4('frdl\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' .DIRECTORY_SEPARATOR, true) 
+  -> addPsr4('webfan\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'webfan' .DIRECTORY_SEPARATOR, true) 
+  -> addPsr4('webdof\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'webdof' .DIRECTORY_SEPARATOR, true)  
+  ;
   
-  $Boot =   \frdl\ApplicationComposer\ApplicationComposerBootstrap::me((isset($baseconfig))?$baseconfig:null, true)
-        		   
-	;	   
+frdl\webfan\App::God(true, 'frdl\webfan\Autoloading\SourceLoader','AC boot') 
 
-
+;
