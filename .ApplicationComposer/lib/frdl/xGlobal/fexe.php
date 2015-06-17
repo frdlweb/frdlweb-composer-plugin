@@ -1,6 +1,5 @@
 <?php
 /**
- * @license BSD style
  * Copyright  (c) 2015, Till Wehowski
  * All rights reserved.
  * 
@@ -39,19 +38,38 @@
 	
 	protected $data;
 	
-	function __construct(){
+	protected $file; 
+	protected $file_offset;
+	
+	protected $raw = null;
+	
+	protected $Request;
+	
+	function __construct($file, $file_offset ){
+		 $this->file = $file;
+		 $this->file_offset = $file_offset;
 		 $this->data(null);
+		 $this->_boot();
 	}	
 	
 	
-	/**
-	* 
-	*  getter 
-	* 
-	* @return
-	*/
 	abstract public function data();
-	
+	abstract protected function _boot();	
+	abstract public function run(&$Request =null);	
+	abstract protected function route();
+			
+	protected function default_run(){
+    	$this->Request = (null !== $Request) ? $Request : $this->getRequest();
+    	$this->route();		
+	}		
+			
+	public function getRequest(){
+		
+	}		
+			
+	protected function default_boot(){
+		\frdl\webfan\App::God()->addStreamWrapper( 'webfan', 'fexe', get_class($this),  true  ) ;
+	}
 	
 		
 	public function read($data, $delimiters = '#', \closure $func){
@@ -62,7 +80,14 @@
 	}
 	
 	public function __call($name, $args){
-	  trigger_error('Not implemented yet: '.__METHOD__, E_USER_ERROR);	
+		$tok = 'get';
+		if(substr($name,0,strlen($tok))===$tok){
+			$name = substr($name, strlen($tok), strlen($name));
+			if(!isset($this->{$name}))$name = strtolower($name);
+			return (isset($this->{$name})) ? $thi->{$name} : null;
+		}
+		
+	    trigger_error('Not implemented yet: '.__METHOD__, E_USER_ERROR);	
 	}
 	
    
@@ -79,6 +104,8 @@
        return preg_match('#^[a-zA-Z\d/+]*={0,2}$#', $data) ? base64_decode($data) : false;
      }
      
+     
+     
     /**
 	* read file from offset
 	* 
@@ -87,10 +114,13 @@
 	* 
 	* @return string
 	*/ 
-    public function getFileData($file, $offset){
+    public function getFileData($file = null, $offset = null){
+    	if(null === $file)$file = &$this->file;
+    	if(null === $offset)$offset = $this->file_offset;
 		$this->IO = fopen($file, 'r');
         fseek($this->IO, $offset);
-        return stream_get_contents($this->IO);
+        $this->raw =  stream_get_contents($this->IO);
+        return $this->raw;
 	}
 	
 	public function __destruct(){
