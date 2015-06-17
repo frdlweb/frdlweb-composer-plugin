@@ -255,11 +255,11 @@
 	
    /**
    * e.g.: 	  
-            $data = $this->getFileData();
-            $this->read($data, '#', (function($token) use (&$out) {
-             	$out.= trim($token).'<br />';
-        	}));  
-        	echo $out;
+   *         $data = $this->getFileData();
+   *          $this->read($data, '#', (function($token) use (&$out) {
+   *           	$out.= trim($token).'<br />';
+   *     	}));  
+   *    	echo $out;
    * @param undefined $data
    * @param undefined $delimiters
    * @param undefined $func
