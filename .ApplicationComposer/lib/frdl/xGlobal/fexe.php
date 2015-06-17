@@ -60,7 +60,6 @@
             $func($token);
         }
 	}
-
 	public function __call($name, $args){
 		
 	}
@@ -76,7 +75,6 @@
         // do something here...
          $word = strtok($token_symbols);
      }
-
        if($token_reset)
         strtok('', '');
    }
@@ -88,18 +86,23 @@
      	$end = "-----END $subject-----";
         return $begin . chunk_split(base64_encode($data)) . $end;
      }
-
-
    public function unwrapData($str)
      {
        $data = preg_replace('#^(?:[^-].+[\r\n]+)+|-.+-|[\r\n]#', '', $str);
        return preg_match('#^[a-zA-Z\d/+]*={0,2}$#', $data) ? base64_decode($data) : false;
      }
      
-     
-    public function getFileData(){
-		$this->IO = fopen(__FILE__, 'r');
-        fseek($this->IO, __COMPILER_HALT_OFFSET__);
+    /**
+	* read file from offset
+	* 
+	* @param undefined $file     __FILE__
+	* @param undefined $offset   __COMPILER_HALT_OFFSET__
+	* 
+	* @return string
+	*/ 
+    public function getFileData($file, $offset){
+		$this->IO = fopen($file, 'r');
+        fseek($this->IO, $offset);
         return stream_get_contents($this->IO);
 	}
 	
@@ -110,6 +113,5 @@
 			trigger_error($e->getMessage(). ' in '.__METHOD__, E_USER_ERROR);
 		}
 	}
-
 }
  
