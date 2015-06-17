@@ -60,24 +60,11 @@
             $func($token);
         }
 	}
+	
 	public function __call($name, $args){
-		
+	  trigger_error('Not implemented yet: '.__METHOD__, E_USER_ERROR);	
 	}
 	
-   
-   /*
-   http://php.net/strtok
-    Split string/data by tokens 
-   */
-   public function tokenize($str, $token_symbols, $token_reset = true) {
-      $word = strtok($str, $token_symbols);
-      while (false !== $word) {
-        // do something here...
-         $word = strtok($token_symbols);
-     }
-       if($token_reset)
-        strtok('', '');
-   }
    
    
    public function wrapData($data, $subject)
