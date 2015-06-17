@@ -33,7 +33,7 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    frdl\webfan\Autoloading\SourceLoader
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
- *  @version 	1.2.2
+ *  @version 	1.2.3
  *  @file       frdl\webfan\Autoloading\SourceLoader.php
  *  @role       Autoloader 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -989,7 +989,7 @@ class SourceLoader
 		 *  http://interface.api.webfan.de/v1/public/software/class/webfan/frdl.webfan.Autoloading.SourceLoader/source.php
 		 * 
 		 */
-		if(class_exists('\webdof\Webfan\APIClient')){ 
+		if(class_exists('\webdof\Http\Client') && class_exists('\webdof\Webfan\APIClient')){ 
 	      $this->Client = new \webdof\Webfan\APIClient();
 		  $this->Client->prepare( 'http',
                           'interface.api.webfan.de',
