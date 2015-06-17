@@ -279,7 +279,7 @@
 		if(substr($name,0,strlen($tok))===$tok){
 			$name = substr($name, strlen($tok), strlen($name));
 			if(!isset($this->{$name}))$name = strtolower($name);
-			return (isset($this->{$name})) ? $thi->{$name} : null;
+			return (isset($this->{$name})) ? $this->{$name} : null;
 		}
 		
 		$method = 'func_'.$name;
