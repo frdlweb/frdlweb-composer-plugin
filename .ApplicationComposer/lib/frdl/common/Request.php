@@ -1,6 +1,5 @@
 <?php
 /**
- * @license
  * Copyright  (c) 2015, Till Wehowski
  * All rights reserved.
  * 
