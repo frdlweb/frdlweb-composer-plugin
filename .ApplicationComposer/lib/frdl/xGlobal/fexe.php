@@ -161,6 +161,11 @@
    	  /*
    	   ToDo...
    	   */
+   	   foreach($data as $placeholder => $replacer){
+   	   	  $template = (is_callable($replacer)) 
+   	   	       ? preg_replace_callback('/\{\$\_\_\_('.pre_quote($placeholder).')\_\_\_\}/',(function ($ph){return $replacer($ph);}), $template )
+               : str_replace('{$___'.$placeholder.'___}',$replacer,$template);
+	   }
    	   
    	  return $template;
    }
@@ -191,7 +196,13 @@
 	  return $foot;
    }
    
-   
+   public function out(){
+		 $html = '';
+		 $html.= $this->HTML_wrap_head($this->data['template_main_options']);
+		 $html.= $this->parse_template($this->template, $this->data['tpl_data']);
+		 $html.= $this->HTML_wrap_foot();
+		echo $html;
+   }	 
    
    	
 	
@@ -264,22 +275,32 @@
 	}
     public function stream_metadata($path, $option, $var){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
 	
+
+
+
+
+
+
+
 	
-	
-	protected function Files(&$out){
-		    $this->files = &$out;
-			$this->func_readFiles = (function($token) use (&$out) {
-			      if(!$out || !is_array($out))$out = array();
+	protected function Files(){
+		
+		    $out = array();
+		   	$this->func_readFiles = (function($token) use (&$out) {
+				   if(!$out || !is_array($out))$out = array();
              	//  if(substr($token,0,1) !== self::DEL)return;
-             	  $h = explode("\n", $token, 2);
-             	  $t = explode('%', $h[0], 3);
-               	  $file = array();
-             	  $file['pos'] = count($out);
-             	  $file['size'] = strlen($token) * 8;
+               	  $h = explode("\n", $token, 2);
+             	    $t = explode('%', $h[0], 3);
+             	    
+             	 	//   die('<pre>'.print_r($h,true));
+             	    
+               	    $file = array();
+             	    $file['pos'] = count($out);
+             	    $file['size'] = strlen($token) * 8;
              	 
-             	  $file['type'] = (isset($t[0])) ? trim($t[0]) : null;
-             	  $file['enc'] = (isset($t[1])) ? trim($t[1]) : null;
-             	  $file['name'] = (isset($t[2]))  ? trim($t[2]) : null;
+             	    $file['type'] = (isset($t[0])) ? trim($t[0]) : null;
+             	    $file['enc'] = (isset($t[1])) ? trim($t[1]) : null;
+             	    $file['name'] = (isset($t[2]))  ? trim($t[2]) : null;
              	  if('RSA' === strtoupper($file['enc'])){
 				  	$file['content'] = $this->unwrapData($h[1]);
 				  }
@@ -295,11 +316,13 @@
 				  else{
 				   	$file['content'] = $h[1];
 				  }
-             	  $k = ((isset($file['name'])) ? $file['name'] : $file['pos']);
-           	      $out[$k] = $file;
+             	    $k = ((isset($file['name'])) ? $file['name'] : $file['pos']);
+           	        $out[$k] = $file;
        	    });	
-		 $this->read($this->raw, self::DEL,  $this->func_readFiles, $out);
-	}
+       	    
+        	$this->read($this->raw, self::DEL,  $this->func_readFiles, $out);
+        	$this->files = $out;
+    }
 	
 	protected function readFile($file){
 		return (isset($this->files[$file])) ? $this->files[$file]['content'] : false;
@@ -310,7 +333,7 @@
 	}
 		
 	protected function setFuncs(){
-        	
+     	          	
         	
         $this->func_readSections_Test = (function($token) use (&$out) {
              	$out.= trim($token).'<br />';
@@ -320,6 +343,8 @@
 	
 	protected function default_run(&$Request =null){
     	$this->Request = (null !== $Request) ? $Request : $this->initRequest();
+    	$this->getFileData();
+        $this->Files();
     	$this->route();		
 	}		
 			
