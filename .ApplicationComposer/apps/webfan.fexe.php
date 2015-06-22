@@ -1,6 +1,5 @@
 <?php
 /**
- * @license
  * Copyright  (c) 2015, Till Wehowski
  * All rights reserved.
  * 
@@ -37,6 +36,7 @@
  * 
  *   @state:     test/development
  *  
+ *   @requires   frdl\xGlobal\fexe
  * 
  */
 namespace frdl\xGlobal; 
