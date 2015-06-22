@@ -36,7 +36,6 @@
  * 
  *   @state:     test/development
  *  
- *   @requires   frdl\xGlobal\fexe
  * 
  */
 namespace frdl\xGlobal; 
@@ -69,7 +68,7 @@ if(!class_exists('\frdl\webfan\App')){
 }
  
  if(!class_exists('\frdl\webfan\App')){
- 	echo 'App '.basename(__FILE__).' is not installed correctly! Class \frdl\webfan\App not found. 
+ 	echo 'App '.basename(__FILE__).' is not installed cortrectly! Class \frdl\webfan\App not found. 
 	<br />
 	Please read <a target="_blank" href="https://github.com/frdl/webfan/wiki/Installation">Installation instruction</a>!';
 	die();	
@@ -266,6 +265,7 @@ $(document).ready(function() {
 <br />
 <script type="text/javascript">
 $(document).ready(function(){
+$.WebfanDesktop({});	
 document.title = '404 - Not found';
  uhrTimer.add("Timer_" + window.location.href + "_notification_404", function(){
 	  if('function' !== typeof $.notificationcenter.newAlert)return;	
