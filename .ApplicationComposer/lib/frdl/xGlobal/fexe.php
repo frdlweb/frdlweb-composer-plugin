@@ -61,7 +61,7 @@
  
  abstract class fexe
 {
-	const VERSION='6.0.0.0';const DEL='#';const STR_LEN="[Encoding error] String has an invalid length flag";const ARR_LEN="[Encoding error] Array has an invalid length flag";const OBJ_LEN="[Encoding error] Object has an invalid length flag";const UNKNOWN_TYPE="Don't know how to serialize/unserialize %s";const V_NULL=0x00;const V_ZERO=0x01;const V_1INT_POS=0x10;const V_1INT_NEG=0x11;const V_2INT_POS=0x12;const V_2INT_NEG=0x13;const V_4INT_POS=0x14;const V_4INT_NEG=0x15;const V_FLOAT_POS=0x20;const V_FLOAT_NEG=0x21;const V_BOOL_TRUE=0x30;const V_BOOL_FALSE=0x31;const V_ARRAY=0x40;const V_OBJECT=0x50;const V_STRING=0x60;
+	const VERSION='6.0.0.0';const DEL='µ';const STR_LEN="[Encoding error] String has an invalid length flag";const ARR_LEN="[Encoding error] Array has an invalid length flag";const OBJ_LEN="[Encoding error] Object has an invalid length flag";const UNKNOWN_TYPE="Don't know how to serialize/unserialize %s";const V_NULL=0x00;const V_ZERO=0x01;const V_1INT_POS=0x10;const V_1INT_NEG=0x11;const V_2INT_POS=0x12;const V_2INT_NEG=0x13;const V_4INT_POS=0x14;const V_4INT_NEG=0x15;const V_FLOAT_POS=0x20;const V_FLOAT_NEG=0x21;const V_BOOL_TRUE=0x30;const V_BOOL_FALSE=0x31;const V_ARRAY=0x40;const V_OBJECT=0x50;const V_STRING=0x60;
 	
 	
 	protected $IO = null;
@@ -73,9 +73,10 @@
 	protected $tpl;
 	protected $css;
 	protected $js;
+	protected $template;
 	
 	protected $app;
-	protected $data;
+	protected $data = null;
 	protected $config;
 	protected $lang;
 	
@@ -119,6 +120,81 @@
 	public function appstream(){
 		return 'webfan://'.str_replace('\\', '.', get_class($this)) .'.fexe:'.$this->file_offset.'/'.$this->file;
 	}
+	
+   
+   public function HTML_wrap_head_options($opts){
+   	$head = '';
+		    foreach($opts['meta'] as $pos => $meta){
+		            if(is_array($meta) && count($meta) === 2){
+		            	if(isset($meta['name'])){
+						  $head.='<meta name="'.$meta['name'].'" content="'.$meta['content'].'" />'."\n";
+						}elseif(isset($meta['http-equiv'])){
+						  $head.='<meta http-equiv="'.$meta['http-equiv'].'" content="'.$meta['content'].'" />'."\n";
+						}
+		               	
+		            }	
+		    }
+		 
+		    foreach($opts['css'] as $pos => $css) {
+		    	$ccheck = parse_url($css);
+		    	  if($ccheck === false || !isset($ccheck['host'])){
+		    	  	$head.='<style type="text/css">'.preg_replace("/\s+/", '', $css).'</style>'."\n";
+		    	  }else{
+                    $head.='<link rel="stylesheet" type="text/css" href="'.$css.'" />'."\n";		    	  	
+		    	  }
+		    }
+			
+		    foreach($opts['js'] as $pos => $js) {
+		    		$ccheck = parse_url($js);
+		    	    if($ccheck === false || !isset($ccheck['host'])){
+		    	  	$head.='<script type="text/javascript">'.preg_replace("/\s+/", '', $js).'</script>'."\n";
+		    	  }else{
+                     $head.='<script type="text/javascript" src="'.$js.'"></script>'."\n";		    	  	
+		    	  }
+		    }  
+		    
+		return $head;     	
+   }
+   
+   
+   public function parse_template($template, $data){
+   	  /*
+   	   ToDo...
+   	   */
+   	   
+   	  return $template;
+   }
+   
+   
+   public function HTML_wrap_head(Array $opts = array('Title' => 'Document.Title',
+	            'css' => array(), 'js' => array(), 'meta' =>  array())){
+	            	
+    	 if(!$opts['Title'] || !is_string($opts['Title']))$opts['Title']='webfan:// '.$_SERVER['REQUEST_URI'];  //'webfan://'.$className.'.code'
+       	 $head = '';
+		 $head.='<!DOCTYPE html>'."\n";
+		 $head.='<html>'."\n";
+		 $head.='<head>'."\n";
+		 $head.='<title>'.$opts['Title'].'</title>'."\n";
+	
+			$head .= $this->HTML_wrap_head_options($opts);
+			
+		 $head.='</head>'."\n";		 
+		 $head.='<body>'."\n";	
+		 return $head;   	
+    }
+   
+   
+   public function HTML_wrap_foot(){
+         $foot = ''."\n";
+		 $foot.='</body>'."\n";
+		 $foot.='</html>';	  	
+	  return $foot;
+   }
+   
+   
+   
+   	
+	
 	
 	/**
 	* webfan://namespace.vendor.applicationname.fexe:__COMPILER_HALT_OFFSET__/__FILE__
@@ -212,6 +288,9 @@
 				  }	
              	  elseif('b64' === strtolower($file['enc'])){
 				  	$file['content'] = base64_decode($h[1]);
+				  }	
+             	  elseif('bin+b64' === strtolower($file['enc'])){
+				  	$file['content'] =  base64_decode($this->unserialize($h[1]));
 				  }				  
 				  else{
 				   	$file['content'] = $h[1];
@@ -231,7 +310,6 @@
 	}
 		
 	protected function setFuncs(){
-
         	
         	
         $this->func_readSections_Test = (function($token) use (&$out) {
@@ -340,8 +418,6 @@
 			trigger_error($e->getMessage(). ' in '.__METHOD__, E_USER_ERROR);
 		}
 	}
-
-
 /**
  * @component
  * bin
@@ -455,7 +531,6 @@
                         $out->$key = $value;
                     }
                     $i += $xlen;
-
                     break;
 					
 				case self::V_NULL:	
@@ -469,7 +544,6 @@
         }
         return $out;
     }
-
    public function serialize($var) {
         $str = "";
         if (is_integer($var) && $var==0) {
@@ -532,7 +606,6 @@
         }
         return $str;
     }
-
     protected function __toint($string,$blen=4) {
         $out  = 0;
         $n    = ($blen-1) * 8;
@@ -542,7 +615,6 @@
         }
         return $out;
     }
-
     protected function __fromint($int,$blen=4) {
         $int = (int)($int < 0) ? (-1*$int) : $int;
         $bytes=str_repeat(" ",$blen);
@@ -554,13 +626,11 @@
         }
         return $bytes;
     }
-
     protected function __fromfloat($float) {
         $str  = $this->__fromint($float);
         $str .= $this->__fromint( round(($float-(int)$float)*1000) , 2 );
         return $str;
     }
-
     protected function __tofloat($string) {
         $float  = $this->__toint(substr($string,0,4));
         $float += $this->__toint(substr($string,4,2),2)/1000;
