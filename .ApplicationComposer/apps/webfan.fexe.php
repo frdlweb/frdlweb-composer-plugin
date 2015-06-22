@@ -69,7 +69,7 @@ if(!class_exists('\frdl\webfan\App')){
 }
  
  if(!class_exists('\frdl\webfan\App')){
- 	echo 'App '.basename(__FILE__).' is not installed cortrectly! Class \frdl\webfan\App not found. 
+ 	echo 'App '.basename(__FILE__).' is not installed correctly! Class \frdl\webfan\App not found. 
 	<br />
 	Please read <a target="_blank" href="https://github.com/frdl/webfan/wiki/Installation">Installation instruction</a>!';
 	die();	
