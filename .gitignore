@@ -24,7 +24,6 @@ auth.json
 
 .wpmxdir.cnf
 wpmxdir.php
-/apps/
 /servers/*/production/
 /shared/
 /data/
