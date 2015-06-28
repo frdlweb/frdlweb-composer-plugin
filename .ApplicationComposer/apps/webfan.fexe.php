@@ -144,7 +144,7 @@ class webfan extends fexe
         
 	   $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
 	   
-	   if('/' === $u->getU()->req_uri ){
+	   if('/' === $u->getU()->req_uri || 'install.php' ===  $u->getU()->file || 'setup.php' ===  $u->getU()->file){
 	      $this->template = $this->readFile('Main Template');
 	   } elseif(self::URI_DIR_API === $u->getU()->dirs[0]){
 	   	  return $this->_api($u);
