@@ -318,7 +318,7 @@
 				  	$file['content'] = base64_decode($h[1]);
 				  }	
              	  elseif('json' === strtolower($enc[0])){
-				  	$file['content'] =  json_decode($h[1]);
+				  	$file['content'] =  json_decode(trim($h[1]));
 				  }				  
 				  else{
 				   	$file['content'] = $h[1];

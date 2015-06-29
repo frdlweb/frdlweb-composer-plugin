@@ -116,10 +116,14 @@ class webfan extends fexe
 				 
 	    );
 	   
-	   
+	     
 	     $this->data['tpl_data'] = array(
 	          'FILE' => htmlentities(__FILE__),
 	          'URI_DIR_API' => self::URI_DIR_API,
+ 	          'LOCATION' => 'http://'.$_SERVER['SERVER_NAME']
+ 	                         .implode('/', \webdof\wURI::getInstance()->getU()->dirs)
+ 	                         .'/'.\webdof\wURI::getInstance()->getU()->file,
+ 	          'URL' => '',
 	     );
 	 }
 	 
@@ -137,7 +141,7 @@ class webfan extends fexe
 	 	$this->default_boot() ;
 		
 	 	\frdl\webfan\Autoloading\SourceLoader::top() 
-          -> addPsr4('ApplicationComposer\\', __DIR__ . DIRECTORY_SEPARATOR . 'frdl' .DIRECTORY_SEPARATOR . 'webfan' .DIRECTORY_SEPARATOR, false) ;
+          -> addPsr4('frdl\ApplicationComposer\\', __DIR__ . DIRECTORY_SEPARATOR . 'frdl' .DIRECTORY_SEPARATOR . 'webfan' .DIRECTORY_SEPARATOR, false) ;
 	 }
 	 
 	 	
@@ -150,8 +154,21 @@ class webfan extends fexe
     protected function route($u = null){
         
        $this->data['config'] = $this->readFile('config.json');
-        
+       $this->data['config'] = (array)$this->data['config'];
+       if(base64_decode('eyRfX0xPQ0FUSU9OX19ffQ==') === $this->data['config']['URL'] ){
+	   	   $this->data['config']['URL'] = $this->data['tpl_data']['LOCATION'];
+	   	   trigger_error('The Program frdl/webfan is not installed properly, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!', E_USER_WARNING);
+	   }
+       $this->data['tpl_data']['URL'] = $this->data['config']['URL'];
+	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "/api/"';	
+
+	           
 	   $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
+	   
+	   if(defined('FRDL_WEBFAN_PHAR_INCLUDE')){
+	   	  $this->_installFromPhar($u, FRDL_WEBFAN_PHAR_INCLUDE);
+	   }
+	   
 	   
 	   if(
 	       '/' === $u->getU()->req_uri 
@@ -160,10 +177,10 @@ class webfan extends fexe
 	   ){
 	        $this->template = $this->readFile('Main Template');
 	   } elseif(
-	      'install.php' ===  $u->getU()->file 
-	   || 'install.phar' ===  $u->getU()->file){
-	   	  return $this->_installFromPhar($u);
-	   }elseif(self::URI_DIR_API === $u->getU()->dirs[0]){
+	          self::URI_DIR_API === $u->getU()->dirs[0]
+	     ||  'api.php' === $u->getU()->file     
+	     ||  'api' === $u->getU()->file     
+	   ){
 	   	  return $this->_api($u);
 	   }
 	   
@@ -174,9 +191,10 @@ class webfan extends fexe
       
 	}
 	
-	protected function _installFromPhar($u){
-		
-	   $this->template = $this->readFile('Main Template');
+	protected function _installFromPhar($u, $include){
+	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
+	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/api.php"';		
+       $this->data['PHAR_INCLUDE'] = $include;
 	}
 
     protected function _api($u = null){
@@ -201,9 +219,11 @@ class webfan extends fexe
 
 __halt_compiler();µConfig%json%config.json
 {
-	"PIN_HASH" : '{___$PIN_HASH___}',
-	"ADMIN_PWD" : '{___$adminpwd_optional_HASH___}',
-	"PIN" : '{___$PIN___}'
+	"PIN_HASH" : "{___$PIN_HASH___}",
+	"ADMIN_PWD" : "{___$adminpwd_optional_HASH___}",
+	"PIN" : "{___$PIN___}",
+	"HOST_HASH" : "{___$HOST_HASH___}",
+	"URL" : "{$__LOCATION___}"
 }
 µxTpl%%Main Template
 <h1 style="color:#6495ED;">frdl/webfan - Application Composer</h1>
@@ -220,9 +240,10 @@ $(document).ready(function() {
  
  $.ApplicationComposerOpen({
 		location : {
-			url : window.location.href,
-			api_url : null
-		});
+			url : '{$___URL___}',
+			api_url : {$___URI_DIR_API___}
+		}
+ });
      	
      	
 })(jQuery);
