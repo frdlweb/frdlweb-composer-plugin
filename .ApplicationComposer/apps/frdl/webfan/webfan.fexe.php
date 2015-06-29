@@ -124,6 +124,8 @@ class webfan extends fexe
  	                         .implode('/', \webdof\wURI::getInstance()->getU()->dirs)
  	                         .'/'.\webdof\wURI::getInstance()->getU()->file,
  	          'URL' => '',
+ 	          'EXTRA_PMX_URL' => '""',
+ 	          
 	     );
 	 }
 	 
@@ -163,13 +165,10 @@ class webfan extends fexe
 	   	   trigger_error('The Program frdl/webfan is not installed properly, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!', E_USER_WARNING);
 	   }
        $this->data['tpl_data']['URL'] = $this->data['config']['URL'];
-	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "/api/"';	
-
-	           
-	   $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
-	   
-	   if(defined('FRDL_WEBFAN_PHAR_INCLUDE')){
-	   	  $this->_installFromPhar($u, FRDL_WEBFAN_PHAR_INCLUDE);
+	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "api/"';	
+   
+	   if(function_exists('frdl_install_rewrite_function')){
+	   	  $this->_installFromPhar($u);
 	   }
 	   
 	   
@@ -196,9 +195,11 @@ class webfan extends fexe
       
 	}
 	
-	protected function _installFromPhar($u, $include){
+	protected function _installFromPhar($u){
+	   global $include;	
 	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
-	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/api.php"';		
+	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/api.php"';	
+	   $this->data['tpl_data']['EXTRA_PMX_URL'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/pragmamx.php"';	   	
        $this->data['PHAR_INCLUDE'] = $include;
 	}
 
@@ -246,7 +247,8 @@ $(document).ready(function() {
  $.ApplicationComposerOpen({
 		location : {
 			url : '{$___URL___}',
-			api_url : {$___URI_DIR_API___}
+			api_url : {$___URI_DIR_API___},
+			EXTRA_PMX_URL : {$___EXTRA_PMX_URL___}
 		}
  });
      	
