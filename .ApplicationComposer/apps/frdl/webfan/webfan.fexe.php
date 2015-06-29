@@ -81,7 +81,7 @@ if(!class_exists('\frdl\webfan\App')){
    
 class webfan extends fexe    
 {
-	 const DEL='µ';
+	 const DEL='Âµ';
 	 const URI_DIR_API = 'api';
 	
 	 public function Request(mixed $args = null){
@@ -124,8 +124,6 @@ class webfan extends fexe
  	                         .implode('/', \webdof\wURI::getInstance()->getU()->dirs)
  	                         .'/'.\webdof\wURI::getInstance()->getU()->file,
  	          'URL' => '',
- 	          'EXTRA_PMX_URL' => '""',
- 	          
 	     );
 	 }
 	 
@@ -165,10 +163,13 @@ class webfan extends fexe
 	   	   trigger_error('The Program frdl/webfan is not installed properly, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!', E_USER_WARNING);
 	   }
        $this->data['tpl_data']['URL'] = $this->data['config']['URL'];
-	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "api/"';	
-   
-	   if(function_exists('frdl_install_rewrite_function')){
-	   	  $this->_installFromPhar($u);
+	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "/api/"';	
+
+	           
+	   $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
+	   
+	   if(defined('FRDL_WEBFAN_PHAR_INCLUDE')){
+	   	  $this->_installFromPhar($u, FRDL_WEBFAN_PHAR_INCLUDE);
 	   }
 	   
 	   
@@ -195,11 +196,9 @@ class webfan extends fexe
       
 	}
 	
-	protected function _installFromPhar($u){
-	   global $include;	
+	protected function _installFromPhar($u, $include){
 	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
-	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/api.php"';	
-	   $this->data['tpl_data']['EXTRA_PMX_URL'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/pragmamx.php"';	   	
+	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/api.php"';		
        $this->data['PHAR_INCLUDE'] = $include;
 	}
 
@@ -223,7 +222,7 @@ class webfan extends fexe
  $fexe->run();
 
 
-__halt_compiler();µConfig%json%config.json
+__halt_compiler();ÂµConfig%json%config.json
 {
 	"PIN_HASH" : "{___$PIN_HASH___}",
 	"ADMIN_PWD" : "{___$adminpwd_optional_HASH___}",
@@ -231,7 +230,7 @@ __halt_compiler();µConfig%json%config.json
 	"HOST_HASH" : "{___$HOST_HASH___}",
 	"URL" : "{$__LOCATION___}"
 }
-µxTpl%%Main Template
+ÂµxTpl%%Main Template
 <h1 style="color:#6495ED;">frdl/webfan - Application Composer</h1>
 <a href="javascript:;" onclick="$.WebfanDesktop({});" style="color:#6495ED;">!desktop</a>
 <script type="text/javascript">
@@ -247,8 +246,7 @@ $(document).ready(function() {
  $.ApplicationComposerOpen({
 		location : {
 			url : '{$___URL___}',
-			api_url : {$___URI_DIR_API___},
-			EXTRA_PMX_URL : {$___EXTRA_PMX_URL___}
+			api_url : {$___URI_DIR_API___}
 		}
  });
      	
@@ -257,7 +255,7 @@ $(document).ready(function() {
 
 });
 </script>	
-µxTpl%%404
+ÂµxTpl%%404
 <span style="color:red;">The requested content was not found!</span>
 <br />
 [ <a href="/">Go to startpage</a> ]
