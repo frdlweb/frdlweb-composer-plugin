@@ -47,3 +47,5 @@ frdl\webfan\Autoloading\SourceLoader::top()
 frdl\webfan\App::God(true, 'frdl\webfan\Autoloading\SourceLoader','AC boot') 
 
 ;
+
+if(defined('FRDL_WEBFAN_DIR_MAIN'))define('FRDL_WEBFAN_DIR_MAIN', __DIR__ . DIRECTORY_SEPARATOR);

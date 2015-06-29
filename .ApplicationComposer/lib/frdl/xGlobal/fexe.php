@@ -301,17 +301,24 @@
              	    $file['type'] = (isset($t[0])) ? trim($t[0]) : null;
              	    $file['enc'] = (isset($t[1])) ? trim($t[1]) : null;
              	    $file['name'] = (isset($t[2]))  ? trim($t[2]) : null;
-             	  if('RSA' === strtoupper($file['enc'])){
+             	    
+             	  $enc = explode('+', $file['enc']);
+             	   
+             	  if(isset($enc[1]) && 'b64' === strtolower($enc[1])){
+				  	 $h[1] = base64_decode($h[1]);
+				  } 
+             	   
+             	  if('RSA' === strtoupper($enc[0])){
 				  	$file['content'] = $this->unwrapData($h[1]);
 				  }
-             	  elseif('BIN' === strtoupper($file['enc'])){
+             	  elseif('BIN' === strtoupper($enc[0])){
 				  	$file['content'] = $this->unserialize($h[1]);
 				  }	
-             	  elseif('b64' === strtolower($file['enc'])){
+             	  elseif('b64' === strtolower($enc[0])){
 				  	$file['content'] = base64_decode($h[1]);
 				  }	
-             	  elseif('bin+b64' === strtolower($file['enc'])){
-				  	$file['content'] =  base64_decode($this->unserialize($h[1]));
+             	  elseif('json' === strtolower($enc[0])){
+				  	$file['content'] =  json_decode($h[1]);
 				  }				  
 				  else{
 				   	$file['content'] = $h[1];

@@ -49,7 +49,7 @@ ini_set('display_errors', 1);
 if(!class_exists('\frdl\webfan\App')){
 	
  if(!defined( __NAMESPACE__.'\\'.'__BOOTFILE__')) {
- 	define( __NAMESPACE__.'\\'.'__BOOTFILE__', __DIR__ . DIRECTORY_SEPARATOR . '..'.DIRECTORY_SEPARATOR . 'bootstrap.php');
+ 	define( __NAMESPACE__.'\\'.'__BOOTFILE__', __DIR__ . DIRECTORY_SEPARATOR . '..'.DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR . 'bootstrap.php');
  }
 
 
@@ -73,6 +73,8 @@ if(!class_exists('\frdl\webfan\App')){
 	Please read <a target="_blank" href="https://github.com/frdl/webfan/wiki/Installation">Installation instruction</a>!';
 	die();	
  }
+ 
+ 
 /* END BOOTSECTION */ 
 
  
@@ -89,7 +91,10 @@ class webfan extends fexe
 	 public function data($data = null){
 	  if(null === $this->data){
 	  	
+
+	   	  	
 	   $this->data = array();
+	   $this->data['config'] = array();
 	   $this->data['index'] = 'Main Template';	
        $this->data['template_main_options'] = array(   
                 'Title' =>  'Webfan - Application Composer',
@@ -144,16 +149,21 @@ class webfan extends fexe
 	
     protected function route($u = null){
         
+       $this->data['config'] = $this->readFile('config.json');
+        
 	   $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
 	   
 	   if(
-	   '/' === $u->getU()->req_uri 
-	   || 'setup.php' ===  $u->getU()->file  
-	   || 'install.php' ===  $u->getU()->file 
-	   || 'install.phar' ===  $u->getU()->file
-	   || basename(__FILE__) ===  $u->getU()->file){
+	       '/' === $u->getU()->req_uri 
+	       || basename(__FILE__) ===  $u->getU()->file
+	       || $u->getU()->file === $u->getU()->file_ext
+	   ){
 	        $this->template = $this->readFile('Main Template');
-	   } elseif(self::URI_DIR_API === $u->getU()->dirs[0]){
+	   } elseif(
+	      'install.php' ===  $u->getU()->file 
+	   || 'install.phar' ===  $u->getU()->file){
+	   	  return $this->_installFromPhar($u);
+	   }elseif(self::URI_DIR_API === $u->getU()->dirs[0]){
 	   	  return $this->_api($u);
 	   }
 	   
@@ -162,6 +172,11 @@ class webfan extends fexe
 	   }	
         
       
+	}
+	
+	protected function _installFromPhar($u){
+		
+	   $this->template = $this->readFile('Main Template');
 	}
 
     protected function _api($u = null){
@@ -184,83 +199,30 @@ class webfan extends fexe
  $fexe->run();
 
 
-__halt_compiler();µxTpl%%Main Template
+__halt_compiler();µConfig%json%config.json
+{
+	"PIN_HASH" : '{___$PIN_HASH___}',
+	"ADMIN_PWD" : '{___$adminpwd_optional_HASH___}',
+	"PIN" : '{___$PIN___}'
+}
+µxTpl%%Main Template
 <h1 style="color:#6495ED;">frdl/webfan - Application Composer</h1>
 <a href="javascript:;" onclick="$.WebfanDesktop({});" style="color:#6495ED;">!desktop</a>
 <script type="text/javascript">
 $(document).ready(function() {
 (function($){
 	
-	 $.WebfanDesktop({
-     	      modules : [
- {
-	mid : 'frdl-webfan',
-	title : 'Application Composer',
-	description : 'Plugin for Webfan Desktop to provide a AC frontend.',
-	init : function(){
-	        $('#window_frdl-webfan').show();
-    },
-	cb_open : function(){
-        
-    },
-	icons : [
-	    {
-	    	mid : 'frdl-webfan',
-		    img :  'http://static.webfan.de/icons/icons-3/icon_package_get.gif',
-		
-			  cb_open : function(ev){
-		                     
-	                 }
-		}
-	],
-    windows : [ 
-    {
-     	mid : 'frdl-webfan',
-		 	img : 'http://static.webfan.de/icons/icons-3/icon_package_get.gif',
-		 	title : 'Application Composer at ' + window.location.href,	
-	        
-	        html_aside : "<ul><li>Server</li><li>Projects</li><li>Packages</li><li>Apps</li><li>Repositories</li></ul>",
-            
-            html_main : "...",        
-	
-	        html_bottom : 'Testmodus - {$___FILE___}',
-	        
-	        exec : function(ev){
-		                   
-	                 }
-	
-		 }
-    ],
-    menulinks : [
-    
-    ],
-    canvas : [
-  /*
-       {
-	   	  type : 'html',
-	   	  device : '#desktop',
-	   	  prepend : true,
-	   	  html : '<span style="color:red;font-size:06.em;">Testmodus - Development Version</span>'
-	   	  
-	   	   	   	
-	   }	
-	   */
-    ],
-    
-    config : {
-		location : {
-			url : window.location.href,
-			api_url : window.location.href + '{$___URI_DIR_API___}'
-		}
-	},
-	
-	  /*  ydn schema    */
-    shema : null
-    
-	
-     }    	      
+ $.WebfanDesktop({
+      modules : [
+          	      
     ]
  });
+ 
+ $.ApplicationComposerOpen({
+		location : {
+			url : window.location.href,
+			api_url : null
+		});
      	
      	
 })(jQuery);
