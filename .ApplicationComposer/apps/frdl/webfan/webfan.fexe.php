@@ -41,8 +41,8 @@
 namespace frdl\xGlobal; 
 
 /* BEGIN CONFIGSECTION */
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 /* END CONFIGSECTION */
 
 /* BEGIN BOOTSECTION */
@@ -83,6 +83,8 @@ class webfan extends fexe
 {
 	 const DEL='µ';
 	 const URI_DIR_API = 'api';
+	 
+	 const HINT_NOTINSTALLED = 'The Program frdl/webfan is not installed properly, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!';
 	
 	 public function Request(mixed $args = null){
 	 	
@@ -95,6 +97,7 @@ class webfan extends fexe
 	   	  	
 	   $this->data = array();
 	   $this->data['config'] = array();
+	   $this->data['installed'] = false;
 	   $this->data['index'] = 'Main Template';	
        $this->data['template_main_options'] = array(   
                 'Title' =>  'Webfan - Application Composer',
@@ -160,12 +163,31 @@ class webfan extends fexe
        
        $this->data['config'] = $this->readFile('config.json');
        $this->data['config'] = (array)$this->data['config'];
+       
+       if(!is_array($this->data['config']) || count($this->data['config']) < 3){
+       	    $this->data['installed'] = "0";
+	   	    trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
+	   }else{
+	   	    $this->data['installed'] = "1";
+	   }
+        $this->data['tpl_data']['INSTALLED'] = $this->data['installed'];
+
+       
+       
        if(base64_decode('eyRfX0xPQ0FUSU9OX19ffQ==') === $this->data['config']['URL'] ){
 	   	   $this->data['config']['URL'] = $this->data['tpl_data']['LOCATION'];
-	   	   trigger_error('The Program frdl/webfan is not installed properly, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!', E_USER_WARNING);
+	   	   trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
 	   }
        $this->data['tpl_data']['URL'] = $this->data['config']['URL'];
 	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "api/"';	
+   
+ 	    $this->data['tpl_data']['PACKAGE'] = $this->data['config']['PACKAGE'];
+ 	    $this->data['tpl_data']['VERSION'] = $this->data['config']['VERSION'];
+ 	    $this->data['tpl_data']['INSTALLED'] = $this->data['config']['INSTALLED'];
+ 	    $this->data['tpl_data']['REGISTERED'] = $this->data['config']['REGISTERED'];
+ 	    
+         	
+       $this->data['INSTALLER'] = "'0'";
    
 	   if(function_exists('frdl_install_rewrite_function')){
 	   	  $this->_installFromPhar($u);
@@ -200,7 +222,8 @@ class webfan extends fexe
 	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
 	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/api.php"';	
 	   $this->data['tpl_data']['EXTRA_PMX_URL'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/pragmamx.php"';	   	
-       $this->data['PHAR_INCLUDE'] = $include;
+       $this->data['PHAR_INCLUDE'] = $include;  	
+       $this->data['INSTALLER'] = "'1'";
 	}
 
     protected function _api($u = null){
@@ -225,11 +248,24 @@ class webfan extends fexe
 
 __halt_compiler();µConfig%json%config.json
 {
+	"PACKAGE" : "{___$PACKAGE___}",
+	"VERSION" : "{___$VERSION___}",
+	"OID" : "{___$OID___}",
 	"PIN_HASH" : "{___$PIN_HASH___}",
 	"ADMIN_PWD" : "{___$adminpwd_optional_HASH___}",
 	"PIN" : "{___$PIN___}",
+	"HOST" : "{___$HOST___}",
 	"HOST_HASH" : "{___$HOST_HASH___}",
-	"URL" : "{$__LOCATION___}"
+	"URL" : "{$__LOCATION___}",
+	"DOWNLOADTIME" : "{___$DOWNLOADTIME___}",
+	"INSTALLTIME" : "{___$INSTALLTIME___}",
+	"UID" : "{___$UID___}",
+	"UNAME" : "{___$UNAME___}",
+	"REGISTERED" : "{___$REGISTERED___}",
+	"LICENSEKEY" : "{___$LICENSEKEY___}",
+	"LICENSESERIAL" : "{___$LICENSESERIAL___}",
+	"SECRET" : "{___$SECRET___}",
+	"SHAREDSECRET" : "{___$SHAREDSECRET___}"
 }
 µxTpl%%Main Template
 <h1 style="color:#6495ED;">frdl/webfan - Application Composer</h1>
@@ -237,20 +273,30 @@ __halt_compiler();µConfig%json%config.json
 <script type="text/javascript">
 $(document).ready(function() {
 (function($){
-	
- $.WebfanDesktop({
+	try{
+	 $.WebfanDesktop({
       modules : [
             
     ]
- });
+  });
  
  $.ApplicationComposerOpen({
+ 	    PACKAGE : '{$___PACKAGE___}',
+ 	    VERSION : '{$___VERSION___}',
+ 	    INSTALLED : '{$___INSTALLED___}',
+ 	    INSTALLER : '{$___INSTALLER___}',
+ 	    REGISTERED : '{$___REGISTERED___}',
+ 	    
 		location : {
 			url : '{$___URL___}',
 			api_url : {$___URI_DIR_API___},
 			EXTRA_PMX_URL : {$___EXTRA_PMX_URL___}
 		}
- });
+ });	
+	}catch(err){
+		console.error(err);
+	}
+
      	
      	
 })(jQuery);
