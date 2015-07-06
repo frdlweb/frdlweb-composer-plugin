@@ -188,7 +188,7 @@ class webfan extends fexe
 	   	   trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
 	   }
        $this->data['tpl_data']['URL'] = $this->data['config']['URL'];
-	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "api/"';	
+	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api/';	
    
  	    $this->data['tpl_data']['PACKAGE'] = $this->data['config']['PACKAGE'];
  	    $this->data['tpl_data']['VERSION'] = $this->data['config']['VERSION'];
@@ -231,8 +231,8 @@ class webfan extends fexe
 	protected function _installFromPhar($u){
 	   global $include;	
 	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
-	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/api.php"';	
-	   $this->data['tpl_data']['EXTRA_PMX_URL'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/pragmamx.php"';	   	
+	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].$f.'/api.php';	
+	   $this->data['tpl_data']['EXTRA_PMX_URL'] =  $this->data['tpl_data']['URL'].$f.'/pragmamx.php';	   	
        $this->data['PHAR_INCLUDE'] = str_replace('phar://', '',$include);  	
        if('' !== $include) $this->data['INSTALLER'] = 1;
 	}
@@ -334,8 +334,8 @@ $(document).ready(function() {
  	    
 		location : {
 			url : '{$___URL___}',
-			api_url : {$___URI_DIR_API___},
-			EXTRA_PMX_URL : {$___EXTRA_PMX_URL___},
+			api_url : '{$___URI_DIR_API___}',
+			EXTRA_PMX_URL : '{$___EXTRA_PMX_URL___}',
 			EXTRA_INSTALLER : '{$___INSTALLER_PHAR_AVAILABLE___}'
 		}
  });	
