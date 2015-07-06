@@ -337,7 +337,7 @@ $(document).ready(function() {
  	    REGISTERED : '{$___REGISTERED___}',
 		EXTRA_INSTALLER : '{$___INSTALLER_PHAR_AVAILABLE___}',
  	    
-		location : {
+		loc : {
 			url : '{$___URL___}',
 			api_url : '{$___URI_DIR_API___}',
 			EXTRA_PMX_URL : '{$___EXTRA_PMX_URL___}'
