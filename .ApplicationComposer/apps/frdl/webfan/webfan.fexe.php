@@ -198,6 +198,7 @@ class webfan extends fexe
          	
        $this->data['INSTALLER_PHAR_AVAILABLE'] = 0;
    
+       $this->data['tpl_data']['INSTALLER'] = '';
 	   if(function_exists('frdl_install_rewrite_function')){
 	   	  $this->_installFromPhar($u);
 	   }
@@ -232,7 +233,8 @@ class webfan extends fexe
 	   global $include;	
 	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
 	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].$f.'/api.php';	
-	   $this->data['tpl_data']['EXTRA_PMX_URL'] =  $this->data['tpl_data']['URL'].$f.'/pragmamx.php';	   	
+	   $this->data['tpl_data']['EXTRA_PMX_URL'] =  $this->data['tpl_data']['URL'].$f.'/pragmamx.php';	
+	   $this->data['tpl_data']['INSTALLER'] = 'phar';
        $this->data['PHAR_INCLUDE'] = str_replace('phar://', '',$include);  	
        if('' !== $include) $this->data['INSTALLER'] = 1;
 	}
@@ -251,7 +253,9 @@ class webfan extends fexe
 
 		 	
 		 	if( $this->data['config']['ADMIN_PWD'] !== sha1($_REQUEST['pwd'])
-		 	|| $this->data['config']['HOST'] !== $_SERVER['SERVER_NAME']){
+		 	|| $this->data['config']['HOST'] !== $_SERVER['SERVER_NAME']
+		 	|| $this->data['config']['PIN'] !==$_REQUEST['PIN']
+		 	){
 				die('Invalid credentials, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!');
 			}
 		 	
@@ -331,12 +335,12 @@ $(document).ready(function() {
  	    INSTALLED : '{$___INSTALLED___}',
  	    INSTALLER : '{$___INSTALLER___}',
  	    REGISTERED : '{$___REGISTERED___}',
+		EXTRA_INSTALLER : '{$___INSTALLER_PHAR_AVAILABLE___}',
  	    
 		location : {
 			url : '{$___URL___}',
 			api_url : '{$___URI_DIR_API___}',
-			EXTRA_PMX_URL : '{$___EXTRA_PMX_URL___}',
-			EXTRA_INSTALLER : '{$___INSTALLER_PHAR_AVAILABLE___}'
+			EXTRA_PMX_URL : '{$___EXTRA_PMX_URL___}'
 		}
  });	
 	}catch(err){
