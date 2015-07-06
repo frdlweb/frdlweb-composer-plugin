@@ -56,9 +56,11 @@ if(!class_exists('\frdl\webfan\App')){
  if(!in_array( __BOOTFILE__, get_included_files())){
  	
   if(!file_exists(  __BOOTFILE__)){
-	echo 'App '.basename(__FILE__).' is not installed cortrectly! File ' .__BOOTFILE__.' not found. 
+	$str = 'App '.basename(__FILE__).' is not installed cortrectly! File ' .__BOOTFILE__.' not found. 
 	<br />
 	Please read <a target="_blank" href="https://github.com/frdl/webfan/wiki/Installation">Installation instruction</a>!';
+	trigger_error($str, E_USER_ERROR);
+	echo $str; 
 	die();
   }
  	
@@ -68,9 +70,11 @@ if(!class_exists('\frdl\webfan\App')){
 }
  
  if(!class_exists('\frdl\webfan\App')){
- 	echo 'App '.basename(__FILE__).' is not installed cortrectly! Class \frdl\webfan\App not found. 
+ 	$str = 'App '.basename(__FILE__).' is not installed cortrectly! Class \frdl\webfan\App not found. 
 	<br />
 	Please read <a target="_blank" href="https://github.com/frdl/webfan/wiki/Installation">Installation instruction</a>!';
+	trigger_error($str, E_USER_ERROR);
+	echo $str; 
 	die();	
  }
  
@@ -153,6 +157,11 @@ class webfan extends fexe
 	 
 	 	
     public function run(&$Request =null){
+       if('cli' === PHP_SAPI){
+ 	      trigger_error('This is a web app, cli support is not implemented yet completly!', E_USER_WARNING);
+ 	      chdir(dirname($_SERVER['argv'][0]));
+       }  	
+    	
     	$this->default_run($Request);
     	
     	 $this->out(); 
@@ -187,12 +196,14 @@ class webfan extends fexe
  	    $this->data['tpl_data']['REGISTERED'] = $this->data['config']['REGISTERED'];
  	    
          	
-       $this->data['INSTALLER'] = "'0'";
+       $this->data['INSTALLER_PHAR_AVAILABLE'] = 0;
    
 	   if(function_exists('frdl_install_rewrite_function')){
 	   	  $this->_installFromPhar($u);
 	   }
-	   
+	   $this->data['tpl_data']['INSTALLER_PHAR_AVAILABLE'] =   $this->data['INSTALLER'] ;
+    	 
+    	 
 	   
 	   if(
 	       '/' === $u->getU()->req_uri 
@@ -222,12 +233,46 @@ class webfan extends fexe
 	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
 	   $this->data['tpl_data']['URI_DIR_API'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/api.php"';	
 	   $this->data['tpl_data']['EXTRA_PMX_URL'] = '"' . $this->data['tpl_data']['URL'].'" + "'.$f.'/pragmamx.php"';	   	
-       $this->data['PHAR_INCLUDE'] = $include;  	
-       $this->data['INSTALLER'] = "'1'";
+       $this->data['PHAR_INCLUDE'] = str_replace('phar://', '',$include);  	
+       if('' !== $include) $this->data['INSTALLER'] = 1;
 	}
 
     protected function _api($u = null){
 		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
+		 
+		 /* BEGIN extract (todo) */
+		 if(isset($_GET['EXTRA_EXTRACT_PHAR']) ){
+		 	
+		 	if(intval( str_replace(array('"', "'"), array('',''), $this->data['INSTALLER']) ) !== 1){
+			    $str ='Error: Not in installer context';
+				trigger_error($str, E_USER_ERROR);
+				die($str);			
+			}
+
+		 	
+		 	if( $this->data['config']['ADMIN_PWD'] !== sha1($_REQUEST['pwd'])
+		 	|| $this->data['config']['HOST'] !== $_SERVER['SERVER_NAME']){
+				die('Invalid credentials, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!');
+			}
+		 	
+		 	try{
+				\Extract::from($this->data['PHAR_INCLUDE'])->to(getcwd ());
+			}catch(\Exception $e){
+				$str = $this->data['PHAR_INCLUDE'] .' -> '.getcwd().' - ' .$e->getMessage();
+				trigger_error($str, E_USER_ERROR);
+				die($str);
+			}
+		 	 
+		 	 if(file_exists(getcwd (). DIRECTORY_SEPARATOR . 'composer.json')){
+			 			unlink( $this->data['PHAR_INCLUDE']);
+		 	            die('Extracted');
+			 }else{
+				$str = 'Error extracting php archive';
+				trigger_error($str, E_USER_ERROR);
+				die($str);			 	
+			 }
+		 }
+		 /* END extract (todo) */
 		 
 		 die('API:callback: ToDo...');
 	}
@@ -290,7 +335,8 @@ $(document).ready(function() {
 		location : {
 			url : '{$___URL___}',
 			api_url : {$___URI_DIR_API___},
-			EXTRA_PMX_URL : {$___EXTRA_PMX_URL___}
+			EXTRA_PMX_URL : {$___EXTRA_PMX_URL___},
+			EXTRA_INSTALLER : '{$___INSTALLER_PHAR_AVAILABLE___}'
 		}
  });	
 	}catch(err){
