@@ -32,13 +32,28 @@
  
  class Request
  {
- 	function __construct(){
+        function __construct(){
+        	$this->protocoll = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
 		$this->method = $_SERVER['REQUEST_METHOD'];
 		$this->get = $_GET;
 		$this->pos = $_POST;
 		$this->cookies = $_COOKIE;
 		$this->session = $_SESSION;
 		$this->uri = $_SERVER['REQUEST_URI'];
-		
-	}
+		switch($this->method){
+		       case 'HEAD' :
+		       case 'GET' :
+		           $this->request = $_GET;
+		          break;
+		        case 'POST' : 
+		        case 'PUT' : 
+		        case 'DELETE' : 
+		           $this->request = $_POST;
+		          break;
+		        default : 
+		            $this->request = $_REQUEST;	
+		          break;	
+		}
+         }
+         
  }
