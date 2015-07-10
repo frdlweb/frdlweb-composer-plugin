@@ -112,7 +112,9 @@ class webfan extends fexe
 				        'http://api.webfan.de/api-d/4/js-api/library.js',
 				),
 				'meta' =>  array(
-				     array('http-equiv' => 'Content-Type', 'content' => 'text/html; charset=UTF-8'),				 
+				     array('http-equiv' => 'content-type', 'content' => 'text/html; charset=utf-8'),	
+				     array('http-equiv' => 'content-style-type', 'content' => 'text/css'),	
+				     array('http-equiv' => 'content-script-type', 'content' => 'text/javascript'),				 
 				     array('name' => 'apple-mobile-web-app-capable', 'content' => 'yes'),
 				     array('name' => 'apple-mobile-web-app-status-bar-style', 'content' => 'lightblue'),
 				     array('name' => 'HandheldFriendly', 'content' => 'true'),
@@ -122,7 +124,7 @@ class webfan extends fexe
 				 )
 				 
 	    );
-	   
+
 	     
 	     $this->data['tpl_data'] = array(
 	          'FILE' => htmlentities(__FILE__),
@@ -242,8 +244,26 @@ class webfan extends fexe
     protected function _api($u = null){
 		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
 		 
-		 /* BEGIN extract (todo) */
+		 /* BEGIN extract phar (todo build/refactor API) */
 		 if(isset($_GET['EXTRA_EXTRACT_PHAR']) ){
+		 	
+		 	
+		 	ob_start(function($c){
+		 		       	 $r = new \stdclass;
+		 		       	 $r->type = 'print';
+		 		       	 $r->out = $c;
+      	                 $fnregex = "/^[A-Za-z0-9\$\.-_\({1}\){1}]+$/";
+      	                 $callback = (isset($_REQUEST['callback']) && preg_match($fnregex, $_REQUEST['callback']))
+		                   ? strip_tags($_REQUEST['callback'])
+		                   : '';
+                if($callback === ''){
+         	            $js = json_encode($r);
+                }  else {
+                           $js = $callback.'(' . json_encode($r) . ')';
+		                }
+		                
+		        return $js;
+		 	});
 		 	
 		 	if(intval( str_replace(array('"', "'"), array('',''), $this->data['INSTALLER']) ) !== 1){
 			    $str ='Error: Not in installer context';
@@ -252,9 +272,9 @@ class webfan extends fexe
 			}
 
 		 	
-		 	if( $this->data['config']['ADMIN_PWD'] !== sha1($_REQUEST['pwd'])
+		 	if( $this->data['config']['ADMIN_PWD'] !== sha1($_POST['pwd'])
 		 	|| $this->data['config']['HOST'] !== $_SERVER['SERVER_NAME']
-		 	|| $this->data['config']['PIN'] !==$_REQUEST['PIN']
+		 	|| $this->data['config']['PIN'] !==$_POST['PIN']
 		 	){
 				die('Invalid credentials, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!');
 			}
@@ -277,6 +297,9 @@ class webfan extends fexe
 			 }
 		 }
 		 /* END extract (todo) */
+		 
+		 
+		 
 		 
 		 die('API:callback: ToDo...');
 	}
