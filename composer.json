@@ -179,10 +179,23 @@
     "extra": { 
         "frdl" : true,
         "frdl-apc-type" : "core", 
-        "installers": {
-           "pmx-webdof" : "webfan\\Install",
-           "frdl-webfan": "- ToDo"
-        }
+        "fexe": {
+	               "PACKAGE" : "{___$PACKAGE___}",
+	               "VERSION" : "{___$VERSION___}",
+	               "OID" : "{___$OID___}",
+	               "HOST" : "{___$HOST___}",
+	               "HOST_HASH" : "{___$HOST_HASH___}",
+	               "URL" : "{$__LOCATION___}",
+	               "DOWNLOADTIME" : "{___$DOWNLOADTIME___}",
+	               "INSTALLTIME" : "{___$INSTALLTIME___}",
+	               "UID" : "{___$UID___}",
+	               "UNAME" : "{___$UNAME___}",
+	               "REGISTERED" : "{___$REGISTERED___}",
+	               "LICENSEKEY" : "{___$LICENSEKEY___}",
+	               "LICENSESERIAL" : "{___$LICENSESERIAL___}",
+	               "DIR" : "{___$APPDIR___}"
+	              
+         }
     }
 
 }
