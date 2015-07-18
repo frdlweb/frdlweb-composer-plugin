@@ -90,6 +90,11 @@ class webfan extends fexe
 	 
 	 const HINT_NOTINSTALLED = 'The Program frdl/webfan is not installed properly, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!';
 	
+	 protected $aSess;
+	 
+	 protected $debug = false;
+	
+	
 	 public function Request(mixed $args = null){
 	 	
 	 }
@@ -100,6 +105,8 @@ class webfan extends fexe
 
 	   	  	
 	   $this->data = array();
+	   $this->data['o'] = new \stdclass;	   
+	   $this->data['data_out'] = new \stdclass;
 	   $this->data['config'] = array();
 	   $this->data['installed'] = false;
 	   $this->data['index'] = 'Main Template';	
@@ -146,9 +153,15 @@ class webfan extends fexe
 		 	if(isset($this->data[$k]))$this->data[$k] = $v;
 		 }
 	   }
-	   
+	
+	
+       if(!isset($_SESSION[__CLASS__]))$_SESSION[__CLASS__] = array();
+       $this->aSess = & $_SESSION[__CLASS__] ;
+        
 	   return $this->data;	 	
 	 }
+	 
+	 
 	 
 	 protected function _boot(){
 	 	$this->default_boot() ;
@@ -188,7 +201,7 @@ class webfan extends fexe
        
        if(base64_decode('eyRfX0xPQ0FUSU9OX19ffQ==') === $this->data['config']['URL'] ){
 	   	   $this->data['config']['URL'] = $this->data['tpl_data']['LOCATION'];
-	   	   trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
+	   	  if(true === $this->debug) trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
 	   }
        $this->data['tpl_data']['URL'] = $this->data['config']['URL'];
 	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api/';	
@@ -208,17 +221,18 @@ class webfan extends fexe
 	   $this->data['tpl_data']['INSTALLER_PHAR_AVAILABLE'] =   $this->data['INSTALLER'] ;
     	 
     	 
+
+    	 
 	   
 	   if(
 	       '/' === $u->getU()->req_uri 
 	       || basename(__FILE__) ===  $u->getU()->file
-	       || $u->getU()->file === $u->getU()->file_ext
 	       || 'install.phar' === $u->getU()->file
 	       || 'install.php' === $u->getU()->file
 	   ){
 	        $this->template = $this->readFile('Main Template');
 	   } elseif(
-	          self::URI_DIR_API === $u->getU()->dirs[0]
+	         in_array( self::URI_DIR_API , $u->getU()->dirs)
 	     ||  'api.php' === $u->getU()->file     
 	     ||  'api' === $u->getU()->file     
 	   ){
@@ -232,6 +246,31 @@ class webfan extends fexe
       
 	}
 	
+	
+	
+	public function is_session_started($startIf = true)
+      {
+      	$r = false; 
+        if ( php_sapi_name() !== 'cli' ) {
+        if ( version_compare(phpversion(), '5.4.0', '>=') ) {
+            $r =  session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
+          } else {
+             $r =  '' === session_id()  ? FALSE : TRUE;
+          }
+        }
+        
+        if(true === $startIf && false === $r){
+          if(!session_start()){	
+            if(true === $this->debug) trigger_error('Cannot start session in '.basename(__FILE__).' '.__LINE__, E_USER_WARNING);
+          }
+		}
+        
+        
+       return $r ;
+    }
+
+	
+	
 	protected function _installFromPhar($u){
 	   global $include;	
 	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
@@ -240,42 +279,61 @@ class webfan extends fexe
 	   $this->data['tpl_data']['INSTALLER'] = 'phar';
        $this->data['PHAR_INCLUDE'] = str_replace('phar://', '',$include);  	
        if('' !== $include) $this->data['INSTALLER'] = 1;
+       
+
+    
+    	 	if( isset($_POST['pwd']) && isset($_POST['PIN'])
+ 		 	&& $this->data['config']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
+		 	&& $this->data['config']['HOST'] === $_SERVER['SERVER_NAME']
+		 	&& $this->data['config']['PIN'] ===$_POST['PIN']
+		 	){
+ 		 	    $this->aSess['ADMIN_PWD'] =  sha1(trim($_POST['pwd'], '"\' '));
+		 	    $this->aSess['HOST'] = $_SERVER['SERVER_NAME'];
+		 	    $this->aSess['PIN'] =$_POST['PIN'];
+			}   	
+    	
+    	
 	}
 
     protected function _api($u = null){
 		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
+		
+		 
 		 
 		 /* BEGIN extract phar (todo build/refactor API) */
 		 if(isset($_GET['EXTRA_EXTRACT_PHAR']) ){
-		 	
+		 $this->is_session_started(true);
 		 	
 		 	ob_start(function($c){
-		 		       	 $r = new \stdclass;
+		 		       	 $r = $this->data['data_out'];
 		 		       	 $r->type = 'print';
 		 		       	 $r->out = $c;
       	                 $fnregex = "/^[A-Za-z0-9\$\.-_\({1}\){1}]+$/";
       	                 $callback = (isset($_REQUEST['callback']) && preg_match($fnregex, $_REQUEST['callback']))
 		                   ? strip_tags($_REQUEST['callback'])
 		                   : '';
+		                   
+		                   
                 if($callback === ''){
-         	            $js = json_encode($r);
+         	            $o = json_encode($r);
                 }  else {
-                           $js = $callback.'(' . json_encode($r) . ')';
+                	       $r->callback = $callback;
+                           $o = $callback.'(' . json_encode($r) . ')';
 		                }
 		                
-		        return $js;
+		        return $o;
 		 	});
 		 	
 		 	if(intval( str_replace(array('"', "'"), array('',''), $this->data['INSTALLER']) ) !== 1){
 			    $str ='Error: Not in installer context';
-				trigger_error($str, E_USER_ERROR);
+				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);			
 			}
 
 		 	
-		 	if( $this->data['config']['ADMIN_PWD'] !== sha1($_POST['pwd'])
-		 	|| $this->data['config']['HOST'] !== $_SERVER['SERVER_NAME']
-		 	|| $this->data['config']['PIN'] !==$_POST['PIN']
+		 	if( $this->aSess['ADMIN_PWD'] !== $this->data['config']['ADMIN_PWD'] 
+		 	|| $this->aSess['HOST'] !== $this->data['config']['HOST']
+		 	|| $this->aSess['PIN'] !== $this->aSess['PIN'] 
 		 	){
 				die('Invalid credentials, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!');
 			}
@@ -289,11 +347,11 @@ class webfan extends fexe
 			}
 		 	 
 		 	 if(file_exists(getcwd (). DIRECTORY_SEPARATOR . 'composer.json')){
-			 			unlink( $this->data['PHAR_INCLUDE']);
+			 			if(isset($_REQUEST['u']))unlink( $this->data['PHAR_INCLUDE']);
 		 	            die('Extracted');
 			 }else{
 				$str = 'Error extracting php archive';
-				trigger_error($str, E_USER_ERROR);
+				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);			 	
 			 }
 		 }
