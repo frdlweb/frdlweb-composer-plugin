@@ -104,7 +104,10 @@ class webfan extends fexe
 	  	
 
 	   	  	
+	   	  	
 	   $this->data = array();
+	   $this->data['DIR'] = getcwd(); 
+	   $this->data['CONFIGFILE'] = $this->data['DIR'].DIRECTORY_SEPARATOR.'config.frdl.php';
 	   $this->data['o'] = new \stdclass;	   
 	   $this->data['data_out'] = new \stdclass;
 	   $this->data['config'] = array();
@@ -187,15 +190,18 @@ class webfan extends fexe
        $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
        
        $this->data['config'] = $this->readFile('config.json');
-       $this->data['config'] = (array)$this->data['config'];
-       
-       if(!is_array($this->data['config']) || count($this->data['config']) < 3){
-       	    $this->data['installed'] = "0";
-	   	    trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
+       $this->data['config_new'] = $this->data['config']; 
+       if(file_exists($this->data['CONFIGFILE'])){
+	   	  require $this->data['CONFIGFILE'];
+	   	  $this->data['installed'] = "1";
 	   }else{
-	   	    $this->data['installed'] = "1";
+	   	$this->data['installed'] = "0";
 	   }
-        $this->data['tpl_data']['INSTALLED'] = $this->data['installed'];
+       
+       $this->data['config_new'] = (array)$this->data['config_new'];        
+       $this->data['config'] = (array)$this->data['config'];
+       $this->data['config']['INSTALLED'] = $this->data['installed'];
+       
 
        
        
@@ -205,6 +211,7 @@ class webfan extends fexe
 	   }
        $this->data['tpl_data']['URL'] = $this->data['config']['URL'];
 	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api/';	
+	   $this->data['config']['URL_API_ORIGINAL'] =  $this->data['tpl_data']['URI_DIR_API'];	
    
  	    $this->data['tpl_data']['PACKAGE'] = $this->data['config']['PACKAGE'];
  	    $this->data['tpl_data']['VERSION'] = $this->data['config']['VERSION'];
@@ -222,24 +229,22 @@ class webfan extends fexe
     	 
     	 
 
-    	 
-	   
-	   if(
-	       '/' === $u->getU()->req_uri 
-	       || basename(__FILE__) ===  $u->getU()->file
-	       || 'install.phar' === $u->getU()->file
-	       || 'install.php' === $u->getU()->file
-	   ){
-	        $this->template = $this->readFile('Main Template');
-	   } elseif(
+    	if(
 	         in_array( self::URI_DIR_API , $u->getU()->dirs)
 	     ||  'api.php' === $u->getU()->file     
 	     ||  'api' === $u->getU()->file     
 	   ){
 	   	  return $this->_api($u);
-	   }
-	   
-	   else{
+	   }elseif(
+	       '/' === $u->getU()->req_uri 
+	       || basename(__FILE__) ===  $u->getU()->file
+	       || 'install.phar' === $u->getU()->file
+	       || 'install.php' === $u->getU()->file
+	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
+	   ){
+	        $this->template = $this->readFile('Main Template');
+	   } 
+	    else{
 	   	  $this->template = $this->prepare404();
 	   }	
         
@@ -282,17 +287,23 @@ class webfan extends fexe
        
 
     
-    	 	if( isset($_POST['pwd']) && isset($_POST['PIN'])
+    	 	if( (isset($_POST['pwd']) && isset($_POST['PIN'])
  		 	&& $this->data['config']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
 		 	&& $this->data['config']['HOST'] === $_SERVER['SERVER_NAME']
-		 	&& $this->data['config']['PIN'] ===$_POST['PIN']
+		 	&& $this->data['config']['PIN'] ===$_POST['PIN'])
+		 	|| ( isset($_POST['pwd']) && isset($_POST['PIN'])
+ 		 	&& $this->data['config_new']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
+		 	&& $this->data['config_new']['HOST'] === $_SERVER['SERVER_NAME']
+		 	&& $this->data['config_new']['PIN'] ===$_POST['PIN']
+		 	)
 		 	){
  		 	    $this->aSess['ADMIN_PWD'] =  sha1(trim($_POST['pwd'], '"\' '));
 		 	    $this->aSess['HOST'] = $_SERVER['SERVER_NAME'];
 		 	    $this->aSess['PIN'] =$_POST['PIN'];
 			}   	
     	
-    	
+
+	
 	}
 
     protected function _api($u = null){
@@ -324,6 +335,13 @@ class webfan extends fexe
 		        return $o;
 		 	});
 		 	
+		 	
+		 	if(file_exists( $this->data['CONFIGFILE']) && $this->data['config_new']['PACKAGE'] !== $this->data['config']['PACKAGE'] ){
+			    $str ='Error: Invalid installer package name';
+				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
+				die($str);				
+			}
+		 	
 		 	if(intval( str_replace(array('"', "'"), array('',''), $this->data['INSTALLER']) ) !== 1){
 			    $str ='Error: Not in installer context';
 				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
@@ -331,23 +349,82 @@ class webfan extends fexe
 			}
 
 		 	
-		 	if( $this->aSess['ADMIN_PWD'] !== $this->data['config']['ADMIN_PWD'] 
-		 	|| $this->aSess['HOST'] !== $this->data['config']['HOST']
-		 	|| $this->aSess['PIN'] !== $this->aSess['PIN'] 
+		 	if(
+		 	   ( $this->aSess['ADMIN_PWD'] !== $this->data['config']['ADMIN_PWD'] && $this->aSess['ADMIN_PWD'] !== $this->data['config_new']['ADMIN_PWD'] )
+		 	|| ( $_SERVER['SERVER_NAME'] !== $this->data['config']['HOST'] && $_SERVER['SERVER_NAME'] !== $this->data['config_new']['HOST'])
+		 	|| ($this->aSess['PIN'] !== $this->data['config']['PIN'] && $this->aSess['PIN'] !== $this->data['config_new']['PIN'] )
 		 	){
-				die('Invalid credentials, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!');
+				die('Invalid credentials, try to install via <a href="{___$$URL_INSTALLER_HTMLPAGE$$___}">{___$$URL_INSTALLER_HTMLPAGE$$___}</a>!');
 			}
 		 	
+		 	
+		 
+		 	
 		 	try{
-				\Extract::from($this->data['PHAR_INCLUDE'])->to(getcwd ());
+				\Extract::from($this->data['PHAR_INCLUDE'])->to(  $this->data['DIR'] );
 			}catch(\Exception $e){
-				$str = $this->data['PHAR_INCLUDE'] .' -> '.getcwd().' - ' .$e->getMessage();
+				$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ' .$e->getMessage();
 				trigger_error($str, E_USER_ERROR);
 				die($str);
 			}
 		 	 
-		 	 if(file_exists(getcwd (). DIRECTORY_SEPARATOR . 'composer.json')){
-			 			if(isset($_REQUEST['u']))unlink( $this->data['PHAR_INCLUDE']);
+		 	 if(file_exists($this->data['DIR']. DIRECTORY_SEPARATOR . 'composer.json')){
+			 	
+			 						 			
+
+			 			
+			 			/*
+			 	   		 $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.loc.api_url="'.$this->data['config']['URL_API_ORIGINAL'].'";
+			 			*/
+			 			$this->data['data_out']->js = trim(preg_replace("/\s+|\n/", " ", 'try{
+			 			$(\'#window_\' + \'frdl-webfan\').find(\'#wd-li-frdl-webfan-installPHAR\').find(\'u\').html(\'Update\');
+			 			$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig();
+			 		
+			 			}catch(err){console.error(err);}			 			
+			 			'));
+			 			
+			 			if($this->data['config_new']['ADMIN_PWD'] !== $this->data['config']['ADMIN_PWD']){
+							$this->data['data_out']->js.= ' 
+					     		alert("Attention: Password has changed ('.trim($_POST['pwd'], '"\' ').')!");
+							 ';
+						}
+			 			
+			 			if($this->data['config_new']['PIN'] !== $this->data['config']['PIN']){
+							$this->data['data_out']->js.= ' 
+					     		alert("Attention: PIN has changed ('.$this->aSess['PIN'].')!");
+							 ';
+						}
+									 		
+									 		
+			 			$this->data['config']['VERSION'] = $this->data['config_new']['VERSION'];
+			 			$this->data['config']['DOWNLOADUPDATETIME'] = $this->data['config_new']['DOWNLOADTIME'];
+			 			$this->data['config']['UPDATETIME'] = time();
+			 			
+			 			$this->data['config']['ADMIN_PWD'] = $this->aSess['ADMIN_PWD'];
+			 			$this->data['config']['PIN'] = $this->aSess['PIN'];
+			 			
+			 			
+			 			$php = "<?php
+                         	\$this->data['config'] = ".var_export($this->data['config'], true).";		 			
+                        ";
+			 			
+			 			file_put_contents($this->data['CONFIGFILE'], $php);
+							 			
+							 			
+							 			
+			 		    if(isset($_REQUEST['u'])){
+			 		    	unlink( $this->data['PHAR_INCLUDE']);
+			 		    	$this->data['data_out']->js.= ' $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.EXTRA_INSTALLER = null;	';
+			 		    }
+			 			
+			 						 			
+				 	   	$this->data['data_out']->js.= '
+			 		    	$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.INSTALLED = "1";
+			 		    	$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].render();
+			 		    	$(\'#window_\' + \'frdl-webfan\').find(\'#wd-li-frdl-webfan-installPHAR\').find(\'u\').html(\'Upate\');
+			 		    	';		 			
+														 		
+		
 		 	            die('Extracted');
 			 }else{
 				$str = 'Error extracting php archive';
