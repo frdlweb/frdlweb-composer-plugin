@@ -345,6 +345,27 @@
              	$out.= trim($token).'<br />';
         	});	
         	
+   \webfan\App::God() 	
+      -> {'$'}('?session_started', (function($startIf = true){
+       	$r = false; 
+        if ( php_sapi_name() !== 'cli' ) {
+        if ( version_compare(phpversion(), '5.4.0', '>=') ) {
+            $r =  session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
+          } else {
+             $r =  '' === session_id()  ? FALSE : TRUE;
+          }
+        }
+        
+        if(true === $startIf && false === $r){
+          if(!session_start()){	
+            if(true === $this->debug) trigger_error('Cannot start session in '.basename(__FILE__).' '.__LINE__, E_USER_WARNING);
+          }
+		}
+        
+        
+       return $r ;
+        }) );
+        	
 	}
 	
 	protected function default_run(&$Request =null){
@@ -359,7 +380,7 @@
 	}		
 			
 	protected function default_boot(){
-		\frdl\webfan\App::God()->addStreamWrapper( 'webfan', 'fexe', $this,  true  ) ;
+		\webfan\App::God()->addStreamWrapper( 'webfan', 'fexe', $this,  true  ) ;
 	}
 	
    /**
@@ -455,6 +476,11 @@
 			trigger_error($e->getMessage(). ' in '.__METHOD__, E_USER_ERROR);
 		}
 	}
+	
+
+	
+	
+	
 /**
  * @component
  * bin
