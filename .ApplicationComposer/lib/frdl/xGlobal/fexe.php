@@ -93,7 +93,7 @@
 	 */
 	protected $host; 
 	public $context = array();
-    protected $raw = null;
+        protected $raw = null;
 	protected $chunk;
 	public $buflen;
 	protected $pos = 0;
@@ -108,6 +108,7 @@
 		 $this->setFuncs();
 		 $this->data(null);
 		 $this->_boot();
+	   return $this;
 	}	
 	
    	  /*
@@ -165,7 +166,7 @@
    	   */
    	   foreach($data as $placeholder => $replacer){
    	   	  $template = (is_callable($replacer)) 
-   	   	       ? preg_replace_callback('/\{\$\_\_\_('.pre_quote($placeholder).')\_\_\_\}/',(function ($ph){return $replacer($ph);}), $template )
+   	   	       ? preg_replace_callback('/\{\$\_\_\_('.preg_quote($placeholder).')\_\_\_\}/',(function ($ph){return call_user_func($replacer,$ph);}), $template )
                : str_replace('{$___'.$placeholder.'___}',$replacer,$template);
 	   }
    	   
@@ -204,6 +205,7 @@
 		 $html.= $this->parse_template($this->template, $this->data['tpl_data']);
 		 $html.= $this->HTML_wrap_foot();
 		echo $html;
+	   return $this;
    }	 
    
    	
@@ -285,7 +287,8 @@
 
 
 	
-	protected function Files(){
+	protected function Files($refresh = false){
+		    if(false === $refresh && is_array($this->files))return $this->files;
 		    $out = array();
     	    if(!is_string($this->raw))$this->getFileData();
         	$this->read($this->raw, self::DEL,  (function($token) use (&$out) {
@@ -327,6 +330,7 @@
            	        $out[$k] = $file;
        	    }), $out);
         	$this->files = $out;
+        	return $this->files;
     }
 	
 	protected function readFile($file){
@@ -366,6 +370,7 @@
        return $r ;
         }) );
         	
+       return $this;
 	}
 	
 	protected function default_run(&$Request =null){
@@ -373,14 +378,17 @@
     	if(!is_string($this->raw))$this->getFileData();
         if(!is_array($this->files))$this->Files();
     	$this->route();		
+       return $this;
 	}		
 			
 	public function initRequest(){
        $this->Request = new \frdl\common\Request();	
+       return $this;
 	}		
 			
 	protected function default_boot(){
 		\webfan\App::God()->addStreamWrapper( 'webfan', 'fexe', $this,  true  ) ;
+       return $this;
 	}
 	
    /**
