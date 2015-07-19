@@ -186,24 +186,38 @@ class webfan extends fexe
 	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api/';	
 	   $this->data['config']['URL_API_ORIGINAL'] =  $this->data['tpl_data']['URI_DIR_API'];	
    
- 	    $this->data['tpl_data']['PACKAGE'] = &$this->data['config']['PACKAGE'];
- 	    $this->data['tpl_data']['VERSION'] = &$this->data['config']['VERSION'];
- 	    $this->data['tpl_data']['INSTALLED'] = &$this->data['config']['INSTALLED'];
- 	    $this->data['tpl_data']['REGISTERED'] = &$this->data['config']['REGISTERED'];
-  	    $this->data['tpl_data']['UNAME'] = &$this->data['config']['UNAME'];
-  	    $this->data['tpl_data']['UID'] = &$this->data['config']['UID'];	    
+ 	    $this->data['tpl_data']['PACKAGE'] = function(){
+ 	       return $this->data['config']['PACKAGE'];
+ 	    };
+ 	    $this->data['tpl_data']['VERSION'] = function(){
+ 	       return $this->data['config']['VERSION'];
+ 	    }; 
+ 	    $this->data['tpl_data']['INSTALLED'] = function(){
+ 	       return $this->data['config']['INSTALLED'];
+ 	    }; 
+ 	    $this->data['tpl_data']['REGISTERED'] = function(){
+ 	       return $this->data['config']['REGISTERED'];
+ 	    }; 
+  	    $this->data['tpl_data']['UNAME'] = function(){
+ 	       return $this->data['config']['UNAME'];
+ 	    }; 
+  	    $this->data['tpl_data']['UID'] =  function(){
+ 	       return $this->data['config']['UID'];	  
+ 	    };   
          	
-       $this->data['INSTALLER_PHAR_AVAILABLE'] = 0;
-   
+       $this->data['INSTALLER_PHAR_AVAILABLE'] = '0';
+       $this->data['tpl_data']['EXTRA_PHAR_URL'] = '';
        $this->data['tpl_data']['INSTALLER'] = '';
 	   if(   function_exists('frdl_install_rewrite_function')
 	      || file_exists($this->data['DIR'] . 'install.phar') 
 	      || file_exists($this->data['DIR'] . 'install.php') 	    
 	    ){
 	   	  $this->_installFromPhar($u);
-	   	  $this->data['INSTALLER_PHAR_AVAILABLE'] = 1;
+	   	  $this->data['INSTALLER_PHAR_AVAILABLE'] = '1';
 	   }
-	   $this->data['tpl_data']['INSTALLER_PHAR_AVAILABLE'] =   &$this->data['INSTALLER'] ;
+	   $this->data['tpl_data']['INSTALLER_PHAR_AVAILABLE'] = function(){
+ 	       return $this->data['INSTALLER_PHAR_AVAILABLE'];
+ 	    };   
     	
     	
 	  }else{
@@ -236,6 +250,7 @@ class webfan extends fexe
     	$this->default_run($Request);
     	
     	 $this->out(); 
+	   return $this;
 	}
 	
     protected function route($u = null){
@@ -261,6 +276,7 @@ class webfan extends fexe
 	   }	
         
       
+	   return $this;
 	}
 	
 	
@@ -276,6 +292,13 @@ class webfan extends fexe
 	   $this->data['tpl_data']['EXTRA_PMX_URL'] =  $this->data['tpl_data']['URL'].$f.'/pragmamx.php';	
 	   $this->data['tpl_data']['INSTALLER'] = 'phar';
        $this->data['PHAR_INCLUDE'] = str_replace('phar://', '',$include);  	
+       
+       $f2 = ( false !== file_exists($this->data['DIR'] . 'install.phar') ) ? 'install.phar/'
+                   : ( false !== file_exists($this->data['DIR'] . 'install.php') ) ? 'install.php/' : '';
+       $this->data['tpl_data']['EXTRA_PHAR_URL'] = $this->data['tpl_data']['URL'].$f2.'api.php';	
+       
+       
+       
        if('' !== $include) $this->data['INSTALLER'] = 1;
        
 
@@ -296,7 +319,7 @@ class webfan extends fexe
 			}   	
     	
 
-	
+	   return $this;
 	}
 
     protected function _api($u = null){
@@ -397,6 +420,7 @@ class webfan extends fexe
 			 			
 			 			$this->data['config']['ADMIN_PWD'] = $this->aSess['ADMIN_PWD'];
 			 			$this->data['config']['PIN'] = $this->aSess['PIN'];
+			 			$this->data['config']['DIR_PACKAGE'] = $this->data['DIR'];
 			 			
 			 			if(0 === intval($this->data['config']['UID']) && 0 !== intval($this->data['config_new']['UID']) ){
 							$this->data['config']['UID'] = $this->data['config_new']['UID'];
@@ -510,6 +534,7 @@ $(document).ready(function() {
  	    INSTALLER : '{$___INSTALLER___}',
  	    REGISTERED : '{$___REGISTERED___}',
 		EXTRA_INSTALLER : '{$___INSTALLER_PHAR_AVAILABLE___}',
+ 	    INSTALLER_PHAR_AVAILABLE : '{$___INSTALLER_PHAR_AVAILABLE___}',
  	    
 		user : {
 			uid : '{$___UNAME___}',
@@ -519,7 +544,8 @@ $(document).ready(function() {
 		loc : {
 			url : '{$___URL___}',
 			api_url : '{$___URI_DIR_API___}',
-			EXTRA_PMX_URL : '{$___EXTRA_PMX_URL___}'
+			EXTRA_PMX_URL : '{$___EXTRA_PMX_URL___}',
+			EXTRA_PHAR_URL : '{$___EXTRA_PHAR_URL___}'
 		}
  });	
 	}catch(err){
