@@ -166,7 +166,11 @@
    	   */
    	   foreach($data as $placeholder => $replacer){
    	   	  $template = (is_callable($replacer)) 
-   	   	       ? preg_replace_callback('/\{\$\_\_\_('.preg_quote($placeholder).')\_\_\_\}/',(function ($ph){return call_user_func($replacer,$ph);}), $template )
+   	   	       ? preg_replace_callback('/\{\$\_\_\_('.preg_quote($placeholder).')\_\_\_\}/',(function ($ph) use ($replacer) {
+   	   	           	return (is_array($replacer)) 
+   	   	           	   ? call_user_func($replacer,$ph)
+   	   	           	   : $replacer($ph);
+   	   	       	}), $template )
                : str_replace('{$___'.$placeholder.'___}',$replacer,$template);
 	   }
    	   
