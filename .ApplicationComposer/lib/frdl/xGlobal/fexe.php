@@ -82,7 +82,7 @@
 	
 	protected $file; 
 	protected $file_offset;
-	protected $files;	
+	protected $files = null;	
 		
 	protected $Request;
 	
@@ -93,7 +93,7 @@
 	 */
 	protected $host; 
 	public $context = array();
-    protected $raw;
+    protected $raw = null;
 	protected $chunk;
 	public $buflen;
 	protected $pos = 0;
@@ -110,7 +110,9 @@
 		 $this->_boot();
 	}	
 	
-	
+   	  /*
+   	   .abstract
+   	   */	
 	abstract public function data();
 	abstract protected function _boot();	
 	abstract public function run(&$Request =null);	
@@ -284,15 +286,13 @@
 
 	
 	protected function Files(){
-		
 		    $out = array();
-		   	$this->func_readFiles = (function($token) use (&$out) {
+    	    if(!is_string($this->raw))$this->getFileData();
+        	$this->read($this->raw, self::DEL,  (function($token) use (&$out) {
 				   if(!$out || !is_array($out))$out = array();
-             	//  if(substr($token,0,1) !== self::DEL)return;
-               	  $h = explode("\n", $token, 2);
+
+               	    $h = explode("\n", $token, 2);
              	    $t = explode('%', $h[0], 3);
-             	    
-             	 	//   die('<pre>'.print_r($h,true));
              	    
                	    $file = array();
              	    $file['pos'] = count($out);
@@ -325,22 +325,21 @@
 				  }
              	    $k = ((isset($file['name'])) ? $file['name'] : $file['pos']);
            	        $out[$k] = $file;
-       	    });	
-       	    
-        	$this->read($this->raw, self::DEL,  $this->func_readFiles, $out);
+       	    }), $out);
         	$this->files = $out;
     }
 	
 	protected function readFile($file){
+		if(!is_array($this->files))$this->Files();
 		return (isset($this->files[$file])) ? $this->files[$file]['content'] : false;
 	}
 	
 	protected function FileInfo($file){
+		if(!is_array($this->files))$this->Files();
 		return (isset($this->files[$file])) ? $this->files[$file] : false;
 	}
 		
 	protected function setFuncs(){
-     	          	
         	
         $this->func_readSections_Test = (function($token) use (&$out) {
              	$out.= trim($token).'<br />';
@@ -350,8 +349,8 @@
 	
 	protected function default_run(&$Request =null){
     	$this->Request = (null !== $Request) ? $Request : $this->initRequest();
-    	$this->getFileData();
-        $this->Files();
+    	if(!is_string($this->raw))$this->getFileData();
+        if(!is_array($this->files))$this->Files();
     	$this->route();		
 	}		
 			
@@ -433,7 +432,13 @@
     	if(null === $offset)$offset = $this->file_offset;
 		$this->IO = fopen($file, 'r');
         fseek($this->IO, $offset);
-        $this->raw =  stream_get_contents($this->IO);
+        try{
+			$this->raw =  stream_get_contents($this->IO);
+		}catch(\Exception $e){
+			$this->raw = '';
+			trigger_error($e->getMessage(), E_USER_ERROR);
+		}
+        
         return $this->raw;
 	}
 	
