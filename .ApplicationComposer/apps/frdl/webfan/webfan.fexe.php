@@ -28,557 +28,688 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- *     
- *   @vendor     frdl
- *   @package    webfan Application Composer Backend
- *   @filename   webfan.fexe.php
- *   @todo
- * 
- *   @state:     test/development
- *  
- * 
+ * @includes
+ * @component
+ * bin
+ * original class bserialize:
+ * Copyright (c) 2009, PHPServer
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the Cesar Rodas nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY CESAR RODAS ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL CESAR RODAS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-namespace frdl\xGlobal; 
-
-/* BEGIN CONFIGSECTION */
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
-/* END CONFIGSECTION */
-
-/* BEGIN BOOTSECTION */
-if(!class_exists('\frdl\webfan\App')){
-	
- if(!defined( __NAMESPACE__.'\\'.'__BOOTFILE__')) {
- 	define( __NAMESPACE__.'\\'.'__BOOTFILE__', __DIR__ . DIRECTORY_SEPARATOR . '..'.DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR . 'bootstrap.php');
- }
-
-
- if(!in_array( __BOOTFILE__, get_included_files())){
- 	
-  if(!file_exists(  __BOOTFILE__)){
-	$str = 'App '.basename(__FILE__).' is not installed cortrectly! File ' .__BOOTFILE__.' not found. 
-	<br />
-	Please read <a target="_blank" href="https://github.com/frdl/webfan/wiki/Installation">Installation instruction</a>!';
-	trigger_error($str, E_USER_ERROR);
-	echo $str; 
-	die();
-  }
- 	
- 	require  __BOOTFILE__;
- }
+ namespace frdl\xGlobal; 
  
-}
- 
- if(!class_exists('\frdl\webfan\App')){
- 	$str = 'App '.basename(__FILE__).' is not installed cortrectly! Class \frdl\webfan\App not found. 
-	<br />
-	Please read <a target="_blank" href="https://github.com/frdl/webfan/wiki/Installation">Installation instruction</a>!';
-	trigger_error($str, E_USER_ERROR);
-	echo $str; 
-	die();	
- }
- 
- 
-/* END BOOTSECTION */ 
-
- 
-   
-class webfan extends fexe    
+ abstract class fexe
 {
-	 const DEL='µ';
-	 const URI_DIR_API = 'api';
-	 
-	 const HINT_NOTINSTALLED = 'The Program frdl/webfan is not installed properly, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!';
-	
-	 protected $aSess;
-	 
-	 protected $debug = false;
+	const VERSION='6.0.0.0';const DEL='µ';const STR_LEN="[Encoding error] String has an invalid length flag";const ARR_LEN="[Encoding error] Array has an invalid length flag";const OBJ_LEN="[Encoding error] Object has an invalid length flag";const UNKNOWN_TYPE="Don't know how to serialize/unserialize %s";const V_NULL=0x00;const V_ZERO=0x01;const V_1INT_POS=0x10;const V_1INT_NEG=0x11;const V_2INT_POS=0x12;const V_2INT_NEG=0x13;const V_4INT_POS=0x14;const V_4INT_NEG=0x15;const V_FLOAT_POS=0x20;const V_FLOAT_NEG=0x21;const V_BOOL_TRUE=0x30;const V_BOOL_FALSE=0x31;const V_ARRAY=0x40;const V_OBJECT=0x50;const V_STRING=0x60;
 	
 	
-	 public function Request(mixed $args = null){
-	 	
-	 }
-	 
-	 public function data(Array $data = null){
-	  if(null === $this->data){
-	  	
-
-	   	  	
-	   	  	
-	   if(!isset($this->data))$this->data = array();
-	   $this->data['DIR'] = getcwd() . DIRECTORY_SEPARATOR ; 
-	   $this->data['CONFIGFILE'] = $this->data['DIR'].'config.frdl.php';
-	   $this->data['o'] = new \stdclass;	   
-	   $this->data['data_out'] = new \stdclass;
-	   $this->data['config'] = array();
-	   $this->data['installed'] = false;
-	   $this->data['index'] = 'Main Template';	
-       $this->data['template_main_options'] = array(   
-                'Title' =>  'Webfan - Application Composer',
-	            'css' => array(
-	            
-	            ),
-			    'js' => array(
-				        'http://api.webfan.de/api-d/4/js-api/library.js',
-				),
-				'meta' =>  array(
-				     array('http-equiv' => 'content-type', 'content' => 'text/html; charset=utf-8'),	
-				     array('http-equiv' => 'content-style-type', 'content' => 'text/css'),	
-				     array('http-equiv' => 'content-script-type', 'content' => 'text/javascript'),				 
-				     array('name' => 'apple-mobile-web-app-capable', 'content' => 'yes'),
-				     array('name' => 'apple-mobile-web-app-status-bar-style', 'content' => 'lightblue'),
-				     array('name' => 'HandheldFriendly', 'content' => 'true'),
-				     array('name' => 'MobileOptimized', 'content' => '320'),
-				     array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0, user-scalable=yes'),
-				     
-				 )
-				 
-	    );
-
-	     
-	     $this->data['tpl_data'] = array(
-	          'FILE' => htmlentities(__FILE__),
-	          'URI_DIR_API' => self::URI_DIR_API,
- 	          'LOCATION' => 'http://'.$_SERVER['SERVER_NAME']
- 	                         .implode('/', \webdof\wURI::getInstance()->getU()->dirs)
- 	                         .'/'.\webdof\wURI::getInstance()->getU()->file,
- 	          'URL' => '',
- 	          'EXTRA_PMX_URL' => '',
- 	          
-	     );
-	 
-	 
-	  
-	   	   
-	   if(is_array($data) || is_object($data)){
-	   	 foreach($data as $k => $v){
-		 	if(isset($this->data[$k]))$this->data[$k] = $v;
-		 }
-	   }
+	protected $IO = null;
+	
+	/**
+	* HTML  
+	*/
+	protected $meta;
+	protected $tpl;
+	protected $css;
+	protected $js;
+	protected $template;
+	
+	protected $app;
+	protected $data = null;
+	protected $config;
+	protected $lang;
+	
+	protected $file; 
+	protected $file_offset;
+	protected $files = null;	
+		
+	protected $Request;
+	
+	protected $func_readFiles;
+	
+	/**
+	 * Stream Properties
+	 */
+	protected $host; 
+	public $context = array();
+        protected $raw = null;
+	protected $chunk;
+	public $buflen;
+	protected $pos = 0;
+	protected $read = 0; 
+	protected $eof = false;
+	protected $mode;
 	
 	
-       if(!isset($_SESSION[__CLASS__]))$_SESSION[__CLASS__] = array();
-       $this->aSess = & $_SESSION[__CLASS__] ;
-        
-        
-         
-       $this->data['config'] = $this->readFile('config.json');
-       $this->data['config_new'] = $this->data['config']; 
-       if(file_exists($this->data['CONFIGFILE'])){
-	   	  require $this->data['CONFIGFILE'];
-	   	  $this->data['installed'] = "1";
-	   }else{
-	   	$this->data['installed'] = "0";
-	   }
-       
-       $this->data['config_new'] = (array)$this->data['config_new'];        
-       $this->data['config'] = (array)$this->data['config'];
-       $this->data['config']['INSTALLED'] = $this->data['installed'];
-       
-
-       
-       
-       if(base64_decode('eyRfX0xPQ0FUSU9OX19ffQ==') === $this->data['config']['URL'] ){
-	   	   $this->data['config']['URL'] = $this->data['tpl_data']['LOCATION'];
-	   	  if(true === $this->debug) trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
-	   }
-       $this->data['tpl_data']['URL'] = &$this->data['config']['URL'];
-	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api/';	
-	   $this->data['config']['URL_API_ORIGINAL'] =  $this->data['tpl_data']['URI_DIR_API'];	
+	function __construct($file = null, $file_offset = null ){
+		 $this->file = $file;
+		 $this->file_offset = $file_offset;
+		 $this->setFuncs();
+		 $this->data(null);
+		 $this->_boot();
+	   return $this;
+	}	
+	
+   	  /*
+   	   .abstract
+   	   */	
+	abstract public function data();
+	abstract protected function _boot();	
+	abstract public function run(&$Request =null);	
+	abstract protected function route();
+	
+	
+	public function appstream(){
+		return 'webfan://'.str_replace('\\', '.', get_class($this)) .'.fexe:'.$this->file_offset.'/'.$this->file;
+	}
+	
    
- 	    $this->data['tpl_data']['PACKAGE'] = function(){
- 	       return $this->data['config']['PACKAGE'];
- 	    };
- 	    $this->data['tpl_data']['VERSION'] = function(){
- 	       return $this->data['config']['VERSION'];
- 	    }; 
- 	    $this->data['tpl_data']['INSTALLED'] = function(){
- 	       return $this->data['config']['INSTALLED'];
- 	    }; 
- 	    $this->data['tpl_data']['REGISTERED'] = function(){
- 	       return $this->data['config']['REGISTERED'];
- 	    }; 
-  	    $this->data['tpl_data']['UNAME'] = function(){
- 	       return $this->data['config']['UNAME'];
- 	    }; 
-  	    $this->data['tpl_data']['UID'] =  function(){
- 	       return $this->data['config']['UID'];	  
- 	    };   
-         	
-       $this->data['INSTALLER_PHAR_AVAILABLE'] = '0';
-       $this->data['tpl_data']['EXTRA_PHAR_URL'] = '';
-       $this->data['tpl_data']['INSTALLER'] = '';
-	   if(   function_exists('frdl_install_rewrite_function')
-	      || file_exists($this->data['DIR'] . 'install.phar') 
-	      || file_exists($this->data['DIR'] . 'install.php') 	    
-	    ){
-	   	  $this->_installFromPhar($u);
-	   	  $this->data['INSTALLER_PHAR_AVAILABLE'] = '1';
+   public function HTML_wrap_head_options($opts){
+   	$head = '';
+		    foreach($opts['meta'] as $pos => $meta){
+		            if(is_array($meta) && count($meta) === 2){
+		            	if(isset($meta['name'])){
+						  $head.='<meta name="'.$meta['name'].'" content="'.$meta['content'].'" />'."\n";
+						}elseif(isset($meta['http-equiv'])){
+						  $head.='<meta http-equiv="'.$meta['http-equiv'].'" content="'.$meta['content'].'" />'."\n";
+						}
+		               	
+		            }	
+		    }
+		 
+		    foreach($opts['css'] as $pos => $css) {
+		    	$ccheck = parse_url($css);
+		    	  if($ccheck === false || !isset($ccheck['host'])){
+		    	  	$head.='<style type="text/css">'.preg_replace("/\s+/", '', $css).'</style>'."\n";
+		    	  }else{
+                    $head.='<link rel="stylesheet" type="text/css" href="'.$css.'" />'."\n";		    	  	
+		    	  }
+		    }
+			
+		    foreach($opts['js'] as $pos => $js) {
+		    		$ccheck = parse_url($js);
+		    	    if($ccheck === false || !isset($ccheck['host'])){
+		    	  	$head.='<script type="text/javascript">'.preg_replace("/\s+/", '', $js).'</script>'."\n";
+		    	  }else{
+                     $head.='<script type="text/javascript" src="'.$js.'"></script>'."\n";		    	  	
+		    	  }
+		    }  
+		    
+		return $head;     	
+   }
+   
+   
+   public function parse_template($template, $data){
+   	  /*
+   	   ToDo...
+   	   */
+   	   foreach($data as $placeholder => $replacer){
+   	   	  $template = (is_callable($replacer)) 
+   	   	       ? preg_replace_callback('/\{\$\_\_\_('.preg_quote($placeholder).')\_\_\_\}/',(function ($ph) use ($replacer) {
+   	   	           	return (is_array($replacer)) 
+   	   	           	   ? call_user_func($replacer,$ph)
+   	   	           	   : $replacer($ph);
+   	   	       	}), $template )
+               : str_replace('{$___'.$placeholder.'___}',$replacer,$template);
 	   }
-	   $this->data['tpl_data']['INSTALLER_PHAR_AVAILABLE'] = function(){
- 	       return $this->data['INSTALLER_PHAR_AVAILABLE'];
- 	    };   
-    	
-    	
-	  }else{
-	  	 foreach($data as $k => $v){
-		 	$this->data[$k] = $v;
-		 }
-	  }
-	 
-	       
-	   return $this->data;	 	
-	 }
-	 
-	 
-	 
-	 protected function _boot(){
-	 	$this->default_boot() ;
-		
-	 	\frdl\webfan\Autoloading\SourceLoader::top() 
-          -> addPsr4('frdl\ApplicationComposer\\', __DIR__ . DIRECTORY_SEPARATOR . 'frdl' .DIRECTORY_SEPARATOR
-           . 'webfan' .DIRECTORY_SEPARATOR . 'ApplicationComposer' .DIRECTORY_SEPARATOR, false) ;
-	 }
-	 
-	 	
-    public function run(&$Request =null){
-       if('cli' === PHP_SAPI){
- 	      trigger_error('This is a web app, cli support is not implemented yet completly!', E_USER_WARNING);
- 	      chdir(dirname($_SERVER['argv'][0]));
-       }  	
-    	
-    	$this->default_run($Request);
-    	
-    	 $this->out(); 
+   	   
+   	  return $template;
+   }
+   
+   
+   public function HTML_wrap_head(Array $opts = array('Title' => 'Document.Title',
+	            'css' => array(), 'js' => array(), 'meta' =>  array())){
+	            	
+    	 if(!$opts['Title'] || !is_string($opts['Title']))$opts['Title']='webfan:// '.$_SERVER['REQUEST_URI'];  //'webfan://'.$className.'.code'
+       	 $head = '';
+		 $head.='<!DOCTYPE html>'."\n";
+		 $head.='<html>'."\n";
+		 $head.='<head>'."\n";
+		 $head.='<title>'.$opts['Title'].'</title>'."\n";
+	
+			$head .= $this->HTML_wrap_head_options($opts);
+			
+		 $head.='</head>'."\n";		 
+		 $head.='<body>'."\n";	
+		 return $head;   	
+    }
+   
+   
+   public function HTML_wrap_foot(){
+         $foot = ''."\n";
+		 $foot.='</body>'."\n";
+		 $foot.='</html>';	  	
+	  return $foot;
+   }
+   
+   public function out(){
+		 $html = '';
+		 $html.= $this->HTML_wrap_head($this->data['template_main_options']);
+		 $html.= $this->parse_template($this->template, $this->data['tpl_data']);
+		 $html.= $this->HTML_wrap_foot();
+		echo $html;
 	   return $this;
+   }	 
+   
+   	
+	
+	
+	/**
+	* webfan://namespace.vendor.applicationname.fexe:__COMPILER_HALT_OFFSET__/__FILE__
+	* @param undefined $url
+	* @param undefined $mode
+	* @param undefined $options
+	* @param undefined $opened_path
+	* 
+	* @return
+	*/
+    public function stream_open($url, $mode, $options = STREAM_REPORT_ERRORS, &$opened_path = null){
+    	$u = parse_url($url);
+    	$this->file = str_replace('/', DIRECTORY_SEPARATOR, $u['path']);
+    	$this->file_offset = $u['port'];
+    	$this->host = $u['host'];
+    	$this->mode = $mode;
+    	
+        $this->IO = fopen($this->file, $this->mode);
+          if(!$this->IO)return false;	
+  		
+  		fseek($this->IO, $this->file_offset);
+  		
+  		 
+		 $this->pos = $this->stream_tell();      
+		 $this->eof = $this->stream_eof();  
+          			  
+	    return true;					  
+    }
+    public function dir_closedir(){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+    public function dir_opendir($path , $options){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+    public function dir_readdir(){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+    public function dir_rewinddir(){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+    public function mkdir($path , $mode , $options){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+    public function rename($path_from , $path_to){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+    public function rmdir($path , $options){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+ 	public function stream_cast($cast_as){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+ 	public function stream_close(){
+       fclose($this->IO);
+	}
+    public function stream_eof(){
+    	return feof($this->IO);
+	}
+    public function stream_flush(){
+		return fflush($this->IO);
+	}
+    public function stream_lock($operation){return flock($this->IO, $operation);}
+    public function stream_set_option($option , $arg1 , $arg2){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+    public function stream_stat(){
+		 return array(  
+		          'mode' => $this->mode,
+		          'size' => filesize($this->file),
+		 );
+	}
+    public function unlink($path){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+    public function url_stat($path , $flags){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+    public function stream_read($count){
+        return fread($this->IO, $count);
+	}
+    public function stream_write($data){
+    	return fwrite($this->IO, $data);
+    }
+    public function stream_tell(){
+     	return ftell($this->IO);
+    }
+    public function stream_seek($offset, $whence){
+ 		return fseek($this->IO);
+	}
+    public function stream_metadata($path, $option, $var){trigger_error('Not implemented yet: '.get_class($this).' '.__METHOD__, E_USER_ERROR);}
+	
+
+
+
+
+
+
+
+	
+	protected function Files($refresh = false){
+		    if(false === $refresh && is_array($this->files))return $this->files;
+		    $out = array();
+    	    if(!is_string($this->raw))$this->getFileData();
+        	$this->read($this->raw, self::DEL,  (function($token) use (&$out) {
+				   if(!$out || !is_array($out))$out = array();
+
+               	    $h = explode("\n", $token, 2);
+             	    $t = explode('%', $h[0], 3);
+             	    
+               	    $file = array();
+             	    $file['pos'] = count($out);
+             	    $file['size'] = strlen($token) * 8;
+             	 
+             	    $file['type'] = (isset($t[0])) ? trim($t[0]) : null;
+             	    $file['enc'] = (isset($t[1])) ? trim($t[1]) : null;
+             	    $file['name'] = (isset($t[2]))  ? trim($t[2]) : null;
+             	    
+             	  $enc = explode('+', $file['enc']);
+             	   
+             	  if(isset($enc[1]) && 'b64' === strtolower($enc[1])){
+				  	 $h[1] = base64_decode($h[1]);
+				  } 
+             	   
+             	  if('RSA' === strtoupper($enc[0])){
+				  	$file['content'] = $this->unwrapData($h[1]);
+				  }
+             	  elseif('BIN' === strtoupper($enc[0])){
+				  	$file['content'] = $this->unserialize($h[1]);
+				  }	
+             	  elseif('b64' === strtolower($enc[0])){
+				  	$file['content'] = base64_decode($h[1]);
+				  }	
+             	  elseif('json' === strtolower($enc[0])){
+				  	$file['content'] =  json_decode(trim($h[1]));
+				  }				  
+				  else{
+				   	$file['content'] = $h[1];
+				  }
+             	    $k = ((isset($file['name'])) ? $file['name'] : $file['pos']);
+           	        $out[$k] = $file;
+       	    }), $out);
+        	$this->files = $out;
+        	return $this->files;
+    }
+	
+	protected function readFile($file){
+		if(!is_array($this->files))$this->Files();
+		return (isset($this->files[$file])) ? $this->files[$file]['content'] : false;
 	}
 	
-    protected function route($u = null){
-       $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
- 
-    	if(
-	         in_array( self::URI_DIR_API , $u->getU()->dirs)
-	     ||  'api.php' === $u->getU()->file     
-	     ||  'api' === $u->getU()->file     
-	   ){
-	   	  return $this->_api($u);
-	   }elseif(
-	       '/' === $u->getU()->req_uri 
-	       || basename(__FILE__) ===  $u->getU()->file
-	       || 'install.phar' === $u->getU()->file
-	       || 'install.php' === $u->getU()->file
-	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
-	   ){
-	        $this->template = $this->readFile('Main Template');
-	   } 
-	    else{
-	   	  $this->template = $this->prepare404();
-	   }	
+	protected function FileInfo($file){
+		if(!is_array($this->files))$this->Files();
+		return (isset($this->files[$file])) ? $this->files[$file] : false;
+	}
+		
+	protected function setFuncs(){
+        	
+        $this->func_readSections_Test = (function($token) use (&$out) {
+             	$out.= trim($token).'<br />';
+        	});	
+        	
+   \webfan\App::God() 	
+      -> {'$'}('?session_started', (function($startIf = true){
+       	$r = false; 
+        if ( php_sapi_name() !== 'cli' ) {
+        if ( version_compare(phpversion(), '5.4.0', '>=') ) {
+            $r =  session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
+          } else {
+             $r =  '' === session_id()  ? FALSE : TRUE;
+          }
+        }
         
-      
-	   return $this;
-	}
-	
-	
-	
-
-
-	
-	
-	protected function _installFromPhar($u){
-	   global $include;	
-	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
-	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].$f.'/api.php';	
-	   $this->data['tpl_data']['EXTRA_PMX_URL'] =  $this->data['tpl_data']['URL'].$f.'/pragmamx.php';	
-	   $this->data['tpl_data']['INSTALLER'] = 'phar';
-       $this->data['PHAR_INCLUDE'] = str_replace('phar://', '',$include);  	
-       
-       $f2 = ( false !== file_exists($this->data['DIR'] . 'install.phar') ) ? 'install.phar/'
-                   : ( false !== file_exists($this->data['DIR'] . 'install.php') ) ? 'install.php/' : '';
-       $this->data['tpl_data']['EXTRA_PHAR_URL'] = $this->data['tpl_data']['URL'].$f2.'api.php';	
-       
-       
-       
-       if('' !== $include) $this->data['INSTALLER'] = 1;
-       
-
-    
-    	 	if( (isset($_POST['pwd']) && isset($_POST['PIN'])
- 		 	&& $this->data['config']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
-		 	&& $this->data['config']['HOST'] === $_SERVER['SERVER_NAME']
-		 	&& $this->data['config']['PIN'] ===$_POST['PIN'])
-		 	|| ( isset($_POST['pwd']) && isset($_POST['PIN'])
- 		 	&& $this->data['config_new']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
-		 	&& $this->data['config_new']['HOST'] === $_SERVER['SERVER_NAME']
-		 	&& $this->data['config_new']['PIN'] ===$_POST['PIN']
-		 	)
-		 	){
- 		 	    $this->aSess['ADMIN_PWD'] =  sha1(trim($_POST['pwd'], '"\' '));
-		 	    $this->aSess['HOST'] = $_SERVER['SERVER_NAME'];
-		 	    $this->aSess['PIN'] =$_POST['PIN'];
-			}   	
-    	
-
-	   return $this;
-	}
-
-    protected function _api($u = null){
-		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
-			 	
-		 	ob_start(function($c){
-		 		       	 $r = $this->data['data_out'];
-		 		       	 $r->type = 'print';
-		 		       	 $r->out = $c;
-      	                 $fnregex = "/^[A-Za-z0-9\$\.-_\({1}\){1}]+$/";
-      	                 $callback = (isset($_REQUEST['callback']) && preg_match($fnregex, $_REQUEST['callback']))
-		                   ? strip_tags($_REQUEST['callback'])
-		                   : '';
-		                   
-		                   
-                if($callback === ''){
-         	            $o = json_encode($r);
-                }  else {
-                	       $r->callback = $callback;
-                           $o = $callback.'(' . json_encode($r) . ')';
-		                }
-		                
-		        return $o;
-		 	});
-		 		
-		 
-		 
-		 /* BEGIN extract phar (todo build/refactor API) */
-		 if(isset($_GET['EXTRA_EXTRACT_PHAR']) ){
-		 \webfan\App::God()->{'?session_started'}(true);
-
-		 	
-		 	if(file_exists( $this->data['CONFIGFILE']) && $this->data['config_new']['PACKAGE'] !== $this->data['config']['PACKAGE'] ){
-			    $str ='Error: Invalid installer package name';
-				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
-				die($str);				
-			}
-		 	
-		 	if(intval( str_replace(array('"', "'"), array('',''), $this->data['INSTALLER']) ) !== 1){
-			    $str ='Error: Not in installer context';
-				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
-				die($str);			
-			}
-
-		 	
-		 	if(
-		 	   ( $this->aSess['ADMIN_PWD'] !== $this->data['config']['ADMIN_PWD'] && $this->aSess['ADMIN_PWD'] !== $this->data['config_new']['ADMIN_PWD'] )
-		 	|| ( $_SERVER['SERVER_NAME'] !== $this->data['config']['HOST'] && $_SERVER['SERVER_NAME'] !== $this->data['config_new']['HOST'])
-		 	|| ($this->aSess['PIN'] !== $this->data['config']['PIN'] && $this->aSess['PIN'] !== $this->data['config_new']['PIN'] )
-		 	){
-				die('Invalid credentials, try to install via <a href="{___$$URL_INSTALLER_HTMLPAGE$$___}">{___$$URL_INSTALLER_HTMLPAGE$$___}</a>!');
-			}
-		 	
-		 	
-		 
-		 	
-		 	try{
-				\Extract::from($this->data['PHAR_INCLUDE'])->to(  $this->data['DIR'] );
-			}catch(\Exception $e){
-				$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ' .$e->getMessage();
-				trigger_error($str, E_USER_ERROR);
-				die($str);
-			}
-		 	 
-		 	 if(file_exists($this->data['DIR']. 'composer.json')){
-			 	
-			 						 			
-
-			 			
-			 			/*
-			 	   		 $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.loc.api_url="'.$this->data['config']['URL_API_ORIGINAL'].'";
-			 			*/
-			 			$this->data['data_out']->js = trim(preg_replace("/\s+|\n/", " ", 'try{
-			 			$(\'#window_\' + \'frdl-webfan\').find(\'#wd-li-frdl-webfan-installPHAR\').find(\'u\').html(\'Update\');
-			 			$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig();
-			 		
-			 			}catch(err){console.error(err);}			 			
-			 			'));
-			 			
-			 			if($this->data['config_new']['ADMIN_PWD'] !== $this->data['config']['ADMIN_PWD']){
-							$this->data['data_out']->js.= ' 
-					     		alert("Attention: Password has changed ('.trim($_POST['pwd'], '"\' ').')!");
-							 ';
-						}
-			 			
-			 			if($this->data['config_new']['PIN'] !== $this->data['config']['PIN']){
-							$this->data['data_out']->js.= ' 
-					     		alert("Attention: PIN has changed ('.$this->aSess['PIN'].')!");
-							 ';
-						}
-									 		
-									 		
-			 			$this->data['config']['VERSION'] = $this->data['config_new']['VERSION'];
-			 			$this->data['config']['DOWNLOADUPDATETIME'] = $this->data['config_new']['DOWNLOADTIME'];
-			 			
-			 			
-			 			$this->data['config']['UPDATETIME'] = time();
-			 			
-			 			$this->data['config']['ADMIN_PWD'] = $this->aSess['ADMIN_PWD'];
-			 			$this->data['config']['PIN'] = $this->aSess['PIN'];
-			 			$this->data['config']['DIR_PACKAGE'] = $this->data['DIR'];
-			 			
-			 			if(0 === intval($this->data['config']['UID']) && 0 !== intval($this->data['config_new']['UID']) ){
-							$this->data['config']['UID'] = $this->data['config_new']['UID'];
-						}
-			 			
-				 			
-			 			if( '' === $this->data['config']['UNAME'] && '' !== $this->data['config_new']['UNAME']){
-							$this->data['config']['UNAME'] = $this->data['config_new']['UNAME'];
-						}
-			 			
-			 					 			
-			 			$php = "<?php
-			 			/*
-			 			  - Do not edit this file manually! 
-			 			  Application Composer - Config
-			 			  Download: {___$$URL_INSTALLER_HTMLPAGE$$___}
-			 			  
-			 			*/
-			 			    if(isset(\$this) && get_class(\$this) === '\\".get_class($this)."'){
-                         	     \$this->data['config'] = ".var_export($this->data['config'], true).";								
-							}		 			
-                        ";
-			 			
-			 			file_put_contents($this->data['CONFIGFILE'], $php);
-							 			
-							 			
-							 			
-			 		    if(isset($_REQUEST['u'])){
-			 		    	unlink( $this->data['PHAR_INCLUDE']);
-			 		    	$this->data['data_out']->js.= ' $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.EXTRA_INSTALLER = null;	';
-			 		    }
-			 			
-			 				 			
-				 	   	$this->data['data_out']->js.= '
-			 		    	$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.INSTALLED = "1";
-			 		    	$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].render();
-			 		    	$(\'#window_\' + \'frdl-webfan\').find(\'#wd-li-frdl-webfan-installPHAR\').find(\'u\').html(\'Upate\');
-			 		    	';		 			
-								
-					 	   	$this->data['data_out']->js.= '
-			 		    	window.location.href = "'.$this->data['config']['URL'].'";
-			 		    	';															 		
-		
-		 	            die('Extracted');
-			 }else{
-				$str = 'Error extracting php archive';
-				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
-				die($str);			 	
-			 }
-		 }
-		 /* END extract (todo) */
-		 
-		 
-		 
-		 
-		 die('API:callback: ToDo...');
-	}
-     
-	
-	public function prepare404(){
-		\webdof\wResponse::status(404);
-		$this->template = $this->readFile('404');
-		return $this->template;
-	}
-} 
-
- 
-  
- $fexe = new webfan(__FILE__, __COMPILER_HALT_OFFSET__);
- $fexe->run();
-
-
-__halt_compiler();µConfig%json%config.json
-{
-	"PACKAGE" : "{___$PACKAGE___}",
-	"VERSION" : "{___$VERSION___}",
-	"OID" : "{___$OID___}",
-	"PIN_HASH" : "{___$PIN_HASH___}",
-	"ADMIN_PWD" : "{___$adminpwd_optional_HASH___}",
-	"PIN" : "{___$PIN___}",
-	"HOST" : "{___$HOST___}",
-	"HOST_HASH" : "{___$HOST_HASH___}",
-	"URL" : "{$__LOCATION___}",
-	"DOWNLOADTIME" : "{___$DOWNLOADTIME___}",
-	"INSTALLTIME" : "{___$INSTALLTIME___}",
-	"UID" : "{___$UID___}",
-	"UNAME" : "{___$UNAME___}",
-	"REGISTERED" : "{___$REGISTERED___}",
-	"LICENSEKEY" : "{___$LICENSEKEY___}",
-	"LICENSESERIAL" : "{___$LICENSESERIAL___}",
-	"SECRET" : "{___$SECRET___}",
-	"SHAREDSECRET" : "{___$SHAREDSECRET___}"
-}
-µxTpl%%Main Template
-<h1 style="color:#6495ED;">frdl/webfan - Application Composer</h1>
-<a href="javascript:;" onclick="$.WebfanDesktop({});" style="color:#6495ED;">!desktop</a>
-<script type="text/javascript">
-$(document).ready(function() {
-(function($){
-	try{
-	 $.WebfanDesktop({
-      modules : [
-            
-    ]
-  });
- 
- $.ApplicationComposerOpen({
- 	    PACKAGE : '{$___PACKAGE___}',
- 	    VERSION : '{$___VERSION___}',
- 	    INSTALLED : '{$___INSTALLED___}',
- 	    INSTALLER : '{$___INSTALLER___}',
- 	    REGISTERED : '{$___REGISTERED___}',
-		EXTRA_INSTALLER : '{$___INSTALLER_PHAR_AVAILABLE___}',
- 	    INSTALLER_PHAR_AVAILABLE : '{$___INSTALLER_PHAR_AVAILABLE___}',
- 	    
-		user : {
-			uid : '{$___UNAME___}',
-			uname : '{$___UID___}'
-		},
- 	    
-		loc : {
-			url : '{$___URL___}',
-			api_url : '{$___URI_DIR_API___}',
-			EXTRA_PMX_URL : '{$___EXTRA_PMX_URL___}',
-			EXTRA_PHAR_URL : '{$___EXTRA_PHAR_URL___}'
+        if(true === $startIf && false === $r){
+          if(!session_start()){	
+            if(true === $this->debug) trigger_error('Cannot start session in '.basename(__FILE__).' '.__LINE__, E_USER_WARNING);
+          }
 		}
- });	
-	}catch(err){
-		console.error(err);
+        
+        
+       return $r ;
+        }) );
+        	
+       return $this;
 	}
-
-     	
-     	
-})(jQuery);
-
-});
-</script>	
-µxTpl%%404
-<span style="color:red;">The requested content was not found!</span>
-<br />
-[ <a href="/">Go to startpage</a> ]
-<br />
-<script type="text/javascript">
-$(document).ready(function(){
-$.WebfanDesktop({});	
-document.title = '404 - Not found';
- uhrTimer.add("Timer_" + window.location.href + "_notification_404", function(){
-	  if('function' !== typeof $.notificationcenter.newAlert)return;	
-	  uhrTimer.remove("Timer_" + window.location.href + "_notification_404");
-  	 $.notificationcenter.newAlert("Der angeforderte Inhalt unter " + window.location.href + " wurde nicht gefunden!", "error", true, function(notif){
-		   document.title = notif.text;
-	   }, 
-	   Guid.newGuid()
-	  );
 	
-  }); 
+	protected function default_run(&$Request =null){
+    	$this->Request = (null !== $Request) ? $Request : $this->initRequest();
+    	if(!is_string($this->raw))$this->getFileData();
+        if(!is_array($this->files))$this->Files();
+    	$this->route();		
+       return $this;
+	}		
+			
+	public function initRequest(){
+       $this->Request = new \frdl\common\Request();	
+       return $this;
+	}		
+			
+	protected function default_boot(){
+		\webfan\App::God()->addStreamWrapper( 'webfan', 'fexe', $this,  true  ) ;
+       return $this;
+	}
+	
+   /**
+   * e.g.: 	  
+   *         $data = $this->getFileData();
+   *          $this->read($data, '#', (function($token) use (&$out) {
+   *           	$out.= trim($token).'<br />';
+   *     	}));  
+   *    	echo $out;
+   * @param undefined $data
+   * @param undefined $delimiters
+   * @param undefined $func
+   * 
+   * @return
+   */		
+	public function read(&$data, $delimiters = '#', \closure $func, &$out = null){
+		$ti = new \frdl\common\TokenIterator($data, $delimiters);
+		foreach ($ti as $count => $token) {
+            $func($token);
+        }
+        return $this;
+	}
+	
+	public function __call($name, $args){
+		$tok = 'get';
+		if(substr($name,0,strlen($tok))===$tok){
+			$name = substr($name, strlen($tok), strlen($name));
+			if(!isset($this->{$name}))$name = strtolower($name);
+			return (isset($this->{$name})) ? $this->{$name} : null;
+		}
+		
+		$method = 'func_'.$name;
+		if(isset($this->{$method})) {
+			return call_user_func_array($this->{$method},$args);
+		}
+	    trigger_error('Not implemented yet: '.$name, E_USER_ERROR);	
+	}
+	
+   
+   
+   public function wrapData($data, $subject)
+     {
+     	$begin = "-----BEGIN $subject-----\r\n";
+     	$end = "-----END $subject-----";
+        return $begin . chunk_split(base64_encode($data)) . $end;
+     }
+   public function unwrapRSAData($str)
+     {
+       $data = preg_replace('#^(?:[^-].+[\r\n]+)+|-.+-|[\r\n]#', '', $str);
+       return preg_match('#^[a-zA-Z\d/+]*={0,2}$#', $data) ? base64_decode($data) : false;
+     }
+   public function unwrapData($str)
+     {
+       $data = preg_replace('#^(?:[^-].+[\r\n]+)+|-.+-|[\r\n]#', '', $str);
+       return preg_match('#^[a-zA-Z\d/+]*={0,2}$#', $data) ? base64_decode($data) : false;
+     }
+          
+     
+     
+    /**
+	* read file from offset
+	* 
+	* @param undefined $file     __FILE__
+	* @param undefined $offset   __COMPILER_HALT_OFFSET__
+	* 
+	* @return string
+	*/ 
+    public function getFileData($file = null, $offset = null){
+    	if(null === $file)$file = &$this->file;
+    	if(null === $offset)$offset = $this->file_offset;
+		$this->IO = fopen($file, 'r');
+        fseek($this->IO, $offset);
+        try{
+			$this->raw =  stream_get_contents($this->IO);
+		}catch(\Exception $e){
+			$this->raw = '';
+			trigger_error($e->getMessage(), E_USER_ERROR);
+		}
+        
+        return $this->raw;
+	}
+	
+	public function __destruct(){
+			
+		try{
+			 if(is_resource($this->IO))fclose($this->IO);
+			 /*
+			 $fp = fopen($this->file, 'w+');
+			 flock($fp,LOCK_UN);
+			 fclose($fp);
+			 */
+		}catch(\Exception $e){
+			trigger_error($e->getMessage(). ' in '.__METHOD__, E_USER_ERROR);
+		}
+	}
+	
 
-
-});
-</script>
-
+	
+	
+	
+/**
+ * @component
+ * bin
+ * original class bserialize:
+ * Copyright (c) 2009, PHPServer
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the Cesar Rodas nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY CESAR RODAS ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL CESAR RODAS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */	
+   public function unserialize(&$var){$i=0;return $this->_unserialize($var,false,$i);}		
+   protected function _unserialize(&$var,$just_first=false,&$start) {
+       try{ $len = strlen($var); }catch(Exception $e) {trigger_error($e->getMessage(). ' in '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
+								  return;}
+        $out = null;  for($i = &$start; $i < $len; $i++) {
+            $type = ord($var[$i++]);
+            switch ($type) {
+                case self::V_ZERO:
+                    $out = 0;
+                    break;
+                case self::V_1INT_POS:
+                case self::V_1INT_NEG:
+                    $out = ord($var[$i]);
+                    if ($type==self::V_1INT_NEG) $out *= -1;
+                    $i++;
+                    break;
+                case self::V_2INT_POS:
+                case self::V_2INT_NEG:
+                    $out = $this->__toint(substr($var,$i,2),2);
+                    if ($type == self::V_2INT_NEG) $out *= -1;
+                    $i += 2;
+                    break;
+                case self::V_4INT_POS:
+                case self::V_4INT_NEG:
+                    $out = $this->__toint(substr($var,$i,4),4);
+                    if ($type == self::V_4INT_NEG) $out *= -1;
+                    $i += 4;
+                    break;
+                case self::V_FLOAT_POS:
+                case self::V_FLOAT_NEG:
+                    $out = $this->__tofloat(substr($var,$i,6));
+                    if ($type == self::V_FLOAT_NEG) $out *= -1;
+                    $i += 6;
+                    break;
+                case self::V_BOOL_TRUE:
+                    $out = true;
+                    break;
+                case self::V_BOOL_FALSE:
+                    $out = false;
+                    break;
+                case self::V_STRING:
+                    $xlen = $this->_unserialize($var,true,$i);
+                    if (!is_numeric($xlen)) {
+                        trigger_error(self::STR_LEN . ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__);
+                        return;
+                    }
+                    $out = substr($var,$i,$xlen);
+                    $i += $xlen;
+                    break;
+                case self::V_ARRAY:
+                    $xlen = $this->_unserialize($var,true,$i);
+                    if (!is_numeric($xlen)) {
+                        trigger_error(self::ARR_LEN. ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__);
+                        return;
+                    }
+                    $out = array();
+                    $tmp = substr($var,$i,$xlen);
+                    $itmp = 0;
+                    while ($itmp < $xlen) {
+                        $key    = $this->_unserialize($tmp,true,$itmp);
+                        $value  = $this->_unserialize($tmp,true,$itmp);
+                        $out[$key] = $value;
+                    }
+                    $i += $xlen;
+                    break;
+                case self::V_OBJECT:
+                    $class_name = $this->_unserialize($var,true,$i);
+                    $xlen = $this->_unserialize($var,true,$i);
+                    if (!is_numeric($xlen)) {
+                        trigger_error(self::OBJ_LEN. ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__);
+                        return;
+                    }
+                    
+                    $class_name = class_exists($class_name) ? $class_name : stdClass;
+                    $out = new $class_name;
+                   
+                    $tmp = substr($var,$i,$xlen);
+                    $itmp = 0;
+                    while ($itmp < $xlen) {
+                        $key    = $this->_unserialize($tmp,true,$itmp);
+                        $value  = $this->_unserialize($tmp,true,$itmp);
+                        $out->$key = $value;
+                    }
+                    $i += $xlen;
+                    break;
+					
+				case self::V_NULL:	
+                default:
+                    trigger_error(self::UNKNOWN_TYPE. ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
+                   $out = null;
+            }
+            if (!is_null($out)) {
+                break;
+            }
+        }
+        return $out;
+    }
+   public function serialize($var) {
+        $str = "";
+        if (is_integer($var) && $var==0) {
+            return chr(self::V_ZERO);
+        }
+        switch( ($type=gettype($var)) ) {
+            case "string":
+                $str .= chr(self::V_STRING);
+                $str .= $this->serialize((int)strlen($var));
+                $str .= $var;
+                break;
+            case "float":
+            case "double":
+                $str .= chr($var > 0 ? self::V_FLOAT_POS : self::V_FLOAT_NEG);
+                $str .= $this->__fromfloat($var);
+                break;
+            case "integer":
+            case "numeric":
+                $t = abs($var);
+                if ($t < 255) {
+                    $str .= chr($var > 0 ? self::V_1INT_POS : self::V_1INT_NEG);
+                    $str .= chr($t);
+                } else if ($t < 65536) {
+                    $str .= chr($var > 0 ? self::V_2INT_POS : self::V_2INT_NEG);
+                    $str .= $this->__fromint($var,2);
+                } else {
+                    $str .= chr($var > 0 ? self::V_4INT_POS : self::V_4INT_NEG);
+                    $str .= $this->__fromint($var);
+                }
+                break;
+            case "boolean":
+                $str .= chr($var ? self::V_BOOL_TRUE : self::V_BOOL_FALSE);
+                break;
+            case "array":
+                $str .= chr(self::V_ARRAY);
+                $tmp = "";
+                foreach($var as $key => $value) {
+                    $tmp .= $this->serialize($key);
+                    $tmp .= $this->serialize($value);
+                }
+                $str .= $this->serialize(strlen($tmp));
+                $str .= $tmp;
+                break;
+            case "object":
+                $str .= chr(self::V_OBJECT);
+                $str .= $this->serialize(get_class($var));
+                $tmp = "";
+                foreach(get_object_vars($var) as $key => $value) {
+                    $tmp .= $this->serialize($key);
+                    $tmp .= $this->serialize($value);
+                }
+                $str .= $this->serialize(strlen($tmp));
+                $str .= $tmp;
+                break;
+			case "null" :
+            default:
+				$str .= chr(self::V_NULL);  
+                trigger_error(self::UNKNOWN_TYPE. ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
+                break;
+        }
+        return $str;
+    }
+    protected function __toint($string,$blen=4) {
+        $out  = 0;
+        $n    = ($blen-1) * 8;
+        for($bits=0; $bits < $blen; $bits++) {
+            $out |= ord($string[$bits]) << $n;
+            $n -= 8;
+        }
+        return $out;
+    }
+    protected function __fromint($int,$blen=4) {
+        $int = (int)($int < 0) ? (-1*$int) : $int;
+        $bytes=str_repeat(" ",$blen);
+        $n    = ($blen-1) * 8;
+        for($bits=0; $bits < $blen; $bits++) {
+            $bytes[$bits] = chr($int  >> $n);
+            $int -= $bytes[$bits] << $n;
+            $n -= 8;
+        }
+        return $bytes;
+    }
+    protected function __fromfloat($float) {
+        $str  = $this->__fromint($float);
+        $str .= $this->__fromint( round(($float-(int)$float)*1000) , 2 );
+        return $str;
+    }
+    protected function __tofloat($string) {
+        $float  = $this->__toint(substr($string,0,4));
+        $float += $this->__toint(substr($string,4,2),2)/1000;
+        return $float;
+    }	
+}
+ 
