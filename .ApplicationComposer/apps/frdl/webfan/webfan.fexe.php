@@ -265,26 +265,7 @@ class webfan extends fexe
 	
 	
 	
-	public function is_session_started($startIf = true)
-      {
-      	$r = false; 
-        if ( php_sapi_name() !== 'cli' ) {
-        if ( version_compare(phpversion(), '5.4.0', '>=') ) {
-            $r =  session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
-          } else {
-             $r =  '' === session_id()  ? FALSE : TRUE;
-          }
-        }
-        
-        if(true === $startIf && false === $r){
-          if(!session_start()){	
-            if(true === $this->debug) trigger_error('Cannot start session in '.basename(__FILE__).' '.__LINE__, E_USER_WARNING);
-          }
-		}
-        
-        
-       return $r ;
-    }
+
 
 	
 	
@@ -325,7 +306,7 @@ class webfan extends fexe
 		 
 		 /* BEGIN extract phar (todo build/refactor API) */
 		 if(isset($_GET['EXTRA_EXTRACT_PHAR']) ){
-		 $this->is_session_started(true);
+		 \webfan\App::God()->{'?session_started'}(true);
 		 	
 		 	ob_start(function($c){
 		 		       	 $r = $this->data['data_out'];
