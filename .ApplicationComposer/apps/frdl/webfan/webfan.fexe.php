@@ -301,13 +301,7 @@ class webfan extends fexe
 
     protected function _api($u = null){
 		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
-		
-		 
-		 
-		 /* BEGIN extract phar (todo build/refactor API) */
-		 if(isset($_GET['EXTRA_EXTRACT_PHAR']) ){
-		 \webfan\App::God()->{'?session_started'}(true);
-		 	
+			 	
 		 	ob_start(function($c){
 		 		       	 $r = $this->data['data_out'];
 		 		       	 $r->type = 'print';
@@ -327,7 +321,13 @@ class webfan extends fexe
 		                
 		        return $o;
 		 	});
-		 	
+		 		
+		 
+		 
+		 /* BEGIN extract phar (todo build/refactor API) */
+		 if(isset($_GET['EXTRA_EXTRACT_PHAR']) ){
+		 \webfan\App::God()->{'?session_started'}(true);
+
 		 	
 		 	if(file_exists( $this->data['CONFIGFILE']) && $this->data['config_new']['PACKAGE'] !== $this->data['config']['PACKAGE'] ){
 			    $str ='Error: Invalid installer package name';
