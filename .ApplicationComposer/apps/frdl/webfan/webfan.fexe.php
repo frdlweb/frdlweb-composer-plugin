@@ -99,15 +99,15 @@ class webfan extends fexe
 	 	
 	 }
 	 
-	 public function data($data = null){
+	 public function data(Array $data = null){
 	  if(null === $this->data){
 	  	
 
 	   	  	
 	   	  	
-	   $this->data = array();
-	   $this->data['DIR'] = getcwd(); 
-	   $this->data['CONFIGFILE'] = $this->data['DIR'].DIRECTORY_SEPARATOR.'config.frdl.php';
+	   if(!isset($this->data))$this->data = array();
+	   $this->data['DIR'] = getcwd() . DIRECTORY_SEPARATOR ; 
+	   $this->data['CONFIGFILE'] = $this->data['DIR'].'config.frdl.php';
 	   $this->data['o'] = new \stdclass;	   
 	   $this->data['data_out'] = new \stdclass;
 	   $this->data['config'] = array();
@@ -146,7 +146,6 @@ class webfan extends fexe
  	          'EXTRA_PMX_URL' => '',
  	          
 	     );
-	 }
 	 
 	 
 	  
@@ -161,6 +160,59 @@ class webfan extends fexe
        if(!isset($_SESSION[__CLASS__]))$_SESSION[__CLASS__] = array();
        $this->aSess = & $_SESSION[__CLASS__] ;
         
+        
+         
+       $this->data['config'] = $this->readFile('config.json');
+       $this->data['config_new'] = $this->data['config']; 
+       if(file_exists($this->data['CONFIGFILE'])){
+	   	  require $this->data['CONFIGFILE'];
+	   	  $this->data['installed'] = "1";
+	   }else{
+	   	$this->data['installed'] = "0";
+	   }
+       
+       $this->data['config_new'] = (array)$this->data['config_new'];        
+       $this->data['config'] = (array)$this->data['config'];
+       $this->data['config']['INSTALLED'] = $this->data['installed'];
+       
+
+       
+       
+       if(base64_decode('eyRfX0xPQ0FUSU9OX19ffQ==') === $this->data['config']['URL'] ){
+	   	   $this->data['config']['URL'] = $this->data['tpl_data']['LOCATION'];
+	   	  if(true === $this->debug) trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
+	   }
+       $this->data['tpl_data']['URL'] = &$this->data['config']['URL'];
+	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api/';	
+	   $this->data['config']['URL_API_ORIGINAL'] =  $this->data['tpl_data']['URI_DIR_API'];	
+   
+ 	    $this->data['tpl_data']['PACKAGE'] = &$this->data['config']['PACKAGE'];
+ 	    $this->data['tpl_data']['VERSION'] = &$this->data['config']['VERSION'];
+ 	    $this->data['tpl_data']['INSTALLED'] = &$this->data['config']['INSTALLED'];
+ 	    $this->data['tpl_data']['REGISTERED'] = &$this->data['config']['REGISTERED'];
+  	    $this->data['tpl_data']['UNAME'] = &$this->data['config']['UNAME'];
+  	    $this->data['tpl_data']['UID'] = &$this->data['config']['UID'];	    
+         	
+       $this->data['INSTALLER_PHAR_AVAILABLE'] = 0;
+   
+       $this->data['tpl_data']['INSTALLER'] = '';
+	   if(   function_exists('frdl_install_rewrite_function')
+	      || file_exists($this->data['DIR'] . 'install.phar') 
+	      || file_exists($this->data['DIR'] . 'install.php') 	    
+	    ){
+	   	  $this->_installFromPhar($u);
+	   	  $this->data['INSTALLER_PHAR_AVAILABLE'] = 1;
+	   }
+	   $this->data['tpl_data']['INSTALLER_PHAR_AVAILABLE'] =   &$this->data['INSTALLER'] ;
+    	
+    	
+	  }else{
+	  	 foreach($data as $k => $v){
+		 	$this->data[$k] = $v;
+		 }
+	  }
+	 
+	       
 	   return $this->data;	 	
 	 }
 	 
@@ -188,47 +240,7 @@ class webfan extends fexe
 	
     protected function route($u = null){
        $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
-       
-       $this->data['config'] = $this->readFile('config.json');
-       $this->data['config_new'] = $this->data['config']; 
-       if(file_exists($this->data['CONFIGFILE'])){
-	   	  require $this->data['CONFIGFILE'];
-	   	  $this->data['installed'] = "1";
-	   }else{
-	   	$this->data['installed'] = "0";
-	   }
-       
-       $this->data['config_new'] = (array)$this->data['config_new'];        
-       $this->data['config'] = (array)$this->data['config'];
-       $this->data['config']['INSTALLED'] = $this->data['installed'];
-       
-
-       
-       
-       if(base64_decode('eyRfX0xPQ0FUSU9OX19ffQ==') === $this->data['config']['URL'] ){
-	   	   $this->data['config']['URL'] = $this->data['tpl_data']['LOCATION'];
-	   	  if(true === $this->debug) trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
-	   }
-       $this->data['tpl_data']['URL'] = $this->data['config']['URL'];
-	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api/';	
-	   $this->data['config']['URL_API_ORIGINAL'] =  $this->data['tpl_data']['URI_DIR_API'];	
-   
- 	    $this->data['tpl_data']['PACKAGE'] = $this->data['config']['PACKAGE'];
- 	    $this->data['tpl_data']['VERSION'] = $this->data['config']['VERSION'];
- 	    $this->data['tpl_data']['INSTALLED'] = $this->data['config']['INSTALLED'];
- 	    $this->data['tpl_data']['REGISTERED'] = $this->data['config']['REGISTERED'];
- 	    
-         	
-       $this->data['INSTALLER_PHAR_AVAILABLE'] = 0;
-   
-       $this->data['tpl_data']['INSTALLER'] = '';
-	   if(function_exists('frdl_install_rewrite_function')){
-	   	  $this->_installFromPhar($u);
-	   }
-	   $this->data['tpl_data']['INSTALLER_PHAR_AVAILABLE'] =   $this->data['INSTALLER'] ;
-    	 
-    	 
-
+ 
     	if(
 	         in_array( self::URI_DIR_API , $u->getU()->dirs)
 	     ||  'api.php' === $u->getU()->file     
@@ -368,7 +380,7 @@ class webfan extends fexe
 				die($str);
 			}
 		 	 
-		 	 if(file_exists($this->data['DIR']. DIRECTORY_SEPARATOR . 'composer.json')){
+		 	 if(file_exists($this->data['DIR']. 'composer.json')){
 			 	
 			 						 			
 
@@ -398,14 +410,33 @@ class webfan extends fexe
 									 		
 			 			$this->data['config']['VERSION'] = $this->data['config_new']['VERSION'];
 			 			$this->data['config']['DOWNLOADUPDATETIME'] = $this->data['config_new']['DOWNLOADTIME'];
+			 			
+			 			
 			 			$this->data['config']['UPDATETIME'] = time();
 			 			
 			 			$this->data['config']['ADMIN_PWD'] = $this->aSess['ADMIN_PWD'];
 			 			$this->data['config']['PIN'] = $this->aSess['PIN'];
 			 			
+			 			if(0 === intval($this->data['config']['UID']) && 0 !== intval($this->data['config_new']['UID']) ){
+							$this->data['config']['UID'] = $this->data['config_new']['UID'];
+						}
 			 			
+				 			
+			 			if( '' === $this->data['config']['UNAME'] && '' !== $this->data['config_new']['UNAME']){
+							$this->data['config']['UNAME'] = $this->data['config_new']['UNAME'];
+						}
+			 			
+			 					 			
 			 			$php = "<?php
-                         	\$this->data['config'] = ".var_export($this->data['config'], true).";		 			
+			 			/*
+			 			  - Do not edit this file manually! 
+			 			  Application Composer - Config
+			 			  Download: {___$$URL_INSTALLER_HTMLPAGE$$___}
+			 			  
+			 			*/
+			 			    if(isset(\$this) && get_class(\$this) === '\\".get_class($this)."'){
+                         	     \$this->data['config'] = ".var_export($this->data['config'], true).";								
+							}		 			
                         ";
 			 			
 			 			file_put_contents($this->data['CONFIGFILE'], $php);
@@ -417,13 +448,16 @@ class webfan extends fexe
 			 		    	$this->data['data_out']->js.= ' $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.EXTRA_INSTALLER = null;	';
 			 		    }
 			 			
-			 						 			
+			 				 			
 				 	   	$this->data['data_out']->js.= '
 			 		    	$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.INSTALLED = "1";
 			 		    	$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].render();
 			 		    	$(\'#window_\' + \'frdl-webfan\').find(\'#wd-li-frdl-webfan-installPHAR\').find(\'u\').html(\'Upate\');
 			 		    	';		 			
-														 		
+								
+					 	   	$this->data['data_out']->js.= '
+			 		    	window.location.href = "'.$this->data['config']['URL'].'";
+			 		    	';															 		
 		
 		 	            die('Extracted');
 			 }else{
@@ -495,6 +529,11 @@ $(document).ready(function() {
  	    INSTALLER : '{$___INSTALLER___}',
  	    REGISTERED : '{$___REGISTERED___}',
 		EXTRA_INSTALLER : '{$___INSTALLER_PHAR_AVAILABLE___}',
+ 	    
+		user : {
+			uid : '{$___UNAME___}',
+			uname : '{$___UID___}'
+		},
  	    
 		loc : {
 			url : '{$___URL___}',
