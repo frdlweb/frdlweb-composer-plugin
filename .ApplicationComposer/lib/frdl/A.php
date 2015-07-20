@@ -267,6 +267,13 @@
             
              
         $fnFromatFromHeaders = function() use($mime_types){
+        	/**
+			* 
+			* @todo
+			* 
+			*/
+		    return false;
+		    
 			  $headers = \webfan\App::God()-> {'?request_headers'}();
             	  if(isset($headers['Accept'])){
 					$accepts = explode(',', $headers['Accept']);
