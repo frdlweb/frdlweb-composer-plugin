@@ -37,7 +37,21 @@
  abstract class A{
  	
   const FN_ASPECTS = 'aspects';	
- 	
+     /**
+    *  default $SEMR´s
+	*  const  SERVER_ROUTER = {$cmd=SERVER} . {$format} . {$modul} . {$outputbuffers = explode(',')} 
+	*/
+	const TPL_SERVER_ROUTE = '{$cmd}.{$responseformat}.{$modul}.{$responsebuffers}';
+    const SERVER_PAGE = 'SERVER.html.PAGE.buffered';
+    const SERVER_HTML = 'SERVER.html.HTML.buffered';
+    const SERVER_API = 'SERVER.?.API.format';
+    const SERVER_404 = 'SERVER.html.404.buffered';
+    const SERVER_JS = 'SERVER.js.JS.compressed,pragma';
+    const SERVER_CSS = 'SERVER.css.CSS.compressed,pragma';
+    const SERVER_IMG = 'SERVER.img.IMG.compressed,pragma';
+	
+    const SERVER_DEFAULT = self::SERVER_404;
+    	
   protected $ns_pfx = array('?' => array('frdl' => true),
               '$'=> array('frdl' => true), 
               'µ'=> array('frdl' => true),
@@ -82,7 +96,7 @@
  * todo...
  * 
  */	
-  protected function helper_apply_commons(){
+  protected function apply_fm_flow(){
   	 $args  = func_get_args();
      $THIS = &$this;
      $SELF = self;    
@@ -134,7 +148,7 @@
    * http://php.net/manual/en/function.apache-request-headers.php#116645
    */      	
    \webfan\App::God() 	
-      -> {'$'}('?request_headers', (function() {
+      -> {'$'}('?request_headers', function() {
       	     if( function_exists('apache_request_headers') )return apache_request_headers();
                   foreach($_SERVER as $K=>$V){$a=explode('_' ,$K);
                         if(array_shift($a)==='HTTP'){
@@ -143,17 +157,39 @@
                   } 
              return $retval;
           }
-      ) );
+      );
         	
         	
 	     \webfan\App::God() 
-            -> {'$'}('!frdl.outputbuffers.api-format->json', $func_jsonP)
-            	 	
-
-            -> {'$'}('!frdl.outputbuffers.api-format->json', $func_jsonP)
-            -> {'$'}('!frdl.outputbuffers.api-format->jsonp', $func_jsonP)  
-            
-            -> {'$'}('!frdl.data.norm->mime', (function($format = null, $file = null, $apply = true, $default = '') use ($THIS, $SELF) {
+            -> {'$'}('µ.sem.parse', function($sem) use ($THIS, $SELF) {
+            	    $str = $SELF::TPL_SERVER_ROUTE;
+            	    foreach($sem as $k => $v){
+						$s = (is_array($v)) ? implode(',', $v) : $v;
+						$str = str_replace('{$'.$k.'}', $s, $str);
+					}
+            	    return $str;
+            	})
+            	// '{$cmd}.{$responseformat}.{$modul}.{$responsebuffers}'; 	
+            -> {'$'}('µ.sem.unparse', function(&$sem, $route) use ($THIS, $SELF) {
+            	    $seg = explode('.', $route);
+            	    $sem['cmd'] =  array_shift($seg);
+            	    $sem['responseformat'] =  array_shift($seg);
+            	    $sem['modul'] =   array_shift($seg);
+            	    $sem['responsebuffers'] = explode(',',array_shift($seg));
+            	    $sem['.nodes'] =$seg;
+                    return $THIS;
+            	})
+            	
+            	
+            -> {'$'}('µ.sem->getFomatterMethod', (function($format){
+                     return 'µ.sem.format->'.$format;
+            	}))	
+            -> {'$'}('µ.sem.format->json', $func_jsonP )
+            -> {'$'}('µ.sem.format->jsonp', $func_jsonP)  
+            /**
+			* todo   css,txt,php,bin,dat,js,img,....
+			*/
+            -> {'$'}('µ.sem.get->mime', (function($format = null, $file = null, $apply = true, $default = '') use ($THIS, $SELF) {
             $file = ((null===$file || !is_string($file)) ? \webdof\wURI::getInstance()->getU()->file : $file); 	
             if(true === $apply)$THIS->format = $default;
             
