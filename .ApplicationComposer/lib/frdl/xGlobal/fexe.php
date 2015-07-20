@@ -236,9 +236,11 @@
         $retval = $this->_s[$name];
       }elseif('_' !== substr($name,0,1)){
 	  	  $retval = $this->{$name};
+	  }else{
+	  	 trigger_error('Not fully implemented yet or unaccesable property: '.get_class($this).'->'.$name,  $this->e_level);	
 	  }
-      
-        trigger_error('Not fully implemented yet or unaccesable property: '.get_class($this).'->'.$name,  $this->e_level);	
+    
+       
         return $retval;
     }	   
 
