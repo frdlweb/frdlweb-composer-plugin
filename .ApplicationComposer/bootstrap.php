@@ -42,6 +42,8 @@ frdl\webfan\Autoloading\SourceLoader::top()
   -> addPsr4('frdl\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' .DIRECTORY_SEPARATOR, true) 
   -> addPsr4('webfan\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'webfan' .DIRECTORY_SEPARATOR, true) 
   -> addPsr4('webdof\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'webdof' .DIRECTORY_SEPARATOR, true)  
+  
+   -> addPsr4('\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . '' .DIRECTORY_SEPARATOR, false) 
   ;
   
 frdl\webfan\App::God(true, 'frdl\webfan\Autoloading\SourceLoader','AC boot') 
