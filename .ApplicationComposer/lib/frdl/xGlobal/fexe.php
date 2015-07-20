@@ -137,7 +137,8 @@
 	abstract protected function _boot();	
 	abstract public function run(&$Request =null);	
 	abstract protected function route();
-	
+	abstract protected function process_modul($modul);
+
     final protected function compatibility(){
     	$arguments = func_get_args();
     	if($this->e_level <= 0)return 0;
@@ -155,6 +156,16 @@
 	}
 	
 	
+	
+	protected function prepare_api(){
+	  $this->mime = \webfan\App::God()->{'µ.sem.get->mime'}(null, \webdof\wURI::getInstance()->getU()->file, true, 'jsonp');
+	  $ob =  \webfan\App::God()-> {'µ.sem->getFomatterMethod'}($this->format);
+	  if(is_string($ob)){
+	  	 ob_start(array( \webfan\App::God(), $ob));
+	  }
+	}
+		
+		
     public static function __callStatic($name, $arguments)
     {
 	    trigger_error('Not fully implemented yet: '.get_class(self).'::'.$name,  $this->e_level);	
@@ -226,6 +237,15 @@
       }
       
          $proxy =  $this->{$name} = $value;
+         
+         if('route' === $name){
+               \webfan\App::God()  
+                              -> {'µ.sem.unparse'}($this->{'_s'},$value );
+		 }else{
+		      $this->_s['route'] =  \webfan\App::God()  
+                              -> {'µ.sem.parse'}($this->{'_s'});
+		 }
+         
          return $this; 
     }	
  		
@@ -237,10 +257,8 @@
       }elseif('_' !== substr($name,0,1)){
 	  	  $retval = $this->{$name};
 	  }else{
-	  	 trigger_error('Not fully implemented yet or unaccesable property: '.get_class($this).'->'.$name,  $this->e_level);	
+	  	     trigger_error('Not fully implemented yet or unaccesable property: '.get_class($this).'->'.$name,  $this->e_level);	
 	  }
-    
-       
         return $retval;
     }	   
 
@@ -485,16 +503,7 @@
 	
 	
 	
-	
-	final protected function default_prepare_api(){
 
-	}
-	
-	
-	protected function _route(\webdof\wURI $u){
-		
-	}
-	
 	
 	final protected function default_route(\webdof\wURI $u = null){
        $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
@@ -518,7 +527,7 @@
 	     ||  'bin' === $u->getU()->file_ext     
 	     ||  'api' === $u->getU()->file_ext     
 	   ){
-	   	  return $this->_api($u);
+	   	   $this->route = self::SERVER_API;
 	   }elseif(
 	       '/' === $u->getU()->req_uri 
 	       || basename(__FILE__) ===  $u->getU()->file
@@ -526,59 +535,19 @@
 	       || 'install.php' === $u->getU()->file
 	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
 	   ){
-	        $this->template = $this->readFile('Main Template');
+	       $this->route = self::SERVER_PAGE;
 	   } elseif (file_exists($u->getU()->path) && is_file($u->getU()->path)){
-	   	    $this->template = $this->readFile('Main Template');  
+	   	    $this->route = self::SERVER_HTML;
 	   }
 	    else{
-	   	  $this->template = $this->prepare404();
+	   	   $this->route = self::SERVER_404;
 	   }	
         
       
 	   return $this;
 	}		
 		
-	/*
-	       $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
-       $inc_files =  get_included_files();
-        array_walk($inc_files, (function(&$file, $num) {
-	     	           $file = basename($file);
-	     	      }), $this);
-         
-        \webfan\App::God()-> {'!frdl.data.norm->mime'}(null, null, true, 'html');
- 
-    	if(
-	         in_array( self::URI_DIR_API , $u->getU()->dirs) 
-	     ||  in_array( 'api.php' , $inc_files ) 
-	     ||  'api.php' === $u->getU()->file     
-	     ||  'frdl.jsonp' === $u->getU()->file     
-	     ||  'api' === $u->getU()->file        
-	     ||  'jsonp' === $u->getU()->file_ext    
-	     ||  'json' === $u->getU()->file_ext    
-	     ||  'xml' === $u->getU()->file_ext     
-	     ||  'dat' === $u->getU()->file_ext     
-	     ||  'bin' === $u->getU()->file_ext     
-	     ||  'api' === $u->getU()->file_ext     
-	   ){
-	   	  return $this->_api($u);
-	   }elseif(
-	       '/' === $u->getU()->req_uri 
-	       || basename(__FILE__) ===  $u->getU()->file
-	       || 'install.phar' === $u->getU()->file
-	       || 'install.php' === $u->getU()->file
-	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
-	   ){
-	        $this->template = $this->readFile('Main Template');
-	   } elseif (file_exists($u->getU()->path) && is_file($u->getU()->path)){
-	   	    $this->template = $this->readFile('Main Template');  
-	   }
-	    else{
-	   	  $this->template = $this->prepare404();
-	   }	
-        
-      
-	   return $this;
-	   */
+
 	   
 	   
 	   
