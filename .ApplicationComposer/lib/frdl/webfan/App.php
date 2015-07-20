@@ -33,7 +33,6 @@
  *  @author 	Till Wehowski <php.support@webfan.de>
  *  @package    webfan://webfan.App.code
  *  @uri        /v1/public/software/class/webfan/frdl.webfan.App/source.php
- *  @version 	1.2.0.0
  *  @file       frdl\webfan\App.php
  *  @role       project/ Main Application Wrap 
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -51,10 +50,12 @@
  */
 namespace frdl\webfan;
 
+if(!class_exists('\frdl\A') && file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..'.DIRECTORY_SEPARATOR .'A.php')){
+	 require __DIR__ . DIRECTORY_SEPARATOR . '..'.DIRECTORY_SEPARATOR .'A.php';
+}
 
 
-
-class App
+class App extends \frdl\A
 {
 		
 	const NS = __NAMESPACE__;
@@ -68,6 +69,11 @@ class App
 	
 	protected $E_CALL = E_USER_ERROR;
 	protected $wrap;
+	/**
+	* 
+	* @public _ - current shortcut [mixed]
+	* 
+	*/
 	public $_; 
 	
 	/**
@@ -81,10 +87,11 @@ class App
 	protected $read = 0; 	
 	protected $Controller;
 	
-	protected $wrappers;
-	protected $shortcuts;
+
 	
 	protected $LoaderClass =null;
+	
+	protected $public_properties_read =  array('app', 'wrap', 'wrappers', 'shortcuts' ,'LoaderClass');
 	
 	
 
@@ -102,7 +109,22 @@ class App
             $this->setAutoloader($LoaderClass);
 	    if($init === true)$this->init();
 	}
-	 
+	
+	
+    public function &__get($name)
+    {
+    	
+      $retval = null;	
+      if (in_array($name, $this->public_properties_read )){
+           $retval = $this->{$name};
+           return $retval;
+	  }
+      
+        trigger_error('Not fully implemented yet or unaccesable property: '.get_class($this).'->'.$name,  $this->E_CALL);	
+
+        return $retval;
+    }		 
+
 
     public static function God($init = false, $LoaderClass = self::LOADER, $name = '', $branch = 'dev-master', 
 	   $version = 'v1.0.2-beta.1', $meta = array()){
@@ -114,6 +136,7 @@ class App
 	 $this->addShortCut('$', array($this,'addShortCut'))
 	   
 	  ;		
+	  
 	$this->_ = (function(){
 			     return call_user_func_array(array($this,'$'), func_get_args());
 		   });
@@ -316,11 +339,6 @@ class App
 			   return ($static === false) ? array($name, $method) : $name.'::'.$method;
 		      		    
 		 }
-	} 
-	 
-	public function addShortCut ($short,  $long){
-          $this->shortcuts[$short] = $long;
-		 return $this;
 	} 
 	 
     public function __call($name, $arguments)
