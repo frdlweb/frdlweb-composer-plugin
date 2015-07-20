@@ -115,7 +115,7 @@
 	protected $e_level = E_USER_ERROR;
 	
 	function __construct($file = null, $file_offset = null, $e_level = E_USER_ERROR){
-	  $this->_s = array('route' => self::SERVER_DEFAULT, 'cmd' => 'SERVER', 'responseformat' => 'html', 'modul' => '404', 'responsebuffers' => array('buffered'), 
+	  $this->_s = array('route' => self::SERVER_DEFAULT, 'cmd' => 'SERVER', 'responseformat' => 'html', 'modul' => 'PAGE', 'responsebuffers' => array('buffered'), 
 	     'u' => \webdof\wURI::getInstance()->getU()
 	 ); 
 	  $this->_SEMR = &$this->_s;
@@ -543,7 +543,7 @@
 	   	   $this->route = self::SERVER_404;
 	   }	
         
-      
+              
 	   return $this;
 	}		
 		
