@@ -86,7 +86,7 @@ if(!class_exists('\frdl\webfan\App')){
 class webfan extends fexe    
 {
 	 const DEL='µ';
-	 const URI_DIR_API = 'api';
+
 	 
 	 const HINT_NOTINSTALLED = 'The Program frdl/webfan is not installed properly, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!';
 	
@@ -156,21 +156,21 @@ class webfan extends fexe
 		 }
 	   }
 	
-	
+	  
+	   \webfan\App::God()->{'?session_started'}(true);
        if(!isset($_SESSION[__CLASS__]))$_SESSION[__CLASS__] = array();
        $this->aSess = & $_SESSION[__CLASS__] ;
         
         
          
-       $this->data['config'] = $this->readFile('config.json');
-       $this->data['config_new'] = $this->data['config']; 
+       $this->data['config_new'] = $this->readFile('config.json');
+       $this->data['config'] = $this->data['config_new'];
        if(file_exists($this->data['CONFIGFILE'])){
 	   	  require $this->data['CONFIGFILE'];
 	   	  $this->data['installed'] = "1";
 	   }else{
 	   	$this->data['installed'] = "0";
 	   }
-       
        $this->data['config_new'] = (array)$this->data['config_new'];        
        $this->data['config'] = (array)$this->data['config'];
        $this->data['config']['INSTALLED'] = $this->data['installed'];
@@ -213,7 +213,6 @@ class webfan extends fexe
 	      || file_exists($this->data['DIR'] . 'install.php') 	    
 	    ){
 	   	  $this->_installFromPhar($u);
-	   	  $this->data['INSTALLER_PHAR_AVAILABLE'] = '1';
 	   }
 	   $this->data['tpl_data']['INSTALLER_PHAR_AVAILABLE'] = function(){
  	       return $this->data['INSTALLER_PHAR_AVAILABLE'];
@@ -255,11 +254,19 @@ class webfan extends fexe
 	
     protected function route($u = null){
        $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
- 
+       return $this->default_route($u);
+/*
     	if(
 	         in_array( self::URI_DIR_API , $u->getU()->dirs)
 	     ||  'api.php' === $u->getU()->file     
-	     ||  'api' === $u->getU()->file     
+	     ||  'frdl.jsonp' === $u->getU()->file     
+	     ||  'api' === $u->getU()->file        
+	     ||  'jsonp' === $u->getU()->file_ext    
+	     ||  'json' === $u->getU()->file_ext    
+	     ||  'xml' === $u->getU()->file_ext     
+	     ||  'dat' === $u->getU()->file_ext     
+	     ||  'bin' === $u->getU()->file_ext     
+	     ||  'api' === $u->getU()->file_ext     
 	   ){
 	   	  return $this->_api($u);
 	   }elseif(
@@ -270,12 +277,13 @@ class webfan extends fexe
 	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
 	   ){
 	        $this->template = $this->readFile('Main Template');
-	   } 
+	   } elseif (file_exists($u->getU()->path) && is_file($u->getU()->path)){
+	   	      
+	   }
 	    else{
 	   	  $this->template = $this->prepare404();
 	   }	
-        
-      
+	   */
 	   return $this;
 	}
 	
@@ -287,8 +295,9 @@ class webfan extends fexe
 	
 	protected function _installFromPhar($u){
 	   global $include;	
+	   $this->data['INSTALLER_PHAR_AVAILABLE'] = '1';
 	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
-	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].$f.'/api.php';	
+	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].$f.'/api/frdl.jsonp';	
 	   $this->data['tpl_data']['EXTRA_PMX_URL'] =  $this->data['tpl_data']['URL'].$f.'/pragmamx.php';	
 	   $this->data['tpl_data']['INSTALLER'] = 'phar';
        $this->data['PHAR_INCLUDE'] = str_replace('phar://', '',$include);  	
@@ -349,7 +358,7 @@ class webfan extends fexe
 		 
 		 /* BEGIN extract phar (todo build/refactor API) */
 		 if(isset($_GET['EXTRA_EXTRACT_PHAR']) ){
-		 \webfan\App::God()->{'?session_started'}(true);
+		
 
 		 	
 		 	if(file_exists( $this->data['CONFIGFILE']) && $this->data['config_new']['PACKAGE'] !== $this->data['config']['PACKAGE'] ){
@@ -358,7 +367,11 @@ class webfan extends fexe
 				die($str);				
 			}
 		 	
-		 	if(intval( str_replace(array('"', "'"), array('',''), $this->data['INSTALLER']) ) !== 1){
+		 	if( 1 !== intval($this->data['INSTALLER_PHAR_AVAILABLE'])
+		 	  || intval( str_replace(array('"', "'"), array('',''), $this->data['INSTALLER']) ) !== 1
+		 	  || !isset( $this->data['PHAR_INCLUDE'])
+		 	  || !class_exists('\Extract')
+		 	){
 			    $str ='Error: Not in installer context';
 				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);			
@@ -377,7 +390,21 @@ class webfan extends fexe
 		 
 		 	
 		 	try{
-				\Extract::from($this->data['PHAR_INCLUDE'])->to(  $this->data['DIR'] );
+				\Extract::from($this->data['PHAR_INCLUDE'])->to(  $this->data['DIR'] ,
+                   function (Entry $entry) {
+                      if (false === strpos(basename($entry->getName()), '.')
+                        && (
+                                 true === \webdof\valFormats::is(basename($entry->getName()), 'md5', true)
+                              || true === \webdof\valFormats::is(basename($entry->getName()), 'sha1', true)    
+                            )     
+                      ) {
+                            return true; 
+                      }                    
+                      
+                      if('config.frdl.php' === basename($entry->getName()) || 'config.php' === basename($entry->getName())){
+					  	 return true;
+					  }
+                   });
 			}catch(\Exception $e){
 				$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ' .$e->getMessage();
 				trigger_error($str, E_USER_ERROR);
@@ -385,10 +412,6 @@ class webfan extends fexe
 			}
 		 	 
 		 	 if(file_exists($this->data['DIR']. 'composer.json')){
-			 	
-			 						 			
-
-			 			
 			 			/*
 			 	   		 $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.loc.api_url="'.$this->data['config']['URL_API_ORIGINAL'].'";
 			 			*/
@@ -431,6 +454,28 @@ class webfan extends fexe
 							$this->data['config']['UNAME'] = $this->data['config_new']['UNAME'];
 						}
 			 			
+			 			$files = array();
+			 			
+			 			$this->data['config']['FILES'] = array_merge((isset($this->data['config']['FILES']) && is_array($this->data['config']['FILES']))
+			 			         ? $this->data['config']['FILES'] : array(), array(
+			 			            'composer' =>  $this->data['config']['DIR_PACKAGE'] . 'composer.json',
+			 			            'config' =>    $this->data['CONFIGFILE'],
+			 			                 
+			 			  ));			 			
+			 			$this->data['config']['DIRS'] = array_merge((isset($this->data['config']['DIRS']) && is_array($this->data['config']['DIRS']))
+			 			         ? $this->data['config']['DIRS'] : array(), array(
+			 			            'apps' =>  $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'apps'. DIRECTORY_SEPARATOR,
+			 			            'cache' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'cache'. DIRECTORY_SEPARATOR,
+			 			            'data.norm' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'data.norm'. DIRECTORY_SEPARATOR,
+			 			            'data.storage' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'data.storage'. DIRECTORY_SEPARATOR,
+			 			            'packages' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'packages'. DIRECTORY_SEPARATOR,
+			 			            'repositories' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'repositories'. DIRECTORY_SEPARATOR,
+			 			            'servers' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'servers'. DIRECTORY_SEPARATOR,
+			 			            'share' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'share'. DIRECTORY_SEPARATOR,
+			 			            'tmp' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'tmp'. DIRECTORY_SEPARATOR,
+			 			            'vendor' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'vendor'. DIRECTORY_SEPARATOR,
+			 			                 
+			 			  ));
 			 					 			
 			 			$php = "<?php
 			 			/*
