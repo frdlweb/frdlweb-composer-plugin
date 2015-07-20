@@ -59,11 +59,27 @@
  */
  namespace frdl\xGlobal; 
  
- abstract class fexe
+ abstract class fexe extends \frdl\A 
 {
 	const VERSION='6.0.0.0';const DEL='µ';const STR_LEN="[Encoding error] String has an invalid length flag";const ARR_LEN="[Encoding error] Array has an invalid length flag";const OBJ_LEN="[Encoding error] Object has an invalid length flag";const UNKNOWN_TYPE="Don't know how to serialize/unserialize %s";const V_NULL=0x00;const V_ZERO=0x01;const V_1INT_POS=0x10;const V_1INT_NEG=0x11;const V_2INT_POS=0x12;const V_2INT_NEG=0x13;const V_4INT_POS=0x14;const V_4INT_NEG=0x15;const V_FLOAT_POS=0x20;const V_FLOAT_NEG=0x21;const V_BOOL_TRUE=0x30;const V_BOOL_FALSE=0x31;const V_ARRAY=0x40;const V_OBJECT=0x50;const V_STRING=0x60;
+    const URI_DIR_API = 'api';
+    
+
+    /**
+    *  default $SEMR´s
+	*  const  SERVER_ROUTER = {$cmd=SERVER} . {$format} . {$modul} . {$outputbuffers = explode(',')} 
+	*/
+	const TPL_SERVER_ROUTE = '{$cmd}.{$responseformat}.{$modul}.{$responsebuffers}';
+    const SERVER_PAGE = 'SERVER.html.PAGE.buffered';
+    const SERVER_HTML = 'SERVER.html.HTML.buffered';
+    const SERVER_API = 'SERVER.?.API.format';
+    const SERVER_404 = 'SERVER.html.404.buffered';
+    const SERVER_JS = 'SERVER.js.JS.compressed,pragma';
+    const SERVER_CSS = 'SERVER.css.CSS.compressed,pragma';
+    const SERVER_IMG = 'SERVER.img.IMG.compressed,pragma';
 	
-	
+    const SERVER_DEFAULT = self::SERVER_404;
+    
 	protected $IO = null;
 	
 	/**
@@ -80,6 +96,14 @@
 	protected $config;
 	protected $lang;
 	
+	/**
+	*   $SEMR ^= Server-Endpoint-Modul-Router 
+	*/
+	protected $_s = null; 
+	protected $_SEMR  = null; 
+	protected $format = null; 
+	protected $mime = null;
+	
 	protected $file; 
 	protected $file_offset;
 	protected $files = null;	
@@ -93,7 +117,7 @@
 	 */
 	protected $host; 
 	public $context = array();
-        protected $raw = null;
+    protected $raw = null;
 	protected $chunk;
 	public $buflen;
 	protected $pos = 0;
@@ -101,8 +125,16 @@
 	protected $eof = false;
 	protected $mode;
 	
+	protected $e_level = E_USER_ERROR;
 	
-	function __construct($file = null, $file_offset = null ){
+	function __construct($file = null, $file_offset = null, $e_level = E_USER_ERROR){
+	  $this->_s = array('route' => self::SERVER_DEFAULT, 'cmd' => 'SERVER', 'responseformat' => 'html', 'modul' => '404', 'responsebuffers' => array('buffered'), 
+	     'u' => \webdof\wURI::getInstance()->getU()
+	 ); 
+	  $this->_SEMR = &$this->_s;
+	  $this->format = &$this->_s['responseformat'];
+		 $this->e_level = $e_level;
+		 $this->compatibility();
 		 $this->file = $file;
 		 $this->file_offset = $file_offset;
 		 $this->setFuncs();
@@ -119,7 +151,116 @@
 	abstract public function run(&$Request =null);	
 	abstract protected function route();
 	
+    final protected function compatibility(){
+    	$arguments = func_get_args();
+    	if($this->e_level <= 0)return 0;
+		/**
+		* todo check properties if no conflict with $this->_s  ...
+		*/
+		
+		//return 0;  //not checked/unknown
+		//return -5; //unusable
+		//return -3; //incompatible
+		//return -1; //possible problem
+		return 1; // ok
+		return 2; //better
+		return 9; //optimum environment, suggestions applyed
+	}
 	
+	
+    public static function __callStatic($name, $arguments)
+    {
+	    trigger_error('Not fully implemented yet: '.get_class(self).'::'.$name,  $this->e_level);	
+	    return self;
+    }	
+    
+	public function __call($name, $arguments){
+		
+	   if(  '_' === strtolower($name) ||  '$' === strtolower($name) || 'semr' === strtolower($name) || 's' === strtolower($name)){
+			if(count($arguments) === 0){
+				return $this->_s;
+			}
+			
+		 $SEMR = &$this->{'_s'};
+		 $THIS = &$this;
+		 $f = array(
+		 'add' => (function() use($SEMR, $THIS) {
+		 	
+		   }), 
+		 'remove' => (function() use($SEMR, $THIS) {
+		 	
+		   }), 
+		 'parse' => (function($route = null) use($SEMR, $THIS) {
+		 	
+		   }), 
+		 'unparse' => (function() use($SEMR, $THIS) {
+		 	
+		 })
+		 );	
+			
+
+		 	if(1 === count($arguments) && isset($this->{'_s'}[$arguments[0]])){
+				return $this->{$arguments[0]};
+			}elseif(2 === count($arguments) && isset($this->{'_s'}[$arguments[0]]) && !isset($f[$arguments[0]]) ){
+				$field = $arguments[0];
+				$value = $arguments[1];
+				$this->{$field} = $value;
+	            return $this;
+			}elseif(isset($f[$arguments[0]])){
+				$function = array_shift($arguments);
+				return call_user_func_array($f[$function], $arguments);
+			}else{
+		         trigger_error('Not fully implemented yet (the $ _ _s SEMR handler): '.get_class($this).'->'.$name.'_('.strip_tags(var_export($arguments, true)).')',  $this->e_level);	
+	             return $this;			
+			}
+		 	
+
+			
+	      return $this;
+		}
+		
+		
+		
+		
+	    trigger_error('Not fully implemented yet: '.get_class($this).'->'.$name,  $this->e_level);	
+	    return $this;
+	}
+		
+    public function __set($name, $value)
+    {
+      if (isset($this->{'_s'}[$name])){
+      	if(is_array($this->{'_s'}[$name]) && is_array($value)){
+		 	$value = array_unique(array_merge($this->_s[$name], $value));
+		 }elseif(is_array($this->{'_s'}[$name]) && is_string($value)){
+		 	$value = array_unique(array_merge($this->_s[$name], explode(',', $value)));
+		 }
+          $this->_s[$name] = $value;
+         return $this; 
+      }
+      
+         $proxy =  $this->{$name} = $value;
+         return $this; 
+    }	
+ 		
+    public function &__get($name)
+    {
+      $retval = null;	
+      if (isset($this->_s[$name])){
+        $retval = $this->_s[$name];
+      }elseif('_' !== substr($name,0,1)){
+	  	  $retval = $this->{$name};
+	  }
+      
+        trigger_error('Not fully implemented yet or unaccesable property: '.get_class($this).'->'.$name,  $this->e_level);	
+        return $retval;
+    }	   
+
+	
+    public function __invoke()
+    {
+       return call_user_func_array(array($this, 'run'), func_get_args());
+    }
+    	
 	public function appstream(){
 		return 'webfan://'.str_replace('\\', '.', get_class($this)) .'.fexe:'.$this->file_offset.'/'.$this->file;
 	}
@@ -130,9 +271,9 @@
 		    foreach($opts['meta'] as $pos => $meta){
 		            if(is_array($meta) && count($meta) === 2){
 		            	if(isset($meta['name'])){
-						  $head.='<meta name="'.$meta['name'].'" content="'.$meta['content'].'" />'."\n";
+						  $head.='<meta name="'.$meta['name'].'" content="'.$meta['content'].'" />'.PHP_EOL;
 						}elseif(isset($meta['http-equiv'])){
-						  $head.='<meta http-equiv="'.$meta['http-equiv'].'" content="'.$meta['content'].'" />'."\n";
+						  $head.='<meta http-equiv="'.$meta['http-equiv'].'" content="'.$meta['content'].'" />'.PHP_EOL;
 						}
 		               	
 		            }	
@@ -141,18 +282,18 @@
 		    foreach($opts['css'] as $pos => $css) {
 		    	$ccheck = parse_url($css);
 		    	  if($ccheck === false || !isset($ccheck['host'])){
-		    	  	$head.='<style type="text/css">'.preg_replace("/\s+/", '', $css).'</style>'."\n";
+		    	  	$head.='<style type="text/css">'.preg_replace("/\s+/", '', $css).'</style>'.PHP_EOL;
 		    	  }else{
-                    $head.='<link rel="stylesheet" type="text/css" href="'.$css.'" />'."\n";		    	  	
+                    $head.='<link rel="stylesheet" type="text/css" href="'.$css.'" />'.PHP_EOL;		    	  	
 		    	  }
 		    }
 			
 		    foreach($opts['js'] as $pos => $js) {
 		    		$ccheck = parse_url($js);
 		    	    if($ccheck === false || !isset($ccheck['host'])){
-		    	  	$head.='<script type="text/javascript">'.preg_replace("/\s+/", '', $js).'</script>'."\n";
+		    	  	$head.='<script type="text/javascript">'.preg_replace("/\s+/", '', $js).'</script>'.PHP_EOL;
 		    	  }else{
-                     $head.='<script type="text/javascript" src="'.$js.'"></script>'."\n";		    	  	
+                     $head.='<script type="text/javascript" src="'.$js.'"></script>'.PHP_EOL;		    	  	
 		    	  }
 		    }  
 		    
@@ -183,22 +324,22 @@
 	            	
     	 if(!$opts['Title'] || !is_string($opts['Title']))$opts['Title']='webfan:// '.$_SERVER['REQUEST_URI'];  //'webfan://'.$className.'.code'
        	 $head = '';
-		 $head.='<!DOCTYPE html>'."\n";
-		 $head.='<html>'."\n";
-		 $head.='<head>'."\n";
-		 $head.='<title>'.$opts['Title'].'</title>'."\n";
+		 $head.='<!DOCTYPE html>'.PHP_EOL;
+		 $head.='<html>'.PHP_EOL;
+		 $head.='<head>'.PHP_EOL;
+		 $head.='<title>'.$opts['Title'].'</title>'.PHP_EOL;
 	
 			$head .= $this->HTML_wrap_head_options($opts);
 			
-		 $head.='</head>'."\n";		 
-		 $head.='<body>'."\n";	
+		 $head.='</head>'.PHP_EOL;		 
+		 $head.='<body>'.PHP_EOL;	
 		 return $head;   	
     }
    
    
    public function HTML_wrap_foot(){
-         $foot = ''."\n";
-		 $foot.='</body>'."\n";
+         $foot = ''.PHP_EOL;
+		 $foot.='</body>'.PHP_EOL;
 		 $foot.='</html>';	  	
 	  return $foot;
    }
@@ -208,7 +349,7 @@
 		 $html.= $this->HTML_wrap_head($this->data['template_main_options']);
 		 $html.= $this->parse_template($this->template, $this->data['tpl_data']);
 		 $html.= $this->HTML_wrap_foot();
-		echo $html;
+		echo trim($html);
 	   return $this;
    }	 
    
@@ -348,36 +489,112 @@
 	}
 		
 	protected function setFuncs(){
-        	
-        $this->func_readSections_Test = (function($token) use (&$out) {
-             	$out.= trim($token).'<br />';
-        	});	
-        	
-   \webfan\App::God() 	
-      -> {'$'}('?session_started', (function($startIf = true){
-       	$r = false; 
-        if ( php_sapi_name() !== 'cli' ) {
-        if ( version_compare(phpversion(), '5.4.0', '>=') ) {
-            $r =  session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
-          } else {
-             $r =  '' === session_id()  ? FALSE : TRUE;
-          }
-        }
-        
-        if(true === $startIf && false === $r){
-          if(!session_start()){	
-            if(true === $this->debug) trigger_error('Cannot start session in '.basename(__FILE__).' '.__LINE__, E_USER_WARNING);
-          }
-		}
-        
-        
-       return $r ;
-        }) );
+       $this->helper_apply_commons();   
         	
        return $this;
 	}
 	
-	protected function default_run(&$Request =null){
+	
+	
+	
+	final protected function default_prepare_api(){
+
+	}
+	
+	
+	protected function _route(\webdof\wURI $u){
+		
+	}
+	
+	
+	final protected function default_route(\webdof\wURI $u = null){
+       $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
+       $inc_files =  get_included_files();
+        array_walk($inc_files, (function(&$file, $num) {
+	     	           $file = basename($file);
+	     	      }), $this);
+         
+        \webfan\App::God()-> {'!frdl.data.norm->mime'}(null, null, true, 'html');
+ 
+    	if(
+	         in_array( self::URI_DIR_API , $u->getU()->dirs) 
+	     ||  in_array( 'api.php' , $inc_files ) 
+	     ||  'api.php' === $u->getU()->file     
+	     ||  'frdl.jsonp' === $u->getU()->file     
+	     ||  'api' === $u->getU()->file        
+	     ||  'jsonp' === $u->getU()->file_ext    
+	     ||  'json' === $u->getU()->file_ext    
+	     ||  'xml' === $u->getU()->file_ext     
+	     ||  'dat' === $u->getU()->file_ext     
+	     ||  'bin' === $u->getU()->file_ext     
+	     ||  'api' === $u->getU()->file_ext     
+	   ){
+	   	  return $this->_api($u);
+	   }elseif(
+	       '/' === $u->getU()->req_uri 
+	       || basename(__FILE__) ===  $u->getU()->file
+	       || 'install.phar' === $u->getU()->file
+	       || 'install.php' === $u->getU()->file
+	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
+	   ){
+	        $this->template = $this->readFile('Main Template');
+	   } elseif (file_exists($u->getU()->path) && is_file($u->getU()->path)){
+	   	    $this->template = $this->readFile('Main Template');  
+	   }
+	    else{
+	   	  $this->template = $this->prepare404();
+	   }	
+        
+      
+	   return $this;
+	}		
+		
+	/*
+	       $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
+       $inc_files =  get_included_files();
+        array_walk($inc_files, (function(&$file, $num) {
+	     	           $file = basename($file);
+	     	      }), $this);
+         
+        \webfan\App::God()-> {'!frdl.data.norm->mime'}(null, null, true, 'html');
+ 
+    	if(
+	         in_array( self::URI_DIR_API , $u->getU()->dirs) 
+	     ||  in_array( 'api.php' , $inc_files ) 
+	     ||  'api.php' === $u->getU()->file     
+	     ||  'frdl.jsonp' === $u->getU()->file     
+	     ||  'api' === $u->getU()->file        
+	     ||  'jsonp' === $u->getU()->file_ext    
+	     ||  'json' === $u->getU()->file_ext    
+	     ||  'xml' === $u->getU()->file_ext     
+	     ||  'dat' === $u->getU()->file_ext     
+	     ||  'bin' === $u->getU()->file_ext     
+	     ||  'api' === $u->getU()->file_ext     
+	   ){
+	   	  return $this->_api($u);
+	   }elseif(
+	       '/' === $u->getU()->req_uri 
+	       || basename(__FILE__) ===  $u->getU()->file
+	       || 'install.phar' === $u->getU()->file
+	       || 'install.php' === $u->getU()->file
+	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
+	   ){
+	        $this->template = $this->readFile('Main Template');
+	   } elseif (file_exists($u->getU()->path) && is_file($u->getU()->path)){
+	   	    $this->template = $this->readFile('Main Template');  
+	   }
+	    else{
+	   	  $this->template = $this->prepare404();
+	   }	
+        
+      
+	   return $this;
+	   */
+	   
+	   
+	   
+	   
+	final protected function default_run(&$Request =null){
     	$this->Request = (null !== $Request) ? $Request : $this->initRequest();
     	if(!is_string($this->raw))$this->getFileData();
         if(!is_array($this->files))$this->Files();
@@ -390,7 +607,7 @@
        return $this;
 	}		
 			
-	protected function default_boot(){
+	final protected function default_boot(){
 		\webfan\App::God()->addStreamWrapper( 'webfan', 'fexe', $this,  true  ) ;
        return $this;
 	}
@@ -415,22 +632,6 @@
         }
         return $this;
 	}
-	
-	public function __call($name, $args){
-		$tok = 'get';
-		if(substr($name,0,strlen($tok))===$tok){
-			$name = substr($name, strlen($tok), strlen($name));
-			if(!isset($this->{$name}))$name = strtolower($name);
-			return (isset($this->{$name})) ? $this->{$name} : null;
-		}
-		
-		$method = 'func_'.$name;
-		if(isset($this->{$method})) {
-			return call_user_func_array($this->{$method},$args);
-		}
-	    trigger_error('Not implemented yet: '.$name, E_USER_ERROR);	
-	}
-	
    
    
    public function wrapData($data, $subject)
@@ -469,13 +670,13 @@
 			$this->raw =  stream_get_contents($this->IO);
 		}catch(\Exception $e){
 			$this->raw = '';
-			trigger_error($e->getMessage(), E_USER_ERROR);
+			trigger_error($e->getMessage(),  $this->e_level);
 		}
         
         return $this->raw;
 	}
 	
-	public function __destruct(){
+	final public function __destruct(){
 			
 		try{
 			 if(is_resource($this->IO))fclose($this->IO);
@@ -485,7 +686,7 @@
 			 fclose($fp);
 			 */
 		}catch(\Exception $e){
-			trigger_error($e->getMessage(). ' in '.__METHOD__, E_USER_ERROR);
+			trigger_error($e->getMessage(). ' in '.__METHOD__,  $this->e_level);
 		}
 	}
 	
@@ -522,7 +723,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */	
-   public function unserialize(&$var){$i=0;return $this->_unserialize($var,false,$i);}		
+   final public function unserialize(&$var){$i=0;return $this->_unserialize($var,false,$i);}		
    protected function _unserialize(&$var,$just_first=false,&$start) {
        try{ $len = strlen($var); }catch(Exception $e) {trigger_error($e->getMessage(). ' in '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
 								  return;}
@@ -619,7 +820,7 @@
         }
         return $out;
     }
-   public function serialize($var) {
+   final public function serialize($var) {
         $str = "";
         if (is_integer($var) && $var==0) {
             return chr(self::V_ZERO);
@@ -681,7 +882,7 @@
         }
         return $str;
     }
-    protected function __toint($string,$blen=4) {
+    final protected function __toint($string,$blen=4) {
         $out  = 0;
         $n    = ($blen-1) * 8;
         for($bits=0; $bits < $blen; $bits++) {
@@ -690,7 +891,7 @@
         }
         return $out;
     }
-    protected function __fromint($int,$blen=4) {
+   final protected function __fromint($int,$blen=4) {
         $int = (int)($int < 0) ? (-1*$int) : $int;
         $bytes=str_repeat(" ",$blen);
         $n    = ($blen-1) * 8;
@@ -701,12 +902,12 @@
         }
         return $bytes;
     }
-    protected function __fromfloat($float) {
+  final protected function __fromfloat($float) {
         $str  = $this->__fromint($float);
         $str .= $this->__fromint( round(($float-(int)$float)*1000) , 2 );
         return $str;
     }
-    protected function __tofloat($string) {
+  final protected function __tofloat($string) {
         $float  = $this->__toint(substr($string,0,4));
         $float += $this->__toint(substr($string,4,2),2)/1000;
         return $float;
