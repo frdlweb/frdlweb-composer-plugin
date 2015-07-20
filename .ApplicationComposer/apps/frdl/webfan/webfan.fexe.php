@@ -235,8 +235,7 @@ class webfan extends fexe
 	 	$this->default_boot() ;
 		
 	 	\frdl\webfan\Autoloading\SourceLoader::top() 
-          -> addPsr4('frdl\ApplicationComposer\\', __DIR__ . DIRECTORY_SEPARATOR . 'frdl' .DIRECTORY_SEPARATOR
-           . 'webfan' .DIRECTORY_SEPARATOR . 'ApplicationComposer' .DIRECTORY_SEPARATOR, false) ;
+          -> addPsr4('frdl\ApplicationComposer\\', __DIR__ . DIRECTORY_SEPARATOR . 'ApplicationComposer' .DIRECTORY_SEPARATOR, false) ;
 	 }
 	 
 	 	
