@@ -41,8 +41,8 @@
 namespace frdl\xGlobal; 
 
 /* BEGIN CONFIGSECTION */
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 /* END CONFIGSECTION */
 
 /* BEGIN BOOTSECTION */
@@ -86,13 +86,15 @@ if(!class_exists('\frdl\webfan\App')){
 class webfan extends fexe    
 {
 	 const DEL='µ';
-
+     const CMD = 'cmd';
 	 
 	 const HINT_NOTINSTALLED = 'The Program frdl/webfan is not installed properly, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!';
 	
 	 protected $aSess;
 	 
 	 protected $debug = false;
+	 
+	 protected $Console;
 	
 	
 	 public function Request(mixed $args = null){
@@ -111,6 +113,14 @@ class webfan extends fexe
 	   $this->data['o'] = new \stdclass;	   
 	   $this->data['data_out'] = new \stdclass;
 	   $this->data['config'] = array();
+	   $this->data['settings'] = new \stdclass;
+	   $this->data['settings']->cli = array(
+	         'frdl' => array(
+	             'cli.cmd.cli' => 'frdl',
+	             'cli.class' => 'frdl\ApplicationComposer\Console',
+	             'cli.class.required.parent' => '\frdl\aSQL\Engines\Terminal\CLI',
+	         ),
+	   );
 	   $this->data['installed'] = false;
 	   $this->data['index'] = 'Main Template';	
        $this->data['template_main_options'] = array(   
@@ -212,7 +222,7 @@ class webfan extends fexe
 	      || file_exists($this->data['DIR'] . 'install.phar') 
 	      || file_exists($this->data['DIR'] . 'install.php') 	    
 	    ){
-	   	  $this->_installFromPhar($u);
+	   	  $this->_installFromPhar( \webdof\wURI::getInstance() );
 	   }
 	   $this->data['tpl_data']['INSTALLER_PHAR_AVAILABLE'] = function(){
  	       return $this->data['INSTALLER_PHAR_AVAILABLE'];
@@ -251,12 +261,67 @@ class webfan extends fexe
 	   return $this;
 	}
 	
+	
+	protected function process_modul($modul){
+		
+		/*  if('2421fe7de922a9eb14f67e0cd28188594f6b16d2' === sha1($_SERVER['SERVER_NAME']))die('Test: ').$modul;  */
+		 switch($modul){
+		   	 default : 
+		 	  case 'PAGE' :
+		 	  case 'HTML' : 
+		 	       $this->template = $this->readFile('Main Template');  
+		 	    break;
+		 	 case 'API' : 
+		 	    $this->prepare_api();
+		 	    $this->_api();
+		 	    break;   
+		 	 case '404' : 
+		   	      $this->template = $this->prepare404();
+		   	   break;
+		 }
+	}
+	
+	
     protected function route($u = null){
        $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
-       return $this->default_route($u);
-/*
+      
+      $t = ini_get('display_errors'); 
+       ini_set('display_errors', 0); 
+       trigger_error('@ToDo in '.__METHOD__. ' '.__LINE__. ' : Fix / implement any router', E_USER_NOTICE);
+       ini_set('display_errors',$t); 
+       $this->__todo($u);
+     /*   
+       
+       try{
+	   	 $this->default_route($u);
+      
+	   }catch(\Exception $e){
+	   	 die($e->getMessage());
+	   }
+       
+     if(!is_string($this->modul) || trim($this->modul) === ''){
+	 	$this->__todo($u);
+	 }else{
+	 	$this->process_modul($this->modul);
+	 }
+       */ 
+        
+        
+       return $this;
+	}
+
+ protected function __todo(\webdof\wURI $u = null){
+       $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
+       $inc_files =  get_included_files();
+        array_walk($inc_files, (function(&$file, $num) {
+	     	           $file = basename($file);
+	     	      }), $this);
+         
+  
+ 
     	if(
-	         in_array( self::URI_DIR_API , $u->getU()->dirs)
+	         in_array( self::URI_DIR_API , $u->getU()->dirs) 
+	     ||  in_array( 'api.php' , $inc_files ) 
 	     ||  'api.php' === $u->getU()->file     
 	     ||  'frdl.jsonp' === $u->getU()->file     
 	     ||  'api' === $u->getU()->file        
@@ -267,7 +332,8 @@ class webfan extends fexe
 	     ||  'bin' === $u->getU()->file_ext     
 	     ||  'api' === $u->getU()->file_ext     
 	   ){
-	   	  return $this->_api($u);
+		 	   /* $this->prepare_api();  */
+		 	    $this->_api();
 	   }elseif(
 	       '/' === $u->getU()->req_uri 
 	       || basename(__FILE__) ===  $u->getU()->file
@@ -275,18 +341,17 @@ class webfan extends fexe
 	       || 'install.php' === $u->getU()->file
 	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
 	   ){
-	        $this->template = $this->readFile('Main Template');
+	       $this->template = $this->readFile('Main Template');  
 	   } elseif (file_exists($u->getU()->path) && is_file($u->getU()->path)){
-	   	      
+	   	    $this->template = $this->readFile('Main Template');  
 	   }
 	    else{
-	   	  $this->template = $this->prepare404();
+	   	   $this->template = $this->prepare404();
 	   }	
-	   */
+        
+              
 	   return $this;
-	}
-	
-	
+	}			
 	
 
 
@@ -332,7 +397,13 @@ class webfan extends fexe
 
     protected function _api($u = null){
 		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
-			 	
+		ini_set('display_errors', 0);
+		
+			 
+			/*
+			* ToDo:  set output formatter (defaults to jsonp)
+			*/	
+			
 		 	ob_start(function($c){
 		 		       	 $r = $this->data['data_out'];
 		 		       	 $r->type = 'print';
@@ -349,10 +420,15 @@ class webfan extends fexe
                 	       $r->callback = $callback;
                            $o = $callback.'(' . json_encode($r) . ')';
 		                }
-		                
+		        
+		       /*   header("Content-Type: application/x-javascript; charset=UTF-8;");*/
 		        return $o;
 		 	});
 		 		
+		 
+		  /*   $this->ob_compress();*/
+		 
+		 
 		 
 		 
 		 /* BEGIN extract phar (todo build/refactor API) */
@@ -361,6 +437,7 @@ class webfan extends fexe
 
 		 	
 		 	if(file_exists( $this->data['CONFIGFILE']) && $this->data['config_new']['PACKAGE'] !== $this->data['config']['PACKAGE'] ){
+		 	//	\webdof\wResponse::status(409);
 			    $str ='Error: Invalid installer package name';
 				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);				
@@ -371,6 +448,7 @@ class webfan extends fexe
 		 	  || !isset( $this->data['PHAR_INCLUDE'])
 		 	  || !class_exists('\Extract')
 		 	){
+		 	//	\webdof\wResponse::status(400);
 			    $str ='Error: Not in installer context';
 				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);			
@@ -382,6 +460,7 @@ class webfan extends fexe
 		 	|| ( $_SERVER['SERVER_NAME'] !== $this->data['config']['HOST'] && $_SERVER['SERVER_NAME'] !== $this->data['config_new']['HOST'])
 		 	|| ($this->aSess['PIN'] !== $this->data['config']['PIN'] && $this->aSess['PIN'] !== $this->data['config_new']['PIN'] )
 		 	){
+		 	//	\webdof\wResponse::status(401);
 				die('Invalid credentials, try to install via <a href="{___$$URL_INSTALLER_HTMLPAGE$$___}">{___$$URL_INSTALLER_HTMLPAGE$$___}</a>!');
 			}
 		 	
@@ -405,6 +484,7 @@ class webfan extends fexe
 					  }
                    });
 			}catch(\Exception $e){
+		//		\webdof\wResponse::status(409);
 				$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ' .$e->getMessage();
 				trigger_error($str, E_USER_ERROR);
 				die($str);
@@ -507,30 +587,81 @@ class webfan extends fexe
 					 	   	$this->data['data_out']->js.= '
 			 		    	window.location.href = "'.$this->data['config']['URL'].'";
 			 		    	';															 		
-		
+		             
+		             //  \webdof\wResponse::status(201);
 		 	            die('Extracted');
 			 }else{
 				$str = 'Error extracting php archive';
+				\webdof\wResponse::status(409);
 				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);			 	
 			 }
 		 }
 		 /* END extract (todo) */
+		 elseif(isset($_REQUEST[self::CMD])){
+		 	return $this->_api_request_cmd($_REQUEST[self::CMD], $_REQUEST);
+		 }
 		 
 		 
-		 
-		 
-		 die('API:callback: ToDo...');
+		// \webdof\wResponse::status(404);
+		 die('Unexpected end of api.request');
 	}
      
 	
 	public function prepare404(){
 		\webdof\wResponse::status(404);
 		$this->template = $this->readFile('404');
-		return $this->template;
+		return $this->template.$this->route;
 	}
+	
+	
+	
+	/*
+		         'frdl' => array(
+	             'cli.cmd.cli' => 'frdl',
+	             'cli.class' => 'frdl\ApplicationComposer\Console',
+	             'cli.class.required.parent' => '\frdl\aSQL\Engines\Terminal\CLI',
+	         ),
+	         */
+	public function _api_request_cmd($cmd, $settings){
+		foreach($this->data['settings']->cli as $cmdpfx => $console){
+			$t = $console['cli.cmd.cli'];
+			$l = strlen($t);
+			if(substr($cmd, 0, $l) === $t){
+				$cmd = substr($cmd, $l, strlen($cmd));
+				if(is_subclass_of($console['cli.class'], $console['cli.class.required.parent'])
+				 && is_subclass_of($console['cli.class'], '\frdl\aSQL\Engines\Terminal\CLI')){
+					 
+				   $this->Console = new $console['cli.class'];
+				   $this->Console->exe($cmd);
+				   $this->_api_response( $this->Console->dump() );
+				   
+				  break;
+				}else{
+				//	\webdof\wResponse::status(501);
+					trigger_error('No valid Console SubClass.', E_USER_WARNING);
+					continue;
+				}
+				   
+			}
+		}
+		
+		
+		// \webdof\wResponse::status(404);
+		 die('API cli not found');
+	}
+	
+	
+	protected function _api_response($dump){
+		 $this->data['data_out']->data = $dump;
+		 die($dump->statusText);
+	}
+	
+	
 } 
 
+ 
+ 
  
   
  $fexe = new webfan(__FILE__, __COMPILER_HALT_OFFSET__);
@@ -595,11 +726,9 @@ $(document).ready(function() {
 	}catch(err){
 		console.error(err);
 	}
-
      	
      	
 })(jQuery);
-
 });
 </script>	
 µxTpl%%404
@@ -621,8 +750,5 @@ document.title = '404 - Not found';
 	  );
 	
   }); 
-
-
 });
 </script>
-
