@@ -65,20 +65,7 @@
     const URI_DIR_API = 'api';
     
 
-    /**
-    *  default $SEMR´s
-	*  const  SERVER_ROUTER = {$cmd=SERVER} . {$format} . {$modul} . {$outputbuffers = explode(',')} 
-	*/
-	const TPL_SERVER_ROUTE = '{$cmd}.{$responseformat}.{$modul}.{$responsebuffers}';
-    const SERVER_PAGE = 'SERVER.html.PAGE.buffered';
-    const SERVER_HTML = 'SERVER.html.HTML.buffered';
-    const SERVER_API = 'SERVER.?.API.format';
-    const SERVER_404 = 'SERVER.html.404.buffered';
-    const SERVER_JS = 'SERVER.js.JS.compressed,pragma';
-    const SERVER_CSS = 'SERVER.css.CSS.compressed,pragma';
-    const SERVER_IMG = 'SERVER.img.IMG.compressed,pragma';
-	
-    const SERVER_DEFAULT = self::SERVER_404;
+
     
 	protected $IO = null;
 	
@@ -489,7 +476,7 @@
 	}
 		
 	protected function setFuncs(){
-       $this->helper_apply_commons();   
+       $this->apply_fm_flow();   
         	
        return $this;
 	}
@@ -514,7 +501,7 @@
 	     	           $file = basename($file);
 	     	      }), $this);
          
-        \webfan\App::God()-> {'!frdl.data.norm->mime'}(null, null, true, 'html');
+  
  
     	if(
 	         in_array( self::URI_DIR_API , $u->getU()->dirs) 
