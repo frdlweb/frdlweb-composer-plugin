@@ -193,7 +193,7 @@ class webfan extends fexe
 	   	  if(true === $this->debug) trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
 	   }
        $this->data['tpl_data']['URL'] = &$this->data['config']['URL'];
-	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api/';	
+	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api.php';	
 	   $this->data['config']['URL_API_ORIGINAL'] =  $this->data['tpl_data']['URI_DIR_API'];	
    
  	    $this->data['tpl_data']['PACKAGE'] = function(){
@@ -235,6 +235,10 @@ class webfan extends fexe
 		 }
 	  }
 	 
+	 
+	 
+	
+
 	       
 	   return $this->data;	 	
 	 }
@@ -342,9 +346,9 @@ class webfan extends fexe
 	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
 	   ){
 	       $this->template = $this->readFile('Main Template');  
-	   } elseif (file_exists($u->getU()->path) && is_file($u->getU()->path)){
+	   }/* elseif (file_exists($u->getU()->path) && is_file($u->getU()->path)){
 	   	    $this->template = $this->readFile('Main Template');  
-	   }
+	   }*/
 	    else{
 	   	   $this->template = $this->prepare404();
 	   }	
@@ -361,7 +365,7 @@ class webfan extends fexe
 	   global $include;	
 	   $this->data['INSTALLER_PHAR_AVAILABLE'] = '1';
 	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
-	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].$f.'/api/frdl.jsonp';	
+	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].$f.'/api.php';	
 	   $this->data['tpl_data']['EXTRA_PMX_URL'] =  $this->data['tpl_data']['URL'].$f.'/pragmamx.php';	
 	   $this->data['tpl_data']['INSTALLER'] = 'phar';
        $this->data['PHAR_INCLUDE'] = str_replace('phar://', '',$include);  	
@@ -375,6 +379,15 @@ class webfan extends fexe
        if('' !== $include) $this->data['INSTALLER'] = 1;
        
 
+    	
+
+	   return $this;
+	}
+
+    protected function _api($u = null){
+		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
+		ini_set('display_errors', 0);
+		
     
     	 	if( (isset($_POST['pwd']) && isset($_POST['PIN'])
  		 	&& $this->data['config']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
@@ -389,17 +402,13 @@ class webfan extends fexe
  		 	    $this->aSess['ADMIN_PWD'] =  sha1(trim($_POST['pwd'], '"\' '));
 		 	    $this->aSess['HOST'] = $_SERVER['SERVER_NAME'];
 		 	    $this->aSess['PIN'] =$_POST['PIN'];
-			}   	
-    	
-
-	   return $this;
-	}
-
-    protected function _api($u = null){
-		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
-		ini_set('display_errors', 0);
-		
-			 
+			} elseif(isset($_POST['pwd']) || isset($_POST['PIN'])){
+				unset($this->aSess['ADMIN_PWD']);
+				unset($this->aSess['PIN']);
+			}  	 
+	 
+	 
+	 			 
 			/*
 			* ToDo:  set output formatter (defaults to jsonp)
 			*/	
@@ -639,7 +648,7 @@ class webfan extends fexe
 				  break;
 				}else{
 				//	\webdof\wResponse::status(501);
-					trigger_error('No valid Console SubClass.', E_USER_WARNING);
+					//trigger_error('No valid Console SubClass.', E_USER_NOTICE);
 					continue;
 				}
 				   
