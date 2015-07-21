@@ -50,11 +50,11 @@
     const SERVER_CSS = 'SERVER.css.CSS.compressed,pragma';
     const SERVER_IMG = 'SERVER.img.IMG.compressed,pragma';
 	
-    const SERVER_DEFAULT = self::SERVER_404;
+    const SERVER_DEFAULT = self::SERVER_PAGE;
     	
   protected $ns_pfx = array('?' => array('frdl' => true),
               '$'=> array('frdl' => true), 
-              'µ'=> array('frdl' => true),
+              '$'=> array('frdl' => true),
               '!'=> array('frdl' => true), 
               '#'=> array('frdl' => true), 
               '-'=> array('frdl' => true),
@@ -65,7 +65,7 @@
   protected $wrappers;
   protected $shortcuts;
  	
-
+  
  
   public function addShortCut ($short,  $long, $label = null){
 
@@ -99,7 +99,7 @@
   protected function apply_fm_flow(){
   	 $args  = func_get_args();
      $THIS = &$this;
-     $SELF = self;    
+     $SELF = &$this;
          	
    \webfan\App::God() 	
       -> {'$'}('?session_started', (function($startIf = true) use ($THIS, $SELF) {
@@ -161,7 +161,7 @@
         	
         	
 	     \webfan\App::God() 
-            -> {'$'}('µ.sem.parse', function($sem) use ($THIS, $SELF) {
+            -> {'$'}('$.sem.parse', function($sem) use ($THIS, $SELF) {
             	    $str = $SELF::TPL_SERVER_ROUTE;
             	    foreach($sem as $k => $v){
 						$s = (is_array($v)) ? implode(',', $v) : $v;
@@ -170,7 +170,7 @@
             	    return $str;
             	})
             	// '{$cmd}.{$responseformat}.{$modul}.{$responsebuffers}'; 	
-            -> {'$'}('µ.sem.unparse', function(&$sem, $route) use ($THIS, $SELF) {
+            -> {'$'}('$.sem.unparse', function(&$sem, $route) use ($THIS, $SELF) {
             	    $seg = explode('.', $route);
             	    $sem['cmd'] =  array_shift($seg);
             	    $sem['responseformat'] =  array_shift($seg);
@@ -181,15 +181,16 @@
             	})
             	
             	
-            -> {'$'}('µ.sem->getFomatterMethod', (function($format){
-                     return 'µ.sem.format->'.$format;
+            -> {'$'}('$.sem->getFomatterMethod', (function($format){
+            	 if('jsonp' !== $format && 'json' !== $format)return false;
+                     return '$.sem.format->'.$format;
             	}))	
-            -> {'$'}('µ.sem.format->json', $func_jsonP )
-            -> {'$'}('µ.sem.format->jsonp', $func_jsonP)  
+            -> {'$'}('$.sem.format->json', $func_jsonP )
+            -> {'$'}('$.sem.format->jsonp', $func_jsonP)  
             /**
 			* todo   css,txt,php,bin,dat,js,img,....
 			*/
-            -> {'$'}('µ.sem.get->mime', (function($format = null, $file = null, $apply = true, $default = '') use ($THIS, $SELF) {
+            -> {'$'}('$.sem.get->mime', (function($format = null, $file = null, $apply = true, $default = '') use ($THIS, $SELF) {
             $file = ((null===$file || !is_string($file)) ? \webdof\wURI::getInstance()->getU()->file : $file); 	
             if(true === $apply)$THIS->format = $default;
             
