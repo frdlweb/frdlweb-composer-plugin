@@ -114,6 +114,7 @@
     },    
     
     "provide" : {
+    	"frdl/µFlow" : "dev-master", 
         "phpclasses/source-loader": "0.9.17",
         "phpclasses/validate-formats": "5.0.4",
         "phpclasses/asql-cli": "1.0.0",
