@@ -92,9 +92,7 @@
     "suggest": {
         "gettext/languages": "dev-master",
         "gettext/gettext": "dev-master",
-        "fguillot/json-rpc": "dev-fork-frdl",	
-    	
-    	
+       
         "composer/composer": "Composer functionallities",
         "ext-zip" : "ZipArchive",
         "phpclasses/text-diff-rollback": "optimized diff patching",
