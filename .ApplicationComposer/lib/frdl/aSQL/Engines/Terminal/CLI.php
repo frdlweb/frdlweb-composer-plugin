@@ -28,7 +28,7 @@
  *  @author 	Till Wehowski <software@frdl.de>
  *  @package    webfan://frdl.aSQL.Engines.Terminal.CLI.code
  *  @uri        /v1/public/software/class/webfan/frdl.aSQL.Engines.Terminal.CLI/source.php
- *  @version 	1.0.0.2
+ *  @version 	1.0.0.3
  *  @file       frdl\aSQL\Engines\Terminal\CLI.code.php
  *  @role       Command Line Parser
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -112,10 +112,11 @@ REGEX;
   * Build CLI
   */
  abstract public function add_command($command, callable $callable);
- abstract public function add_option(mixed $settings);
- abstract public function add_flag(mixed $settings);
- abstract public function add_argument(mixed $settings);
- 
+ /*
+ abstract public function add_option(\mixed $settings);
+ abstract public function add_flag(\mixed $settings);
+ abstract public function add_argument(\mixed $settings);
+ */
 
  
  
