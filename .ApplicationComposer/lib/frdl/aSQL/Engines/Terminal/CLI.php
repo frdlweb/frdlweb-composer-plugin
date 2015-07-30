@@ -28,7 +28,7 @@
  *  @author 	Till Wehowski <software@frdl.de>
  *  @package    webfan://frdl.aSQL.Engines.Terminal.CLI.code
  *  @uri        /v1/public/software/class/webfan/frdl.aSQL.Engines.Terminal.CLI/source.php
- *  @version 	1.0.0.3
+ *  @version 	1.0.0.4
  *  @file       frdl\aSQL\Engines\Terminal\CLI.code.php
  *  @role       Command Line Parser
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -117,6 +117,7 @@ REGEX;
  abstract public function add_flag(\mixed $settings);
  abstract public function add_argument(\mixed $settings);
  */
+ 
 
  
  
@@ -221,7 +222,7 @@ REGEX;
  	 global $argv;
 	 $this->IN = ($this->mode === self::MODE_CLI) ? implode(self::DELIM, $argv) : $cml;
 	 $this->parse();
-	 $this->_exec($this->args);
+	 $this->_exec($this->batch);
 	 return $this;
  }
  
