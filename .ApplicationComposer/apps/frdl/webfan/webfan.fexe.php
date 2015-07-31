@@ -117,7 +117,7 @@ class webfan extends fexe
 	   $this->data['settings']->cli = array(
 	         'frdl' => array(
 	             'cli.cmd.cli' => 'frdl',
-	             'cli.class' => 'frdl\ApplicationComposer\Console',
+	             'cli.class' => '\frdl\ApplicationComposer\Console',
 	             'cli.class.required.parent' => '\frdl\aSQL\Engines\Terminal\CLI',
 	         ),
 	   );
@@ -384,6 +384,23 @@ class webfan extends fexe
 	   return $this;
 	}
 
+
+    public function OutData(){
+    	$p = func_get_args();
+    	if(0 === count($p)){
+			return $this->data['data_out'];
+		}elseif(1 === count($p)){
+			$this->data['data_out'] = $p[0];
+		}elseif(2 === count($p) && is_string($p[0])){
+			$this->data['data_out']->{$p[0]} = $p[1];
+		}else{
+			return trigger_error('Invalid number of arguments in '.__METHOD__.' '.__LINE__, E_USER_ERROR);
+		}
+		
+		return $this;
+	}
+	
+	
     protected function _api($u = null){
 		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
 		ini_set('display_errors', 0);
@@ -412,11 +429,12 @@ class webfan extends fexe
 			/*
 			* ToDo:  set output formatter (defaults to jsonp)
 			*/	
-			
+	  	    $this->ob_compress();
+			header("Content-Type: application/x-javascript; charset=UTF-8;");
 		 	ob_start(function($c){
-		 		       	 $r = $this->data['data_out'];
-		 		       	 $r->type = 'print';
-		 		       	 $r->out = $c;
+		 		       	 $r = (isset($this->data['data_out'])) ? $this->data['data_out'] :  new \stdclass;
+		 		       	 $r->type = (isset($r->type)) ? $r->type : 'print';
+		 		       	 $r->out = (isset($r->out)) ? $r->out : $c;
       	                 $fnregex = "/^[A-Za-z0-9\$\.-_\({1}\){1}]+$/";
       	                 $callback = (isset($_REQUEST['callback']) && preg_match($fnregex, $_REQUEST['callback']))
 		                   ? strip_tags($_REQUEST['callback'])
@@ -430,12 +448,12 @@ class webfan extends fexe
                            $o = $callback.'(' . json_encode($r) . ')';
 		                }
 		        
-		       /*   header("Content-Type: application/x-javascript; charset=UTF-8;");*/
+		  
 		        return $o;
 		 	});
 		 		
 		 
-		  /*   $this->ob_compress();*/
+	
 		 
 		 
 		 
@@ -446,7 +464,7 @@ class webfan extends fexe
 
 		 	
 		 	if(file_exists( $this->data['CONFIGFILE']) && $this->data['config_new']['PACKAGE'] !== $this->data['config']['PACKAGE'] ){
-		 	//	\webdof\wResponse::status(409);
+		 		\webdof\wResponse::status(409);
 			    $str ='Error: Invalid installer package name';
 				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);				
@@ -457,7 +475,7 @@ class webfan extends fexe
 		 	  || !isset( $this->data['PHAR_INCLUDE'])
 		 	  || !class_exists('\Extract')
 		 	){
-		 	//	\webdof\wResponse::status(400);
+		 		\webdof\wResponse::status(400);
 			    $str ='Error: Not in installer context';
 				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);			
@@ -469,12 +487,48 @@ class webfan extends fexe
 		 	|| ( $_SERVER['SERVER_NAME'] !== $this->data['config']['HOST'] && $_SERVER['SERVER_NAME'] !== $this->data['config_new']['HOST'])
 		 	|| ($this->aSess['PIN'] !== $this->data['config']['PIN'] && $this->aSess['PIN'] !== $this->data['config_new']['PIN'] )
 		 	){
-		 	//	\webdof\wResponse::status(401);
+		 		\webdof\wResponse::status(401);
 				die('Invalid credentials, try to install via <a href="{___$$URL_INSTALLER_HTMLPAGE$$___}">{___$$URL_INSTALLER_HTMLPAGE$$___}</a>!');
 			}
 		 	
 		 	
-		 
+		   if(isset($_REQUEST['test']) && 'response' === $_REQUEST['test']){
+		   	    \webdof\wResponse::status(200);
+		   	    $this->data['data_out']->code = 200;
+		   	    $this->data['data_out']->extra = true;
+		   	    $this->data['data_out']->out = 'OK';		   	    
+		   	    $this->data['data_out']->changed = (json_encode($this->data['config']) !== json_encode($this->data['config_new']));
+		   	 
+
+                $this->data['data_out']->config =  new \stdclass;
+                $this->data['data_out']->config_new = new \stdclass;                
+		
+                $this->data['data_out']->config->PACKAGE =  $this->data['config']['PACKAGE'];
+                $this->data['data_out']->config_new->PACKAGE =  $this->data['config_new']['PACKAGE'];
+                
+		
+                $this->data['data_out']->config->VERSION =  $this->data['config']['VERSION'];
+                $this->data['data_out']->config_new->VERSION =  $this->data['config_new']['VERSION'];
+                
+              		
+                $this->data['data_out']->config->INSTALLED =  $this->data['config']['INSTALLED'];
+                $this->data['data_out']->config_new->INSTALLED =  $this->data['config_new']['INSTALLED'];
+                
+              		
+                $this->data['data_out']->config->REGISTERED =  $this->data['config']['REGISTERED'];
+                $this->data['data_out']->config_new->REGISTERED =  $this->data['config_new']['REGISTERED'];
+                
+              		
+                $this->data['data_out']->config->UNAME =  $this->data['config']['UNAME'];
+                $this->data['data_out']->config_new->UNAME =  $this->data['config_new']['UNAME'];
+                
+              		
+                $this->data['data_out']->config->UID =  $this->data['config']['UID'];
+                $this->data['data_out']->config_new->UID =  $this->data['config_new']['UID'];
+                
+                              		   	    	   	       	       
+		   	    die('OK');
+		   }
 		 	
 		 	try{
 				\Extract::from($this->data['PHAR_INCLUDE'])->to(  $this->data['DIR'] ,
@@ -493,9 +547,9 @@ class webfan extends fexe
 					  }
                    });
 			}catch(\Exception $e){
-		//		\webdof\wResponse::status(409);
+				\webdof\wResponse::status(409);
 				$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ' .$e->getMessage();
-				trigger_error($str, E_USER_ERROR);
+				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);
 			}
 		 	 
@@ -597,7 +651,7 @@ class webfan extends fexe
 			 		    	window.location.href = "'.$this->data['config']['URL'].'";
 			 		    	';															 		
 		             
-		             //  \webdof\wResponse::status(201);
+		              \webdof\wResponse::status(201);
 		 	            die('Extracted');
 			 }else{
 				$str = 'Error extracting php archive';
@@ -612,7 +666,7 @@ class webfan extends fexe
 		 }
 		 
 		 
-		// \webdof\wResponse::status(404);
+		 \webdof\wResponse::status(404);
 		 die('Unexpected end of api.request');
 	}
      
@@ -625,30 +679,29 @@ class webfan extends fexe
 	
 	
 	
-	/*
-		         'frdl' => array(
-	             'cli.cmd.cli' => 'frdl',
-	             'cli.class' => 'frdl\ApplicationComposer\Console',
-	             'cli.class.required.parent' => '\frdl\aSQL\Engines\Terminal\CLI',
-	         ),
-	         */
+
 	public function _api_request_cmd($cmd, $settings){
+
+		 
 		foreach($this->data['settings']->cli as $cmdpfx => $console){
 			$t = $console['cli.cmd.cli'];
+		
 			$l = strlen($t);
 			if(substr($cmd, 0, $l) === $t){
 				$cmd = substr($cmd, $l, strlen($cmd));
 				if(is_subclass_of($console['cli.class'], $console['cli.class.required.parent'])
 				 && is_subclass_of($console['cli.class'], '\frdl\aSQL\Engines\Terminal\CLI')){
-					 
+					
 				   $this->Console = new $console['cli.class'];
+				   $this->Console->applyApp($this);
+				  
+				  
 				   $this->Console->exe($cmd);
-				   $this->_api_response( $this->Console->dump() );
-				   
-				  break;
+				  return  $this->_api_response( $this->Console->dump() );
+			
 				}else{
-				//	\webdof\wResponse::status(501);
-					//trigger_error('No valid Console SubClass.', E_USER_NOTICE);
+					\webdof\wResponse::status(501);
+					trigger_error('No valid Console SubClass.', E_USER_NOTICE);
 					continue;
 				}
 				   
@@ -656,7 +709,7 @@ class webfan extends fexe
 		}
 		
 		
-		// \webdof\wResponse::status(404);
+		 \webdof\wResponse::status(404);
 		 die('API cli not found');
 	}
 	
@@ -707,11 +760,8 @@ $(document).ready(function() {
 	try{
 	 $.WebfanDesktop({
       modules : [
-            
-    ]
-  });
- 
- $.ApplicationComposerOpen({
+        function(){
+	   $.ApplicationComposerOpen({
  	    PACKAGE : '{$___PACKAGE___}',
  	    VERSION : '{$___VERSION___}',
  	    INSTALLED : '{$___INSTALLED___}',
@@ -731,7 +781,12 @@ $(document).ready(function() {
 			EXTRA_PMX_URL : '{$___EXTRA_PMX_URL___}',
 			EXTRA_PHAR_URL : '{$___EXTRA_PHAR_URL___}'
 		}
- });	
+       });	
+	}
+  ]
+});
+ 
+
 	}catch(err){
 		console.error(err);
 	}
