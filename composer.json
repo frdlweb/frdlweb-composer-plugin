@@ -85,7 +85,8 @@
         "phpseclib/phpseclib": ">=0.3.10",
         "jquery/jquery-ui":"*",
         "pachanka/ptty":">=0.0.3",
-        "nathansmith/jQuery-Desktop":"*"
+        "nathansmith/jQuery-Desktop":"*",
+        "crada/php-apidoc": "*"
     },
 
 
