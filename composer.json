@@ -36,7 +36,7 @@
                 "version": "2.2.2",
                 "source": {
                     "url": "http://download.pragmamx.org/pmx/pragmaMx_2.2_2015-04-01--18-33_full.zip",
-                    "type": "dist"
+                    "type": "zip"
                 }
             }
         },
