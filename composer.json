@@ -146,20 +146,20 @@
   "scripts": {
 
         "pre-install-cmd": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge"
+            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
         ],
 
         "post-create-project-cmd": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge"
+            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
         ],
         "post-root-package-install": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge"
+            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
         ],
         "pre-file-download": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge"
+            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
         ],
         "pre-package-uninstall": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge"
+            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
         ]
 
     },
