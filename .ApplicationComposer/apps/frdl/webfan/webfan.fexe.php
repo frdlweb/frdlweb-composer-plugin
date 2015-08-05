@@ -96,7 +96,7 @@ class webfan extends fexe
 	 
 	 protected $Console;
 	 
-	 public $isAdmin = false;
+	 protected $isAdmin = false;
 	
 	
 	 public function Request(mixed $args = null){
@@ -407,12 +407,12 @@ class webfan extends fexe
 	public function login(){
     	 	if( isset($_POST['pwd']) && isset($_POST['PIN'])
     	 	&& ((
- 		 	&& $this->data['config']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
+ 		 	 $this->data['config']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
 		 	&& $this->data['config']['HOST'] === $_SERVER['SERVER_NAME']
 		 	&& $this->data['config']['PIN'] ===$_POST['PIN']
 		 	)
 		 	|| (
- 		 	&& $this->data['config_new']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
+ 		 	 $this->data['config_new']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
 		 	&& $this->data['config_new']['HOST'] === $_SERVER['SERVER_NAME']
 		 	&& $this->data['config_new']['PIN'] ===$_POST['PIN']
 		 	))
@@ -447,8 +447,8 @@ class webfan extends fexe
 		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
 		ini_set('display_errors', 0);
 		 
-	        $this->login();
-		 	
+
+	  	
 		 	 			 
 			/*
 			* ToDo:  set output formatter (defaults to jsonp)
@@ -477,9 +477,9 @@ class webfan extends fexe
 		 	});
 		 		
 		 
+	  $this->login();	 	
+		
 	
-		 
-		 
 		 
 		 
 		 /* BEGIN extract phar (todo build/refactor API) */
