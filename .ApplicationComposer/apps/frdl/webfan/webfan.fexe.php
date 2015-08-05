@@ -95,6 +95,8 @@ class webfan extends fexe
 	 protected $debug = false;
 	 
 	 protected $Console;
+	 
+	 public $isAdmin = false;
 	
 	
 	 public function Request(mixed $args = null){
@@ -401,20 +403,19 @@ class webfan extends fexe
 	}
 	
 	
-    protected function _api($u = null){
-		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
-		ini_set('display_errors', 0);
-		
-    
-    	 	if( (isset($_POST['pwd']) && isset($_POST['PIN'])
+	
+	public function login(){
+    	 	if( isset($_POST['pwd']) && isset($_POST['PIN'])
+    	 	&& ((
  		 	&& $this->data['config']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
 		 	&& $this->data['config']['HOST'] === $_SERVER['SERVER_NAME']
-		 	&& $this->data['config']['PIN'] ===$_POST['PIN'])
-		 	|| ( isset($_POST['pwd']) && isset($_POST['PIN'])
+		 	&& $this->data['config']['PIN'] ===$_POST['PIN']
+		 	)
+		 	|| (
  		 	&& $this->data['config_new']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
 		 	&& $this->data['config_new']['HOST'] === $_SERVER['SERVER_NAME']
 		 	&& $this->data['config_new']['PIN'] ===$_POST['PIN']
-		 	)
+		 	))
 		 	){
  		 	    $this->aSess['ADMIN_PWD'] =  sha1(trim($_POST['pwd'], '"\' '));
 		 	    $this->aSess['HOST'] = $_SERVER['SERVER_NAME'];
@@ -423,9 +424,32 @@ class webfan extends fexe
 				unset($this->aSess['ADMIN_PWD']);
 				unset($this->aSess['PIN']);
 			}  	 
-	 
-	 
-	 			 
+				
+		
+		return $this->isLoggedIn();		
+	}
+	
+	public function isLoggedIn(){
+       $this->isAdmin = false;
+		 	if(
+		 	   ( $this->aSess['ADMIN_PWD'] !== $this->data['config']['ADMIN_PWD'] && $this->aSess['ADMIN_PWD'] !== $this->data['config_new']['ADMIN_PWD'] )
+		 	|| ( $_SERVER['SERVER_NAME'] !== $this->data['config']['HOST'] && $_SERVER['SERVER_NAME'] !== $this->data['config_new']['HOST'])
+		 	|| ($this->aSess['PIN'] !== $this->data['config']['PIN'] && $this->aSess['PIN'] !== $this->data['config_new']['PIN'] )
+		 	){
+		 		$this->isAdmin = false;
+			}else{
+				 $this->isAdmin = true;
+			}	 		
+		return $this->isAdmin;	
+	}
+	
+    protected function _api($u = null){
+		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
+		ini_set('display_errors', 0);
+		 
+	        $this->login();
+		 	
+		 	 			 
 			/*
 			* ToDo:  set output formatter (defaults to jsonp)
 			*/	
@@ -482,11 +506,7 @@ class webfan extends fexe
 			}
 
 		 	
-		 	if(
-		 	   ( $this->aSess['ADMIN_PWD'] !== $this->data['config']['ADMIN_PWD'] && $this->aSess['ADMIN_PWD'] !== $this->data['config_new']['ADMIN_PWD'] )
-		 	|| ( $_SERVER['SERVER_NAME'] !== $this->data['config']['HOST'] && $_SERVER['SERVER_NAME'] !== $this->data['config_new']['HOST'])
-		 	|| ($this->aSess['PIN'] !== $this->data['config']['PIN'] && $this->aSess['PIN'] !== $this->data['config_new']['PIN'] )
-		 	){
+		 	if(true !== $this->isLoggedIn()){
 		 		\webdof\wResponse::status(401);
 				die('Invalid credentials, try to install via <a href="{___$$URL_INSTALLER_HTMLPAGE$$___}">{___$$URL_INSTALLER_HTMLPAGE$$___}</a>!');
 			}
