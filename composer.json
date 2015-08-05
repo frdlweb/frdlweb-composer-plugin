@@ -91,15 +91,18 @@
 
 
     "suggest": {
+
+        "phpclasses/httpclient": "Original source of a fork",
+        "phpclasses/oauth-api" : "Oauth Client SDK",
+ 
+        "phpclasses/text-diff-rollback": "optimized diff patching",
+        "phpclasses/bserialization":"Original source of a fork",       
+        
         "gettext/languages": "dev-master",
         "gettext/gettext": "dev-master",
        
         "composer/composer": "Composer functionallities",
         "ext-zip" : "ZipArchive",
-        "phpclasses/text-diff-rollback": "optimized diff patching",
-        "phpclasses/bserialization":"Original source of a fork",
-        "phpclasses/httpclient": "Original source of a fork",
-
         "phine/phar" : "Using Phar without the extension installed",
         "crodas/php-git":"Acces git repositories and files",
         "phpseclib/phpseclib": "RSA, X.509, SSL without OpenSSL installed or better",
@@ -197,6 +200,17 @@
 	               "LICENSESERIAL" : "{___$LICENSESERIAL___}",
 	               "DIR" : "{___$APPDIR___}"
 	              
+         },
+         
+         "requires-install" : {
+             "phpclasses/httpclient": "Original source of a fork",
+             "phpclasses/oauth-api" : "Oauth Client SDK",
+ 
+             "phpclasses/text-diff-rollback": "optimized diff patching",
+             "phpclasses/bserialization":"Original source of a fork",       
+        
+            "gettext/languages": "dev-master",
+            "gettext/gettext": "dev-master"         	
          }
     }
 
