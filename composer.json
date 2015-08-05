@@ -29,6 +29,22 @@
 
   "repositories":
   [
+ 
+    {
+      "packagist": true
+    },
+    
+    {
+       "type": "composer",
+       "url": "http:\/\/www.phpclasses.org\/"
+     },
+
+    { 
+       "type": "composer",
+       "url": "http:\/\/www.jsclasses.org\/"
+    },
+
+    
         {
             "type": "package",
             "package": {
@@ -41,20 +57,17 @@
             }
         },
         
-
-     {
-       "type": "composer",
-       "url": "http:\/\/www.phpclasses.org\/"
-     },
-
-    { 
-       "type": "composer",
-       "url": "http:\/\/www.jsclasses.org\/"
-    },
-
-    {
-      "packagist": true
-    }
+        {
+            "type": "package",
+            "package": {
+                "name": "composer/composer",
+                "version": "1.0.0-alpha10",
+                "source": {
+                    "url": "https://github.com/composer/composer/archive/1.0.0-alpha10.zip",
+                    "type": "zip"
+                }
+            }
+        }
 
 
  ],
@@ -191,11 +204,19 @@
          
          "frdl-addons-suggested" : [
             {
+             "title" : 	"Composer Source",
+             "description" : "The Source of the php Composer as helper library",
+             "packages" : [
+                    {"composer/composer": "Composer Source Code"}
+             	]
+             },
+             
+            {
              "title" : 	"gettext",
              "description" : "Localization",
              "packages" : [
-                    {"gettext/languages": "dev-master"},
-                    {"gettext/gettext": "dev-master"}
+                    {"gettext/languages": "gettext/gettext requirement"},
+                    {"gettext/gettext": "_(); - function of gettext compliant"}
              	]
              },
              	
