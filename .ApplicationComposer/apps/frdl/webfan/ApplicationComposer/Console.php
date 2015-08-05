@@ -52,6 +52,7 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
   
    public function applyApp(&$app){
      	$this->App = $app;
+     	return $this;
    } 
     
     
@@ -175,6 +176,7 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
 
   public function add_command($command, callable $callable){
   	$this->shell['commands'][$command] = $callable;
+  	return $this;
   }
  
 	
