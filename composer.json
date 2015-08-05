@@ -144,11 +144,15 @@
 
    
   "scripts": {
-
+        "command": [
+            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
+        ],
         "pre-install-cmd": [
             "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
         ],
-
+       "pre-package-install": [
+            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
+        ],
         "post-create-project-cmd": [
             "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
         ],
@@ -161,7 +165,6 @@
         "pre-package-uninstall": [
             "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
         ]
-
     },
     
     
