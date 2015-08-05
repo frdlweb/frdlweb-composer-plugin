@@ -213,16 +213,48 @@
 	              
          },
          
-         "suggest-install" : {
-             "phpclasses/httpclient": "Original source of a fork",
-             "phpclasses/oauth-api" : "Oauth Client SDK",
+         "frdl-addons-suggested" : [
+            {
+             "title" : 	"gettext",
+             "description" : "Localization",
+             "packages" : [
+                    "gettext/languages": "dev-master",
+                    "gettext/gettext": "dev-master"
+             	]
+             },
+             	
+         	
+            {
+             "title" : 	"OAuth Client",
+             "description" : "Enables OAuth 3.rd party logins and API SDKs",
+             "packages" : [
+                   "phpclasses/httpclient": "Http Client Class",
+                   "phpclasses/oauth-api" : "Oauth Client SDK"           	
+             	]
+             },
+             
+             {
+             "title" : 	"PragmaMx",
+             "description" : "Just another CMS",
+             "packages" : [
+                  "TerraProject/pragmamx" : "CMS"
+               	
+             	]
+             },          
+             
+              
+             {
+             "title" : 	"SVN/history-rollback",
+             "description" : "Advanced source code manager requirements",
+             "packages" : [
+                      "phpclasses/text-diff-rollback": "optimized string diff patching",
+                      "phpclasses/bserialization":"Binary serialization"
+             	]
+             }     
+             
  
-             "phpclasses/text-diff-rollback": "optimized diff patching",
-             "phpclasses/bserialization":"Original source of a fork",       
-        
-            "gettext/languages": "dev-master",
-            "gettext/gettext": "dev-master"         	
-         }
+                     	
+         }]
     }
 
 }
