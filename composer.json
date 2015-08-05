@@ -202,7 +202,7 @@
 	              
          },
          
-         "requires-install" : {
+         "suggest-install" : {
              "phpclasses/httpclient": "Original source of a fork",
              "phpclasses/oauth-api" : "Oauth Client SDK",
  
