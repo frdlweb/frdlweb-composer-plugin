@@ -41,34 +41,7 @@
             }
         },
         
-    { 
-       "type": "composer",
-       "url": "http:\/\/interface.api.webfan.de\/v1\/public\/software\/mirror\/"
-    },
- 
-  	
-      {
-        "type": "vcs",
-        "url": "https:\/\/github.com\/jquery\/jquery-ui"
-      },
 
-      {
-        "type": "vcs",
-        "url": "https:\/\/github.com\/pachanka\/ptty"
-      },
-
-      {
-        "type": "vcs",
-        "url": "https:\/\/github.com\/nathansmith\/jQuery-Desktop"
-      },
-      
-     {
-        "type": "vcs",
-        "url": "https:\/\/github.com\/frdl\/JsonRPC"
-      },      
-      
-      
-        
      {
        "type": "composer",
        "url": "http:\/\/www.phpclasses.org\/"
