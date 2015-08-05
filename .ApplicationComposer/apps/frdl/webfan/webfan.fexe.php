@@ -420,9 +420,15 @@ class webfan extends fexe
  		 	    $this->aSess['ADMIN_PWD'] =  sha1(trim($_POST['pwd'], '"\' '));
 		 	    $this->aSess['HOST'] = $_SERVER['SERVER_NAME'];
 		 	    $this->aSess['PIN'] =$_POST['PIN'];
+		 	    
+		 	    $this->aSess['ADMINDATA'] = array();
+		 	    $this->aSess['ADMINDATA']['CONFIG'] = $this->data['config'];
+		 	    $this->aSess['ADMINDATA']['CONFIG_NEW'] = $this->data['config_new'];
+		 	    
 			} elseif(isset($_POST['pwd']) || isset($_POST['PIN'])){
-				unset($this->aSess['ADMIN_PWD']);
-				unset($this->aSess['PIN']);
+         		foreach($this->aSess as $k => $v){
+					unset($this->aSess[$k]);
+				}
 			}  	 
 				
 		
@@ -440,6 +446,8 @@ class webfan extends fexe
 			}else{
 				 $this->isAdmin = true;
 			}	 		
+		
+		$this->aSess['isAdmin']	= $this->isAdmin;	
 		return $this->isAdmin;	
 	}
 	
