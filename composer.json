@@ -206,6 +206,7 @@
             {
              "title" : 	"Composer Source",
              "description" : "The Source of the php Composer as helper library",
+             "skip-required" : true,
              "packages" : [
                     {"composer/composer": "Composer Source Code"}
              	]
