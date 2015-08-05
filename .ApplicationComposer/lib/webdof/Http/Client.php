@@ -1,47 +1,31 @@
 <?php
-/*################################################################################*
-#
-#   (c)Copyright Till Wehowski, http://Webfan.de
-#   All rights reserved - Alle Rechte vorbehalten
-#
-#
-#                 WEBFAN.de Software License
-#
-#                  * webdof license *
-#                    http://look-up.webfan.de/1.3.6.1.4.1.37553.8.1.8.4.5
-#
-#                 Version 1.0.0
-#
-#  DIESE LIZENZ IST NUR G�LTIG IN VERBINDUNG MIT EINEM G�LTIGEN
-#  WEBFAN SOFTWAREZERTIFIKAT.
-#
-#  THIS LICENSE REQUIRES A VALID WEBFAN SOFTWARE CERTIFICATE.
-#
-#  WEBFAN SOFTWARE DARF NICHT AUF EINEM NICHT
-#  AUTHORISIERTEN SERVER ZUM DOWNLOAD ANGEBOTEN WERDEN!
-#
-#  YOU ARE NOT ALLOWED TO REDISTRIBUTE THIS SOFTWARE ON A NOT AUTHORIZED SERVER.
-#
-#  Diese Software wird dem Endbenutzer zur Benutzung im Rahmen der Zweckbestimmung
-#  und im Rahmen der per Kaufvertrag oder Nutzungsvereinbarungen vereinbarten
-#  Leistungen/Funktionen zur Verf�gung gestellt.
-#  Quellcodekommentare sowie sichtbare bzw. klickbare Links d�rfen nicht entfernt
-#  werden.
-#  Eine Nutzung �ber die Rahmenvereinbarungen hinaus ist nicht erlaubt, die
-#  Lizenz kann durch erg�nzende Lizenzen bzw. lizensierte Funktionen erweitert
-#  werden. Teile der Software k�nnen erweitert oder abweichend lizensiert sein,
-#  entsprechende Lizenzen sind in diesem Falle beigef�gt.
-#
-#  Im Falle der Modifikation der Software durch den Endbenutzer k�nnen vorgesehene
-#  Funktionalit�ten oder Updatedienste unter Umst�nden nicht mehr gew�hrleistet werden.
-#
-#  Die Benutzung der Software erfolgt auf eigene Gefahr, jegliche Haftung ist
-#  ausgeschlossen insofern Vorsatz, grobe Fahrl��igkeit oder sonstige
-#  gesetzliche Haftungsverpflichtungen nicht in Betracht kommen.
-#
-#  (c)Webfan Software http://domainundhomepagespeicher.webfan.de/software-center/
-#
-*################################################################################*/
+/**
+ * Copyright  (c) 2015, Till Wehowski
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of frdl/webfan nor the
+ *    names of its contributors may be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY frdl/webfan ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL frdl/webfan BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
 namespace webdof\Http;
 
 
@@ -49,9 +33,11 @@ class Client
 {
 
   public $http;
+  
+  protected $E;
 
 
-  function __construct($debug = 0, $html_debug = 1, $follow_redirect = 1)
+  function __construct($debug = 0, $html_debug = 1, $follow_redirect = 1, $E = E_USER_ERROR)
     {
       $this->http = (class_exists('\webdof\wHTTP')) ? new \webdof\wHTTP(NULL)
 	                       : null;
@@ -60,9 +46,50 @@ class Client
        $this->http->html_debug=$html_debug;
        $this->http->follow_redirect=$follow_redirect;
 	 }
+	 
+	 $this->E = $E;
     }
 
 
+/*
+  ->post( $url, $parameters, $send_cookies)
+  ->put( $url, $parameters, $send_cookies) 
+  ->delete( $url, $parameters, $send_cookies)
+   
+  ->get( $url, $parameters, $send_cookies)
+  
+  ...
+  */
+  public function __call($name, $args){
+  	$args = func_get_args();
+  	$arguments = $args;
+  	
+  	 if('post' === strtolower($name) || 'put' === strtolower($name) || 'delete' === strtolower($name)){
+  	 	$arguments = array();
+  	 	$arguments[] = array_shift($args);
+  	 	$arguments[] = strtoupper($name);
+  	 	if(count($args)>0)$arguments[] = array_shift($args);
+  	 	if(count($args)>0)$arguments[] = array_shift($args);
+  	 	if(count($args)>0)$arguments[] = array_shift($args);
+  	 	return call_user_func_array(array($this, 'request'), $arguments);
+	 }elseif('get' === strtolower($name)){
+  	 	$arguments = array();
+  	 	$arguments[] = array_shift($args);
+  	 	$arguments[] = 'GET';
+  	 	if(count($args)>0){
+  	 		$arguments[] = array_shift($args);
+  	 		if(!strpos($arguments[0], '?'))$arguments[0].= '?';
+  	 		$arguments[0].= http_build_query($arguments[2]);
+  	 	}	
+  	 	if(count($args)>0)$arguments[] = array_shift($args);
+  	 	if(count($args)>0)$arguments[] = array_shift($args);
+  	 	return call_user_func_array(array($this, 'request'), $arguments);
+	 }
+  	 	 
+  	 trigger_error('Undefined method and not able to autoload '.get_class($this).'->'.$name, $this->E);
+  }
+  
+  
   public function request($url = null, $method = 'POST', $post = array(), $send_cookies = array(), $E = E_USER_WARNING)
     {
       if(null===$this->http){
@@ -71,7 +98,7 @@ class Client
 		
       $error=$this->http->GetRequestArguments($url,$arguments);
       $arguments['RequestMethod']= $method;
-       if($method !== 'GET')
+       if($method === 'POST' || $method === 'PUT' )
         {
            $arguments['PostValues']=array();
            foreach($post as $key => $value)
@@ -82,7 +109,7 @@ class Client
 
       $errorstr = '';
       $errorstr.= ($error == '') ? '' : $error . trigger_error($error.' in '. __CLASS__.' line '.__LINE__, $E);
-      /*
+      
      foreach( $send_cookies as $section => $cookies)
       {
         foreach($cookies as $domain => $dirs)
@@ -97,7 +124,7 @@ class Client
                  }
            }
       }
-*/
+
       $this->http->RestoreCookies($send_cookies, 1);
 
 
@@ -203,7 +230,7 @@ class Client
         )
       );
 	  
-	  if('GET' !== $method){
+	  if($method === 'POST' || $method === 'PUT'){
 	  	$opts['http']['header']= "Accept-language: en\r\n".
                     "Content-type: application/x-www-form-urlencoded\r\n";
 					
@@ -252,7 +279,7 @@ class Client
        $context  = stream_context_create($opts);
        $result = file_get_contents($url, false, $context);
 	   
-	  $r = array();
+      $r = array();
       $r['status'] = (!empty($result)) ? 200 : 409;
       $r['headers'] = array();
       $r['body'] = $result;
