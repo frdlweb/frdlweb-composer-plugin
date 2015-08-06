@@ -46,13 +46,15 @@ class logout extends CMD
        $this->result->out = 'tewsto';
        $this->result->args = $this->argtoks;  
        */
+       unset($this->aSess['isAdmin']);
 	   unset($this->aSess['ADMIN_PWD']);
 	   unset($this->aSess['PIN']);
 	   foreach($this->aSess as $k => $v){
 				unset($this->aSess[$k]);
 	   }
-	   session_write_close();
-	   session_start();
+			 	session_write_close();
+			 	session_start();
+			 	
        $this->result->out = 'Logged out';
     }
     
