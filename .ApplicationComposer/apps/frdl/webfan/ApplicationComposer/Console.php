@@ -58,7 +58,7 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
     
   public function dump(){
   	 $out = $this->App->OutData(); 
-  	 $out->statusText = $this->statusText;
+  	 $out->statusText = htmlentities($this->statusText);
   	 return $out;
   }
   
@@ -115,10 +115,20 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
 	 $this->parse();
  	 
   	/*$this->App->OutData('out', print_r($this->batch, true));*/
-  	
+  	$this->statusText = 'Parsing query...';
+  	  $this->parseQuery();
+ 	$this->statusText = 'Validating query...';
+  	  $this->validateQuery('before'); 	
+  	 $this->statusText = 'Process batch...';  	
+  	 
 	 foreach($this->batch as $num => $args){
+  	     $this->statusText = 'Process command:>'.$args['command']['cmd'];  
 	 	 $this->_exec($args);
+	 	  $this->statusText .= htmlentities(' :>Complete.');
 	 }
+	
+	 $this->statusText = 'Batch run complete';
+	   
 	
 	 return $this;
  }
@@ -131,22 +141,16 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
 
 
   protected function _exec($args){
-  	
-  	$this->statusText = 'Executing command...';
- 	$this->statusText = 'Parsing query...';
-  	  $this->parseQuery();
- 	$this->statusText = 'Validating query...';
-  	  $this->validateQuery('before');
   	 
   	 $command = $args['command']['cmd'];
-  	 
+     $cmd_file = $this->get_cmd_file($command);
 
-	   	 
+	 $this->statusText = 'Invoke frdl command...';  	 
      if(isset($this->shell['commands'][$command]) 
      && is_callable($this->shell['commands'][$command])){
 	 	return $this->App->OutData(call_user_func($this->shell['commands'][$command], $args));
-	 }elseif(false !== $this->get_cmd_file($command)){
-	 	require $this->get_cmd_file($command);
+	 }elseif(false !== $cmd_file){
+	 	require $cmd_file;
 	 	$classname = '\frdl\ApplicationComposer\Command\\'.$command;
 	 	try{
 	 		if(!is_subclass_of($classname, '\frdl\ApplicationComposer\Command\CMD')){
@@ -168,10 +172,14 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
   }
   
   protected function force_state($state){}
-  public function parseQuery(){} 
+  public function parseQuery(){
+  	   $this->statusText .= htmlentities(' ->Pre-Parsing batch [GLOBAL]');
+  	   
+  } 
+  
   public function validateQuery(){
   	  $args = func_get_args();
-  	
+  	   $this->statusText .=  htmlentities('->skipped(@ToDo) [GLOBAL]');
   }
 
   public function add_command($command, callable $callable){

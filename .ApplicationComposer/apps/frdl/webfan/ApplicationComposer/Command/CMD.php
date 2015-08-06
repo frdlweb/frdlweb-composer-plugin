@@ -61,6 +61,30 @@ abstract class CMD
 	 return null;
    }
    
+  final public function updateRequestOption($opt, $v){
+   	 foreach($this->argtoks['options'] as $num => &$o){
+	 	if($opt === $o['opt']){
+			$o['value'] = $v;
+			return true;
+		}
+	 }
+	 return false;
+   }
+   
+  final public function putRequestOption($opt, $v){
+   	 if(true !== $this->updateRequestOption($opt, $v)){
+	 	$this->argtoks['options'][] = array(
+	 	  'opt' => $opt,
+	 	  'value' => $v,
+	 	  'pos' => count($this->argtoks['options']),
+	 	);
+		return true;
+	 }else{
+	 	return true;
+	 }
+	 
+   }
+        
    final public function invoke(&$Console = null, $argtoks){
    	   $this->Console = $Console;
    	   $this->argtoks = $argtoks;

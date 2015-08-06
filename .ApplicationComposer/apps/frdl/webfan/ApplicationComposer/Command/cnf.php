@@ -44,6 +44,15 @@ class cnf extends CMD
     $this->aSess['ADMINDATA']['CONFIG']
     */
     
+    public function getKey($k){
+		$ks = array(
+		  'admin-pwd' => 'ADMIN_PWD',
+		);
+		
+		if(isset($ks[$k]))return $ks[$k];
+		return $k;
+	}
+    
     public function process()
     {
        $args = func_get_args();
@@ -62,16 +71,58 @@ class cnf extends CMD
 		  
 		  		  
 		if(isset($this->argtoks['flags']['t']) || 'response' === $this->getRequestOption('test')){
-			 $this->result->out = 'set config: TEST ONLY - aborted';
+			 $this->result->out = 'set config: TEST ONLY - aborted ';
+			  $this->result->out .= 'Request: '.print_r($this->argtoks, true); 
 			  return;
 		} 
-
 		
-	 	$opt_pwd = $this->getRequestOption('admin_pwd');
-		if(null !== $opt_pwd && '' !== $opt_pwd){
-			$this->data['config']['ADMIN_PWD'] = sha1($opt_pwd);
-
+		if('get' === $this->argtoks['arguments'][0]['cmd'] && intval($this->argtoks['arguments'][0]['pos']) === 1){
+			$this->result->config =$this->data['config'];
+			unset($this->result->config['PIN_HASH']);
+			unset($this->result->config['ADMIN_PWD']);
+			unset($this->result->config['PIN']);
+			unset($this->result->config['SECRET']);
+			unset($this->result->config['SHAREDSECRET']);
+			if('all' === $this->argtoks['arguments'][1]['cmd'] && intval($this->argtoks['arguments'][1]['pos']) === 2){
+				return;
+			}
+			
+			
+		 $this->result->config = Array();	
+		 foreach($this->argtoks['options'] as $num => $o){
+		    $v =  $o['value'];	
+	 	       if(isset( $this->data['config'][ $this->getKey($o['opt'])] )
+	 	        && 'PIN_HASH' !== $this->getKey($o['opt'])
+	 	        && 'ADMIN_PWD' !== $this->getKey($o['opt'])
+	 	        && 'PIN_HASH' !== $this->getKey($o['opt'])
+	 	        && 'SECRET' !== $this->getKey($o['opt'])
+	 	        && 'SHAREDSECRET' !== $this->getKey($o['opt'])
+	 	       ){
+			   	 $this->result->config[$o['opt']] =$this->data['config'][$this->getKey($o['opt'])];
+			   }else{
+			   	 unset($this->result->config[$o['opt']]);
+			   }
+		    }
+			return;
 		}
+
+
+
+		foreach($this->argtoks['options'] as $num => $o){
+		 $v =  $o['value'];	
+	 	 if('admin-password' === $o['opt']){
+			$v = sha1($v);
+		 }
+		 
+		 
+		 if(isset($this->argtoks['flags']['w'])){
+		 	    $this->data['config'][ $this->getKey($o['opt'])] = $v;
+		 }elseif(isset($this->data['config'][ $this->getKey($o['opt'])])){
+		 	   $this->data['config'][ $this->getKey($o['opt'])] = $v;
+		 }
+	   }
+		
+		
 		
 			 if(true===$this->_write_file()){
 			 	 $this->result->out = 'set config: done';
