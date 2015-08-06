@@ -39,16 +39,32 @@ class cnf extends CMD
    protected $data;
    protected $file;
 
-
-    /*
-    $this->aSess['ADMINDATA']['CONFIG']
-    */
+   function __construct(){
+		parent::__construct();
+	}
+    
+   
+   public function filterValue($k,$v, $cbs = null){
+   	 $cbs = (is_array($cbs)) ? $cbs : array(
+		  'ADMIN_PWD' => function($pwd){return sha1($pwd);},
+		);	
+		
+     if(isset($cbs[$k])){
+	 	if(is_callable($cbs[$k])){
+			return $cbs[$k]($v);
+		}elseif(is_string($cbs[$k])){
+			return $cbs[$k];
+		}
+	 }		
+	  
+	  return $v;	
+   }  
     
     public function getKey($k){
 		$ks = array(
 		  'admin-pwd' => 'ADMIN_PWD',
 		);
-		
+	
 		if(isset($ks[$k]))return $ks[$k];
 		return $k;
 	}
@@ -76,7 +92,7 @@ class cnf extends CMD
 			  return;
 		} 
 		
-		if('get' === $this->argtoks['arguments'][0]['cmd'] && intval($this->argtoks['arguments'][0]['pos']) === 1){
+		if('get' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
 			$this->result->config =$this->data['config'];
 			unset($this->result->config['PIN_HASH']);
 			unset($this->result->config['ADMIN_PWD']);
@@ -107,21 +123,18 @@ class cnf extends CMD
 		}
 
 
-
-		foreach($this->argtoks['options'] as $num => $o){
-		 $v =  $o['value'];	
-	 	 if('admin-password' === $o['opt']){
-			$v = sha1($v);
-		 }
-		 
-		 
+	  if('set' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
+		
+		 foreach($this->argtoks['options'] as $num => $o){
+		 $v =  $this->filterValue($this->getKey($o['opt']), $o['value']);	
 		 if(isset($this->argtoks['flags']['w'])){
 		 	    $this->data['config'][ $this->getKey($o['opt'])] = $v;
 		 }elseif(isset($this->data['config'][ $this->getKey($o['opt'])])){
 		 	   $this->data['config'][ $this->getKey($o['opt'])] = $v;
 		 }
-	   }
-		
+	     }
+	     
+	  }
 		
 		
 			 if(true===$this->_write_file()){
