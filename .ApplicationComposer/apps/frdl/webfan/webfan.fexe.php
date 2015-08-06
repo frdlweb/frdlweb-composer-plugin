@@ -421,9 +421,7 @@ class webfan extends fexe
 		 	    $this->aSess['HOST'] = $_SERVER['SERVER_NAME'];
 		 	    $this->aSess['PIN'] =$_POST['PIN'];
 		 	    
-		 	    $this->aSess['ADMINDATA'] = array();
-		 	    $this->aSess['ADMINDATA']['CONFIG'] = $this->data['config'];
-		 	    $this->aSess['ADMINDATA']['CONFIG_NEW'] = $this->data['config_new'];
+
 		 	    
 			} elseif(isset($_POST['pwd']) || isset($_POST['PIN'])){
          		foreach($this->aSess as $k => $v){
@@ -443,8 +441,10 @@ class webfan extends fexe
 		 	|| ($this->aSess['PIN'] !== $this->data['config']['PIN'] && $this->aSess['PIN'] !== $this->data['config_new']['PIN'] )
 		 	){
 		 		$this->isAdmin = false;
+		 		unset($this->aSess['ADMINDATA']);
 			}else{
-				 $this->isAdmin = true;
+				   $this->aSess['ADMINDATA'] = $this->data;
+				   $this->isAdmin = true;
 			}	 		
 		
 		$this->aSess['isAdmin']	= $this->isAdmin;	
@@ -783,8 +783,8 @@ __halt_compiler();µConfig%json%config.json
 <h1 style="color:#6495ED;">frdl/webfan - Application Composer</h1>
 <a href="javascript:;" onclick="$.WebfanDesktop({});" style="color:#6495ED;">!desktop</a>
 <script type="text/javascript">
-$(document).ready(function() {
 (function($){
+$(document).ready(function() {
 	try{
 	 $.WebfanDesktop({
       modules : [
@@ -819,9 +819,9 @@ $(document).ready(function() {
 		console.error(err);
 	}
      	
-     	
+     
+});	
 })(jQuery);
-});
 </script>	
 µxTpl%%404
 <span style="color:red;">The requested content was not found!</span>
