@@ -25,35 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
+ *  @role       Skeleton [Template:CLI]
  * 
  */
 namespace frdl\ApplicationComposer\Command;
 
-class logout extends CMD
+class frdl extends CMD
 {
 
-    function __construct(){
-		parent::__construct();
-		$this->html = '';
-	    $this->aSess = & $_SESSION['frdl\xGlobal\webfan'] ;
-	}
     
-    
+    /*
+       $this->Console = $Console;
+   	   $this->argtoks = $argtoks;
+   	   */
     public function process()
     {
        $args = func_get_args();
-       /*
-       $this->result->out = 'tewsto';
-       $this->result->args = $this->argtoks;  
-       */
-	   unset($this->aSess['ADMIN_PWD']);
-	   unset($this->aSess['PIN']);
-	   foreach($this->aSess as $k => $v){
-				unset($this->aSess[$k]);
-	   }
-	   session_write_close();
-	   session_start();
-       $this->result->out = 'Logged out';
     }
     
     

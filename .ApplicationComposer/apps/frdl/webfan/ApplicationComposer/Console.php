@@ -133,7 +133,7 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
   protected function _exec($args){
   	
   	$this->statusText = 'Executing command...';
- 	$this->statusText = 'Parsibng query...';
+ 	$this->statusText = 'Parsing query...';
   	  $this->parseQuery();
  	$this->statusText = 'Validating query...';
   	  $this->validateQuery('before');

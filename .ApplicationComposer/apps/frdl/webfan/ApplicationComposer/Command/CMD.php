@@ -31,6 +31,8 @@ namespace frdl\ApplicationComposer\Command;
 
 abstract class CMD
 {
+   protected $aSess;
+   
    protected $Console;	
    protected $argtoks;
    protected $result;
@@ -38,7 +40,7 @@ abstract class CMD
    abstract public function required();
    
    function __construct(){
-   	
+	    $this->aSess = & $_SESSION['frdl\xGlobal\webfan'] ;
    }
    
    public function Console(){
@@ -48,6 +50,15 @@ abstract class CMD
    public function help(){
    	   $required = $this->required;
    	   
+   }
+   
+   final public function getRequestOption($opt){
+   	 foreach($this->argtoks['options'] as $num => $o){
+	 	if($opt === $o['opt']){
+			return $o['value'];
+		}
+	 }
+	 return null;
    }
    
    final public function invoke(&$Console = null, $argtoks){

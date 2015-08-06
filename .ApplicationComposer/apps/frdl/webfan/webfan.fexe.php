@@ -186,6 +186,7 @@ class webfan extends fexe
        $this->data['config_new'] = (array)$this->data['config_new'];        
        $this->data['config'] = (array)$this->data['config'];
        $this->data['config']['INSTALLED'] = $this->data['installed'];
+
        
 
        
@@ -420,9 +421,8 @@ class webfan extends fexe
  		 	    $this->aSess['ADMIN_PWD'] =  sha1(trim($_POST['pwd'], '"\' '));
 		 	    $this->aSess['HOST'] = $_SERVER['SERVER_NAME'];
 		 	    $this->aSess['PIN'] =$_POST['PIN'];
-		 	    
-
-		 	    
+			 	session_write_close();
+			 	session_start();    
 			} elseif(isset($_POST['pwd']) || isset($_POST['PIN'])){
          		foreach($this->aSess as $k => $v){
 					unset($this->aSess[$k]);
@@ -455,7 +455,7 @@ class webfan extends fexe
 		 $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
 		ini_set('display_errors', 0);
 		 
-
+        $this->login();	 
 	  	
 		 	 			 
 			/*
@@ -485,7 +485,7 @@ class webfan extends fexe
 		 	});
 		 		
 		 
-	  $this->login();	 	
+		
 		
 	
 		 
@@ -654,7 +654,13 @@ class webfan extends fexe
 			 			  Download: {___$$URL_INSTALLER_HTMLPAGE$$___}
 			 			  
 			 			*/
-			 			    if(isset(\$this) && get_class(\$this) === '\\".get_class($this)."'){
+			 			    if(isset(\$this) &&
+			 			     (  get_class(\$this) === '\\".get_class($this)."' 
+			 			     || get_class(\$this) === '\\frdl\ApplicationComposer\Command\cnf'
+			 			     || get_class(\$this) === '".get_class($this)."' 
+			 			     || get_class(\$this) === 'frdl\ApplicationComposer\Command\cnf'
+			 			     )
+			 			     ){
                          	     \$this->data['config'] = ".var_export($this->data['config'], true).";								
 							}		 			
                         ";
