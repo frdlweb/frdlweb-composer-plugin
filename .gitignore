@@ -21,6 +21,7 @@ auth.json
 
 # frdl/webfan
 *.project
+config.frdl.php
 
 .wpmxdir.cnf
 wpmxdir.php
