@@ -38,10 +38,13 @@ class html extends CMD
      
      protected $item;
      protected $html;
+     
+     protected $loginformIsOut = false;
 
     function __construct(){
 		parent::__construct();
 		$this->html = '';
+		 $this->loginformIsOut = false;
 	}
     
     
@@ -52,6 +55,8 @@ class html extends CMD
 
         $this->item = $this->getRequestOption('item');
        $this->result->item = strip_tags($this->item); 
+
+	   $this->loadConfigFromFile(false);
 
        try{
 	    	if(null !== $this->item)$this->html .= $this->{'item_'.$this->result->item}();
@@ -75,15 +80,129 @@ class html extends CMD
 	   if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
 	     	 return $html;
 		  }
-		  
+		
+		
+		 $html .=  $this->item_db();
+	     $html .=  $this->item_expert();  
+	     
+	     
 	  return $html;
 	}
-    
+	
+    protected function item_expert(){
+	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
+	     	// return (true !== $this->loginformIsOut) ? $this->item_login() : '';
+	     	 return  $this->item_login();
+		  }
+	 $html = '';
+	
+	 $html.= '<div id="window_main_frdl-webfan-expert" class="wd-tab">'   ;
+	 $html.= '<h2 class="webfan-blue">Expert Editor <span class="webfan-red">(Experts only!)</span></h2>';	
+	 $html.='<p><span class="webfan-red">Only use if you know what you are doing!!! - Possible site effects, DO NOT USE ON PRODUCTION SITE</span></p>';
+	 
+    // $html.='<textarea id="wd-frdl-webfan-editor-config-json" style="width:100%;height:350px;overflow:scroll;">';
+     $html.='Please edit the file:<p>'.$this->aSess['ADMINDATA']['CONFIGFILE'].'</p>';
+     
+     $c = $this->data['config'];
+     $c['db-pwd'] = '***';
+     $c['PIN_HASH'] = '***';
+     $c['ADMIN_PWD'] = '***';
+     $c['SECRET'] = '***';
+     $c['SHAREDSECRET'] = '***';
+     
+     
+     unset($c['callback']);
+     unset($c['expect']);   
+     unset($c['method']);   
+       
+          
+        $html.= '<pre>';
+      $html.= htmlentities(var_export($c, true));
+      $html.='</pre>';
+    // $html.='</textarea>';
+	 $html.='Please edit the file:<p>'.$this->aSess['ADMINDATA']['CONFIGFILE'].'</p>';
+	 
+	 $html.='</div>';	
+		   
+	  return $html;
+	}
+	
+	     
+    protected function item_db(){
+	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
+	     	// return (true !== $this->loginformIsOut) ? $this->item_login() : '';
+	     	 return  $this->item_login();
+		  }
+	 $html = '';
+	
+	 $html.= '<div id="window_main_frdl-webfan-db" class="wd-tab">'   ;
+	 $html.= '<h2 class="webfan-blue"><span>Database</span> <span>Settings</span></h2>';	
+	 
+	 $html.='<div>';
+	 $html.='<legend>Driver</legend>';
+	 $html.='<input type="text" id="db-driver" value="'.((isset($this->data['config']['db-driver'])) ? $this->data['config']['db-driver'] : 'mysql').'" />';
+	 $html.='<button onclick="if(true !== confirm(\'Are you sure to change the config? This can have dirty side effects if you do not know what you are doing!\'))return;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'db-driver\', Dom.g(\'db-driver\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button> (e.g. mysql)';
+	 $html.='</div>';
+	 
+	 
+	 $html.='<div>';
+	 $html.='<legend>Host</legend>';
+	 $html.='<input type="text" id="db-host" value="'.((isset($this->data['config']['db-host'])) ? $this->data['config']['db-host'] : '').'" />';
+	 $html.='<button onclick="if(true !== confirm(\'Are you sure to change the config? This can have dirty side effects if you do not know what you are doing!\'))return;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'db-host\', Dom.g(\'db-host\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button> (e.g. localhost)';
+	 $html.='</div>';
+	 
+	 
+	 
+	 $html.='<div>';
+	 $html.='<legend>User</legend>';
+	 $html.='<input type="text" id="db-user" value="'.((isset($this->data['config']['db-user'])) ? $this->data['config']['db-user'] : '').'" />';
+	 $html.='<button onclick="if(true !== confirm(\'Are you sure to change the config? This can have dirty side effects if you do not know what you are doing!\'))return;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'db-user\', Dom.g(\'db-user\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button>';
+	 $html.='</div>';
+	 	 	 
+	 
+	 
+	 $html.='<div>';
+	 $html.='<legend>Database</legend>';
+	 $html.='<input type="text" id="db-dbname" value="'.((isset($this->data['config']['db-dbname'])) ? $this->data['config']['db-dbname'] : '').'" />';
+	 $html.='<button onclick="if(true !== confirm(\'Are you sure to change the config? This can have dirty side effects if you do not know what you are doing!\'))return;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'db-dbname\', Dom.g(\'db-dbname\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button>';
+	 $html.='</div>';
+	 	 	 
+	 
+	 
+	 $html.='<div>';
+	 $html.='<legend>Password</legend>';
+	 $html.='<input type="password" id="db-pwd" value="'.((isset($this->data['config']['db-pwd'])) ? $this->data['config']['db-pwd'] : '').'" />';
+	 $html.='<button onclick="if(true !== confirm(\'Are you sure to change the config? This can have dirty side effects if you do not know what you are doing!\'))return;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'db-pwd\', Dom.g(\'db-pwd\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button>';
+	 $html.='</div>';
+	 
+	 
+	 $html.='<div>';
+	 $html.='<legend>Table-Prefix</legend>';
+	 $html.='<input type="text" id="db-pfx" value="'.((isset($this->data['config']['db-pfx'])) ? $this->data['config']['db-pfx'] : '').'" />';
+	 $html.='<button onclick="if(true !== confirm(\'Are you sure to change the config? This can have dirty side effects if you do not know what you are doing!\'))return;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'db-pfx\', Dom.g(\'db-pfx\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button> (e.g. '.mt_rand(1000,9999).')';
+	 $html.='</div>';
+	 	 	 
+	 	 
+	 $html.='<div>';
+	 $html.='<legend>Test</legend>';
+	 $html.='<button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].test(\'database\'); ">Test</button>';
+	 $html.='</div>';	 	 	 
+	 	 	 
+	 	 	 
+	 $html.='</div>';	
+		   
+	  return $html;
+	}
+	
+       
     protected function item_login(){
 		$html = '';
 
+
+      $html.= '<div id="window_main_frdl-webfan-login" class="wd-tab">'   ;
+      
 	  if(isset($this->aSess['isAdmin']) && true === $this->aSess['isAdmin']){
-		 		 $html.= '<p><span>You are logged in as Admin.</span> <button class="wd-btn-no" onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].logout();" >Logout</button></p>';
+	  		 $html.= '<p><span>You are logged in as Admin.</span> <button class="wd-btn-no" onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].logout();" >Logout</button></p>';
 		 		
 		 		 $html.= '<p style="font-size:0.8em;">';
 		 		 $html.='<span>Change password</span>: ';
@@ -105,6 +224,10 @@ class html extends CMD
 		 	 $html.= '<p><button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].login();" >Login...</button>';
   
 	  }
+
+	   $html.='</div>';
+	   
+	    $this->loginformIsOut = true;
 		return $html;
 	}
 	

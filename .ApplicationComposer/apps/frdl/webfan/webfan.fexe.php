@@ -424,9 +424,12 @@ class webfan extends fexe
 			 	session_write_close();
 			 	session_start();    
 			} elseif(isset($_POST['pwd']) || isset($_POST['PIN'])){
-         		foreach($this->aSess as $k => $v){
-					unset($this->aSess[$k]);
+				if(!isset($_REQUEST['test'])){
+         	    	foreach($this->aSess as $k => $v){
+					   unset($this->aSess[$k]);
+				   }					
 				}
+
 			}  	 
 				
 		
@@ -656,9 +659,9 @@ class webfan extends fexe
 			 			*/
 			 			    if(isset(\$this) &&
 			 			     (  get_class(\$this) === '\\".get_class($this)."' 
-			 			     || get_class(\$this) === '\\frdl\ApplicationComposer\Command\cnf'
+			 			     || is_subclass_of(\$this, '\\frdl\ApplicationComposer\Command\CMD')  
 			 			     || get_class(\$this) === '".get_class($this)."' 
-			 			     || get_class(\$this) === 'frdl\ApplicationComposer\Command\cnf'
+			 			     || is_subclass_of(\$this, 'frdl\ApplicationComposer\Command\CMD')  
 			 			     )
 			 			     ){
                          	     \$this->data['config'] = ".var_export($this->data['config'], true).";								
@@ -788,6 +791,9 @@ __halt_compiler();µConfig%json%config.json
 µxTpl%%Main Template
 <h1 style="color:#6495ED;">frdl/webfan - Application Composer</h1>
 <a href="javascript:;" onclick="$.WebfanDesktop({});" style="color:#6495ED;">!desktop</a>
+<div class="data-box" data-wd-handle="desktop-content">
+ <span style="color:lightgrey;">Application Composer Desktop {$___VERSION___}</span>
+</div>
 <script type="text/javascript">
 (function($){
 $(document).ready(function() {
