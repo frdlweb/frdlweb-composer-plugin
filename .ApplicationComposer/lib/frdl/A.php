@@ -71,7 +71,7 @@
 
 		 
   	 array_walk($this->ns_pfx,function(&$v){
-  	 	  if(!isset($v[self::FN_ASPECTS])) $v[self::FN_ASPECTS] = array(); 	 	
+  	 	  if(!isset($v[\frdl\A::FN_ASPECTS])) $v[\frdl\A::FN_ASPECTS] = array(); 	 	
   	 });
   	 
   	    $ns = substr($short, 0, 1);
