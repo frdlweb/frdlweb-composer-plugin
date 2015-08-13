@@ -33,18 +33,18 @@ class Composer extends Package
    /**
    *   @param   $data [\frdl\o]  OPTIONAL
    *   @returns \frdl\o 
-      e.g.2:  {
-            "type": "package",
-            "package": {
-                "name": "composer/composer",
-                "version": "1.0.0-alpha10",
-                "source": {
-                    "url": "https://github.com/composer/composer/archive/1.0.0-alpha10.zip",
-                    "type": "zip"
-                }
-            }
-        }
-  
+   *   e.g.2:  {
+   *         "type": "package",
+   *         "package": {
+   *              "name": "composer/composer",
+   *              "version": "1.0.0-alpha10",
+   *              "source": {
+   *                  "url": "https://github.com/composer/composer/archive/1.0.0-alpha10.zip",
+   *                  "type": "zip"
+   *              }
+   *          }
+   *      }
+   *
    */
    
    protected function _Data(){
