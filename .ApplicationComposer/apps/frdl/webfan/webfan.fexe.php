@@ -136,7 +136,9 @@ class webfan extends fexe
 				'meta' =>  array(
 				     array('http-equiv' => 'content-type', 'content' => 'text/html; charset=utf-8'),	
 				     array('http-equiv' => 'content-style-type', 'content' => 'text/css'),	
+				     array('http-equiv' => 'content-script-type', 'content' => 'text/javascript'),		
 				     array('http-equiv' => 'content-script-type', 'content' => 'text/javascript'),				 
+				   /*  array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=7.5'),		  */
 				     array('name' => 'apple-mobile-web-app-capable', 'content' => 'yes'),
 				     array('name' => 'apple-mobile-web-app-status-bar-style', 'content' => 'lightblue'),
 				     array('name' => 'HandheldFriendly', 'content' => 'true'),
@@ -577,6 +579,18 @@ class webfan extends fexe
 					  	 return true;
 					  }
                    });
+                   
+          /*         
+                 foreach (new \DirectoryIterator($this->data['DIR'] ) as $fileInfo) {
+                  if($fileInfo->isDot()) continue;
+                  if((
+                                 true === \webdof\valFormats::is(basename($fileInfo->getFilename()), 'md5', true)
+                              || true === \webdof\valFormats::is(basename($fileInfo->getFilename()), 'sha1', true)    
+                            ) ){
+			  	                     unlink($fileInfo->getFilename());
+			                   }
+                 }  
+            */       
 			}catch(\Exception $e){
 				\webdof\wResponse::status(409);
 				$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ' .$e->getMessage();
@@ -685,6 +699,7 @@ class webfan extends fexe
 			 		    	';		 			
 								
 					 	   	$this->data['data_out']->js.= '
+					 	   	alert(\'Please set up the configuration next...\');
 			 		    	window.location.href = "'.$this->data['config']['URL'].'";
 			 		    	';															 		
 		             

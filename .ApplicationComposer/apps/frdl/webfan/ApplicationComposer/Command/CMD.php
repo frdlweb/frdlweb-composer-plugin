@@ -166,4 +166,25 @@ abstract class CMD
 		return $n[count($n)-1];
 	}
 	
+   final public function OutData(){
+    	$p = func_get_args();
+    	
+    	if(!isset($this->result))$this->result =   new \frdl\o; 
+     	if(!isset( $this->result->type)) $this->result->type =  'print';
+     	
+     		
+    	if(0 === count($p)){
+			return $this->result;
+		}elseif(1 === count($p)){
+			$this->result = $p[0];
+		}elseif(2 === count($p) && is_string($p[0])){
+			$this->result->{$p[0]} = $p[1];
+		}else{
+			return trigger_error('Invalid number of arguments in '.__METHOD__.' '.__LINE__, E_USER_ERROR);
+		}
+		
+		return $this;
+	}
+	
+	
 }

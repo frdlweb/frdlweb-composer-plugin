@@ -27,10 +27,59 @@
  * 
  */
 namespace frdl\ApplicationComposer\Repos;
+use frdl\ApplicationComposer;
 
-class Package extends PackageFetcher
+abstract class Package extends PackageFetcher
 {
 	
+   protected $_data = null;
+
+   function __construct(){
+   	  $this->_data = &$this->data();
+   }
+
+   public function __call($name, $args){
+        if('data' === $name){
+			if(0 === count($args)){
+				  return $this->_data();
+		    }elseif(1 === count($args)){
+				  return $this->_data($args[0]);
+		    }
+		}	
+		
+		
+   }
+   
+   /**
+   *   @param   $data [\frdl\o]  OPTIONAL
+   *   @returns \frdl\o 
+     e.g 1: {
+            "type": "package",
+            "package": {
+                "name": "TerraProject/pragmamx",
+                "version": "2.2.2",
+                "source": {
+                    "url": "http://download.pragmamx.org/pmx/pragmaMx_2.2_2015-04-01--18-33_full.zip",
+                    "type": "zip"
+                }
+            }
+        },
+      #  
+      e.g.2:  {
+            "type": "package",
+            "package": {
+                "name": "composer/composer",
+                "version": "1.0.0-alpha10",
+                "source": {
+                    "url": "https://github.com/composer/composer/archive/1.0.0-alpha10.zip",
+                    "type": "zip"
+                }
+            }
+        }
+  
+   */
+   abstract protected function _data(\frdl\o $data = null);
+ 	
    public function info(){
    	
    }

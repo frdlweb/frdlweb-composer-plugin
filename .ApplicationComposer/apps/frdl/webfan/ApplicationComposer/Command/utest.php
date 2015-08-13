@@ -62,23 +62,79 @@ class utest extends CMD
         $this->result->out = 'No given testcase or unit! Usage: frdl test [unit]';
     }
     
-    protected function _test_database(){
+     protected function _test_tables(){
+     	
 		if(true!== $this->loadConfigFromFile(true)){
-                $this->result->out = 'set config ERROR: cannot readf config file';
+                $this->result->out = 'config ERROR: cannot readf config file';
         	 return;			
-		}
-		try{
-		ini_set('display_errors', 0);
+		}	
 		
-		$db = new \frdl\DB(array(
+		ini_set('display_errors', 0);
+		error_reporting(E_ALL);
+		
+		try{
+
+		 $_s = new \frdl\o;
+		 $tables = array();
+		 $S = new \frdl\ApplicationComposer\DBSchema();
+		$db =  \frdl\DB::_(array(
 		   'driver' => $this->data['config']['db-driver'],
 		   'host' => $this->data['config']['db-host'],
 		   'dbname' => $this->data['config']['db-dbname'],
 		   'user' => $this->data['config']['db-user'],
 		   'password' => $this->data['config']['db-pwd'],
+		   'pfx' => $this->data['config']['db-pfx'],
 		   
-		));			
+		), true);		
+			
+		  /*$S->check($_s, $tables,  null,  false,  false,  false,  $db, array(
+		   'driver' => $this->data['config']['db-driver'],
+		   'host' => $this->data['config']['db-host'],
+		   'dbname' => $this->data['config']['db-dbname'],
+		   'user' => $this->data['config']['db-user'],
+		   'password' => $this->data['config']['db-pwd'],
+		   'pfx' => $this->data['config']['db-pfx'],
+		   
+		));
+			 $this->result->data = new \frdl\o;
+	     $this->result->data->schema = $_s;
+	     $this->result->data->tables = $tables;
+	     */
 		}catch(\Exception $e){
+			die($e->getMessage());
+			$this->result->out = $e->getMessage();
+			return $this->result;
+		}
+
+
+		 $this->result->code = 200;
+		 $this->result->out = 'Ok';
+		 
+	}
+	
+	   
+    protected function _test_database(){
+		if(true!== $this->loadConfigFromFile(true)){
+                $this->result->out = 'set config ERROR: cannot readf config file';
+        	 return;			
+		}
+		ini_set('display_errors', 0);
+		error_reporting(E_ALL);
+
+		try{
+		
+		
+		$db =  \frdl\DB::_(array(
+		   'driver' => $this->data['config']['db-driver'],
+		   'host' => $this->data['config']['db-host'],
+		   'dbname' => $this->data['config']['db-dbname'],
+		   'user' => $this->data['config']['db-user'],
+		   'password' => $this->data['config']['db-pwd'],
+		   'pfx' => $this->data['config']['db-pfx'],
+		   
+		), true);			
+		}catch(\Exception $e){
+			die($e->getMessage());
 			$this->result->out = $e->getMessage();
 			return;
 		}

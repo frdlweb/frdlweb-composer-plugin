@@ -26,42 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\ApplicationComposer;
+namespace frdl\ApplicationComposer\Repos;
 
-abstract class PackageFetcher
+class Composer extends Package
 {
-   const DEF_CLIENT = '\webdof\Http\Client';
-   protected $http_class;	
-	
-   protected $config;
-   protected $Client = null;
+   /**
+   *   @param   $data [\frdl\o]  OPTIONAL
+   *   @returns \frdl\o 
+      e.g.2:  {
+            "type": "package",
+            "package": {
+                "name": "composer/composer",
+                "version": "1.0.0-alpha10",
+                "source": {
+                    "url": "https://github.com/composer/composer/archive/1.0.0-alpha10.zip",
+                    "type": "zip"
+                }
+            }
+        }
+  
+   */
+   
+   protected function _Data(){
+   	  $d = new \frdl\o;
+   	  $d->type = 'package';
+   	  $d->package = new \frdl\o;
+   	  $d->package->name = "composer/composer";
+   	  $d->package->version = "1.0.0-alpha10";
+   	  $d->package->source = new \frdl\o;
+   	  $d->package->source->url = "https://github.com/composer/composer/archive/1.0.0-alpha10.zip";
+   	  $d->package->source->type = "zip";
+  }
+   
+   protected function _data(\frdl\o $data = null){
+   	  $this->_data = (null !== $data) ? $data : $this->_Data();
+   	  return  $this->_data;   	  
+   }
    
 
-   public function __construct($config = null){
-   	  if(null !== $config) $this->config = $config;
-   	  $this->Client($client, ((isset($config['http_class'])) ? $config['http_class'] : self::DEF_CLIENT ));
-   	  return $config;
-   }	
-   
-   
-   public function cache($key, $value){
-   	
-   }
-   
-   
-   public function Client(&$client = null, $classname = null, $create = false){
-   	  $this->http_class = (null !== $classname && '' !== $classname && class_exists($classname)) ? $classname : self::DEF_CLIENT;
-   	  if(null === $this->Client || true === $create){
-	  	$this->Client = new $this->http_class;
-	  }
-	  
-	  $client = $this->Client;
-	  return $this;
-   }
-   	
-   abstract public function info();
-   abstract public function all();
-   abstract public function search($query);
-   abstract public function package($vendor, $packagename);   
-	
 }

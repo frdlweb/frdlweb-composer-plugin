@@ -27,6 +27,7 @@
  * 
  */
 namespace frdl\ApplicationComposer\Repos;
+use frdl\ApplicationComposer;
 
 class Packagist extends PackageFetcher
 {

@@ -52,7 +52,8 @@ class html extends CMD
     {
        $args = func_get_args();
        $this->result->out = '';
-
+       $this->result->js = '';
+       
         $this->item = $this->getRequestOption('item');
        $this->result->item = strip_tags($this->item); 
 
@@ -73,26 +74,103 @@ class html extends CMD
        $args = func_get_args();
     }
     
+    
+    /*
+         THIS.Tabs.addTab('#window_main_frdl-webfan-login', 'Login', 'window_main_frdl-webfan-login', false);
+     THIS.Tabs.addTab('#window_main_frdl-webfan-db', 'Database', 'window_main_frdl-webfan-db', true);
+     THIS.Tabs.addTab('#window_main_frdl-webfan-icontem', 'Icontem', 'window_main_frdl-webfan-icontem', true);
+     THIS.Tabs.addTab('#window_main_frdl-webfan-webfan', 'Webfan', 'window_main_frdl-webfan-webfan', true);
+     THIS.Tabs.addTab('#window_main_frdl-webfan-expert', 'Expert', 'window_main_frdl-webfan-expert', true);
+     */
     protected function item_settings(){
 	 
+	
 		
 	   $html .=  $this->item_login();
+       $html .=  $this->item_icontem();  	
+       $html .=  $this->item_webfan();  
 	   if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
 	     	 return $html;
 		  }
 		
 		
-		 $html .=  $this->item_db();
+		 $html .=  $this->item_db();	 
 	     $html .=  $this->item_expert();  
 	     
 	     
 	  return $html;
 	}
 	
+    protected function item_webfan(){
+	  //  if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
+	     	// return (true !== $this->loginformIsOut) ? $this->item_login() : '';
+	     //	 return  $this->item_login();
+		//  }
+	 $html = '';
+	
+	 $html.= '<div id="window_main_frdl-webfan-webfan" class="wd-tab">'   ;
+	 $html.= '<h2 class="webfan-blue">Your Webfan Accounts</h2>';	
+ 
+        $html.= '<iframe src="http://webfan.de/auth/frame-1/" style="width:100%;height:450px;overflow:auto;" />';
+ 
+     $html.= '</div>';
+		   
+	  return $html;
+	}
+		
+    protected function item_icontem(){
+	  //  if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
+	     	// return (true !== $this->loginformIsOut) ? $this->item_login() : '';
+	     //	 return  $this->item_login();
+		//  }
+	 $html = '';
+	
+	 $html.= '<div id="window_main_frdl-webfan-icontem" class="wd-tab">'   ;
+	 $html.= '<h2 class="webfan-blue">Your Icontem Accounts</h2>';	
+ 
+        $html.= '<iframe src="https://accounts.icontem.com/edit" style="width:100%;height:432px; overflow:auto;" />';
+  
+   	 $html.='<div>';
+	 $html.='<legend>Username (<a href="http://webfan.users.phpclasses.org" target="_blank">phpclasses.org</a>)</legend>';
+	 $html.='<input type="text" id="composer-user-phpclasses" value="'.((isset($this->data['config']['composer-user-phpclasses'])) ? $this->data['config']['composer-user-phpclasses'] : '').'" />';
+	 $html.='<button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'composer-user-phpclasses\', Dom.g(\'composer-user-phpclasses\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button>';
+	 $html.='</div>';
+  
+   	 $html.='<div>';
+	 $html.='<legend>Composer <span>Password</span></legend>';
+	 $html.='<input type="password" id="composer-pwd-phpclasses" value="'.((isset($this->data['config']['composer-pwd-phpclasses'])) ? $this->data['config']['composer-pwd-phpclasses'] : '').'" />';
+	 $html.='<button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'composer-pwd-phpclasses\', Dom.g(\'composer-pwd-phpclasses\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button>';
+	 $html.='</div>';
+
+
+
+   	 $html.='<div>';
+	 $html.='<legend>Username (<a href="http://webfan.users.jsclasses.org" target="_blank">jshpclasses.org</a>)</legend>';
+	 $html.='<input type="text" id="composer-user-jsclasses" value="'.((isset($this->data['config']['composer-user-jsclasses'])) ? $this->data['config']['composer-userjsclasses'] : '').'" />';
+	 $html.='<button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'composer-user-jsclasses\', Dom.g(\'composer-user-jsclasses\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button>';
+	 $html.='</div>';
+  
+   	 $html.='<div>';
+	 $html.='<legend>Composer <span>Password</span></legend>';
+	 $html.='<input type="password" id="composer-pwd-jsclasses" value="'.((isset($this->data['config']['composer-pwd-jsclasses'])) ? $this->data['config']['composer-pwd-jsclasses'] : '').'" />';
+	 $html.='<button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'composer-pwd-jsclasses\', Dom.g(\'composer-pwd-jsclasses\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button>';
+	 $html.='</div>';
+
+
+     $html.= '</div>';
+		   
+		   
+		/* $this->result->js = 'alert(\'DB settings\');';    */
+		   
+		   
+	  return $html;
+	}
+	
+	  	
     protected function item_expert(){
 	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
 	     	// return (true !== $this->loginformIsOut) ? $this->item_login() : '';
-	     	 return  $this->item_login();
+	     	 return '<div id="window_main_frdl-webfan-expert" class="wd-tab">'. $this->item_login() .'</div>';
 		  }
 	 $html = '';
 	
@@ -131,16 +209,49 @@ class html extends CMD
     protected function item_db(){
 	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
 	     	// return (true !== $this->loginformIsOut) ? $this->item_login() : '';
-	     	 return  $this->item_login();
+	     	 return '<div id="window_main_frdl-webfan-db" class="wd-tab">'. $this->item_login() .'</div>';
 		  }
+	
+		ini_set('display_errors', 0);
+		/*
+	try{
+
+		$db = new \frdl\DB(array(
+		   'driver' => $this->data['config']['db-driver'],
+		   'host' => $this->data['config']['db-host'],
+		   'dbname' => $this->data['config']['db-dbname'],
+		   'user' => $this->data['config']['db-user'],
+		   'password' => $this->data['config']['db-pwd'],
+		   
+		));			
+		$connected = true;
+		}catch(\Exception $e){
+	          $connected = false;
+		}
+	*/
+		try{
+				   $Console = new \frdl\ApplicationComposer\Console;
+				   $Console->applyApp($this);
+ 			       $Console->exe('utest database');
+				   $r =  $Console->dump();
+				   $connected = (intval($r->code) === 200 );
+		}catch(\Exception $e){
+	          $connected = false;
+		}
+						  	
 	 $html = '';
 	
 	 $html.= '<div id="window_main_frdl-webfan-db" class="wd-tab">'   ;
+	 
+	 $html.='<table style="width:100%;vertical-align:top;">';
+	 $html.='<tr>';
+	 $html.='<td style="width:50%;">';
+	 
 	 $html.= '<h2 class="webfan-blue"><span>Database</span> <span>Settings</span></h2>';	
 	 
 	 $html.='<div>';
 	 $html.='<legend>Driver</legend>';
-	 $html.='<input type="text" id="db-driver" value="'.((isset($this->data['config']['db-driver'])) ? $this->data['config']['db-driver'] : 'mysql').'" />';
+	 $html.='<input type="text" id="db-driver" value="'.((isset($this->data['config']['db-driver'])) ? $this->data['config']['db-driver'] : '').'" />';
 	 $html.='<button onclick="if(true !== confirm(\'Are you sure to change the config? This can have dirty side effects if you do not know what you are doing!\'))return;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'db-driver\', Dom.g(\'db-driver\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button> (e.g. mysql)';
 	 $html.='</div>';
 	 
@@ -179,17 +290,51 @@ class html extends CMD
 	 $html.='<div>';
 	 $html.='<legend>Table-Prefix</legend>';
 	 $html.='<input type="text" id="db-pfx" value="'.((isset($this->data['config']['db-pfx'])) ? $this->data['config']['db-pfx'] : '').'" />';
-	 $html.='<button onclick="if(true !== confirm(\'Are you sure to change the config? This can have dirty side effects if you do not know what you are doing!\'))return;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'db-pfx\', Dom.g(\'db-pfx\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button> (e.g. '.mt_rand(1000,9999).')';
+	 $html.='<button onclick="if(true !== confirm(\'Are you sure to change the config? This can have dirty side effects if you do not know what you are doing!\'))return;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'db-pfx\', Dom.g(\'db-pfx\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button> (e.g. wd'.mt_rand(1000,9999).')';
 	 $html.='</div>';
 	 	 	 
 	 	 
 	 $html.='<div>';
-	 $html.='<legend>Test</legend>';
-	 $html.='<button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].test(\'database\'); ">Test</button>';
+	 $html.='<legend>Test Connection</legend>';
+	 $html.='<button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].test(\'database\'); ">Test Connection</button>';
 	 $html.='</div>';	 	 	 
 	 	 	 
 	 	 	 
+	 $html.='</td>';
+	 $html.='<td>';
+	  $html.= '<h2 class="webfan-blue"><span>Database</span> <span>Tables</span></h2>';	
+	  
+	
+	  if(true !== $connected){
+
+       
+       }
+	  
+	 $html.='</td>';
+	 $html.='</tr>';
+	 $html.='</table>';	 
+	 	 	 
 	 $html.='</div>';	
+		   
+		if(!isset($this->result->js)) $this->result->js = '';  
+	   if(true !== $connected){
+	   	 $this->result->js .= " 
+			try{
+		    	$.WebfanDesktop.Registry.Programs['nachrichtendienst'].post({
+		    		text : '<span>The database is not connected. Please goto the database settings!</span>',
+		    		type : 'error',
+		    		show : true,
+		    		callback : function(){\$(\'#window_frdl-webfan\').show();\$.WebfanDesktop.Registry.Programs['frdl-webfan'].Tabs.openTab('window_main_frdl-webfan-db');},
+		    		time : new Date().getTime() / 1000,
+		    		newnotif : true,
+		    		id : 'system-error-no-database-connection'
+		    	});
+			}catch(err){
+				console.error(err);
+			}	   	 
+";	   	 
+	   	 
+	   }
 		   
 	  return $html;
 	}
