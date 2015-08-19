@@ -118,7 +118,8 @@
         "phpclasses/validate-formats": "5.0.4",
         "phpclasses/asql-cli": "1.0.0",
         "phpclasses/frdl-app": "1.0.0",
-        "frdl/mini-orm" : "dev-master"
+        "frdl/mini-orm" : "dev-master",
+        "phpclasses/text-diff-rollback" : "4.0.1"
     },
 
     "autoload": {
