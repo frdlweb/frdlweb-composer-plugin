@@ -5,7 +5,6 @@ create websites, developing projects, compose applications
 * @requires          PHP >= 5.3
 * [Homepage](http://frdl.github.io/webfan/)
 * [Documentation](https://github.com/frdl/webfan/wiki)
-* [Installation](https://github.com/frdl/webfan/wiki/Installation)
 
 
 Language Files and Translation Project

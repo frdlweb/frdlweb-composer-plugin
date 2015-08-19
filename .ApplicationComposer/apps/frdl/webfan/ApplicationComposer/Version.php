@@ -28,7 +28,7 @@
  */
 namespace frdl\ApplicationComposer;
  
-class Version  Extends \frdl\Crud {
+class Version  extends \frdl\Crud {
 		
 		   const VERSION = '0.0.1';
 		
@@ -41,7 +41,7 @@ class Version  Extends \frdl\Crud {
 
 	
 				
-			public function shema(\mixed $args = null){
+			public function shema(){
 				return array(
 				  'version' => self::VERSION,
 				  'schema' => "(
@@ -68,7 +68,7 @@ class Version  Extends \frdl\Crud {
 				);
 			}
 			
-	        public function install($pfx = ''){
+	        public function install(){
 	        	$s = $this->shema();
 				$this->db->query(" 
 				     CREATE TABLE IF NOT EXISTS ".$this->table." ".$s['schema']." ;

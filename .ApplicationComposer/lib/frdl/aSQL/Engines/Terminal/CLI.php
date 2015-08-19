@@ -117,7 +117,6 @@ REGEX;
  abstract public function add_flag(\mixed $settings);
  abstract public function add_argument(\mixed $settings);
  */
- 
 
  
  

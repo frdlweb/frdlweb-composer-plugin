@@ -305,10 +305,39 @@ class html extends CMD
 	  $html.= '<h2 class="webfan-blue"><span>Database</span> <span>Tables</span></h2>';	
 	  
 	
-	  if(true !== $connected){
+	  if(true === $connected){
+		try{
 
+		 $S = new \frdl\ApplicationComposer\DBSchema();
+		
+		 $S->check($schema, $tables,  null,  false,  false,  false,   \frdl\DB::_(array(
+		   'driver' => $this->data['config']['db-driver'],
+		   'host' => $this->data['config']['db-host'],
+		   'dbname' => $this->data['config']['db-dbname'],
+		   'user' => $this->data['config']['db-user'],
+		   'password' => $this->data['config']['db-pwd'],
+		   'pfx' => $this->data['config']['db-pfx'],
+		   
+		), true), array(
+		   'driver' => $this->data['config']['db-driver'],
+		   'host' => $this->data['config']['db-host'],
+		   'dbname' => $this->data['config']['db-dbname'],
+		   'user' => $this->data['config']['db-user'],
+		   'password' => $this->data['config']['db-pwd'],
+		   'pfx' => $this->data['config']['db-pfx'],
+		   
+		));
+		
+        
+
+		}catch(\Exception $e){
+	          $tablesOK = false;
+	           $html.= '<span class="webfan-red">Error checking tables!</span>';
+		}
        
-       }
+       }else{
+	   	 $html.= '<span class="webfan-red">Not connected.</span>';
+	   }
 	  
 	 $html.='</td>';
 	 $html.='</tr>';

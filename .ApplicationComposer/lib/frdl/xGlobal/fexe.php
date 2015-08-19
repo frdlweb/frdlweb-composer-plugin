@@ -155,6 +155,20 @@
 		return 9; //optimum environment, suggestions applyed
 	}
 	
+   public function ob_compress() {
+    if( empty($_SERVER['HTTP_ACCEPT_ENCODING']) ) { return false; }
+    if (( ini_get('zlib.output_compression') === 'On'
+    	|| ini_get('zlib.output_compression_level') > 0 )
+    	|| ini_get('output_handler') === 'ob_gzhandler'
+     )
+     {
+    	return false;
+     }
+     if ( extension_loaded( 'zlib' ) && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE) ) {
+    	ob_start('ob_gzhandler');
+      }
+
+   }
 	
 	
 	protected function prepare_api(){

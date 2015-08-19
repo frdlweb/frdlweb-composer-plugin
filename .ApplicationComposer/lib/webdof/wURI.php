@@ -118,6 +118,25 @@ $xw->file_ext = $t[0];
 $xw->classic = parse_url($xw->location);
 
 
+/*
+http://php.net/manual/en/function.parse-url.php#106731
+*/
+$xw->unparse_classic = function(Array $parsed = null) use($xw) {
+  if(!is_array($parsed) && isset($xw->classic) && is_array($xw->classic))$parsed = $xw->classic;	
+  $scheme   = isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '';
+  $host     = isset($parsed['host']) ? $parsed['host'] : '';
+  $port     = isset($parsed['port']) ? ':' . $parsed['port'] : '';
+  $user     = isset($parsed['user']) ? $parsed['user'] : '';
+  $pass     = isset($parsed['pass']) ? ':' . $parsed['pass']  : '';
+  $pass     = ($user || $pass) ? "$pass@" : '';
+  $path     = isset($parsed['path']) ? $parsed['path'] : '';
+  $query    = isset($parsed['query']) ? '?' . $parsed['query'] : '';
+  $fragment = isset($parsed['fragment']) ? '#' . $parsed['fragment'] : '';
+  return "$scheme$user$pass$host$port$path$query$fragment";
+} ;
+
+
+
 return $xw;
 }
 //eof parse_uri

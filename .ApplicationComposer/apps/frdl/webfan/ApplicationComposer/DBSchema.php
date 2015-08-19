@@ -35,6 +35,7 @@ final class DBSchema
    protected $version;	
    protected $db;	
    protected $tables;
+   protected $_tables;   
    protected $settings;
 		
 	function __construct(){
@@ -43,10 +44,11 @@ final class DBSchema
 	
    public function check(&$schema = null, &$tables = null, $version = null,  $checkTables = false, $createTables = false, $updateTables = false, \frdl\DB &$db = null, $settings = array()){
    	
-	    $this->db = (null === $db) ?   \frdl\DB::_() : $db;
+	    $this->db = (null === $db) ?   \frdl\DB::_($settings, true) : $db;
 		$this->version = (null === $version) ? $this->getVersion() : $version;	
    	    $this->settings =  $settings;     
 
+   	  
    	   
    	    $schema = new \frdl\o;
           $schema->version = $this->version;
@@ -57,13 +59,13 @@ final class DBSchema
           $versions = 'versions';
           $installations = 'installations';
          
-          
-   	      $schema->tables = array(
+         
+   	      $schema->tables = array( 
           'Installations' => array(
              'tablename' => $installations,
              'ORM_CLASS' => '\frdl\ApplicationComposer\Installations',
              'exists' => false,
-             'version' => \frdl\ApplicationComposer\Installations::VERSION,
+             'version' => Installations::VERSION,
              'version_should' => '0.0.1',
              'table' => null,
              'sql' => array(
@@ -71,13 +73,13 @@ final class DBSchema
              ),
           ),     	      
    	      
-   	      
+   	     
    	      
          'Repositories' => array(
              'tablename' => $repos,
              'ORM_CLASS' => '\frdl\ApplicationComposer\Repository',
              'exists' => false,
-             'version' => \frdl\ApplicationComposer\Repository::VERSION,
+             'version' => Repository::VERSION,
              'version_should' => '0.0.1',
              'table' => null,
              'sql' => array(
@@ -146,7 +148,7 @@ final class DBSchema
              'tablename' => $packages,
              'ORM_CLASS' => '\frdl\ApplicationComposer\Package',
              'exists' => false,
-             'version' => \frdl\ApplicationComposer\Package::VERSION,
+             'version' => Package::VERSION,
              'version_should' => '0.0.1',
              'table' => null,
              'sql' => array(
@@ -168,34 +170,48 @@ final class DBSchema
              'tablename' => $versions,
              'ORM_CLASS' => '\frdl\ApplicationComposer\Version',
              'exists' => false,
-             'version' => \frdl\ApplicationComposer\Version::VERSION,
+             'version' => Version::VERSION,
              'version_should' => '0.0.1',
              'table' => null,
              'sql' => array(
                             
              ),
-          ),          
+          ),    
+                  
       );
-      
-      
-      $tables = array();
-      if(true === $checkTables || true === $createTables ||true === $updateTables){
-	  	//  $this->tables($tables);
+  
+      foreach($schema->tables as $title => &$t){
+	  	$t['table'] =  $schema->table_prefix . $t['tablename'];
+	  }
+
+      if(true === $checkTables || true === $createTables || true === $updateTables){
+	  	  $this->tables($_tables);
 	  }
       
-      
+      if(true === $checkTables){
+	  	$this->check_tables($schema, $_tables);
+	  }
    }	
-	public function tables(&$tables){
-		$tables = array();
+   
+   public function check_tables(&$schema, $_tables){
+   	   foreach($schema->tables as $title => &$t){
+	  	 $t['exists'] = (isset($_tables[$t['table']]));
+	  }
+   }
+   
+	public function tables(&$_tables){
+		$_tables = array();
+		
 		try{
-	        foreach ($this->db->query("SHOW TABLES") as $row) {
-              $tables[$row['Tables_in_'.$this->settings['dbname']]] = $row;
+	        foreach ( $this->db->query("SHOW TABLES") as $row) {
+             $_tables[$row['Tables_in_'.$this->settings['dbname']]] = $row; 
            }	
 		}catch(\Exception $e){
 			trigger_error($e->getMessage(), E_USER_ERROR);
+			die($e->getMessage());
 		}
 		
-		$this->tables = $tables;
+		$this->_tables = $_tables;
 		return $this;
 	}
 		

@@ -28,7 +28,7 @@
  */
 namespace frdl\ApplicationComposer;
  
-class Installations  Extends \frdl\Crud {
+class Installations  extends \frdl\Crud {
 		
 		   const VERSION = '0.0.1';
 		
@@ -41,7 +41,7 @@ class Installations  Extends \frdl\Crud {
 
 	
 				
-			public function shema(\mixed $args = null){
+			public function shema(){
 				return array(
 				  'version' => self::VERSION,
 				  'schema' => "(
@@ -60,13 +60,7 @@ class Installations  Extends \frdl\Crud {
 				);
 			}
 			
-	        public function install($pfx = ''){
-	        	$s = $this->shema();
-				$this->db->query(" 
-				     CREATE TABLE IF NOT EXISTS ".$this->table." ".$s['schema']." ;
-				");
-			}
-			
+
 	        public function field($label = null){
 				$l = array(
 				 'id' => 'Installation #ID',
@@ -87,9 +81,10 @@ class Installations  Extends \frdl\Crud {
 				return (isset($l[$label])) ? $l[$label] : null;
 			}
 			
+			/*
 	        public function label($field  = null){
 				$f = array_flip($this->field(null));
 				return (isset($f[$field])) ? $f[$field] : null;
 			}
-			
-	}
+			*/
+}

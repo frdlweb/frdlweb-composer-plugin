@@ -38,7 +38,7 @@
  	
   const FN_ASPECTS = 'aspects';	
      /**
-    *  default $SEMRÂ´s
+    *  default $SEMR´s
 	*  const  SERVER_ROUTER = {$cmd=SERVER} . {$format} . {$modul} . {$outputbuffers = explode(',')} 
 	*/
 	const TPL_SERVER_ROUTE = '{$cmd}.{$responseformat}.{$modul}.{$responsebuffers}';
