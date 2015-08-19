@@ -117,7 +117,8 @@
         "phpclasses/source-loader": "0.9.17",
         "phpclasses/validate-formats": "5.0.4",
         "phpclasses/asql-cli": "1.0.0",
-        "phpclasses/frdl-app": "1.0.0"
+        "phpclasses/frdl-app": "1.0.0",
+        "frdl/mini-orm" : "dev-master"
     },
 
     "autoload": {
