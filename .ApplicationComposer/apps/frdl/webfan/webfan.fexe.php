@@ -255,6 +255,8 @@ class webfan extends fexe
 		
 	 	\frdl\webfan\Autoloading\SourceLoader::top() 
           -> addPsr4('frdl\ApplicationComposer\\', __DIR__ . DIRECTORY_SEPARATOR . 'ApplicationComposer' .DIRECTORY_SEPARATOR, false) ;
+          
+          \frdl\webfan\App::God()-> addClass('\frdl\ApplicationComposer\DBSchema', '\frdl\_db',true, $success);
 	 }
 	 
 	 	
@@ -408,24 +410,31 @@ class webfan extends fexe
 	
 	
 	public function login(){
-    	 	if( isset($_POST['pwd']) && isset($_POST['PIN'])
+    	 	if( 
+    	 	
+    	 	 isset($_POST['pwd']) && isset($_POST['PIN'])
     	 	&& ((
  		 	 $this->data['config']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
 		 	&& $this->data['config']['HOST'] === $_SERVER['SERVER_NAME']
 		 	&& $this->data['config']['PIN'] ===$_POST['PIN']
-		 	)
-		 	|| (
- 		 	 $this->data['config_new']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
-		 	&& $this->data['config_new']['HOST'] === $_SERVER['SERVER_NAME']
-		 	&& $this->data['config_new']['PIN'] ===$_POST['PIN']
+		 	&& (!isset($this->data['config']['DISABLE_ADMIN_PWD']) || false === $this->data['config']['DISABLE_ADMIN_PWD'])
+		    	)
+		 	  || (
+ 		 	          $this->data['config_new']['ADMIN_PWD'] === sha1(trim($_POST['pwd'], '"\' '))
+		 	       && $this->data['config_new']['HOST'] === $_SERVER['SERVER_NAME']
+		 	       && $this->data['config_new']['PIN'] ===$_POST['PIN']
+		 	       && (!isset($this->data['config_new']['DISABLE_ADMIN_PWD']) || false === $this->data['config_new']['DISABLE_ADMIN_PWD'])
 		 	))
+		 	
 		 	){
  		 	    $this->aSess['ADMIN_PWD'] =  sha1(trim($_POST['pwd'], '"\' '));
 		 	    $this->aSess['HOST'] = $_SERVER['SERVER_NAME'];
 		 	    $this->aSess['PIN'] =$_POST['PIN'];
+		 	    $this->aSess['isAdmin'] = true;
 			 	session_write_close();
 			 	session_start();    
 			} elseif(isset($_POST['pwd']) || isset($_POST['PIN'])){
+				if(isset( $this->aSess['isAdmin']))unset( $this->aSess['isAdmin']);
 				if(!isset($_REQUEST['test'])){
          	    	foreach($this->aSess as $k => $v){
 					   unset($this->aSess[$k]);
@@ -440,13 +449,10 @@ class webfan extends fexe
 	
 	public function isLoggedIn(){
        $this->isAdmin = false;
-		 	if(
-		 	   ( $this->aSess['ADMIN_PWD'] !== $this->data['config']['ADMIN_PWD'] && $this->aSess['ADMIN_PWD'] !== $this->data['config_new']['ADMIN_PWD'] )
-		 	|| ( $_SERVER['SERVER_NAME'] !== $this->data['config']['HOST'] && $_SERVER['SERVER_NAME'] !== $this->data['config_new']['HOST'])
-		 	|| ($this->aSess['PIN'] !== $this->data['config']['PIN'] && $this->aSess['PIN'] !== $this->data['config_new']['PIN'] )
-		 	){
+		 	if(true !== $this->aSess['isAdmin']){
 		 		$this->isAdmin = false;
 		 		unset($this->aSess['ADMINDATA']);
+		 		if(isset( $this->aSess['isAdmin']))unset( $this->aSess['isAdmin']);
 			}else{
 				   $this->aSess['ADMINDATA'] = $this->data;
 				   $this->isAdmin = true;
@@ -640,19 +646,13 @@ class webfan extends fexe
 			 			if( '' === $this->data['config']['UNAME'] && '' !== $this->data['config_new']['UNAME']){
 							$this->data['config']['UNAME'] = $this->data['config_new']['UNAME'];
 						}
-			 			
-			 			$files = array();
-			 			
-			 			$this->data['config']['FILES'] = array_merge((isset($this->data['config']['FILES']) && is_array($this->data['config']['FILES']))
-			 			         ? $this->data['config']['FILES'] : array(), array(
-			 			            'composer' =>  $this->data['config']['DIR_PACKAGE'] . 'composer.json',
-			 			            'config' =>    $this->data['CONFIGFILE'],
-			 			                 
-			 			  ));			 			
+	 			
 			 			$this->data['config']['DIRS'] = array_merge((isset($this->data['config']['DIRS']) && is_array($this->data['config']['DIRS']))
 			 			         ? $this->data['config']['DIRS'] : array(), array(
 			 			            'apps' =>  $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'apps'. DIRECTORY_SEPARATOR,
+			 			            'batch' =>  $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'batch'. DIRECTORY_SEPARATOR,
 			 			            'cache' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'cache'. DIRECTORY_SEPARATOR,
+			 			            'config' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'config'. DIRECTORY_SEPARATOR,
 			 			            'data.norm' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'data.norm'. DIRECTORY_SEPARATOR,
 			 			            'data.storage' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'data.storage'. DIRECTORY_SEPARATOR,
 			 			            'packages' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'packages'. DIRECTORY_SEPARATOR,
@@ -663,6 +663,17 @@ class webfan extends fexe
 			 			            'vendor' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'vendor'. DIRECTORY_SEPARATOR,
 			 			                 
 			 			  ));
+			 					
+			 					
+			 			
+			 			$files = array();
+			 			
+			 			$this->data['config']['FILES'] = array_merge((isset($this->data['config']['FILES']) && is_array($this->data['config']['FILES']))
+			 			         ? $this->data['config']['FILES'] : array(), array(
+			 			            'composer' =>  $this->data['config']['DIR_PACKAGE'] . 'composer.json',
+			 			            'config' =>    $this->data['CONFIGFILE'],
+			 			            'database-schema' =>  $this->data['config']['DIRS']['config'] . 'database-schema.dat',     
+			 			  ));					 					
 			 					 			
 			 			$php = "<?php
 			 			/*

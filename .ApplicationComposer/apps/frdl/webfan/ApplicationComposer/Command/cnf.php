@@ -56,9 +56,17 @@ class cnf extends CMD
 	 	return $v;
 	 };	 
 	 
+	 $bool = function($k,$v){
+	 	if('true' === $v || 1 === intval($v))$v = true;
+	 	if('false' === $v || 0 === intval($v))$v = false;
+	 	$this->data['config'][$k] = $v;
+	 	return $v;
+	 };	 
+	 
    	 $cbs = (is_array($cbs)) ? $cbs : array(
    	      '______DEFAULT______' =>  $setSessionFunc,
    	       'ADMIN_PWD' =>  $setSessionFunc,
+   	       'DISABLE_ADMIN_PWD' => $bool,
 		);	
 		
      if(isset($cbs[$k])){
@@ -79,6 +87,12 @@ class cnf extends CMD
 		  	
 		  	return sha1($pwd);
 		  },
+		 
+		'DISABLE_ADMIN_PWD' =>  function($v){
+	 	if('true' === $v || 1 === intval($v))$v = true;
+	 	if('false' === $v || 0 === intval($v))$v = false;
+	 	return $v;
+	 } 
 		);	
 		
      if(isset($cbs[$k])){
@@ -122,6 +136,9 @@ class cnf extends CMD
 			  $this->result->out .= 'Request: '.print_r($this->argtoks, true); 
 			  return;
 		} 
+		
+		
+
 		
 		if('get' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
 			$this->result->config =$this->data['config'];

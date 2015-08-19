@@ -38,12 +38,22 @@ class install extends CMD
     public function process()
     {
        $args = func_get_args();
-       /*
-       $this->result->out = 'testo';
-       $this->result->args = $args[1];
-*/
-       $this->result->out = 'tewsto';
-       $this->result->args = $this->argtoks;  
+       
+           if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin'] ){
+                $this->result->out = 'set config ERROR: You are not logged in as Admin';
+  	
+	     	 return;
+		  }     
+       
+       		if(true!== $this->loadConfigFromFile(true)){
+                $this->result->out = 'config ERROR: cannot readf config file';
+        	 return;			
+		}	
+		
+		
+		
+     //  $this->result->out = 'tewsto';
+      // $this->result->args = $this->argtoks;  
     }
     
     

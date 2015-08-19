@@ -30,30 +30,67 @@ namespace frdl\ApplicationComposer;
  
 final class DBSchema 
 {
-   const VERSION = '0.0.9';	
+   const VERSION = '0.0.11';	
 
    protected $version;	
    protected $db;	
    protected $tables;
    protected $_tables;   
-   protected $settings;
+   protected $settings = array();
 		
-	function __construct(){
-
+	function __construct($settings = null, \frdl\DB &$db = null){
+        $this->settings($settings);
+        $this->db = (null === $db) ?   \frdl\DB::_($this->settings, true) : $db;
 	}
 	
-   public function check(&$schema = null, &$tables = null, $version = null,  $checkTables = false, $createTables = false, $updateTables = false, \frdl\DB &$db = null, $settings = array()){
-   	
-	    $this->db = (null === $db) ?   \frdl\DB::_($settings, true) : $db;
-		$this->version = (null === $version) ? $this->getVersion() : $version;	
-   	    $this->settings =  $settings;     
+    public function save_schema($l, $linemax = 128){
+       $bs = new \frdl\bs;	
+ 	   return chunk_split(base64_encode(gzcompress(gzcompress($bs->serialize($l), 9), 9)),$linemax, "\r\n");
+    } 
 
-   	  
-   	   
+    public function load_schema($l){
+       $bs = new \frdl\bs;	
+ 	   return $bs->unserialize(gzuncompress(gzuncompress(base64_decode(str_replace("\r\n", "", $l)))));
+    } 
+ 	
+	public function settings($settings = null){
+		 $this->settings = (is_array($settings)) ? $settings : $this->settings;
+		 return  $this->settings;
+	}
+	
+	public function t($alias, $settings = null){
+	  $schema = $this->schema($settings);
+		if(isset($schema->tables[$alias])){
+			return $schema->tables[$alias]['table'];
+		}else{
+			return null;
+		}
+	}
+	
+	public function c($alias, $settings = null){
+	  $schema = $this->schema($settings);
+		if(isset($schema->tables[$alias])){
+			return $schema->tables[$alias]['ORM_CLASS'];
+		}else{
+			return null;
+		}
+	}	
+	
+	public function i($alias, $settings = null){
+	  $schema = $this->schema($settings);
+		if(isset($schema->tables[$alias])){
+			return new $schema->tables[$alias]['ORM_CLASS'](array(),$this->settings);
+		}else{
+			return null;
+		}
+	}		
+	
+   public function schema($settings = null){
+   	 $this->settings($settings);
+   	 
    	    $schema = new \frdl\o;
           $schema->version = $this->version;
           $schema->version_should = self::VERSION;
-          $schema->table_prefix = $this->settings['pfx'];
           $repos = 'repositories';
           $packages = 'packages';
           $versions = 'versions';
@@ -61,26 +98,12 @@ final class DBSchema
          
          
    	      $schema->tables = array( 
-          'Installations' => array(
-             'tablename' => $installations,
-             'ORM_CLASS' => '\frdl\ApplicationComposer\Installations',
-             'exists' => false,
-             'version' => Installations::VERSION,
-             'version_should' => '0.0.1',
-             'table' => null,
-             'sql' => array(
-                            
-             ),
-          ),     	      
-   	      
-   	     
-   	      
-         'Repositories' => array(
+           'Repositories' => array(
              'tablename' => $repos,
              'ORM_CLASS' => '\frdl\ApplicationComposer\Repository',
              'exists' => false,
              'version' => Repository::VERSION,
-             'version_should' => '0.0.1',
+             'version_should' => '0.0.2',
              'table' => null,
              'sql' => array(
                 "INSERT INTO " . $this->settings['pfx'] . $repos . " 
@@ -90,7 +113,7 @@ final class DBSchema
                       `host`='packagist.org',
                       `homepage`='https://packagist.org/',
                       `description`='The main Composer repository',
-                      `fetcher_class`='\frdl\ApplicationComposer\Repos\Packagist'
+                      `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\Packagist')."'
                       
                       ",
 
@@ -101,7 +124,7 @@ final class DBSchema
                       `host`='github.com',
                       `homepage`='https://github.com/composer/composer',
                       `description`='Composer source',
-                      `fetcher_class`='\frdl\ApplicationComposer\Repos\Composer'
+                      `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\Composer')."'
                       
                       ",
 
@@ -112,7 +135,7 @@ final class DBSchema
                       `host`='www.pragmamx.org',
                       `homepage`='http://www.pragmamx.org',
                       `description`='Just another CMS',
-                      `fetcher_class`='\frdl\ApplicationComposer\Repos\PragmaMx'
+                      `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\PragmaMx')."'
                       
                       ",
 
@@ -123,7 +146,7 @@ final class DBSchema
                       `host`='phpclasses.org',
                       `homepage`='http://webfan.users.phpclasses.org',
                       `description`='The phpclasses composer repository',
-                      `fetcher_class`='\frdl\ApplicationComposer\Repos\phpclasses'
+                      `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\phpclasses')."'
                       
                       ",
 
@@ -134,16 +157,37 @@ final class DBSchema
                       `host`='jsclasses.org',
                       `homepage`='http://webfan.users.jsclasses.org',
                       `description`='The jsclasses composer repository',
-                      `fetcher_class`='\frdl\ApplicationComposer\Repos\jsclasses'
+                      `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\jsclasses')."'
                       
                       ",                         
                       
              ),
-          ),
-          
-          
-          
-         
+          ),  	      
+   	        	      
+          'Installations' => array(
+             'tablename' => $installations,
+             'ORM_CLASS' => '\frdl\ApplicationComposer\Installations',
+             'exists' => false,
+             'version' => Installations::VERSION,
+             'version_should' => '0.0.1',
+             'table' => null,
+             'sql' => array(
+                            
+             ),
+          ),     	    	      
+   	      
+          'Versions' => array(
+             'tablename' => $versions,
+             'ORM_CLASS' => '\frdl\ApplicationComposer\Version',
+             'exists' => false,
+             'version' => Version::VERSION,
+             'version_should' => '0.0.1',
+             'table' => null,
+             'sql' => array(
+                            
+             ),
+          ),      	      
+                      
          'Packages' => array(
              'tablename' => $packages,
              'ORM_CLASS' => '\frdl\ApplicationComposer\Package',
@@ -155,43 +199,102 @@ final class DBSchema
                 "INSERT INTO " . $this->settings['pfx'] . $packages . " 
                      SET 
                       `vendor`='frdl',
-                      `name`='webfan'
+                      `package`='webfan'
                       ",
 
       
                       
              ),
-          ),
-          
-          
-          
-         
-         'Versions' => array(
-             'tablename' => $versions,
-             'ORM_CLASS' => '\frdl\ApplicationComposer\Version',
+          ),         	     
+   	      
+   
+                       
+         'Edges' => array(
+             'tablename' => 'edges',
+             'ORM_CLASS' => '\frdl\ApplicationComposer\Edge',
              'exists' => false,
-             'version' => Version::VERSION,
+             'version' => Edge::VERSION,
              'version_should' => '0.0.1',
              'table' => null,
              'sql' => array(
-                            
+        
+                      
              ),
-          ),    
-                  
-      );
-  
-      foreach($schema->tables as $title => &$t){
-	  	$t['table'] =  $schema->table_prefix . $t['tablename'];
-	  }
-
+          ),         	     
+    
+                       
+         'Nodes' => array(
+             'tablename' => 'nodes',
+             'ORM_CLASS' => '\frdl\ApplicationComposer\Node',
+             'exists' => false,
+             'version' => Node::VERSION,
+             'version_should' => '0.0.1',
+             'table' => null,
+             'sql' => array(
+        
+                      
+             ),
+          ),         	                     
+      );  
+      
+     foreach($schema->tables as $title => &$t){
+	  	$t['table'] =  $this->settings['pfx'] . $t['tablename'];
+	  }    
+      
+     return $schema; 	
+   }	
+	
+	
+   public function check(&$schema = null, &$tables = null, $version = null,  $checkTables = false, $createTables = false, $updateTables = false, \frdl\DB &$db = null, $settings = null){
+     	$this->settings($settings);
+	    $this->db = (null === $db) ?   \frdl\DB::_($this->settings, true) : $db;
+		$this->version = (null === $version) ? $this->getVersion() : $version;	
+     	  
+   	   $schema = $this->schema();
+      
+      
       if(true === $checkTables || true === $createTables || true === $updateTables){
-	  	  $this->tables($_tables);
+	  	  $this->tables($tables);
 	  }
       
       if(true === $checkTables){
-	  	$this->check_tables($schema, $_tables);
+	  	$this->check_tables($schema, $tables);
 	  }
+	  
+	  $report = '';
+	  
+
+	  if(true === $createTables || true === $updateTables ){
+	    $report .= $this->create_tables($schema); 	
+	  }
+
+	  
+	  
+	  return $report;
    }	
+   
+   
+   public function create_tables($schema){
+   	 $report = '';
+  	   foreach($schema->tables as $alias => $t){
+			 if(true === $t['exists'])continue; 
+			 $report.= 'Create Table: '.$t['table'].' ';
+			 $c = $this->i($alias); 
+			 $c->install();
+			 
+			 foreach($t['sql'] as $num => $q){
+			 	try{
+					 $this->db -> query($q);
+				}catch(\Exception $e){
+					trigger_error($e->getMessage(), E_USER_WARNING);
+					$report.= $e->getMessage();
+				}
+			 	 
+			 }
+	   }	 	 
+   	  return $report;
+   }
+   
    
    public function check_tables(&$schema, $_tables){
    	   foreach($schema->tables as $title => &$t){
@@ -217,8 +320,10 @@ final class DBSchema
 		
 
 	
-	public function isFresh(){
-		return (version_compare($this->version, self::VERSION) >= 0);
+	public function isFresh($is = null, $should = null){
+		if(null===$is)$is = $this->version;
+		if(null===$should)$should = self::VERSION;		
+		return (version_compare($is, $should) >= 0);
 	}
 	
 	public function getVersion(){

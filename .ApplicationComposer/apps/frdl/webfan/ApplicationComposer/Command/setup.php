@@ -25,62 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- *  @role       example/test
- * 
- *  @cmd "frdl test -b -d"
+ *  @role       Skeleton [Template:CLI]
  * 
  */
 namespace frdl\ApplicationComposer\Command;
 
-class utest extends CMD
+class setup extends CMD
 {
 
-
-    
+   protected $_db;
     
     public function process()
     {
        $args = func_get_args();
-       $this->result->out = 'test';
-       $this->result->args = $this->argtoks;   
-       
-           if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin'] ){
+        $this->result->js = '';
+        
+          if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin'] ){
                 $this->result->out = 'set config ERROR: You are not logged in as Admin';
   	
 	     	 return;
 		  }     
        
-       
-         if(isset($this->argtoks['arguments'][0]) && intval($this->argtoks['arguments'][0]['pos']) === 1){
-         	$test = $this->argtoks['arguments'][0]['cmd'];
-         	$method = '_test_'.$test;
-         	if(is_callable(array($this,$method))){
-				return call_user_func_array(array($this,$method), func_get_args());
-			}
-         }   
-         
-        $this->result->out = 'No given testcase or unit! Usage: frdl test [unit]';
-        
-        return $this->result;
-    }
-    
-     protected function _test_tables(){
-     	
-		if(true!== $this->loadConfigFromFile(true)){
+       	if(true!== $this->loadConfigFromFile(true)){
                 $this->result->out = 'config ERROR: cannot readf config file';
         	 return;			
 		}	
 		
-		ini_set('display_errors', 1);
-		error_reporting(E_ALL);
-		
-		try{
-            
-		 $_s = new \frdl\o;
-		 $tables = array();
-		 $S = new \frdl\_db();
 		 
-		 $db =  new \frdl\DB(array(
+		 $this->_db =  new \frdl\DB(array(
 		   'driver' => $this->data['config']['db-driver'],
 		   'host' => $this->data['config']['db-host'],
 		   'dbname' => $this->data['config']['db-dbname'],
@@ -88,13 +60,44 @@ class utest extends CMD
 		   'password' => $this->data['config']['db-pwd'],
 		   'pfx' => $this->data['config']['db-pfx'],
 		   
-		), true);
+		), true);		
+		
+
+	 if('create-tables' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
+		return $this->create_tables();			
+	 }
+		
+     //  $this->result->out = 'tewsto';
+      // $this->result->args = $this->argtoks;  
+    }
+    
+    
+    protected function create_tables(){
+	 $schema = new \frdl\o;
+		 $tables = array();
+		 $S = new \frdl\_db();
 		 
+		 if(!is_string($this->data['config']['db-pfx']) || '' === trim($this->data['config']['db-pfx'])){
+		 	$str =  'Please provide a table prefix!';
+		 	 $this->result->out = $str;
+		 	  $this->result->js .= 'alert("'.$str.'");';
+		 	return;
+		 }
+		 
+		 $cfile =  $this->data['config']['FILES']['database-schema'];
+
+		
+		 if(true !== $this->_db->connected){
+		 	$str =  'No database connection!';
+		 	 $this->result->out = $str;
+		 	  $this->result->js .= 'alert("'.$str.'");';
+		 	return;
+		 }	 
 		 
 		 
 		 
 		  		 
-		 $S->check($_s, $tables,  null,  true,  false,  false,  $db, array(
+		 $report = $S->check($schema, $tables,  null,  true,  true,  true,  $this->_db, array(
 		   'driver' => $this->data['config']['db-driver'],
 		   'host' => $this->data['config']['db-host'],
 		   'dbname' => $this->data['config']['db-dbname'],
@@ -104,63 +107,25 @@ class utest extends CMD
 		   
 		)); 
 		
-			 
-		$this->result->schema = $_s;
-		$this->result->tables = $tables;  
+		file_put_contents( $cfile, $S->save_schema($schema, 128));
 		
-
-			  
-
-			 
-			 
-		 $this->result->code = 200;
-		 $this->result->out = 'Ok';
-	     
-		}catch(\Exception $e){
-           die( $e->getMessage());
-		}
-
-
-
-		 return $this->result;
-	}
+		
 	
-	   
-    protected function _test_database(){
-		if(true!== $this->loadConfigFromFile(true)){
-                $this->result->out = 'set config ERROR: cannot readf config file';
-        	 return;			
-		}
-		ini_set('display_errors', 0);
-		error_reporting(E_ALL);
-
-		try{
+			 if(true !== $this->writeToConfigFile()){
+			 	\webdof\wResponse::status(409);
+			 	 $this->result->out = 'set config: ERROR writing config file';
+			 }else{
+			 	 $this->result->out = $report;
+			 }
+	
 		
 		
-		$db =  \frdl\DB::_(array(
-		   'driver' => $this->data['config']['db-driver'],
-		   'host' => $this->data['config']['db-host'],
-		   'dbname' => $this->data['config']['db-dbname'],
-		   'user' => $this->data['config']['db-user'],
-		   'password' => $this->data['config']['db-pwd'],
-		   'pfx' => $this->data['config']['db-pfx'],
-		   
-		), true);			
-		}catch(\Exception $e){
-			$this->result->out = $e->getMessage();
-			return;
-		}
+		
+		
+		return $this->result;
 
-       if($db->connected){
-		 $this->result->code = 200;
-		 $this->result->out = 'Ok';	   	
-	   }else{
-		 $this->result->code = 409;
-		 $this->result->out = 'Error';	 	   	
-	   }
-
-		 return  $this->result;
 	}
+    
     
     public function required()
     {

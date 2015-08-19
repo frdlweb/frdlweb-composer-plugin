@@ -92,11 +92,11 @@ class Package extends \frdl\Crud {
 				return array(
 				  'version' => self::VERSION,
 				  'schema' => "(
-				      `vendor` varchar(256) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' ,
-				      `package` varchar(256) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-				      `time_last_fetch_info` INT(11) NOT NULL DEFAULT '0',
-				      PRIMARY KEY (`vendor`, `package`)
-				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
+                          `vendor` varchar(128) NOT NULL,
+                          `package` varchar(128) NOT NULL,
+                          `time_last_fetch_info` INT(11) NOT NULL DEFAULT '0',
+                           PRIMARY KEY (`vendor`,`package`)
+				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ",
 				);
 			}
 			

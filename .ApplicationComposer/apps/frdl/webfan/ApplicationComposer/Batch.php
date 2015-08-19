@@ -28,12 +28,12 @@
  */
 namespace frdl\ApplicationComposer;
  
-class Installations  extends \frdl\Crud {
+class Batch  extends \frdl\Crud {
 		
 		   const VERSION = '0.0.1';
 		
 			# Your Table name 
-			protected $table = 'installations';
+			protected $table = 'batch';
 			
 			# Primary Key of the Table
 			protected $pk	 = 'id';
@@ -45,30 +45,28 @@ class Installations  extends \frdl\Crud {
 				return array(
 				  'version' => self::VERSION,
 				  'schema' => "(
-				      `id` BIGINT(255) NOT NULL AUTO_INCREMENT,
-				      `complete` TINYINT(1) NOT NULL DEFAULT '0',
-				      `id_version_from` BIGINT(255) NOT NULL,
-				      `id_version_to` BIGINT(255) NOT NULL DEFAULT '0',
-				      `time` INT(11) NOT NULL DEFAULT '0',
-				      `dir_rollback` varchar(1024) COLLATE utf8_unicode_ci  DEFAULT NULL,
-				      `logfile` varchar(1024) COLLATE utf8_unicode_ci   DEFAULT NULL,
-				      `note` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-				       PRIMARY KEY (`id`)
-				     )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
+  `pid` int(11) NOT NULL,
+  `time` int(11) NOT NULL DEFAULT '0',
+  `time_complete` int(11) NOT NULL DEFAULT '0',
+  `time_start` int(11) NOT NULL DEFAULT '0',
+  `time_expires` int(11) NOT NULL DEFAULT '0',
+  `uuid` varchar(64) NOT NULL,
+  `group_uuid` varchar(64) NOT NULL,
+  `next_uuid` varchar(64) NOT NULL,
+  `file` varchar(1024) NOT NULL,
+  `file_result_callback` varchar(1024) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `group_uuid` (`group_uuid`),
+  KEY `next_uuid` (`next_uuid`),
+  KEY `time_start` (`time_start`)
+				     ) ENGINE=InnoDB DEFAULT CHARSET=latin1; ",
 				);
 			}
 			
 
+			
 	        public function field($label = null){
 				$l = array(
-				 'id' => 'Installation #ID',
-				 'complete' =>  'Complete install?',
-				 'id_version_from' => 'Previous installed Version',
-				 'id_version_to' => 'New Version',
-				 'time' => 'Installtime',
-				 'dir_rollback' => 'Directory for rollback if present',
-				 'logfile' => 'Logifle if present',
-				 'note' => 'Description text', 
 
 				);
 				if(null === $label){
@@ -78,10 +76,6 @@ class Installations  extends \frdl\Crud {
 				return (isset($l[$label])) ? $l[$label] : null;
 			}
 			
-			/*
-	        public function label($field  = null){
-				$f = array_flip($this->field(null));
-				return (isset($f[$field])) ? $f[$field] : null;
-			}
-			*/
-}
+	
+			
+	}

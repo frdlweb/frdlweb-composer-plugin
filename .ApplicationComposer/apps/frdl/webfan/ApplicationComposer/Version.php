@@ -45,35 +45,30 @@ class Version  extends \frdl\Crud {
 				return array(
 				  'version' => self::VERSION,
 				  'schema' => "(
-				      `id` BIGINT(255) NOT NULL,
+				      `id` BIGINT(255) NOT NULL AUTO_INCREMENT,
 				      `type` varchar(64) NOT NULL DEFAULT 'library',
 				      `supported` TINYINT(1) NOT NULL DEFAULT '0',
 				      `ad` TINYINT(1) NOT NULL DEFAULT '0',
 				      `installed` TINYINT(1) NOT NULL DEFAULT '0',
 				      `composer_json` TINYINT(1) NOT NULL DEFAULT '0',
-				      `repository` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' ,
-				      `version` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `repository` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' ,
+				      `version` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `versionNormalized`  varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-				      `vendor` varchar(256) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' ,
-				      `package` varchar(256) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `vendor` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' ,
+				      `package` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `description` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `dir` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `file_autoload` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `time` INT(11) NOT NULL DEFAULT '0',
 				      `time_last_fetch_info` INT(11) NOT NULL DEFAULT '0',
 				      `time_last_download_zip` INT(11) NOT NULL DEFAULT '0',
-				      UNIQUE KEY `PLUGIN_ID_KEY` (`repository`,`version`,`vendor`,`package`),
+				      UNIQUE KEY `package_version` (`repository`,`version`,`vendor`,`package`),
 				      PRIMARY KEY (`id`)
-				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
+				     )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
 				);
 			}
 			
-	        public function install(){
-	        	$s = $this->shema();
-				$this->db->query(" 
-				     CREATE TABLE IF NOT EXISTS ".$this->table." ".$s['schema']." ;
-				");
-			}
+
 			
 	        public function field($label = null){
 				$l = array(
@@ -102,9 +97,6 @@ class Version  extends \frdl\Crud {
 				return (isset($l[$label])) ? $l[$label] : null;
 			}
 			
-	        public function label($field  = null){
-				$f = array_flip($this->field(null));
-				return (isset($f[$field])) ? $f[$field] : null;
-			}
+	
 			
 	}

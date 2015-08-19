@@ -26,54 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\ApplicationComposer;
- 
-class Repository  Extends \frdl\Crud {
-		
-		   const VERSION = '0.0.2';
-		
-			# Your Table name 
-			protected $table = 'repositories';
-			
-			# Primary Key of the Table
-			protected $pk	 = 'name';
-			
+namespace frdl\ApplicationComposer\Repos;
+use frdl\ApplicationComposer;
 
+class webfan extends PackageFetcher
+{
 	
-				
-			public function shema(\mixed $args = null){
-				return array(
-				  'version' => self::VERSION,
-				  'schema' => "(
-				      `_use` tinyint(1) NOT NULL DEFAULT '1',
-				      `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-				      `host` varchar(256) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-				      `homepage` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-				      `description` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-				      `fetcher_class` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '\\frdl\\ApplicationComposer\\Repos\\Packagist',
-				      PRIMARY KEY (`name`)
-				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci  ",
-				);
-			}
-			
+   public function info(){
+   	
+   }
+   
+   public function all(){
+   	
+   }
+   
+   public function search($query){
+   	
+   }
+   
+   public function package($vendor, $packagename){
+   	
+   }  
 	
-			
-	        public function field($label = null){
-				$l = array(
-				 '_use' => 'Use this repository',
-				 'name' => 'Name',
-				 'host' => 'Host',
-				 'homepage' => 'Homepage',
-				 'description' => 'Description', 
-				 'fetcher_class' => 'Fetcher Class', 
-				);
-				if(null === $label){
-					return $l;
-				}
-				
-				return (isset($l[$label])) ? $l[$label] : null;
-			}
-			
-
-			
 }
