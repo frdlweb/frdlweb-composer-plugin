@@ -18,51 +18,51 @@
 namespace webdof\Text\diff;
 /**
  * Example: 
-$text_1 = 'Dies ist ein Test uber Hackfleisch.<br />Dies ist ein Text uber Hackfleisch.';
-$text_2 = "Dies ist Text uber Kackfleisch.<br />Dies ist Test uber Kackfleisch.";
-
-$newversion = $text_2;
-
-$comp = new \webdof\Text\diff\Compare();
-$diff = $comp->calcdiffer($text_1, $text_2);
-echo $text_1.'<br />';
-echo $text_2.'<br />';
-echo '<pre>'.print_r($diff, true).'</pre>';
-
-$back = '';
-foreach( $diff as $step => $d)
- {
-   if($d[0] === '=' || $d[0] === '-')$back.= $d[1];
- }
-
-echo  'Patching:<br />';
-echo  $back.'<br />';
-
-
-echo  '<br />';
-echo  'Patching R&uuml;w&auml;rts nur mit &Auml;nderungen und strlen(equals):<br />';
-
-$diff = $comp->minimize( $diff );
-$oldversion = $comp->patch( $text_2, $diff );
-
-echo '<pre>'.print_r($diff, true).'</pre>';
-echo  $oldversion.'<br />';
-
-echo '<br /><br />Test 2<br />';
-$text_1 = 'An einem Sommertag fuhr ich mit dem Fahrrad über die Straße nach Hause.';
-$text_2 = 'An einem schönen Sommertag ging ich mit dem Auto über die Straße spazieren.';
-
-echo  $text_1.'<br />';
-echo  $text_2.'<br />';
-
-$comp = new \webdof\Text\diff\Compare();
-$diff = $comp->calcdiffer($text_1, $text_2);
-$diff = $comp->minimize( $diff );
-$oldversion =  $comp->patch( $text_2, $diff );
-
-echo  $oldversion.'<br />';
-* 
-*/
+ * $text_1 = 'Dies ist ein Test uber Hackfleisch.<br />Dies ist ein Text uber Hackfleisch.';
+ * $text_2 = "Dies ist Text uber Kackfleisch.<br />Dies ist Test uber Kackfleisch.";
+ * 
+ * $newversion = $text_2;
+ * 
+ * $comp = new \webdof\Text\diff\Compare();
+ * $diff = $comp->calcdiffer($text_1, $text_2);
+ * echo $text_1.'<br />';
+ * echo $text_2.'<br />';
+ * echo '<pre>'.print_r($diff, true).'</pre>';
+ * 
+ * $back = '';
+ * foreach( $diff as $step => $d)
+ *  {
+ *   if($d[0] === '=' || $d[0] === '-')$back.= $d[1];
+ *  }
+ * 
+ * echo  'Patching:<br />';
+ * echo  $back.'<br />';
+ * 
+ * 
+ * echo  '<br />';
+ * echo  'Patching R&uuml;w&auml;rts nur mit &Auml;nderungen und strlen(equals):<br />';
+ * 
+ * $diff = $comp->minimize( $diff );
+ * $oldversion = $comp->patch( $text_2, $diff );
+ * 
+ * echo '<pre>'.print_r($diff, true).'</pre>';
+ * echo  $oldversion.'<br />';
+ * 
+ * echo '<br /><br />Test 2<br />';
+ * $text_1 = 'An einem Sommertag fuhr ich mit dem Fahrrad über die Straße nach Hause.';
+ * $text_2 = 'An einem schönen Sommertag ging ich mit dem Auto über die Straße spazieren.';
+ * 
+ * echo  $text_1.'<br />';
+ * echo  $text_2.'<br />';
+ * 
+ * $comp = new \webdof\Text\diff\Compare();
+ * $diff = $comp->calcdiffer($text_1, $text_2);
+ * $diff = $comp->minimize( $diff );
+ * $oldversion =  $comp->patch( $text_2, $diff );
+ * 
+ * echo  $oldversion.'<br />';
+ * 
+ */
  
 class Compare
 {
