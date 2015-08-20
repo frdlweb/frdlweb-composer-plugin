@@ -26,37 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\ApplicationComposer\Command;
+namespace frdl\ApplicationComposer;
 
-class install extends CMD
+class AjaxResult extends \frdl\o 
 {
-
-
-    
-    public function process()
-    {
-       $args = func_get_args();
-       
-           if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin'] ){
-                $this->result->out = 'set config ERROR: You are not logged in as Admin';
-  	
-	     	 return;
-		  }     
-       
-       		if(true!== $this->loadConfigFromFile(true)){
-                $this->result->out = 'config ERROR: cannot readf config file';
-        	 return;			
-		}	
-		
-		
-		
-     //  $this->result->out = 'tewsto';
-      // $this->result->args = $this->argtoks;  
-    }
-    
-    
-    public function required()
-    {
-       $args = func_get_args();
-    }
+	
+	var $type = 'print';
+	var $out = '';
+	var $statusText = '';
+	var $callback = null;
+	var $html = '';
+	var $js;
+	
+	
 }

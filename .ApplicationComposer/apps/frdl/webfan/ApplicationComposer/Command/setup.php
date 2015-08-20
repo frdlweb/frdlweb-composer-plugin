@@ -51,7 +51,7 @@ class setup extends CMD
         	 return;			
 		}	
 		
-		 
+	try{
 		 $this->_db =  new \frdl\DB(array(
 		   'driver' => $this->data['config']['db-driver'],
 		   'host' => $this->data['config']['db-host'],
@@ -66,6 +66,12 @@ class setup extends CMD
 	 if('create-tables' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
 		return $this->create_tables();			
 	 }
+	
+		     
+	}catch(\Exception $e){
+            $this->result->out = $e->getMessage();
+            return $this->result;
+	}
 		
      //  $this->result->out = 'tewsto';
       // $this->result->args = $this->argtoks;  
@@ -73,9 +79,7 @@ class setup extends CMD
     
     
     protected function create_tables(){
-	 $schema = new \frdl\o;
-		 $tables = array();
-		 $S = new \frdl\_db();
+	 
 		 
 		 if(!is_string($this->data['config']['db-pfx']) || '' === trim($this->data['config']['db-pfx'])){
 		 	$str =  'Please provide a table prefix!';
@@ -84,7 +88,7 @@ class setup extends CMD
 		 	return;
 		 }
 		 
-		 $cfile =  $this->data['config']['FILES']['database-schema'];
+		
 
 		
 		 if(true !== $this->_db->connected){
@@ -94,9 +98,20 @@ class setup extends CMD
 		 	return;
 		 }	 
 		 
-		 
-		 
-		  		 
+		 $schema = new \frdl\o;
+		 $tables = array();
+	     $cfile =  $this->data['config']['FILES']['database-schema'];
+		 $S = new \frdl\_db();
+	
+	   
+		 if(file_exists($cfile)){
+		 	$oldSchema = $S->load_schema(file_get_contents($cfile)); 
+		 	//$oldSchema = $S->load_schema($this->read($cfile, 'rb',  null)); 
+		 }else{
+		 	 $oldSchema = $S->schema();
+		 }
+		 if(!is_object($oldSchema))$oldSchema = $S->schema();
+		  	
 		 $report = $S->check($schema, $tables,  null,  true,  true,  true,  $this->_db, array(
 		   'driver' => $this->data['config']['db-driver'],
 		   'host' => $this->data['config']['db-host'],
@@ -105,7 +120,9 @@ class setup extends CMD
 		   'password' => $this->data['config']['db-pwd'],
 		   'pfx' => $this->data['config']['db-pfx'],
 		   
-		)); 
+		), $oldSchema); 
+	
+		
 		
 		file_put_contents( $cfile, $S->save_schema($schema, 128));
 		

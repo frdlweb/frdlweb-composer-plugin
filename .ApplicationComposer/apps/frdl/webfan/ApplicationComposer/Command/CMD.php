@@ -43,6 +43,34 @@ abstract class CMD
 	    $this->aSess = & $_SESSION['frdl\xGlobal\webfan'] ;
    }
    
+   
+   
+   
+   protected function _read(&$handle, $blocksize) {
+    $ret = '';
+    while (!feof($handle)) {
+  	   @set_time_limit(ini_get('max_execution_time'));
+       $ret .= fread($handle, $blocksize);
+    }
+    return $ret;
+   }
+
+  public static function blocksize()
+     {
+      return (1024*1024);
+    } 
+
+   public static function read($file, $modus = 'rb', $blocksize = null)
+    {
+      if(!is_readable($file))return false;
+      $handle = fopen($file, $modus);
+      $buffer = $this->_read($handle, ((!is_numeric($blocksize) || 0 !== $blocksize % 8) ? $this->blocksize() : intval($blocksize)));
+      fclose($handle);
+     return $buffer;
+   }  
+   
+   
+   
     protected function writeToConfigFile(){
        if(!isset($this->aSess['ADMINDATA']['CONFIGFILE']) || !file_exists($this->aSess['ADMINDATA']['CONFIGFILE'])){
               return false;
@@ -149,7 +177,7 @@ abstract class CMD
    final public function invoke(&$Console = null, $argtoks){
    	   $this->Console = $Console;
    	   $this->argtoks = $argtoks;
-   	   $this->result =   new \frdl\o; 
+   	   $this->result =   new \frdl\ApplicationComposer\AjaxResult; 
    	   $this->result->type = 'print';
    	   $this->result->out = '';
    	   if(null !== $this->getRequestOption('callback'))$this->result->callback = $this->getRequestOption('callback');
@@ -169,7 +197,7 @@ abstract class CMD
    final public function OutData(){
     	$p = func_get_args();
     	
-    	if(!isset($this->result))$this->result =   new \frdl\o; 
+    	if(!isset($this->result))$this->result =   new \frdl\ApplicationComposer\AjaxResult; 
      	if(!isset( $this->result->type)) $this->result->type =  'print';
      	
      		

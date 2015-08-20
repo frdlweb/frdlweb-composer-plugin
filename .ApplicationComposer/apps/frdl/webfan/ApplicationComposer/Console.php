@@ -94,7 +94,7 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
 		}
 	}
    
-    $r = new \stdclass;
+    $r = new AjaxResult;
     $r->type = 'print';
     $r->out = $av;
     return $r;

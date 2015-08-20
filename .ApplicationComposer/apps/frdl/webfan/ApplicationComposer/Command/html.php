@@ -104,7 +104,52 @@ class html extends CMD
 		   
 	  return $html;
 	}
-		 
+	
+	protected function item_suggestions(){
+	 $html = '';
+	
+	 $html.= '<div id="window_main_frdl-webfan-pm-frdl-suggestions" class="wd-tab">'   ;
+	 $html.= '<h2 class="webfan-blue">Sugested Packages</h2>';	
+
+ 
+     $html.= '</div>';
+		   
+	  return $html;		
+	}
+	protected function item_allpackages(){
+	 $html = '';
+	
+	 $html.= '<div id="window_main_frdl-webfan-pm-all" class="wd-tab">'   ;
+	 $html.= '<h2 class="webfan-blue">All known packages</h2>';	
+
+ 
+     $html.= '</div>';
+		   
+	  return $html;		
+	}	
+     protected function item_packages(){
+         $html .=  $this->item_suggestions();
+	     $html .=  $this->item_allpackages();  	     
+  	   	 $this->result->js .= "      
+  var mod = $.WebfanDesktop.Registry.Programs['frdl-webfan'];
+  mod.Tabs.delTabs();	  
+ 
+    mod.Tabs.addTab('#window_main_frdl-webfan-pm-all', 'All', 'window_main_frdl-webfan-pm-all', true);  	   
+    
+     mod.Tabs.addTab('#window_main_frdl-webfan-pm-installs', 'Installed Packages', 'window_main_frdl-webfan-pm-installs', true);     
+    	    
+    mod.Tabs.addTab('#window_main_frdl-webfan-pm-frdl-suggestions', 'Suggestions', 'window_main_frdl-webfan-pm-frdl-suggestions', true);
+    	   	   	    
+    mod.Tabs.addTab('#window_main_frdl-webfan-pm-projects', 'Projects', 'window_main_frdl-webfan-pm-projects', true);	
+
+    mod.Tabs.render(); 
+    mod.Tabs.openTab('window_main_frdl-webfan-pm-frdl-suggestions');
+
+
+     ";
+      return $html;
+	}
+			 
 
      protected function item_accounts(){
        $html .=  $this->item_login();
@@ -314,6 +359,8 @@ class html extends CMD
 		  }
 	
 		try{
+		
+			
 				   $Console = new \frdl\ApplicationComposer\Console;
 				   $Console->applyApp($this);
  			       $Console->exe('utest database');
@@ -322,7 +369,9 @@ class html extends CMD
 		}catch(\Exception $e){
 	          $connected = false;
 		}
-						  	
+
+
+		  	
 	 $html = '';
 	
 	 $html.= '<div id="window_main_frdl-webfan-db" class="wd-tab">'   ;
@@ -403,7 +452,19 @@ class html extends CMD
 	  	
      		try{
 
-		 $S = new \frdl\_db();
+	     	 $S = new \frdl\_db();	
+	     $cfile =  $this->data['config']['FILES']['database-schema'];
+	
+	   
+		 if(file_exists($cfile)){
+		 	$oldSchema = $S->load_schema(file_get_contents($cfile)); 
+		 	//$oldSchema = $S->load_schema($this->read($cfile, 'rb',  null)); 
+		 }else{
+		 	 $oldSchema = $S->schema();
+		 }
+		 if(!is_object($oldSchema))$oldSchema = $S->schema();
+		 	 
+		
 		
 		 $S->check($schema, $tables,  null,  true,  false,  false,   \frdl\DB::_(array(
 		   'driver' => $this->data['config']['db-driver'],
@@ -421,14 +482,14 @@ class html extends CMD
 		   'password' => $this->data['config']['db-pwd'],
 		   'pfx' => $this->data['config']['db-pfx'],
 		   
-		));
+		), $oldSchema);
 		
 		}catch(\Exception $e){
 	          $tablesOK = false;
 	           $html.= '<span class="webfan-red">Error checking tables!</span>';
 		}
        		
-		$html.= '<p>Version: '.$schema->version.'/'.$schema->version_should.'</p>';
+		$html.= '<p>Version: '.$oldSchema->version.'/'.$schema->version_should.'</p>';
         $newTables = false;
         $T = array();
        
@@ -437,11 +498,11 @@ class html extends CMD
          $_html.='<div class="data-box" style="height:260px;overflow:auto;">';
          foreach($schema->tables as $alias => $t){
 			$_html.='<div>';
-	         $_html.= '<p><span style="color:'.((true === $t['exists'] && $S->isFresh($t['version'], $t['version_should']) ) ? 'green' : 'red').';">'.$alias.' ('.$t['version'].'/'.$t['version_should'].')</span></p>';					 
+	         $_html.= '<p><span style="color:'.((true === $oldSchema->tables[$alias]['exists'] && $S->isFresh( $oldSchema->tables[$alias]['version'], $t['version_should']) ) ? 'green' : 'red').';">'.$alias.' ('. $oldSchema->tables[$alias]['version'].'/'.$t['version_should'].')</span></p>';					 
 	         $_html.= '<p>'.$t['table'].'</p>';
 		    $_html.='</div>';	
 		    
-		   if(true !== $t['exists'])  $newTables = true;
+		   if(true !== $t['exists'] || !$S->isFresh( $oldSchema->tables[$alias]['version'], $t['version_should']))  $newTables = true;
 		   $T[$t['table']] = &$t;
 		}
      

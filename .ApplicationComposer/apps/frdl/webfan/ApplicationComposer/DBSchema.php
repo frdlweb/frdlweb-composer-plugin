@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 final class DBSchema 
 {
-   const VERSION = '0.0.11';	
+   const VERSION = '0.0.16';	
 
    protected $version;	
    protected $db;	
@@ -45,12 +45,12 @@ final class DBSchema
 	
     public function save_schema($l, $linemax = 128){
        $bs = new \frdl\bs;	
- 	   return chunk_split(base64_encode(gzcompress(gzcompress($bs->serialize($l), 9), 9)),$linemax, "\r\n");
+ 	  return $bs->serialize($l);
     } 
 
     public function load_schema($l){
        $bs = new \frdl\bs;	
- 	   return $bs->unserialize(gzuncompress(gzuncompress(base64_decode(str_replace("\r\n", "", $l)))));
+ 	   return $bs->unserialize($l);
     } 
  	
 	public function settings($settings = null){
@@ -103,7 +103,7 @@ final class DBSchema
              'ORM_CLASS' => '\frdl\ApplicationComposer\Repository',
              'exists' => false,
              'version' => Repository::VERSION,
-             'version_should' => '0.0.2',
+             'version_should' => '0.0.3',
              'table' => null,
              'sql' => array(
                 "INSERT INTO " . $this->settings['pfx'] . $repos . " 
@@ -159,8 +159,18 @@ final class DBSchema
                       `description`='The jsclasses composer repository',
                       `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\jsclasses')."'
                       
-                      ",                         
+                      ",     
+                                          
+                   "INSERT INTO " . $this->settings['pfx'] . $repos . " 
+                     SET 
+                      _use=1,
+                      `name`='Webfan',
+                      `host`='api.webfan.de',
+                      `homepage`='http://www.webfan.de',
+                      `description`='Webfan Software Server',
+                      `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\webfan')."'
                       
+                      ",                     
              ),
           ),  	      
    	        	      
@@ -245,7 +255,9 @@ final class DBSchema
    }	
 	
 	
-   public function check(&$schema = null, &$tables = null, $version = null,  $checkTables = false, $createTables = false, $updateTables = false, \frdl\DB &$db = null, $settings = null){
+   public function check(&$schema = null, &$tables = null, $version = null,
+                           $checkTables = false, $createTables = false, $updateTables = false,
+                            \frdl\DB &$db = null, $settings = null, $oldSchema = null){
      	$this->settings($settings);
 	    $this->db = (null === $db) ?   \frdl\DB::_($this->settings, true) : $db;
 		$this->version = (null === $version) ? $this->getVersion() : $version;	
@@ -258,14 +270,14 @@ final class DBSchema
 	  }
       
       if(true === $checkTables){
-	  	$this->check_tables($schema, $tables);
+	  	$this->check_tables($schema, $tables, $oldSchema);
 	  }
 	  
 	  $report = '';
 	  
 
 	  if(true === $createTables || true === $updateTables ){
-	    $report .= $this->create_tables($schema); 	
+	    $report .= $this->create_tables($schema, $oldSchema); 	
 	  }
 
 	  
@@ -274,10 +286,22 @@ final class DBSchema
    }	
    
    
-   public function create_tables($schema){
+   public function create_tables($schema, $oldSchema = null){
    	 $report = '';
-  	   foreach($schema->tables as $alias => $t){
-			 if(true === $t['exists'])continue; 
+		   foreach($schema->tables as $alias => $t){
+  	   	 if(true === $t['exists']  && isset($oldSchema->tables[$alias])
+  	   	  && $this->isFresh($oldSchema->tables[$alias]['version'], $t['version_should']) )continue; 
+  	   	  
+  	   	  if(!$this->isFresh($oldSchema->version, '0.0.16') ){
+		  	 $report.= 'DROP Table: '.$t['table'].' ';
+		  	try{
+					 $this->db -> query("DROP TABLE `".$t['table']."`");   
+				}catch(\Exception $e){
+					trigger_error($e->getMessage(), E_USER_WARNING);
+					$report.= $e->getMessage();
+				}
+		  }
+		  
 			 $report.= 'Create Table: '.$t['table'].' ';
 			 $c = $this->i($alias); 
 			 $c->install();
@@ -291,14 +315,14 @@ final class DBSchema
 				}
 			 	 
 			 }
-	   }	 	 
+	   }	  
    	  return $report;
    }
    
    
-   public function check_tables(&$schema, $_tables){
+   public function check_tables(&$schema, $_tables, $oldSchema){
    	   foreach($schema->tables as $title => &$t){
-	  	 $t['exists'] = (isset($_tables[$t['table']]));
+	  	 $t['exists'] = (isset($_tables[$t['table']]) && $this->isFresh($oldSchema->tables[$title]['version'], $schema->tables[$title]['version']));
 	  }
    }
    
