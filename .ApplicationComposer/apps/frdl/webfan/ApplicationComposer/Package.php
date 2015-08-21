@@ -81,7 +81,9 @@ class Package extends \frdl\Crud {
 		if(!empty($id)) {
 			$sql = "SELECT * FROM " . $this->table ." WHERE " . $this->pk . "= :" . $this->pk . " AND " . $this->pk2 . "= :" . $this->pk2 . " LIMIT 1";	
 			$this->variables = $this->db->row($sql,array($this->pk=>$vendor, $this->pk2=>$package));
+			return true;
 		}
+		return false;
 	}	
 		
 		

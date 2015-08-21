@@ -672,7 +672,8 @@ class webfan extends fexe
 			 			         ? $this->data['config']['FILES'] : array(), array(
 			 			            'composer' =>  $this->data['config']['DIR_PACKAGE'] . 'composer.json',
 			 			            'config' =>    $this->data['CONFIGFILE'],
-			 			            'database-schema' =>  $this->data['config']['DIRS']['config'] . 'database-schema.dat',     
+			 			            'database-schema' =>  $this->data['config']['DIRS']['config'] . 'database-schema.dat', 
+			 			            'boot.batch' =>  $this->data['config']['DIRS']['batch'] . '.boot.bat',     
 			 			  ));					 					
 			 					 			
 			 			$php = "<?php
@@ -711,7 +712,7 @@ class webfan extends fexe
 								
 					 	   	$this->data['data_out']->js.= '
 					 	   	alert(\'Please set up the configuration next...\');
-			 		    	window.location.href = "'.$this->data['config']['URL'].'";
+			 		    	window.location.href = "'.$this->data['config']['URL'].'#app=frdl-webfan&modul=formConfig";
 			 		    	';															 		
 		             
 		              \webdof\wResponse::status(201);

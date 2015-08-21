@@ -88,6 +88,15 @@ class setup extends CMD
 		 	return;
 		 }
 		 
+		  $settings=array(
+		   'driver' => $this->data['config']['db-driver'],
+		   'host' => $this->data['config']['db-host'],
+		   'dbname' => $this->data['config']['db-dbname'],
+		   'user' => $this->data['config']['db-user'],
+		   'password' => $this->data['config']['db-pwd'],
+		   'pfx' => $this->data['config']['db-pfx'],
+		   
+		);	 
 		
 
 		
@@ -108,25 +117,17 @@ class setup extends CMD
 		 	$oldSchema = $S->load_schema(file_get_contents($cfile)); 
 		 	//$oldSchema = $S->load_schema($this->read($cfile, 'rb',  null)); 
 		 }else{
-		 	 $oldSchema = $S->schema();
+		 	 $oldSchema = $S->schema($settings,  $this->data['config']['FILES']['composer']);
 		 }
-		 if(!is_object($oldSchema))$oldSchema = $S->schema();
+		 if(!is_object($oldSchema))$oldSchema = $S->schema($settings,  $this->data['config']['FILES']['composer']);
 		  	
-		 $report = $S->check($schema, $tables,  null,  true,  true,  true,  $this->_db, array(
-		   'driver' => $this->data['config']['db-driver'],
-		   'host' => $this->data['config']['db-host'],
-		   'dbname' => $this->data['config']['db-dbname'],
-		   'user' => $this->data['config']['db-user'],
-		   'password' => $this->data['config']['db-pwd'],
-		   'pfx' => $this->data['config']['db-pfx'],
-		   
-		), $oldSchema); 
+		 $report = $S->check($schema, $tables,  null,  true,  true,  true,  $this->_db, $settings, $oldSchema,  $this->data['config']['FILES']['composer']); 
 	
-		
-		
+		$S->tables($tables);
+		$S->check_tables($schema, $tables, $schema);
 		file_put_contents( $cfile, $S->save_schema($schema, 128));
 		
-		
+		$this->data['config']['db-schema-version'] = $schema->version;
 	
 			 if(true !== $this->writeToConfigFile()){
 			 	\webdof\wResponse::status(409);

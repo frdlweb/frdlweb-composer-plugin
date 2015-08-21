@@ -26,42 +26,51 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\ApplicationComposer\Repos;
+namespace frdl\ApplicationComposer;
+ 
+class OID  extends \frdl\Crud {
+		
+		   const VERSION = '0.0.3';
+		   const ALIAS = 'OID';
+		   
+			# Your Table name 
+			protected $table = 'oids';
+			
+			# Primary Key of the Table
+			protected $pk	 = 'id';
+			
 
-class Composer extends Package
-{
-   /**
-   *   @param   $data [\frdl\o]  OPTIONAL
-   *   @returns \frdl\o 
-      e.g.2:  {
-            "type": "package",
-            "package": {
-                "name": "composer/composer",
-                "version": "1.0.0-alpha10",
-                "source": {
-                    "url": "https://github.com/composer/composer/archive/1.0.0-alpha10.zip",
-                    "type": "zip"
-                }
-            }
-        }
-  
-   */
-   
-   protected function _Data(){
-   	  $d = new \frdl\o;
-   	  $d->type = 'package';
-   	  $d->package = new \frdl\o;
-   	  $d->package->name = "composer/composer";
-   	  $d->package->version = "1.0.0-alpha10";
-   	  $d->package->source = new \frdl\o;
-   	  $d->package->source->url = "https://github.com/composer/composer/archive/1.0.0-alpha10.zip";
-   	  $d->package->source->type = "zip";
-  }
-   
-   protected function _data(\frdl\o $data = null){
-   	  $this->_data = (null !== $data) ? $data : $this->_Data();
-   	  return  $this->_data;   	  
-   }
-   
+	
+				
+			public function shema(){
+				return array(
+				  'version' => self::VERSION,
+				  'schema' => "(
+				      `id` BIGINT(255) NOT NULL AUTO_INCREMENT,
+				      `weid` BLOB,
+				      `oid`  BLOB,
+				      `oid_ra`  BLOB,
+				       UNIQUE KEY `weid` (`weid` (100)),
+				        UNIQUE KEY `oid` (`oid` (100)),
+				      PRIMARY KEY (`id`)
+				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
+				);
+			}
+			
 
-}
+			
+	        public function field($label = null){
+				$l = array(
+
+				 
+				);
+				if(null === $label){
+					return $l;
+				}
+				
+				return (isset($l[$label])) ? $l[$label] : null;
+			}
+			
+	
+			
+	}

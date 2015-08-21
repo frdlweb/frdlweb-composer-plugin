@@ -26,74 +26,67 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\ApplicationComposer\Repos;
-use frdl\ApplicationComposer;
-
-abstract class Package extends PackageFetcher
-{
-	
-   protected $_data = null;
-
-   function __construct(){
-   	  $this->_data = &$this->data();
-   }
-
-   public function __call($name, $args){
-        if('data' === $name){
-			if(0 === count($args)){
-				  return $this->_data();
-		    }elseif(1 === count($args)){
-				  return $this->_data($args[0]);
-		    }
-		}	
+namespace frdl\ApplicationComposer;
+ 
+class Project  extends \frdl\Crud {
 		
+		   const VERSION = '0.0.1';
+		   const ALIAS = 'Projects';
 		
-   }
-   
-   /**
-   *   @param   $data [\frdl\o]  OPTIONAL
-   *   @returns \frdl\o 
-     e.g 1: {
-            "type": "package",
-            "package": {
-                "name": "TerraProject/pragmamx",
-                "version": "2.2.2",
-                "source": {
-                    "url": "http://download.pragmamx.org/pmx/pragmaMx_2.2_2015-04-01--18-33_full.zip",
-                    "type": "zip"
-                }
-            }
-        },
-      #  
-      e.g.2:  {
-            "type": "package",
-            "package": {
-                "name": "composer/composer",
-                "version": "1.0.0-alpha10",
-                "source": {
-                    "url": "https://github.com/composer/composer/archive/1.0.0-alpha10.zip",
-                    "type": "zip"
-                }
-            }
-        }
-  
-   */
-   abstract protected function _data(\frdl\o $data = null);
- 	
-   public function info(){
-   	
-   }
-   
-   public function all(){
-   	
-   }
-   
-   public function search($query){
-   	
-   }
-   
-   public function package($vendor, $packagename){
-   	
-   }  
+			# Your Table name 
+			protected $table = 'projects';
+			
+			# Primary Key of the Table
+			protected $pk	 = 'node';
+			
+
+	public function create() { 
+		   if(!isset($this->node_parent))$this->node_parent = 0;
+		   if(!isset($this->node_root))$this->node_root = 0; 
+	      $N = new Node();
+	      $N->id_parent = $this->node_parent;
+	      $N->id_root = $this->node_root;
+	      $N->table_alias = self::ALIAS;
+	      $N->create();
+	      $this->variables[$this->pk] = $N->db()->lastInsertId();
+		return parent::create();
+	}
+
+
+	  
+				      	
 	
-}
+			public function shema(){
+				return array(
+				  'version' => self::VERSION,
+				  'schema' => "(
+                            `node`  BIGINT(255) NOT NULL,
+                            `node_parent`  BIGINT(255) NOT NULL DEFAULT '0',
+				            `node_root`  BIGINT(255) NOT NULL DEFAULT '0',
+				            `public` tinyint(1) NOT NULL DEFAULT '1',
+				            `title` VARCHAR(128) NOT NULL DEFAULT 'UNTITLED',
+				            
+				            `description` VARCHAR(1024) NOT NULL,
+				            
+                        PRIMARY KEY (`node`)
+				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ",
+				);
+			}
+			
+
+			
+	        public function field($label = null){
+				$l = array(
+			
+				
+				);
+				if(null === $label){
+					return $l;
+				}
+				
+				return (isset($l[$label])) ? $l[$label] : null;
+			}
+			
+	
+			
+	}

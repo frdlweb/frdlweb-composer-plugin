@@ -31,12 +31,13 @@ namespace frdl\ApplicationComposer;
 class Batch  extends \frdl\Crud {
 		
 		   const VERSION = '0.0.1';
-		
+		   const ALIAS = 'Batch';
+		   
 			# Your Table name 
-			protected $table = 'batch';
+			protected $table = 'batches';
 			
 			# Primary Key of the Table
-			protected $pk	 = 'id';
+			protected $pk	 = 'uuid';
 			
 
 	

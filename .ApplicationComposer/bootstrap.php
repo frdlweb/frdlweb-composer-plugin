@@ -53,3 +53,6 @@ frdl\webfan\App::God(true, 'frdl\webfan\Autoloading\SourceLoader','AC boot')
 if(defined('FRDL_WEBFAN_DIR_MAIN'))define('FRDL_WEBFAN_DIR_MAIN', __DIR__ . DIRECTORY_SEPARATOR);
 
 \frdl\webfan\App::God()-> addClass('\frdl\webfan\Serialize\Binary\bin', '\frdl\bs',true, $success);
+\frdl\webfan\App::God()-> addClass('\webdof\Http\Client', '\frdl\Broxy',true, $success);
+
+frdl\webfan\Autoloading\SourceLoader::repository('webfan');

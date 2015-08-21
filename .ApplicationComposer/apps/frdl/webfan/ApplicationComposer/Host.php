@@ -26,37 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\ApplicationComposer\Command;
-
-class install extends CMD
-{
-
-
-    
-    public function process()
-    {
-       $args = func_get_args();
-       
-           if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin'] ){
-                $this->result->out = 'set config ERROR: You are not logged in as Admin';
-  	
-	     	 return;
-		  }     
-       
-       		if(true!== $this->loadConfigFromFile(true)){
-                $this->result->out = 'config ERROR: cannot readf config file';
-        	 return;			
-		}	
+namespace frdl\ApplicationComposer;
+ 
+class Host  extends \frdl\Crud {
 		
-		
-		
-       $this->result->out = 'tewsto';
-       $this->result->args = $this->argtoks;  
-    }
-    
-    
-    public function required()
-    {
-       $args = func_get_args();
-    }
+		   const VERSION = '0.0.1';
+		   const ALIAS = 'Hosts';
+		   
+			# Your Table name 
+			protected $table = 'hosts';
+			
+			# Primary Key of the Table
+			protected $pk	 = 'id';
+			
+
+	
+				
+			public function shema(){
+				return array(
+				  'version' => self::VERSION,
+				  'schema' => "(
+				      `id` BIGINT(255) NOT NULL  AUTO_INCREMENT,
+				      `wid_host` BIGINT(255) NOT NULL,
+				      `host`  varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+				      `note` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      UNIQUE KEY `Webfan_HOST_ID` (`wid_host`),
+				      UNIQUE KEY `host` (`host`),
+				       PRIMARY KEY (`id`)
+				     )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
+				);
+			}
+			
+
+	        public function field($label = null){
+				$l = array(
+
+
+				);
+				if(null === $label){
+					return $l;
+				}
+				
+				return (isset($l[$label])) ? $l[$label] : null;
+			}
+			
+			/*
+	        public function label($field  = null){
+				$f = array_flip($this->field(null));
+				return (isset($f[$field])) ? $f[$field] : null;
+			}
+			*/
 }

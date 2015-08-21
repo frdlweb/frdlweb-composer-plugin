@@ -27,41 +27,54 @@
  * 
  */
 namespace frdl\ApplicationComposer;
+ 
+class ClosureTreeHelper  extends \frdl\Crud {
+		
+		   const VERSION = '0.0.1';
+		   const ALIAS = 'Tree';
+		   
+		   
+			# Your Table name 
+			protected $table = 'ct_tree';
+			
+			# Primary Key of the Table
+			protected $pk	 = 'table_alias';
+			
 
-abstract class PackageFetcher
-{
-   const DEF_CLIENT = '\webdof\Http\Client';
-   protected $http_class;	
 	
-   protected $config;
-   protected $Client = null;
-   
+				
+			public function shema(){
+				return array(
+				  'version' => self::VERSION,
+				  'schema' => "(
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_parent` int(11) NOT NULL,
+  `id_child` int(11) NOT NULL,
+  `depth` int(11) NOT NULL DEFAULT '0',
+  `id_root`  BIGINT(255) NOT NULL, 
+  PRIMARY KEY (`id`)
+                   
+				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
+				);
+			}
+			
 
-   public function __construct($config = null){
-   	  if(null !== $config) $this->config = $config;
-   	  $this->Client($client, ((isset($config['http_class'])) ? $config['http_class'] : self::DEF_CLIENT ));
-   	  return $config;
-   }	
-   
-   
-   public function cache($key, $value){
-   	
-   }
-   
-   
-   public function Client(&$client = null, $classname = null, $create = false){
-   	  $this->http_class = (null !== $classname && '' !== $classname && class_exists($classname)) ? $classname : self::DEF_CLIENT;
-   	  if(null === $this->Client || true === $create){
-	  	$this->Client = new $this->http_class;
-	  }
-	  
-	  $client = $this->Client;
-	  return $this;
-   }
-   	
-   abstract public function info();
-   abstract public function all();
-   abstract public function search($query);
-   abstract public function package($vendor, $packagename);   
+			
+	        public function field($label = null){
+				$l = array(
+				 'id' => '#ID',
+				 'id_parent' => '#ID parent',
+				 'id_child' => '#ID Child',
+				 'depth' => 'Depth of relationship',
+				 'id_root' => 'Root Node of Tree'
+				);
+				if(null === $label){
+					return $l;
+				}
+				
+				return (isset($l[$label])) ? $l[$label] : null;
+			}
+			
 	
-}
+			
+	}

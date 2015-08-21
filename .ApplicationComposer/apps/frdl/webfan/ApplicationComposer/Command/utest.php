@@ -148,6 +148,9 @@ class utest extends CMD
 		), true);			
 		}catch(\Exception $e){
 			$this->result->out = $e->getMessage();
+			if(isset($this->argtoks['flags']['h'])){
+				$this->Console->HALT();
+			}
 			return;
 		}
 

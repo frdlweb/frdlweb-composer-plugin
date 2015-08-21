@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Repository  Extends \frdl\Crud {
 		
-		   const VERSION = '0.0.2';
+		   const VERSION = '0.0.4';
 		
 			# Your Table name 
 			protected $table = 'repositories';
@@ -46,6 +46,7 @@ class Repository  Extends \frdl\Crud {
 				  'version' => self::VERSION,
 				  'schema' => "(
 				      `_use` tinyint(1) NOT NULL DEFAULT '1',
+				      `def` tinyint(1) NOT NULL DEFAULT '0',
 				      `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `host` varchar(256) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `homepage` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -61,6 +62,7 @@ class Repository  Extends \frdl\Crud {
 	        public function field($label = null){
 				$l = array(
 				 '_use' => 'Use this repository',
+				 'def' => 'Is default repository?',
 				 'name' => 'Name',
 				 'host' => 'Host',
 				 'homepage' => 'Homepage',

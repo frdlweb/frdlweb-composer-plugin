@@ -28,7 +28,7 @@
  */
 namespace frdl\ApplicationComposer;
 
-class AjaxResult extends \frdl\o 
+final class AjaxResult extends \frdl\o 
 {
 	
 	var $type = 'print';
@@ -37,6 +37,6 @@ class AjaxResult extends \frdl\o
 	var $callback = null;
 	var $html = '';
 	var $js;
-	
+	var $data;
 	
 }

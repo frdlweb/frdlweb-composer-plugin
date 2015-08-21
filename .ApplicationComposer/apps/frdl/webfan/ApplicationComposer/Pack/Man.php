@@ -27,32 +27,62 @@
  * 
  */
 namespace frdl\ApplicationComposer\Pack;
-use frdl\ApplicationComposer;
 
 
-class Man implements OutputInterface
+
+class Man implements \frdl\ApplicationComposer\OutputInterface
 {
 	protected $html = '';
 	protected $js = '';
-
 	
-	function __construct(){
+	protected $prepend = true;
+
+    protected $argtoks;
+    protected $config;
+    protected $CMD; //in
+    
+    protected $Console;
+    
+    protected $task;
+	
+	function __construct($prepend = true){
+	  $this->prepend = $prepend;	
 	  $this->html = '';
 	  $this->js = '';
-	  	
+	  
+
+ 			  	
 	}
 	
-	public function js(){
+	
+	public function run($task, $argtoks, $config, &$CMD = null){
+		$this->argtoks = $argtoks;
+		$this->config = $config;
+		$this->CMD = $CMD;
 		
+	    $this->Console = new \frdl\ApplicationComposer\Console;
+	    $this->Console->applyApp($this->CMD);		
+	    
+	}
+	
+	
+	public function js(){
+	   return $this->js;	
 	}
 	
 	public function html(){
-		
+		return $this->html;
 	}
 	
-	public function result(AjaxResult &$result){
-		$result->js = $this->js;
-		$result->html = $this->html;
+	public function result(\frdl\ApplicationComposer\AjaxResult &$result){
+		if(true === $this->prepend){
+		  $result->js .= $this->js;
+		  $result->html .= $this->html;			
+		}else{
+			  $result->js = $this->js;
+		     $result->html = $this->html;				
+		}
+
 	}
 		
 	

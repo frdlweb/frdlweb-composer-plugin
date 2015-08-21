@@ -26,26 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\ApplicationComposer\Repos;
-use frdl\ApplicationComposer;
+namespace frdl\ApplicationComposer;
+ 
+class TableAlias  extends \frdl\Crud {
+		
+		   const VERSION = '0.0.2';
+		   const ALIAS = TableAlias;
+		   
+			# Your Table name 
+			protected $table = 'table_alias';
+			
+			# Primary Key of the Table
+			protected $pk	 = 'table_alias';
+			
 
-class phpclasses extends PackageFetcher
-{
 	
-   public function info(){
-   	
-   }
-   
-   public function all(){
-   	
-   }
-   
-   public function search($query){
-   	
-   }
-   
-   public function package($vendor, $packagename){
-   	
-   }  
+				
+			public function shema(){
+				return array(
+				  'version' => self::VERSION,
+				  'schema' => "(
+                            `table_alias`  varchar(32) NOT NULL,
+                            `table` varchar(128) NOT NULL,
+                            `comment` varchar(128) NOT NULL,
+                        PRIMARY KEY (`table_alias`)
+				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
+				);
+			}
+			
+
+			
+	        public function field($label = null){
+				$l = array(
+				 'table_alias' => 'Table Alias',
+				 'table' => 'Table Realname',
+				 'comment' => 'comment',
+				);
+				if(null === $label){
+					return $l;
+				}
+				
+				return (isset($l[$label])) ? $l[$label] : null;
+			}
+			
 	
-}
+			
+	}

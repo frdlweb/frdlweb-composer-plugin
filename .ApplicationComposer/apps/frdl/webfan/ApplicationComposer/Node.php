@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Node  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.1';
+		   const VERSION = '0.0.5';
 		
 			# Your Table name 
 			protected $table = 'nodes';
@@ -45,10 +45,11 @@ class Node  extends \frdl\Crud {
 				return array(
 				  'version' => self::VERSION,
 				  'schema' => "(
-				      `id` varchar(256) NOT NULL,
-				      `title` varchar(256) NOT NULL DEFAULT '',
+				      `id` BIGINT(255) NOT NULL AUTO_INCREMENT,
+				      `id_parent`  BIGINT(255) NOT NULL,
+				      `id_root`  BIGINT(255) NOT NULL DEFAULT '-1',
+				      `table_alias`  varchar(32) NOT NULL DEFAULT '',
 				      `file`  varchar(1024) NOT NULL,
-				      `payload` BLOB,
 				      PRIMARY KEY (`id`)
 				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
 				);
@@ -59,9 +60,12 @@ class Node  extends \frdl\Crud {
 	        public function field($label = null){
 				$l = array(
 				 'id' => '#ID',
-				 'title' => 'Title',
-				 'file' => 'File',
-				 'payload' => 'Data',
+				 'id_parent' => 'ID Parent',
+				 'id_root' => 'ID of tree root',
+				
+				 'table_alias' => 'Alias of the items table',
+				 'file' => 'Filepath',
+				 
 				);
 				if(null === $label){
 					return $l;

@@ -30,8 +30,10 @@ namespace frdl\ApplicationComposer;
  
 class Version  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.1';
-		
+		   const VERSION = '0.0.4';
+		   const ALIAS = 'Versions';
+		   
+		   
 			# Your Table name 
 			protected $table = 'versions';
 			
@@ -49,8 +51,14 @@ class Version  extends \frdl\Crud {
 				      `type` varchar(64) NOT NULL DEFAULT 'library',
 				      `supported` TINYINT(1) NOT NULL DEFAULT '0',
 				      `ad` TINYINT(1) NOT NULL DEFAULT '0',
+				      `frdl` TINYINT(1) NOT NULL DEFAULT '0',
+				      `webfan` TINYINT(1) NOT NULL DEFAULT '0',
+				      `installable` TINYINT(1) NOT NULL DEFAULT '0',
 				      `installed` TINYINT(1) NOT NULL DEFAULT '0',
+				      `redistribute` TINYINT(1) NOT NULL DEFAULT '1',
 				      `composer_json` TINYINT(1) NOT NULL DEFAULT '0',
+				      `autoloading` TINYINT(1) NOT NULL DEFAULT '0',
+				      `state` enum('test','alpha','beta','dev','stable','unknown') NOT NULL DEFAULT 'unknown',
 				      `repository` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' ,
 				      `version` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `versionNormalized`  varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',

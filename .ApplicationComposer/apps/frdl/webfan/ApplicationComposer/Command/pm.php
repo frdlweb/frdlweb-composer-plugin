@@ -25,41 +25,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
+ *  @role       example/test
+ * 
+ *  @cmd "frdl test -b -d"
+ * 
  */
-namespace frdl\ApplicationComposer\Repos;
+namespace frdl\ApplicationComposer\Command;
 
-class PragmaMx extends Package
+class pm extends CMD
 {
-/*
-     e.g 1: {
-            "type": "package",
-            "package": {
-                "name": "TerraProject/pragmamx",
-                "version": "2.2.2",
-                "source": {
-                    "url": "http://download.pragmamx.org/pmx/pragmaMx_2.2_2015-04-01--18-33_full.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        */
-   
-   protected function _Data(){
-   	  $d = new \frdl\o;
-   	  $d->type = 'package';
-   	  $d->package = new \frdl\o;
-   	  $d->package->name = "TerraProject/pragmamx";
-   	  $d->package->version = "2.2.2";
-   	  $d->package->source = new \frdl\o;
-   	  $d->package->source->url = "http://download.pragmamx.org/pmx/pragmaMx_2.2_2015-04-01--18-33_full.zip";
-   	  $d->package->source->type = "zip";
-  }
-   
-   protected function _data(\frdl\o $data = null){
-   	  $this->_data = (null !== $data) ? $data : $this->_Data();
-   	  return  $this->_data;
-   }
-   
 
-	
+
+   protected $data;
+   protected $file;
+
+   function __construct(){
+		parent::__construct();
+	}
+   
+   
+   
+    public function process()
+    {
+       $args = func_get_args();
+         if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin'] ){
+                $this->result->out = 'set config ERROR: You are not logged in as Admin';
+  	
+	     	 return;
+		  }
+
+		if(true!== $this->loadConfigFromFile(true)){
+                $this->result->out = 'set config ERROR: cannot readf config file';
+        	 return;			
+		}
+
+		
+        
+    }
+    
+    
+    
+
+    
+    public function required()
+    {
+       $args = func_get_args();
+    }
 }

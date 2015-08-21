@@ -26,26 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\ApplicationComposer\Repos;
-use frdl\ApplicationComposer;
+namespace frdl\ApplicationComposer;
+ 
+class Label  extends \frdl\Crud {
+		
+		   const VERSION = '0.0.1';
+		
+			# Your Table name 
+			protected $table = 'labels';
+			
+			# Primary Key of the Table
+			protected $pk	 = 'label';
+			
 
-class Packagist extends PackageFetcher
-{
 	
-   public function info(){
-   	
-   }
-   
-   public function all(){
-   	
-   }
-   
-   public function search($query){
-   	
-   }
-   
-   public function package($vendor, $packagename){
-   	
-   }  
+				
+			public function shema(){
+				return array(
+				  'version' => self::VERSION,
+				  'schema' => "(
+                            `label`  varchar(128) NOT NULL,
+                        PRIMARY KEY (`label`)
+				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ",
+				);
+			}
+			
+
+			
+	        public function field($label = null){
+				$l = array(
+				 'label' => 'An unique edge label',
+				
+				);
+				if(null === $label){
+					return $l;
+				}
+				
+				return (isset($l[$label])) ? $l[$label] : null;
+			}
+			
 	
-}
+			
+	}

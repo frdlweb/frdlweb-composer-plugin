@@ -26,26 +26,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\ApplicationComposer\Repos;
-use frdl\ApplicationComposer;
+namespace frdl\ApplicationComposer;
+ 
+class Feature  extends \frdl\Crud {
+		
+		   const VERSION = '0.0.1';
+		   const ALIAS = 'Features';
+		   
+			# Your Table name 
+			protected $table = 'features';
+			
+			# Primary Key of the Table
+			protected $pk	 = 'uid';
+			
 
-class jsclasses extends PackageFetcher
-{
 	
-   public function info(){
-   	
-   }
-   
-   public function all(){
-   	
-   }
-   
-   public function search($query){
-   	
-   }
-   
-   public function package($vendor, $packagename){
-   	
-   }  
-	
+				
+			public function shema(){
+				return array(
+				  'version' => self::VERSION,
+				  'schema' => "(
+				      `feature` VARCHAR(64) NOT NULL,
+				      `available` TINYINT(1) NOT NULL DEFAULT '0',
+				      `installed` TINYINT(1) NOT NULL DEFAULT '0',
+				      `frdl` TINYINT(1) NOT NULL DEFAULT '0',
+				      `webfan` TINYINT(1) NOT NULL DEFAULT '0',
+				      `interfaces` BLOB,
+				      `abstract_classes` BLOB,
+				      `alias_class_names` BLOB,
+				      `default_suggestions_packages` BLOB,
+				      `default_suggestions_classes` BLOB,
+				      `note` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				       PRIMARY KEY (`feature`)
+				     )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci  ",
+				);
+			}
+			
+
+	        public function field($label = null){
+				$l = array(
+
+
+				);
+				if(null === $label){
+					return $l;
+				}
+				
+				return (isset($l[$label])) ? $l[$label] : null;
+			}
+			
+			/*
+	        public function label($field  = null){
+				$f = array_flip($this->field(null));
+				return (isset($f[$field])) ? $f[$field] : null;
+			}
+			*/
 }

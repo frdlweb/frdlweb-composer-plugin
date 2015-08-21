@@ -40,11 +40,18 @@ class html extends CMD
      protected $html;
      
      protected $loginformIsOut = false;
+     
+     protected $wizard_errors = 0;
+     
+     protected $date;
 
     function __construct(){
 		parent::__construct();
 		$this->html = '';
 		 $this->loginformIsOut = false;
+		 $this->wizard_errors = array();
+		 $this->date = new \webdof\wDate();
+
 	}
     
   public function m($js)
@@ -104,22 +111,83 @@ class html extends CMD
 		   
 	  return $html;
 	}
+
+	protected function item_wizard(){
+     $html = '';
+     
+    
+		
+    	$tab = 'window_main_frdl-webfan-wizard';
+  	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
+	     	 return '<div id="'.$tab.'" class="wd-tab">'. $this->item_login() .'</div>';
+		  }
+	
+	
+     $html.= '<div id="'.$tab.'" class="wd-tab">';
+
+        $html.= '<table style="width:100%;vertical-align:top;">';
+        $html.= '<tr>';
+         $html.='<td style="width:66%;">';
+         
+         $html.='</td>';
+         
+
+         $html.='<td>';
+          $html.='<strong>Every Day Checklist</strong>:';
+          $html.='<ul>';
+            
+            $html.='<li onclick="$(\'#window_frdl-webfan\').hide();$.WebfanDesktop.go(\'postbox\');$(\'#window_postbox\').show();  ">';
+        //  $html.='<li id="show_postbox" href="#">';
+             $html.='<img src="http://static.webfan.de/icons/icons-3/icon_email.gif" style="border:none;" />';
+             $html.= '<u>Check your Postbox</span>';
+            $html.='</li>';
+            
+          $html.= '</ul>';
+          
+          
+         $html.='</td>';
+                  
+        $html.='</tr>';
+        $html.='</table>';
+        
+ 
+      $html.= '</div>';
+  
+      $this->result->js .= " 
+            $.each($.WebfanDesktop.Registry.Notifs, function(k,m){
+        	     if(null === m)return false;
+        	     if('important' === m.type || 'system' === m.type || 'error' === m.type || 'warning' === m.type || 'update' === m.type || 'settings' === m.type || 'todo' === m.type){
+				 	  $('#".$tab."').wdPostbox('RenderMessage', m, Dom.g('".$tab."'));
+				 }
+               
+        	});
+    ";
+
+  
+      
+      return $html;		
+	}	
+
 	
 	protected function item_suggestions(){
-	 $html = '';
-	
-	 $html.= '<div id="window_main_frdl-webfan-pm-frdl-suggestions" class="wd-tab">'   ;
-	 $html.= '<h2 class="webfan-blue">Sugested Packages</h2>';	
-
- 
-     $html.= '</div>';
-		   
-	  return $html;		
+    	$tab = 'window_main_frdl-webfan-pm-frdl-suggestions';
+  	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
+	     	 return '<div id="'.$tab.'" class="wd-tab">'. $this->item_login() .'</div>';
+		  }
+	 $p = new \frdl\ApplicationComposer\Pack\Man(true);
+	 $p -> run('frdl suggestions', $this->argtoks, $this->data['config'], $this);
+	 $p -> result($this->result);   
+	 
+	  return '';		
 	}
 	protected function item_allpackages(){
 	 $html = '';
+    	$tab = 'window_main_frdl-webfan-pm-all';
+  	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
+	     	 return '<div id="'.$tab.'" class="wd-tab">'. $this->item_login() .'</div>';
+		  }
 	
-	 $html.= '<div id="window_main_frdl-webfan-pm-all" class="wd-tab">'   ;
+	 $html.= '<div id="'.$tab.'" class="wd-tab">'   ;
 	 $html.= '<h2 class="webfan-blue">All known packages</h2>';	
 
  
@@ -128,6 +196,10 @@ class html extends CMD
 	  return $html;		
 	}	
      protected function item_packages(){
+    	$tab = 'window_main_frdl-webfan-packages-main';
+  	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
+	     	 return '<div id="'.$tab.'" class="wd-tab">'. $this->item_login() .'</div>';
+		  }
          $html .=  $this->item_suggestions();
 	     $html .=  $this->item_allpackages();  	     
   	   	 $this->result->js .= "      
@@ -140,13 +212,16 @@ class html extends CMD
     	    
     mod.Tabs.addTab('#window_main_frdl-webfan-pm-frdl-suggestions', 'Suggestions', 'window_main_frdl-webfan-pm-frdl-suggestions', true);
     	   	   	    
-    mod.Tabs.addTab('#window_main_frdl-webfan-pm-projects', 'Projects', 'window_main_frdl-webfan-pm-projects', true);	
+ 	
 
     mod.Tabs.render(); 
     mod.Tabs.openTab('window_main_frdl-webfan-pm-frdl-suggestions');
-
-
      ";
+     
+     /*
+        mod.Tabs.addTab('#window_main_frdl-webfan-pm-projects', 'Projects', 'window_main_frdl-webfan-pm-projects', true);
+        */
+     
       return $html;
 	}
 			 
@@ -164,7 +239,7 @@ class html extends CMD
     mod.Tabs.addTab('#window_main_frdl-webfan-webfan', 'Webfan', 'window_main_frdl-webfan-webfan', true);
     mod.Tabs.addTab('#window_main_frdl-webfan-api', 'Webfan API', 'window_main_frdl-webfan-api', true);
     mod.Tabs.render(); 
-    mod.Tabs.openTab('window_main_frdl-webfan-webfan');
+    mod.Tabs.openTab('window_main_frdl-webfan-api');
 
 
      ";
@@ -173,34 +248,48 @@ class html extends CMD
 	    
      
     protected function item_settings(){
-	 
-	
-		
-	   $html .=  $this->item_login();
-     //  $html .=  $this->item_icontem();  	
-     //  $html .=  $this->item_webfan();  
-	   if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
-	     	 return $html;
-		  }
-		
-		
-		 $html .=  $this->item_db();
-		 
-	     $html .=  $this->item_repositories();  
-		    	 
-	     $html .=  $this->item_expert();  
+		$html = '';
+	    $html .=  $this->item_login();
+	    $html .=  $this->item_wizard();
+	    $html .=  $this->item_db();		
+        $html .=  $this->item_repositories();  
+	    $html .=  $this->item_expert();  
 	     
 	     
 	  return $html;
 	}
 	
 	
-	protected function item_repositories(){
-	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
-	     	 return (true !== $this->loginformIsOut) ? $this->item_login() : '';
-		 }		
-	 $html = '';
+	public function check(&$html, $tab, $check_admin = true, $check_errors_wizard = true){
+		
+  	    if(true === $check_admin && (!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin'])){
+	     	 $html.= '<div id="'.$tab.'" class="wd-tab">'. $this->item_login() .'</div>';
+	     	 return false;
+		  }
 	
+    	if(true === $check_errors_wizard && 0 !== count($this->wizard_errors)){
+			  $html.= '<div id="'.$tab.'" class="wd-tab"><p><span class="webfan-red">Not installed properly</span>.</p>
+        <ul>
+        <li>
+         '.implode('</li><li>', $this->wizard_errors).'
+        </li>
+        </ul></div>';
+	       return false;
+		}		
+		
+		return true;
+	}
+	
+	
+	protected function item_repositories(){
+	 $html = '';
+    	$tab = 'window_main_frdl-webfan-repositories';
+    
+        if(true !== $this->check($html, $tab, true, true))return $html;  
+    
+
+    	
+    		
 	   $S = new \frdl\_db(array(
 		   'driver' => $this->data['config']['db-driver'],
 		   'host' => $this->data['config']['db-host'],
@@ -211,7 +300,7 @@ class html extends CMD
 		   
 		));
 	
-	 $html.= '<div id="window_main_frdl-webfan-repositories" class="wd-tab">'   ;
+	 $html.= '<div id="'.$tab.'" class="wd-tab">'   ;
 	 $html.= '<h2 class="webfan-blue">Repositories</h2>';	
  
      $R = $S->i('Repositories');
@@ -225,7 +314,7 @@ class html extends CMD
 	 	$html.='<div style="margin:8px;padding:8px;">';
 	 	
 	 	 $html.='<p><strong>'.$r['name'].'</strong> ('.((1 === intval($r['_use'])) ? 'active' : 'deactivated').')</p>';
-	 	 $html.='<p><a href="'.$t['homepage'].'" target="_blank">'.$t['host'].'</a></p>';
+	 	 $html.='<p><a href="'.$r['homepage'].'" target="_blank">'.$r['host'].'</a></p>';
 	 	 $html.='<p>'.$r['description'].'</p>';	 
 	 	 $html.='</div>';
 	 	$html.='</div>';
@@ -241,10 +330,7 @@ class html extends CMD
 	
 	
     protected function item_webfan(){
-	  //  if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
-	     	// return (true !== $this->loginformIsOut) ? $this->item_login() : '';
-	     //	 return  $this->item_login();
-		//  }
+	
 	 $html = '';
 	
 	 $html.= '<div id="window_main_frdl-webfan-webfan" class="wd-tab">'   ;
@@ -258,10 +344,8 @@ class html extends CMD
 	}
 		
     protected function item_icontem(){
-	  //  if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
-	     	// return (true !== $this->loginformIsOut) ? $this->item_login() : '';
-	     //	 return  $this->item_login();
-		//  }
+
+
 	 $html = '';
 	
 	 $html.= '<div id="window_main_frdl-webfan-icontem" class="wd-tab">'   ;
@@ -311,13 +395,12 @@ class html extends CMD
 	
 	  	
     protected function item_expert(){
-	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
-	     	// return (true !== $this->loginformIsOut) ? $this->item_login() : '';
-	     	 return '<div id="window_main_frdl-webfan-expert" class="wd-tab">'. $this->item_login() .'</div>';
-		  }
 	 $html = '';
+    	$tab = 'window_main_frdl-webfan-expert';
+    	
+	     if(true !== $this->check($html, $tab, true, false))return $html;  
 	
-	 $html.= '<div id="window_main_frdl-webfan-expert" class="wd-tab">'   ;
+	 $html.= '<div id="'.$tab.'" class="wd-tab">'   ;
 	 $html.= '<h2 class="webfan-blue">Expert Editor <span class="webfan-red">(Experts only!)</span></h2>';	
 	 
 	 $html.='<div style="margin:10px;padding:10px;text-align:center;font-style:italic;">';
@@ -352,11 +435,14 @@ class html extends CMD
 	}
 	
 	     
+	public function wizard_error($msg = 'ERROR', $s = E_USER_ERROR){
+		  array_push($this->wizard_errors, $s ." ".$msg);
+	}     
+	     
     protected function item_db(){
-	    if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
-	     	// return (true !== $this->loginformIsOut) ? $this->item_login() : '';
-	     	 return '<div id="window_main_frdl-webfan-db" class="wd-tab">'. $this->item_login() .'</div>';
-		  }
+    	$tab = 'window_main_frdl-webfan-db';
+    	
+	     if(true !== $this->check($html, $tab, true, false))return $html;  
 	
 		try{
 		
@@ -369,12 +455,14 @@ class html extends CMD
 		}catch(\Exception $e){
 	          $connected = false;
 		}
-
+     if(true !== $connected){
+     	    $this->wizard_error( '<span>No connection to database</span>', E_USER_ERROR);
+     	}
 
 		  	
 	 $html = '';
 	
-	 $html.= '<div id="window_main_frdl-webfan-db" class="wd-tab">'   ;
+	 $html.= '<div id="'.$tab.'" class="wd-tab">'   ;
 	 
 	 
 	
@@ -455,6 +543,15 @@ class html extends CMD
 	     	 $S = new \frdl\_db();	
 	     $cfile =  $this->data['config']['FILES']['database-schema'];
 	
+	     $settings=array(
+		   'driver' => $this->data['config']['db-driver'],
+		   'host' => $this->data['config']['db-host'],
+		   'dbname' => $this->data['config']['db-dbname'],
+		   'user' => $this->data['config']['db-user'],
+		   'password' => $this->data['config']['db-pwd'],
+		   'pfx' => $this->data['config']['db-pfx'],
+		   
+		);
 	   
 		 if(file_exists($cfile)){
 		 	$oldSchema = $S->load_schema(file_get_contents($cfile)); 
@@ -466,30 +563,15 @@ class html extends CMD
 		 	 
 		
 		
-		 $S->check($schema, $tables,  null,  true,  false,  false,   \frdl\DB::_(array(
-		   'driver' => $this->data['config']['db-driver'],
-		   'host' => $this->data['config']['db-host'],
-		   'dbname' => $this->data['config']['db-dbname'],
-		   'user' => $this->data['config']['db-user'],
-		   'password' => $this->data['config']['db-pwd'],
-		   'pfx' => $this->data['config']['db-pfx'],
-		   
-		), true), array(
-		   'driver' => $this->data['config']['db-driver'],
-		   'host' => $this->data['config']['db-host'],
-		   'dbname' => $this->data['config']['db-dbname'],
-		   'user' => $this->data['config']['db-user'],
-		   'password' => $this->data['config']['db-pwd'],
-		   'pfx' => $this->data['config']['db-pfx'],
-		   
-		), $oldSchema);
+		 $S->check($schema, $tables,  null,  true,  false,  false,   \frdl\DB::_($settings, true), $settings, 
+		              $oldSchema);
 		
 		}catch(\Exception $e){
 	          $tablesOK = false;
 	           $html.= '<span class="webfan-red">Error checking tables!</span>';
 		}
        		
-		$html.= '<p>Version: '.$oldSchema->version.'/'.$schema->version_should.'</p>';
+		$html.= '<p>Version: '.$oldSchema->version.'/'.$schema->version.'</p>';
         $newTables = false;
         $T = array();
        
@@ -498,17 +580,25 @@ class html extends CMD
          $_html.='<div class="data-box" style="height:260px;overflow:auto;">';
          foreach($schema->tables as $alias => $t){
 			$_html.='<div>';
-	         $_html.= '<p><span style="color:'.((true === $oldSchema->tables[$alias]['exists'] && $S->isFresh( $oldSchema->tables[$alias]['version'], $t['version_should']) ) ? 'green' : 'red').';">'.$alias.' ('. $oldSchema->tables[$alias]['version'].'/'.$t['version_should'].')</span></p>';					 
+	         $_html.= '<p><span style="color:'.((
+	                     true === $schema->tables[$alias]['exists']
+	                  && true === $oldSchema->tables[$alias]['exists'] && $S->isFresh( $oldSchema->tables[$alias]['version'],  $schema->tables[$alias]['version']) )
+	                      ? 'green' : 'red').';">'.$alias.' ('. $oldSchema->tables[$alias]['version'].'/'.$schema->tables[$alias]['version'].')</span></p>';					 
 	         $_html.= '<p>'.$t['table'].'</p>';
 		    $_html.='</div>';	
 		    
-		   if(true !== $t['exists'] || !$S->isFresh( $oldSchema->tables[$alias]['version'], $t['version_should']))  $newTables = true;
+		   if(true !== $t['exists'] || !$S->isFresh( $oldSchema->tables[$alias]['version'], $schema->tables[$alias]['version']))  $newTables = true;
 		   $T[$t['table']] = &$t;
 		}
      
        $_html.='</div>';
      
-        if(true === $newTables){
+       
+     
+        if( true === $newTables || !$S->isFresh($oldSchema->version,  $schema->version)){
+        	
+         $this->wizard_error( '<span>Missing database tables! Please run the database setup!</span>', E_USER_WARNING);
+        	 
       	 $html.='<div style="text-align:center;">
       	 <button style="color:green;font-weight:bold;font-size:1.2em;" onclick="if(true!==confirm(\'Please backup your data first, possible data loss while converting!\nBitte machen Sie zunaechst ein Datenbank Backup, Daten koennen durch der Konvertierung verloren gehen!\n(@ToDo: Convert data from db versions)\'))return false;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cmd(\'frdl setup create-tables -b\', function(){$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].html(\'db\');}); ">
       	 &rArr;&rArr;&rArr;<span>Create</span> <span>Tables</span>&lArr;&lArr;&lArr;
@@ -525,7 +615,7 @@ class html extends CMD
 		    		callback : function(){\$(\'#window_frdl-webfan\').show();$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].html(\'db\');},
 		    		time : new Date().getTime() / 1000,
 		    		newnotif : true,
-		    		id : 'system-error-no-database-connection'
+		    		id : 'system-error-no-database-connection-".$this->date->day()."'
 		    	});
 			}catch(err){
 				console.error(err);
@@ -560,16 +650,17 @@ class html extends CMD
 		   
 		if(!isset($this->result->js)) $this->result->js = '';  
 	   if(true !== $connected){
+	   	
 	   	 $this->result->js .= " 
 			try{
 		    	$.WebfanDesktop.Registry.Programs['nachrichtendienst'].post({
-		    		text : '<span>The database is not connected. Please goto the database settings!</span>',
+		    		text : '<span>No connection to database</span>. <span>Please goto the database settings!</span>',
 		    		type : 'error',
 		    		show : true,
 		    		callback : function(){\$(\'#window_frdl-webfan\').show();\$.WebfanDesktop.Registry.Programs['frdl-webfan'].Tabs.openTab('window_main_frdl-webfan-db');},
 		    		time : new Date().getTime() / 1000,
 		    		newnotif : true,
-		    		id : 'system-error-no-database-connection'
+		    		id : 'system-error-no-database-connection-".$this->date->day()."'
 		    	});
 			}catch(err){
 				console.error(err);

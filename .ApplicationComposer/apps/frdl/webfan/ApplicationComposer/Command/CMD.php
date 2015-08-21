@@ -150,6 +150,19 @@ abstract class CMD
 	 return null;
    }
    
+   final public function isArg($argument){
+   	  return ($this->argpos($argument) > -1);
+   }  
+   
+  final public function argpos($argument){
+   	 foreach($this->argtoks['arguments'] as $num => $arg){
+	 	if($argument === $arg['cmd']){
+			return $arg['pos'];
+		}
+	 }
+	 return -1;
+   }
+      
   final public function updateRequestOption($opt, $v){
    	 foreach($this->argtoks['options'] as $num => &$o){
 	 	if($opt === $o['opt']){

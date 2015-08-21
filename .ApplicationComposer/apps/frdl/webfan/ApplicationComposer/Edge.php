@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Edge  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.1';
+		   const VERSION = '0.0.5';
 		
 			# Your Table name 
 			protected $table = 'edges';
@@ -38,7 +38,14 @@ class Edge  extends \frdl\Crud {
 			# Primary Key of the Table
 			protected $pk	 = 'id';
 			
-
+	public function create() { 
+	    $L = new Label();
+	    if(!$L->find($this->label)){
+			$L->label = $this->label;
+			$L->create();
+		} 
+		return parent::create();
+	}
 	
 				
 			public function shema(){
@@ -46,12 +53,13 @@ class Edge  extends \frdl\Crud {
 				  'version' => self::VERSION,
 				  'schema' => "(
 				      `id` BIGINT(255) NOT NULL AUTO_INCREMENT,
-				      `from` varchar(256) NOT NULL,
-				      `to` varchar(256) NOT NULL,
+				      `from` BLOB,
+				      `to` BLOB,
 				      `label` varchar(128) NOT NULL,
 				      `file`  varchar(1024) NOT NULL,
-				      `payload` BLOB,
-				      UNIQUE KEY `nodes` (`from`(128),`to`(128),`label`(32)),
+				      `path`  varchar(1024) NOT NULL,
+				      `value` BLOB,
+				      UNIQUE KEY `nodes` (`from` (100),`to`(100),`label`),
 				      PRIMARY KEY (`id`)
 				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
 				);
@@ -61,12 +69,7 @@ class Edge  extends \frdl\Crud {
 			
 	        public function field($label = null){
 				$l = array(
-				 'id' => '#ID',
-				 'from' => 'One node connected',
-				 'to' => 'Another Node connected',
-				 'label' => 'Label',
-				 'file' => 'File',
-				 'payload' => 'Data',
+
 				);
 				if(null === $label){
 					return $l;

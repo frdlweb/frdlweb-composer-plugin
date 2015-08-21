@@ -37,14 +37,20 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
   
   public $App;
   
+  public $strip_frdl = true;
+  
   protected $out = array();
   protected $p; //pointer
   protected $statusText;
   
   protected $dir_cmds;
+  protected $state;
+  
+  private $HALT = false;
   
   
-   function __construct(){
+   function __construct($strip_frdl = true){
+   	$this->strip_frdl = $strip_frdl;
   	parent::__construct();
     $this->dir_cmds = __DIR__. DIRECTORY_SEPARATOR . 'Command' . DIRECTORY_SEPARATOR;
   }
@@ -100,17 +106,29 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
     return $r;
   }
   
+  public function HALT(){
+  	 $this->HALT = true;
+  	 $this->force_state('HALT');
+  	 $this->statusText = 'STOPPED DUE TO THE HALT COMMAND!';
+     $r = new AjaxResult;
+     $r->type = 'print';
+     $r->out = $this->statusText;
+    return $r; 	 
+  }
+  
   protected function boot(){
   	$this->statusText = 'Booting cli...';
   	$this->out = array();
   	$this->p = NIL;
    	   
   	  $this->add_command('help', array($this, 'cmd_help'));
+      $this->add_command('HALT', array($this, 'HALT'));
   	
   }
   
    public function exe($cml = ''){
  	 global $argv;
+ 	 if(false !== $this->strip_frdl && 'frdl' === substr($cml,0,strlen('frdl')))$cml = substr($cml, strlen('frdl'), strlen($cml));
 	 $this->IN = ($this->mode === self::MODE_CLI) ? implode(self::DELIM, $argv) : urldecode($cml);
 	 $this->parse();
  	 
@@ -121,7 +139,9 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
   	  $this->validateQuery('before'); 	
   	 $this->statusText = 'Process batch...';  	
   	 
+  	 
 	 foreach($this->batch as $num => $args){
+	 	 if(false !== $this->HALT || 'HALT' ===  $this->state)break;
   	     $this->statusText = 'Process command:>'.$args['command']['cmd'];  
 	 	 $this->_exec($args);
 	 	  $this->statusText .= htmlentities(' :>Complete.');
@@ -141,7 +161,7 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
 
 
   protected function _exec($args){
-  	 
+  	 if(false !== $this->HALT || 'HALT' ===  $this->state)return;
   	 $command = $args['command']['cmd'];
      $cmd_file = $this->get_cmd_file($command);
 
@@ -171,7 +191,12 @@ class Console extends \frdl\aSQL\Engines\Terminal\CLI
   	  
   }
   
-  protected function force_state($state){}
+  protected function force_state($state){
+  	 $this->state = (false === $this->HALT && ('HALT' !==  $this->state || 'HALT' === $state)) ? $state :  $this->state;
+  	 if('HALT' === $this->state)$this->HALT = true;
+  	 return $this;
+  }
+  
   public function parseQuery(){
   	   $this->statusText .= htmlentities(' ->Pre-Parsing batch [GLOBAL]');
   	   
