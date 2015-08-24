@@ -79,6 +79,23 @@ class html extends CMD
 
 	   $this->loadConfigFromFile(false);
 
+
+    try{
+	      $db =  \frdl\DB::_(array(
+		   'driver' => $this->data['config']['db-driver'],
+		   'host' => $this->data['config']['db-host'],
+		   'dbname' => $this->data['config']['db-dbname'],
+		   'user' => $this->data['config']['db-user'],
+		   'password' => $this->data['config']['db-pwd'],
+		   'pfx' => $this->data['config']['db-pfx'],
+		   
+		  ), true);
+		   $this->connected = $db->connected;			
+		}catch(\Exception $e){
+           $this->connected = false;;
+		}
+		
+
        try{
 	    	if(null !== $this->item)$this->html .= $this->{'item_'.$this->result->item}();
 	   }catch(\Exception $e){
@@ -154,13 +171,27 @@ class html extends CMD
       $html.= '</div>';
   
       $this->result->js .= " 
-            $.each($.WebfanDesktop.Registry.Notifs, function(k,m){
-        	     if(null === m)return false;
-        	     if('important' === m.type || 'system' === m.type || 'error' === m.type || 'warning' === m.type || 'update' === m.type || 'settings' === m.type || 'todo' === m.type){
-				 	  $('#".$tab."').wdPostbox('RenderMessage', m, Dom.g('".$tab."'));
-				 }
+     	
+     $.WebfanDesktop.resetReady('Loading...',25, 
+	   	        function(){
+	   	        	var r= ( Dom.isVisible('".$tab."') );
+	   	        	if(true !== r) return r;
+	   	        
+	   	        	$.each($.WebfanDesktop.Registry.Notifs, function(k,m){
+	   	        		
+        	         if(null === m)return false;
+        	          if('important' === m.type || 'system' === m.type || 'error' === m.type || 'warning' === m.type || 'update' === m.type || 'settings' === m.type || 'todo' === m.type){
+				 	    $('#".$tab."').wdPostbox('RenderMessage', m, Dom.g('".$tab."'));
+				 	    
+				      }
                
-        	});
+        	        });
+	   	        	return r;
+	   	        }
+	  );
+	   	     
+	   	     
+
     ";
 
   
@@ -251,7 +282,7 @@ class html extends CMD
 		$html = '';
 	    $html .=  $this->item_login();
 	    $html .=  $this->item_wizard();
-	    $html .=  $this->item_db();		
+	    $html .=  $this->item_db();	
         $html .=  $this->item_repositories();  
 	    $html .=  $this->item_expert();  
 	     
@@ -333,10 +364,10 @@ class html extends CMD
 	
 	 $html = '';
 	
-	 $html.= '<div id="window_main_frdl-webfan-webfan" class="wd-tab">'   ;
+	 $html.= '<div id="window_main_frdl-webfan-webfan" class="wd-tab" style="position:relative;height:100%;">'   ;
 	 $html.= '<h2 class="webfan-blue">Your Webfan Accounts</h2>';	
  
-        $html.= '<iframe src="http://webfan.de/auth/frame-1/" style="width:100%;height:450px;overflow:auto;" />';
+        $html.= '<iframe src="http://webfan.de/auth/frame-1/" style="width:100%;height:100%;overflow:auto;" />';
  
      $html.= '</div>';
 		   
@@ -383,11 +414,12 @@ class html extends CMD
 	 $html.='<button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'composer-pwd-jsclasses\', Dom.g(\'composer-pwd-jsclasses\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button>';
 	 $html.='</div>';
 
+  $html.='</td></tr></table>';
 
      $html.= '</div>';
 		   
 		   
-		/* $this->result->js = 'alert(\'DB settings\');';    */
+	
 		   
 		   
 	  return $html;
@@ -444,18 +476,8 @@ class html extends CMD
     	
 	     if(true !== $this->check($html, $tab, true, false))return $html;  
 	
-		try{
-		
-			
-				   $Console = new \frdl\ApplicationComposer\Console;
-				   $Console->applyApp($this);
- 			       $Console->exe('utest database');
-				   $r =  $Console->dump();
-				   $connected = (intval($r->code) === 200 );
-		}catch(\Exception $e){
-	          $connected = false;
-		}
-     if(true !== $connected){
+
+     if(true !== $this->connected){
      	    $this->wizard_error( '<span>No connection to database</span>', E_USER_ERROR);
      	}
 
@@ -612,7 +634,7 @@ class html extends CMD
 		    		text : '<span>Missing database tables! Please run the database setup!</span>',
 		    		type : 'error',
 		    		show : true,
-		    		callback : function(){\$(\'#window_frdl-webfan\').show();$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].html(\'db\');},
+		    		callback : function(){\$('#window_frdl-webfan').show();$.WebfanDesktop.Registry.Programs['frdl-webfan'].html('db');},
 		    		time : new Date().getTime() / 1000,
 		    		newnotif : true,
 		    		id : 'system-error-no-database-connection-".$this->date->day()."'
@@ -648,7 +670,7 @@ class html extends CMD
 	 	 	 
 	 $html.='</div>';	
 		   
-		if(!isset($this->result->js)) $this->result->js = '';  
+	
 	   if(true !== $connected){
 	   	
 	   	 $this->result->js .= " 
@@ -657,7 +679,7 @@ class html extends CMD
 		    		text : '<span>No connection to database</span>. <span>Please goto the database settings!</span>',
 		    		type : 'error',
 		    		show : true,
-		    		callback : function(){\$(\'#window_frdl-webfan\').show();\$.WebfanDesktop.Registry.Programs['frdl-webfan'].Tabs.openTab('window_main_frdl-webfan-db');},
+		    		callback : function(){\$('#window_frdl-webfan').show();\$.WebfanDesktop.Registry.Programs['frdl-webfan'].Tabs.openTab('window_main_frdl-webfan-db');},
 		    		time : new Date().getTime() / 1000,
 		    		newnotif : true,
 		    		id : 'system-error-no-database-connection-".$this->date->day()."'
