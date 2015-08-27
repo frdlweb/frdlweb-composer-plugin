@@ -31,7 +31,7 @@ namespace frdl\ApplicationComposer;
 class TableAlias  extends \frdl\Crud {
 		
 		   const VERSION = '0.0.2';
-		   const ALIAS = TableAlias;
+		   const ALIAS = 'TableAlias';
 		   
 			# Your Table name 
 			protected $table = 'table_alias';

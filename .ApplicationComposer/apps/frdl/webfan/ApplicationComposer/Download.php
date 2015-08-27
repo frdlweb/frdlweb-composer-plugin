@@ -28,12 +28,13 @@
  */
 namespace frdl\ApplicationComposer;
  
-class Node  extends \frdl\Crud {
+class Download  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.7';
-		
+		   const VERSION = '0.0.1';
+		   const ALIAS = 'Downloads';
+		   
 			# Your Table name 
-			protected $table = 'nodes';
+			protected $table = 'downloads';
 			
 			# Primary Key of the Table
 			protected $pk	 = 'id';
@@ -45,27 +46,36 @@ class Node  extends \frdl\Crud {
 				return array(
 				  'version' => self::VERSION,
 				  'schema' => "(
-				      `id` BIGINT(255) NOT NULL AUTO_INCREMENT,
-				      `id_parent`  BIGINT(255) NOT NULL,
-				      `id_root`  BIGINT(255) NOT NULL DEFAULT '-1',
-				      `table_alias`  varchar(32) NOT NULL DEFAULT '',
-				      `file`  varchar(1024) NOT NULL,
-				      PRIMARY KEY (`id`)
-				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=0",
+				      `id` BIGINT(255) NOT NULL  AUTO_INCREMENT,
+				      `success` TINYINT(1) NOT NULL DEFAULT '0',
+				      `unpacked` TINYINT(1) NOT NULL DEFAULT '0',
+				      `lid` BIGINT(255) NOT NULL DEFAULT '0',
+				      `id_version` BIGINT(255) NOT NULL DEFAULT '0',
+				      `size` BIGINT(255) NOT NULL DEFAULT '0',
+				      `protocoll` varchar(16) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `type` varchar(8) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'zip',
+				      `repos` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `host`  varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+				      `vendor` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' ,
+				      `package` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `version` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `checksum` varchar(40) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `time` INT(11) NOT NULL DEFAULT '0',				      
+				      `time_download_start` INT(11) NOT NULL DEFAULT '0',			      
+				      `time_download_end` INT(11) NOT NULL DEFAULT '0',				      
+				      `note` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `file` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `dir` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				       PRIMARY KEY (`id`)
+				     )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
 				);
 			}
 			
 
-			
 	        public function field($label = null){
 				$l = array(
-				 'id' => '#ID',
-				 'id_parent' => 'ID Parent',
-				 'id_root' => 'ID of tree root',
-				
-				 'table_alias' => 'Alias of the items table',
-				 'file' => 'Filepath',
-				 
+
+
 				);
 				if(null === $label){
 					return $l;
@@ -74,6 +84,10 @@ class Node  extends \frdl\Crud {
 				return (isset($l[$label])) ? $l[$label] : null;
 			}
 			
-	
-			
-	}
+			/*
+	        public function label($field  = null){
+				$f = array_flip($this->field(null));
+				return (isset($f[$field])) ? $f[$field] : null;
+			}
+			*/
+}

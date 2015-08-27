@@ -62,23 +62,23 @@ $this->data['config']['DIRS']['cache']
 $this->data['config']['DIRS']['tmp']
 */
 
-    protected k($k){
+    protected function k($k){
 	  return preg_replace("/[^A-Za-z0-9\.\-\_\~]+$/", "", $k);
 	}
 	
-	protected data($data = null, $set = false){
+	protected function data($data = null, $set = false){
 		$this->_data = ((true == $set) ? $data : $this->_data);		
 		return $this->_data;                 
 	}	
 	
 	
-	protected file(){
+	protected function file(){
 		$this->_file = (($this->container === 'tmp') ? $this->data['config']['DIRS']['tmp'] : $this->data['config']['DIRS']['cache'])
 		                 . DIRECTORY_SEPARATOR . 'cache~.'.$this->k($this->key).'.php';		
 		return $this->_file;                 
 	}
 
-    protected write(){
+    protected function write(){
     	if(null === $this->_file || '' === $this->_file)return;
     	 
     	$now = time();
@@ -121,7 +121,7 @@ if( \$this->_cache_expires < time())return \$this->expired();
 ";
 
 if(isset($this->argtoks['flags']['s'])){
-	$php.=" \$this->_data_bin = ".var_export($this->_data_bin, true).";"
+	$php.=" \$this->_data_bin = ".var_export($this->_data_bin, true).";";
 }else{
 	$php.="\$this->_data = ".var_export($this->_data, true).";"
 }
@@ -150,7 +150,7 @@ $php.= "
                         
 	}
 
-    protected read(){
+    protected function read(){
     	if(null === $this->_file || '' === $this->_file || !file_exists($this->_file)){
     		  $this->result->out = 'No cache file found';
     		  return  false;

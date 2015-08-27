@@ -97,7 +97,14 @@ class webfan extends fexe
 	 protected $Console;
 	 
 	 protected $isAdmin = false;
+	 
+	 protected static $_db = null;
 	
+	
+	 public static function db(){
+
+		return self::$_db;
+	 }
 	
 	 public function Request(mixed $args = null){
 	 	
@@ -746,6 +753,20 @@ class webfan extends fexe
 
 	public function _api_request_cmd($cmd, $settings){
 
+		
+	if(null === self::$_db){
+		self::$_db =\frdl\DB::_(array(
+		//self::$_db =  new \frdl\DB(array(
+		   'driver' => $this->data['config']['db-driver'],
+		   'host' => $this->data['config']['db-host'],
+		   'dbname' => $this->data['config']['db-dbname'],
+		   'user' => $this->data['config']['db-user'],
+		   'password' => $this->data['config']['db-pwd'],
+		   'pfx' => $this->data['config']['db-pfx'],
+		   
+		  ), true);
+	}	
+	
 		 
 		foreach($this->data['settings']->cli as $cmdpfx => $console){
 			$t = $console['cli.cmd.cli'];

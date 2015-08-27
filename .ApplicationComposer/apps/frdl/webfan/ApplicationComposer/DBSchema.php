@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 final class DBSchema extends DatabaseSchema
 {
-   const VERSION = '0.0.25';	
+   const VERSION = '0.0.35';	
 
 
    protected $db = null;	
@@ -59,7 +59,7 @@ final class DBSchema extends DatabaseSchema
    	 $this->settings($settings);
      $this->db = (null === $this->db) ?   \frdl\DB::_($this->settings, true) : $this->db;
    	  
-   	    $rootfile = (!is_string($rootfile)) ? 'config://FILES.composer' : $rootfile;
+   	    $rootfile = (!is_string($rootfile)) ? 'composer.json' : $rootfile;
   	 
    	 
    	 
@@ -113,12 +113,14 @@ final class DBSchema extends DatabaseSchema
           
              'table' => null,
              'sql' => array(
+             
                 "INSERT INTO " . $this->settings['pfx'] . $nodes . " 
                      SET 
+                     id=1,
                        id_parent=0,
-                      `id_root`='-8',
+                      `id_root`=0,
                       `table_alias`='".Project::ALIAS."',
-                      `file`='".(file_exists($rootfile) ? $this->db->quote($rootfile) : '')."'
+                      `file`='".(file_exists($rootfile) ? $rootfile : '')."'
                       
                       ",        
                       
@@ -146,8 +148,18 @@ final class DBSchema extends DatabaseSchema
           
              'table' => null,
              'sql' => array(
-        
+                     "INSERT INTO " . $this->settings['pfx'] . 'projects' . " 
+                     SET 
+                        `node`=1,
+                            `node_parent`=0,
+				            `node_root`=0,
+				            `public`=1,
+				            `title` ='Root Project',
+				            `description`='Root Project'
                       
+                      ",        
+                      
+
              ),
           ),      
           
@@ -367,6 +379,11 @@ final class DBSchema extends DatabaseSchema
                       `vendor`='frdl',
                       `package`='webfan'
                       ",
+                "INSERT INTO " . $this->settings['pfx'] . $packages . " 
+                     SET 
+                      `vendor`='frdl',
+                      `package`='package-fetcher'
+                      ",
 
       
                       
@@ -377,7 +394,19 @@ final class DBSchema extends DatabaseSchema
                        
     	     
     
-                       
+            Download::ALIAS => array(
+             'tablename' => 'downloads',
+             'ORM_CLASS' => '\frdl\ApplicationComposer\Download',
+             'exists' => false,
+             'version' => Download::VERSION,
+            
+             'table' => null,
+             'sql' => array(
+        
+                      
+             ),
+          ), 
+                                       
 
                                 
          Batch::ALIAS => array(
@@ -458,7 +487,7 @@ final class DBSchema extends DatabaseSchema
 			   *  @todo   update tabel : copy data to temp.table, drop table, create table
 			   * 
 			   */
-  	   	  if(!$this->isFresh($oldSchema->version, '0.0.25') ){
+  	   	  if(!$this->isFresh($oldSchema->version, '0.0.35') ){
 		  	 $report.= 'DROP Table: '.$t['table'].' ';
 		  	try{
 					 $this->db -> query("DROP TABLE `".$t['table']."`");   

@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Version  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.4';
+		   const VERSION = '0.0.7';
 		   const ALIAS = 'Versions';
 		   
 		   
@@ -48,7 +48,7 @@ class Version  extends \frdl\Crud {
 				  'version' => self::VERSION,
 				  'schema' => "(
 				      `id` BIGINT(255) NOT NULL AUTO_INCREMENT,
-				      `type` varchar(64) NOT NULL DEFAULT 'library',
+				      `type` varchar(64) NOT NULL DEFAULT 'package',
 				      `supported` TINYINT(1) NOT NULL DEFAULT '0',
 				      `ad` TINYINT(1) NOT NULL DEFAULT '0',
 				      `frdl` TINYINT(1) NOT NULL DEFAULT '0',
@@ -65,6 +65,8 @@ class Version  extends \frdl\Crud {
 				      `vendor` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' ,
 				      `package` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `description` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `keywords` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `url` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `dir` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `file_autoload` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `time` INT(11) NOT NULL DEFAULT '0',

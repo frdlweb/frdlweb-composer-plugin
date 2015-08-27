@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Installations  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.1';
+		   const VERSION = '0.0.2';
 		
 			# Your Table name 
 			protected $table = 'installations';
@@ -47,8 +47,8 @@ class Installations  extends \frdl\Crud {
 				  'schema' => "(
 				      `id` BIGINT(255) NOT NULL AUTO_INCREMENT,
 				      `complete` TINYINT(1) NOT NULL DEFAULT '0',
-				      `id_version_from` BIGINT(255) NOT NULL,
-				      `id_version_to` BIGINT(255) NOT NULL DEFAULT '0',
+				      `id_version_from` VARCHAR(255) NOT NULL,
+				      `id_version_to` VARCHAR(255) NOT NULL DEFAULT '0',
 				      `time` INT(11) NOT NULL DEFAULT '0',
 				      `dir_rollback` varchar(1024) COLLATE utf8_unicode_ci  DEFAULT NULL,
 				      `logfile` varchar(1024) COLLATE utf8_unicode_ci   DEFAULT NULL,

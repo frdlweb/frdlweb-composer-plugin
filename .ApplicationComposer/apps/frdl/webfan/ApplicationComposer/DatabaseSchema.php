@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 abstract class DatabaseSchema 
 {
-   const VERSION = '0.0.22';	
+   const VERSION = '0.0.30';	
 
 
    protected $db;	
@@ -89,16 +89,14 @@ abstract class DatabaseSchema
 	    $this->db = (null === $db) ?   \frdl\DB::_($this->settings, true) : $db;
 		$this->version = (null === $version) ? $this->getVersion() : $version;	
      	  
-   	   $schema = $this->schema();
+   	   $schema = $this->schema($settings);
       
       
       if(true === $checkTables || true === $createTables || true === $updateTables){
 	  	  $this->tables($tables);
-	  }
-      
-      if(true === $checkTables){
 	  	$this->check_tables($schema, $tables, $oldSchema);
 	  }
+      
 	  
 	  $report = '';
 	  
@@ -119,7 +117,7 @@ abstract class DatabaseSchema
   	   	 if(true === $t['exists']  && isset($oldSchema->tables[$alias])
   	   	  && $this->isFresh($oldSchema->tables[$alias]['version'], $schema->tables[$alias]['version']) )continue; 
   	   	  
-  	   	  if(!$this->isFresh($oldSchema->version, '0.0.22') ){
+  	   	  if(!$this->isFresh($oldSchema->version, '0.0.30') ){
 		  	 $report.= 'DROP Table: '.$t['table'].' ';
 		  	try{
 					 $this->db -> query("DROP TABLE `".$t['table']."`");   

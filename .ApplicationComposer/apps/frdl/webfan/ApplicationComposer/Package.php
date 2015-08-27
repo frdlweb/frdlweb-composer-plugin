@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Package extends \frdl\Crud {
 		
-		   const VERSION = '0.0.1';
+		   const VERSION = '0.0.4';
 		
 			# Your Table name 
 			protected $table = 'packages';
@@ -94,10 +94,17 @@ class Package extends \frdl\Crud {
 				return array(
 				  'version' => self::VERSION,
 				  'schema' => "(
+				          
+				         
                           `vendor` varchar(128) NOT NULL,
                           `package` varchar(128) NOT NULL,
+                          
                           `time_last_fetch_info` INT(11) NOT NULL DEFAULT '0',
-                           PRIMARY KEY (`vendor`,`package`)
+                          `url` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+                          `description` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+                            
+                           PRIMARY KEY ( `vendor`,`package`)
+                         
 				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ",
 				);
 			}
