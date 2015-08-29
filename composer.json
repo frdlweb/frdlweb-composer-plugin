@@ -113,7 +113,7 @@
     },    
     
     "provide" : {
-    	"frdl/package-fetcher" : "*",
+    	"frdl/package-fetcher" : "dev-master",
     	"frdl/-Flow" : "dev-master", 
         "phpclasses/source-loader": "0.9.17",
         "phpclasses/validate-formats": "5.0.4",
