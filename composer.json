@@ -77,8 +77,7 @@
     },
 
     "require-dev": {
-    	"frdl/package-fetcher" : "*",
-        "phine/phar" : "*",
+    	"phine/phar" : "*",
         "crodas/php-git":"*",
         "phpseclib/phpseclib": ">=0.3.10",
         "jquery/jquery-ui":"*",
@@ -114,6 +113,7 @@
     },    
     
     "provide" : {
+    	"frdl/package-fetcher" : "*",
     	"frdl/-Flow" : "dev-master", 
         "phpclasses/source-loader": "0.9.17",
         "phpclasses/validate-formats": "5.0.4",
