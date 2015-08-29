@@ -753,7 +753,7 @@ class webfan extends fexe
 
 	public function _api_request_cmd($cmd, $settings){
 
-		
+	try{
 	if(null === self::$_db){
 		self::$_db =\frdl\DB::_(array(
 		//self::$_db =  new \frdl\DB(array(
@@ -764,8 +764,12 @@ class webfan extends fexe
 		   'password' => $this->data['config']['db-pwd'],
 		   'pfx' => $this->data['config']['db-pfx'],
 		   
-		  ), true);
-	}	
+		  ), false);
+	}			
+	}catch(\Exception $e){
+		/* no explicit need of DB connection here */
+	}
+
 	
 		 
 		foreach($this->data['settings']->cli as $cmdpfx => $console){

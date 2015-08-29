@@ -190,6 +190,13 @@ abstract class CMD
    final public function invoke(&$Console = null, $argtoks){
    	   $this->Console = $Console;
    	   $this->argtoks = $argtoks;
+   	   
+   	   if(isset($this->argtoks['flags']['d'])){
+   	   	 ini_set('display_errors', 1);
+		 error_reporting(E_ALL);	   	
+	   }
+
+   	   
    	   $this->result =   new \frdl\ApplicationComposer\AjaxResult; 
    	   $this->result->type = 'print';
    	   $this->result->out = '';

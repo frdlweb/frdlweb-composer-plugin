@@ -215,8 +215,11 @@ class html extends CMD
 	 $p = new \frdl\ApplicationComposer\Package\Man(true);
 	 $p -> run('suggestions', $this->argtoks, $this->data['config'], $this);
 	$html.= '<div id="'.$tab.'" class="wd-tab">'   ;	 
-	 $p -> result($this->result);   
-    $html.= '</div>';	 
+	  $html.= $p ->html();   
+    $html.= '</div>';	
+    
+      $this->result->js.=  $p ->js(); 
+      
 	  return $html;		
 	}
 	protected function item_packages_main(){
@@ -228,9 +231,11 @@ class html extends CMD
 	 $p = new \frdl\ApplicationComposer\Package\Man(true);
 	 $p -> run('packages', $this->argtoks, $this->data['config'], $this);
 	 $html.= '<div id="'.$tab.'" class="wd-tab">'   ;	 
-	 $p -> result($this->result);   
+	  $html.= $p ->html();   
      $html.= '</div>';
-		   
+     
+	 $this->result->js.=  $p ->js(); 
+	 
 	  return $html;		
 	}	
 	protected function item_newpackage(){
@@ -265,7 +270,7 @@ class html extends CMD
  
     mod.Tabs.addTab('#window_main_frdl-webfan-pm-new', 'New', 'window_main_frdl-webfan-pm-new', true);  	   
     
-     mod.Tabs.addTab('#window_main_frdl-webfan-pm-all', 'Installed Packages', 'window_main_frdl-webfan-pm-all', true);     
+     mod.Tabs.addTab('#window_main_frdl-webfan-pm-all', 'Packages', 'window_main_frdl-webfan-pm-all', true);     
     	    
     mod.Tabs.addTab('#window_main_frdl-webfan-pm-frdl-suggestions', 'Suggestions', 'window_main_frdl-webfan-pm-frdl-suggestions', true);
     	   	   	    
@@ -413,14 +418,14 @@ class html extends CMD
 	}
 		
     protected function item_icontem(){
-
+      $frameID = 'wd-frame-frd-webfan-accounts-icontem';
 
 	 $html = '';
 	
 	 $html.= '<div id="window_main_frdl-webfan-icontem" class="wd-tab">'   ;
 	 $html.= '<h2 class="webfan-blue">Your Icontem Accounts</h2>';	
  
-        $html.= '<iframe src="https://accounts.icontem.com/edit" style="width:100%;height:432px; overflow:auto;" />';
+        $html.= '<iframe id="'.$frameID.'" src="https://accounts.icontem.com/edit" style="width:100%;height:432px; overflow:auto;" />';
   
   $html.='<table style="width:100%;border:none;vertical-align:top;">';
   $html.='<tr>';
@@ -433,7 +438,7 @@ class html extends CMD
 	 $html.='</div>';
   
    	 $html.='<div>';
-	 $html.='<legend>Composer <span>Password</span></legend>';
+	 $html.='<legend>Composer <span style="text-decoration:underline;" onclick="Dom.g(\''.$frameID.'\').setAttribute(\'src\', \'http://www.phpclasses.org/package_repositories.html?package=1\');">Password</span></legend>';
 	 $html.='<input type="password" id="composer-pwd-phpclasses" value="'.((isset($this->data['config']['composer-pwd-phpclasses'])) ? $this->data['config']['composer-pwd-phpclasses'] : '').'" />';
 	 $html.='<button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'composer-pwd-phpclasses\', Dom.g(\'composer-pwd-phpclasses\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button>';
 	 $html.='</div>';
@@ -447,7 +452,7 @@ class html extends CMD
 	 $html.='</div>';
   
    	 $html.='<div>';
-	 $html.='<legend>Composer <span>Password</span></legend>';
+	 $html.='<legend>Composer <span style="text-decoration:underline;" onclick="Dom.g(\''.$frameID.'\').setAttribute(\'src\', \'http://www.jsclasses.org/package_repositories.html?package=1\');">Password</span></legend>';
 	 $html.='<input type="password" id="composer-pwd-jsclasses" value="'.((isset($this->data['config']['composer-pwd-jsclasses'])) ? $this->data['config']['composer-pwd-jsclasses'] : '').'" />';
 	 $html.='<button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'composer-pwd-jsclasses\', Dom.g(\'composer-pwd-jsclasses\').value,null,$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig, true);">change</button>';
 	 $html.='</div>';

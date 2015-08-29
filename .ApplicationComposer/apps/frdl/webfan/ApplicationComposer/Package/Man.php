@@ -70,13 +70,106 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 		}
 	}
 	
+	
+	protected function task_packages(){
+		$divSerp = 'wd-frdl-webfan-pm-packages-main'.mt_rand(1000,9999);	
+	    $p = new \frdl\ApplicationComposer\Package(array(),  \frdl\xGlobal\webfan::db()->settings(),  \frdl\xGlobal\webfan::db()); 
+	  //	$packages = $p->all();
+	   $num = 25;
+	   $packages = $p->select( 0, $num, array('vendor' => 'ASC', 'package' => 'ASC'));
+	   // sort($packages);
+			
+		$this->html.='<div id="'.$divSerp.'">';
+		
+		
+		 foreach($packages as $num => $package){
+		 	$this->html.='<div class="data-box">';
+		 	
+		 	
+		 	$this->html.='<h2 class="webfan-blue" onclick="var p = this.getAttribute(\'data-package\'); 
+                 	  	     	var e = explode(\'/\', p);
+							   	$(this).package(\'c\', e[0], e[1]);"
+					  data-package="'.$package['vendor'].'/'.$package['package'].'" style="text-decoration:underline;">';
+		 	$this->html.= $package['vendor'].'/'.$package['package'];
+		 	$this->html.='</h2>';
+		 	if(isset($package['description'])){
+				$this->html.='<p>'.$package['description'].'</p>';
+			}
+		 	if(isset($package['url'])){
+				$this->html.='<p><a href="'.$package['url'].'" style="text-decoration:underline;" target="_blank">'.$package['url'].'</a></p>';
+			}
+			
+			
+		 	$this->html.='</div>';
+		 }
+		 
+		 
+		$this->html.='</div>';	
+		
+		
+		$this->html.='
+		  <button onclick="
+		   $.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset =  $.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset + '.intval($num).';
+	        $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cmd(
+	            \'frdl pm select --start=\' + $.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset + \' --limit='.$num.' -b\',  function(o){
+	             	  $.each(o.packages, function(_k,i){
+                 	  	     i.name = i.vendor + \'/\' + i.package;
+                 	  	     var d = Dom.create(\'div\'), p, p2, h, a;
+                 	  	     d.setAttribute(\'class\', \'data-box\');
+                 	  	     h = Dom.create(\'h2\');
+                 	  	     h.setAttribute(\'class\', \'webfan-blue\');
+                 	  	     h.setAttribute(\'data-package\', i.name);
+                 	  	     h.style.textDecoration=\'underline\';
+                 	  	     Dom.addText(i.name, h);
+                 	  	     h.onclick=function(ev){
+                 	  	     	var p = this.getAttribute(\'data-package\'); 
+                 	  	     	var e = explode(\'/\', p);
+							   	$(this).package(\'c\', e[0], e[1]);
+							 };
+                 	  	     Dom.add(h,d);
+                 	  	    
+                 	  	     if(\'undefined\' !== typeof i.description){ 
+                 	  	       p = Dom.create(\'p\');
+                 	  	       Dom.addText(i.description, p);
+                 	  	       Dom.add(p,d);
+                 	  	     }
+                 	  	     
+                  	  	     if(\'undefined\' !== typeof i.url){
+                 	  	       p2 = Dom.create(\'p\');
+                 	  	       a =  Dom.create(\'a\');
+                 	  	       a.setAttribute(\'href\', i.url);
+                 	  	       a.style.textDecoration=\'underline\';
+                 	  	       Dom.addText(i.url, a);
+                 	  	       a.setAttribute(\'target\', \'_blank\');
+                 	  	       Dom.add(a,p2);
+                 	  	       Dom.add(p2,d);							 	
+							 }
+                	  	     
+                 	  	     
+                 	  	   
+                 	  	     Dom.add(d, Dom.g(\''.$divSerp.'\'));  
+                 	  	}); 		                	
+	        });	    
+		  "><span>More</span>...</button>
+		';
+		
+		
+		$this->js.= " 
+		$.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset = ".$num.";
+
+		";
+		
+	}
+	
 	protected function task_newpackage(){
 		$form = 'form-wd-frdl-webfan-package-new'.mt_rand(1000,9999);
 		$divSerp = 'wd-frdl-webfan-pm-new-serp'.mt_rand(1000,9999);
 
-		$this->html.='<form id="'.$form.'" action="#">';
+		$this->html.='<form id="'.$form.'" action="#" method="post">';
 		$this->html.='<div>';
-		 $this->html.='<strong>Find</strong> <input type="text" name="packagename" value="vendor/package" />';
+		 $this->html.='<strong>Find</strong> <input type="text" name="packagename" value="vendor/package"
+		  onclick="if(\'vendor/package\' === this.value)this.value=\'\';" 
+		  />';
 		 
 		 /**
 		 * 
@@ -89,25 +182,44 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
                                              return obj;
                                         }, {});		 
                  var cmd = \'frdl pm find \' + base64_decode(\'Ig==\') + fd.packagename + base64_decode(\'Ig==\') ;
-                 cmd += \' -bcs\';
+                 cmd += \' -bc\';
+                 try{
+				  cmd += (\'on\' === fd.save) ? \'s\' : \'\';	
+				 }catch(err){
+				 	console.warn(err);
+				 }
+                
+                 cmd += (true === $.WebfanDesktop.o.debug) ? \'d\' : \'\';
+                 Dom.g(\''.$divSerp.'\').innerHTML = \'<img src=\' + base64_decode(\'Ig==\') + \'http://images.webfan.de/ajax-loader_2.gif\' + base64_decode(\'Ig==\') + \' alt=\' + base64_decode(\'Ig==\') + \'lade...\' + base64_decode(\'Ig==\') + \' style=\' + base64_decode(\'Ig==\') + \'border:none;\' + base64_decode(\'Ig==\') + \' class=\' + base64_decode(\'Ig==\') + \'img-ajax-loader\' + base64_decode(\'Ig==\') + \' />\';
                  $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cmd(cmd,  function(o){
                  	  Dom.g(\''.$divSerp.'\').innerHTML = \'\';
-                 	  $.each(o.searchresults, function(k,i){
+                 	  $.each(o.searchresults, function(k,_i){
+                 	  	  $.each(_i, function(_k,i){
                  	  	     var d = Dom.create(\'div\'), p, p2, h, a;
                  	  	     d.setAttribute(\'class\', \'data-box\');
                  	  	     h = Dom.create(\'h2\');
                  	  	     h.setAttribute(\'class\', \'webfan-blue\');
+                 	  	     h.setAttribute(\'data-package\', i.name);
+                 	  	     h.style.textDecoration=\'underline\';
                  	  	     Dom.addText(i.name, h);
+                 	  	     h.onclick=function(ev){
+                 	  	     	var p = this.getAttribute(\'data-package\'); 
+                 	  	     	var e = explode(\'/\', p);
+							   	$(this).package(\'c\', e[0], e[1]);
+							 };
                  	  	     Dom.add(h,d);
-                 	  	     
-                 	  	     p = Dom.create(\'p\');
-                 	  	     Dom.addText(i.description, p);
-                 	  	     Dom.add(p,d);
+                 	  	    
+                 	  	     if(\'undefined\' !== typeof i.description){ 
+                 	  	       p = Dom.create(\'p\');
+                 	  	       Dom.addText(i.description, p);
+                 	  	       Dom.add(p,d);
+                 	  	     }
                  	  	     
                   	  	     if(\'undefined\' !== typeof i.url){
                  	  	       p2 = Dom.create(\'p\');
                  	  	       a =  Dom.create(\'a\');
                  	  	       a.setAttribute(\'href\', i.url);
+                 	  	       a.style.textDecoration=\'underline\';
                  	  	       Dom.addText(i.url, a);
                  	  	       a.setAttribute(\'target\', \'_blank\');
                  	  	       Dom.add(a,p2);
@@ -117,12 +229,17 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
                  	  	     
                  	  	   
                  	  	     Dom.add(d, Dom.g(\''.$divSerp.'\'));  
+                 	  	     });
                  	  	}); 	
                  }, true);      
                                   
 		 ">';
 		  $this->html.='Search';
 		 $this->html.='</button>';
+		 
+		 $this->html.='&nbsp;';
+		 $this->html.='<input type="checkbox" name="save" />';
+		 $this->html.=' <span>Save found packages</span>';
 		 
 		$this->html.='</div>';
 		
