@@ -52,7 +52,8 @@ class Installer implements \frdl\webfan\Config\Install\Installable
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.0')$this->lid = 83;		 
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.1')$this->lid = 84;		
 		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.2')$this->lid = 85;	
-		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.3')$this->lid = 86;
+		 
+		 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.2.4')$this->lid = 86;
 	//	 if(isset($_REQUEST['version']) && $_REQUEST['version'] === '2.1.2 download from pragmamx.org')$this->lid = 0;	 		 
 	}
 	
@@ -70,7 +71,7 @@ class Installer implements \frdl\webfan\Config\Install\Installable
 			return $html;
         }   		
 		
-		 if($this->lid > 66 && version_compare(PHP_VERSION, '5.4', '>=') !== TRUE){
+		 if($this->lid >= 86 && version_compare(PHP_VERSION, '5.4', '>=') !== TRUE){
         	$html.= $this->e($this->I->lang('__REQUIRED_PHP_VERSION_FAILED_1__').'5.4' );
 			return $html;		 	
 		 }

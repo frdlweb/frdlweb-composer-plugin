@@ -230,11 +230,21 @@ class html extends CMD
 	
 	 $p = new \frdl\ApplicationComposer\Package\Man(true);
 	 $p -> run('packages', $this->argtoks, $this->data['config'], $this);
+	 
+	 $p2 = new \frdl\ApplicationComposer\Package\Man(true);
+	 $p2 -> run('newpackage', $this->argtoks, $this->data['config'], $this);
+	 
 	 $html.= '<div id="'.$tab.'" class="wd-tab">'   ;	 
+     
+      $html.= $p2 ->html(); 
+	  $this->js.=  $p2 ->js();  	 
+	 
 	  $html.= $p ->html();   
+	  $this->result->js.=  $p ->js(); 
+  	   
      $html.= '</div>';
      
-	 $this->result->js.=  $p ->js(); 
+	 
 	 
 	  return $html;		
 	}	
@@ -325,7 +335,7 @@ class html extends CMD
 	public function check(&$html, $tab, $check_admin = true, $check_errors_wizard = true){
 		
   	    if(true === $check_admin && (!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin'])){
-	     	 $html.= '<div id="'.$tab.'" class="wd-tab">'. $this->item_login() .'</div>';
+	     	 $html.= '<div id="'.$tab.'" class="wd-tab">'. $this->item_login(false) .'</div>';
 	     	  $this->result->js .= "      
 	     	    mod.Tabs.openTab('window_main_frdl-webfan-login');
 	     	  ";
@@ -680,7 +690,7 @@ class html extends CMD
 	   	 $this->result->js .= " 
 			try{
 		    	$.WebfanDesktop.Registry.Programs['nachrichtendienst'].post({
-		    		text : '<span>Missing database tables! Please run the database setup!</span>',
+		    		text : '<span>Missing or obsolete database tables! Please run the database setup!</span>',
 		    		type : 'error',
 		    		show : true,
 		    		callback : function(){\$('#window_frdl-webfan').show();$.WebfanDesktop.Registry.Programs['frdl-webfan'].html('db');},
@@ -744,11 +754,11 @@ class html extends CMD
 	}
 	
        
-    protected function item_login(){
+    protected function item_login($isTab = true){
 		$html = '';
 
 
-      $html.= '<div id="window_main_frdl-webfan-login" class="wd-tab">'   ;
+     if(true === $isTab) $html.= '<div id="window_main_frdl-webfan-login" class="wd-tab">'   ;
       
 	  if(isset($this->aSess['isAdmin']) && true === $this->aSess['isAdmin']){
 	  		 $html.= '<p><span>You are logged in as Admin.</span> <button class="wd-btn-no" onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].logout();" >Logout</button></p>';
@@ -802,7 +812,7 @@ class html extends CMD
   
 	  }
 
-	   $html.='</div>';
+	 if(true === $isTab)  $html.='</div>';
 	   
 	    $this->loginformIsOut = true;
 		return $html;

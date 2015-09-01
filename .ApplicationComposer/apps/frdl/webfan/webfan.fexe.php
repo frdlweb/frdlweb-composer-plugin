@@ -379,13 +379,20 @@ class webfan extends fexe
 	   global $include;	
 	   $this->data['INSTALLER_PHAR_AVAILABLE'] = '1';
 	   $f = ( false !== strpos(\webdof\wURI::getInstance()->getU()->location, 'install.phar') ) ? 'install.phar' : 'install.php';
+	   
+	   /*
+       $f2 = ( false !== file_exists($this->data['DIR'] . 'install.phar') ) ? 'install.phar/'
+                   : ( false !== file_exists($this->data['DIR'] . 'install.php') ) ? 'install.php/' : '';	   
+	   */
+       $f2 = (  file_exists($this->data['DIR'] . 'install.phar') || 'install.phar' === basename(__FILE__) ) ? 'install.phar/'
+                   : ( file_exists( $this->data['DIR'] .'install.php') ) ? 'install.php/' : '';	   	   
+	   
 	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].$f.'/api.php';	
 	   $this->data['tpl_data']['EXTRA_PMX_URL'] =  $this->data['tpl_data']['URL'].$f.'/pragmamx.php';	
 	   $this->data['tpl_data']['INSTALLER'] = 'phar';
        $this->data['PHAR_INCLUDE'] = str_replace('phar://', '',$include);  	
        
-       $f2 = ( false !== file_exists($this->data['DIR'] . 'install.phar') ) ? 'install.phar/'
-                   : ( false !== file_exists($this->data['DIR'] . 'install.php') ) ? 'install.php/' : '';
+
        $this->data['tpl_data']['EXTRA_PHAR_URL'] = $this->data['tpl_data']['URL'].$f2.'api.php';	
        
        
@@ -717,9 +724,13 @@ class webfan extends fexe
 			 		    	$(\'#window_\' + \'frdl-webfan\').find(\'#wd-li-frdl-webfan-installPHAR\').find(\'u\').html(\'Upate\');
 			 		    	';		 			
 								
+
 					 	   	$this->data['data_out']->js.= '
+			                	$(\'#window_main_postbox-ttt-all\').wdPostbox(\'deleteMessage\', \'install-frdl-webfan-installer-'.$this->data['config_new']['VERSION'].'\',  \'update\');	 	   	
+					 	   	
+					 	   	
 					 	   	alert(\'Please set up the configuration next...\');
-			 		    	window.location.href = "'.$this->data['config']['URL'].'#app=frdl-webfan&modul=formConfig";
+			 		    	window.location.href = "'.$this->data['config']['URL'].'#app=frdl-webfan&modul=formConfig&rand='.mt_rand(1000,999999999999).'";
 			 		    	';															 		
 		             
 		              \webdof\wResponse::status(201);

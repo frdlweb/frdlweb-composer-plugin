@@ -72,6 +72,9 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 	
 	
 	protected function task_packages(){
+		
+		
+		
 		$divSerp = 'wd-frdl-webfan-pm-packages-main'.mt_rand(1000,9999);	
 	    $p = new \frdl\ApplicationComposer\Package(array(),  \frdl\xGlobal\webfan::db()->settings(),  \frdl\xGlobal\webfan::db()); 
 	  //	$packages = $p->all();
@@ -110,6 +113,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 		$this->html.='
 		  <button onclick="
 		   $.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset =  $.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset + '.intval($num).';
+		    Dom.g(\''.$divSerp.'\').innerHTML += \'<img src=\' + base64_decode(\'Ig==\') + \'http://images.webfan.de/ajax-loader_2.gif\' + base64_decode(\'Ig==\') + \' alt=\' + base64_decode(\'Ig==\') + \'lade...\' + base64_decode(\'Ig==\') + \' style=\' + base64_decode(\'Ig==\') + \'border:none;\' + base64_decode(\'Ig==\') + \' class=\' + base64_decode(\'Ig==\') + \'img-ajax-loader\' + base64_decode(\'Ig==\') + \' />\';
 	        $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cmd(
 	            \'frdl pm select --start=\' + $.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset + \' --limit='.$num.' -b\',  function(o){
 	             	  $.each(o.packages, function(_k,i){
@@ -148,8 +152,9 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
                  	  	     
                  	  	   
                  	  	     Dom.add(d, Dom.g(\''.$divSerp.'\'));  
-                 	  	}); 		                	
-	        });	    
+                 	  	}); 		            
+              	     $(\'.img-ajax-loader\').hide();    	
+	        }, true);	    
 		  "><span>More</span>...</button>
 		';
 		
@@ -192,7 +197,6 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
                  cmd += (true === $.WebfanDesktop.o.debug) ? \'d\' : \'\';
                  Dom.g(\''.$divSerp.'\').innerHTML = \'<img src=\' + base64_decode(\'Ig==\') + \'http://images.webfan.de/ajax-loader_2.gif\' + base64_decode(\'Ig==\') + \' alt=\' + base64_decode(\'Ig==\') + \'lade...\' + base64_decode(\'Ig==\') + \' style=\' + base64_decode(\'Ig==\') + \'border:none;\' + base64_decode(\'Ig==\') + \' class=\' + base64_decode(\'Ig==\') + \'img-ajax-loader\' + base64_decode(\'Ig==\') + \' />\';
                  $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cmd(cmd,  function(o){
-                 	  Dom.g(\''.$divSerp.'\').innerHTML = \'\';
                  	  $.each(o.searchresults, function(k,_i){
                  	  	  $.each(_i, function(_k,i){
                  	  	     var d = Dom.create(\'div\'), p, p2, h, a;
@@ -230,7 +234,9 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
                  	  	   
                  	  	     Dom.add(d, Dom.g(\''.$divSerp.'\'));  
                  	  	     });
+                 	  	      
                  	  	}); 	
+                 	  	     $(\'.img-ajax-loader\').hide();
                  }, true);      
                                   
 		 ">';

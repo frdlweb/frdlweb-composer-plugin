@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Version  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.7';
+		   const VERSION = '0.0.8';
 		   const ALIAS = 'Versions';
 		   
 		   
@@ -55,7 +55,7 @@ class Version  extends \frdl\Crud {
 				      `webfan` TINYINT(1) NOT NULL DEFAULT '0',
 				      `installable` TINYINT(1) NOT NULL DEFAULT '0',
 				      `installed` TINYINT(1) NOT NULL DEFAULT '0',
-				      `redistribute` TINYINT(1) NOT NULL DEFAULT '1',
+				      `redistribute` TINYINT(1) NOT NULL DEFAULT '0',
 				      `composer_json` TINYINT(1) NOT NULL DEFAULT '0',
 				      `autoloading` TINYINT(1) NOT NULL DEFAULT '0',
 				      `state` enum('test','alpha','beta','dev','stable','unknown') NOT NULL DEFAULT 'unknown',

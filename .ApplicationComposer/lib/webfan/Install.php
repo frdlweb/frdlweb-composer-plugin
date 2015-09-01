@@ -715,13 +715,15 @@ class Install
 			 
 	     $html.= '<td style="width:250px;">'; 
 		  $html.= '<select id="PMX_VERSION" name="version" style="color:green;width:100%;">';
+	  /*
 	      $html.= '<option value="2.2.2" style="color:green;" onclick="Dom.get(\'PMX_VERSION\').style.color=\'green\';"> PragmaMx 2.2.2</option>';		
 		//  $html.= '<option value="2.1.2 download from pragmamx.org" style="color:green;" onclick="Dom.get(\'PMX_VERSION\').style.color=\'green\';"> PragmaMx 2.1.2 download from pragmamx.org</option>';		
-		  $html.= '<option value="2.1.2" style="color:green;" onclick="Dom.get(\'PMX_VERSION\').style.color=\'green\';" selected> PragmaMx 2.1.2 ('.$this->lang('__RECOMMENDED__').') download from webfan.de</option>';
+		  $html.= '<option value="2.1.2" style="color:green;" onclick="Dom.get(\'PMX_VERSION\').style.color=\'green\';"> PragmaMx 2.1.2 ('.$this->lang('__RECOMMENDED__').') download from webfan.de</option>';
 		  $html.= '<option value="2.2.1" style="color:red;" onclick="Dom.get(\'PMX_VERSION\').style.color=\'red\';"> PragmaMx 2.2.1 BETA ('.$this->lang('__TEST_ONLY__').'!!!)</option>';
 		  $html.= '<option value="2.2.0" style="color:red;" onclick="Dom.get(\'PMX_VERSION\').style.color=\'red\';"> PragmaMx 2.2.0 BETA ('.$this->lang('__TEST_ONLY__').'!!!)</option>';
 	      $html.= '<option value="2.2.3" style="color:red;" onclick="Dom.get(\'PMX_VERSION\').style.color=\'red\';"> PragmaMx 2.2.3 BETA ('.$this->lang('__TEST_ONLY__').'!!!)</option>';
-
+	    */
+	      $html.= '<option value="2.2.4" style="color:green;" onclick="Dom.get(\'PMX_VERSION\').style.color=\'green\';" selected> PragmaMx 2.2.4</option>';	
 		  $html.= '</select> ';
 		  
 		 $html.= '</td>';
