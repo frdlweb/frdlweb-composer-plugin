@@ -27,7 +27,12 @@ $(document).ready(function() {
       modules : [
         function(){
 	   $.ApplicationComposerOpen({
- 	    
+ 		loc : {
+			url : window.location,
+			api_url : '',
+			EXTRA_PMX_URL : '',
+			EXTRA_PHAR_URL : ''
+		}	    
        });	
 	},
 	function(){
