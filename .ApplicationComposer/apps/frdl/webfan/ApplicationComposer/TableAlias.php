@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class TableAlias  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.2';
+		   const VERSION = '0.0.5';
 		   const ALIAS = 'TableAlias';
 		   
 			# Your Table name 
@@ -46,11 +46,13 @@ class TableAlias  extends \frdl\Crud {
 				return array(
 				  'version' => self::VERSION,
 				  'schema' => "(
-                            `table_alias`  varchar(32) NOT NULL,
-                            `table` varchar(128) NOT NULL,
+                            `table_alias`  varchar(64) NOT NULL,
+                            `version` varchar(64) NOT NULL,
+                            `table` varchar(256) NOT NULL,
                             `comment` varchar(128) NOT NULL,
+                            `schema` BLOB,
                         PRIMARY KEY (`table_alias`)
-				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
+				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ",
 				);
 			}
 			
@@ -59,8 +61,10 @@ class TableAlias  extends \frdl\Crud {
 	        public function field($label = null){
 				$l = array(
 				 'table_alias' => 'Table Alias',
+				 'version' => 'version',
 				 'table' => 'Table Realname',
 				 'comment' => 'comment',
+				 'schema' => 'schema',
 				);
 				if(null === $label){
 					return $l;

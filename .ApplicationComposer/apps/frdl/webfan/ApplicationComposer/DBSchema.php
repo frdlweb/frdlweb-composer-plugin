@@ -30,19 +30,20 @@ namespace frdl\ApplicationComposer;
  
 final class DBSchema extends DatabaseSchema
 {
-   const VERSION = '0.0.35';	
+   const VERSION = '0.0.40';	
 
-
+   public static $s = null;
+   
    protected $db = null;	
    protected $tables;
-   protected $_tables;   
+   protected $_tables = null;   
    protected $settings = array();
 		
 	function __construct($settings = null, \frdl\DB &$db = null){
-        $this->settings($settings);
-        $this->db = (null === $db) ?   \frdl\DB::_($this->settings, true) : $db;
+        parent::__construct($settings, $db);
 	}
 	
+
     public function save_schema($l, $linemax = 128){
        $bs = new \frdl\bs;	
  	  return $bs->serialize($l);
@@ -57,7 +58,7 @@ final class DBSchema extends DatabaseSchema
 	
    public function schema($settings = null, $rootfile = null){
    	 $this->settings($settings);
-     $this->db = (null === $this->db) ?   \frdl\DB::_($this->settings, true) : $this->db;
+     $this->db = (null === $this->db) ?  \frdl\xGlobal\webfan::db() : $this->db;
    	  
    	    $rootfile = (!is_string($rootfile)) ? 'composer.json' : $rootfile;
   	 
@@ -90,7 +91,7 @@ final class DBSchema extends DatabaseSchema
              ),
           ),      	  	      
    	      
-          'Labels' => array(
+          Label::ALIAS => array(
              'tablename' => 'labels',
              'ORM_CLASS' => '\frdl\ApplicationComposer\Label',
              'exists' => false,
@@ -105,7 +106,7 @@ final class DBSchema extends DatabaseSchema
           
           
           
-            'Nodes' => array(
+            Node::ALIAS => array(
              'tablename' => $nodes,
              'ORM_CLASS' => '\frdl\ApplicationComposer\Node',
              'exists' => false,
@@ -127,7 +128,7 @@ final class DBSchema extends DatabaseSchema
              ),
           ),        
           
-         'Edges' => array(
+         Edge::ALIAS => array(
              'tablename' => 'edges',
              'ORM_CLASS' => '\frdl\ApplicationComposer\Edge',
              'exists' => false,
@@ -216,7 +217,7 @@ final class DBSchema extends DatabaseSchema
           * end of first ones
           */
             	      
-           'Repositories' => array(
+           Repository::ALIAS => array(
              'tablename' => $repos,
              'ORM_CLASS' => '\frdl\ApplicationComposer\Repository',
              'exists' => false,
@@ -224,10 +225,13 @@ final class DBSchema extends DatabaseSchema
           
              'table' => null,
              'sql' => array(
+             
+             
                 "INSERT INTO " . $this->settings['pfx'] . $repos . " 
                      SET 
                       _use=1,
                       def=1,
+                       `priority`=8,
                       `name`='Packagist',
                       `host`='packagist.org',
                       `homepage`='https://packagist.org/',
@@ -238,8 +242,9 @@ final class DBSchema extends DatabaseSchema
 
                  "INSERT INTO " . $this->settings['pfx'] . $repos . " 
                      SET 
-                      _use=1,
+                      _use=0,
                       def=1,
+                       `priority`=0,
                       `name`='Composer [Package]',
                       `host`='github.com',
                       `homepage`='https://github.com/composer/composer',
@@ -250,8 +255,9 @@ final class DBSchema extends DatabaseSchema
 
                  "INSERT INTO " . $this->settings['pfx'] . $repos . " 
                      SET 
-                      _use=1,
+                      _use=0,
                       def=1,
+                       `priority`=0,
                       `name`='PragmaMx [Package]',
                       `host`='www.pragmamx.org',
                       `homepage`='http://www.pragmamx.org',
@@ -264,6 +270,7 @@ final class DBSchema extends DatabaseSchema
                      SET 
                       _use=1,
                       def=1,
+                       `priority`=0,
                       `name`='PHPclasses.org',
                       `host`='phpclasses.org',
                       `homepage`='http://webfan.users.phpclasses.org',
@@ -274,8 +281,9 @@ final class DBSchema extends DatabaseSchema
 
                  "INSERT INTO " . $this->settings['pfx'] . $repos . " 
                      SET 
-                      _use=1,
+                      _use=0,
                       def=1,
+                       `priority`=0,
                       `name`='JSclasses.org',
                       `host`='jsclasses.org',
                       `homepage`='http://webfan.users.jsclasses.org',
@@ -286,15 +294,29 @@ final class DBSchema extends DatabaseSchema
                                           
                    "INSERT INTO " . $this->settings['pfx'] . $repos . " 
                      SET 
-                      _use=1,
+                      _use=0,
                       def=1,
+                       `priority`=9,
                       `name`='Webfan',
                       `host`='api.webfan.de',
                       `homepage`='http://www.webfan.de',
                       `description`='Webfan Software Server',
                       `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\webfan')."'
                       
-                      ",                     
+                      ",     
+                                          
+                   "INSERT INTO " . $this->settings['pfx'] . $repos . " 
+                     SET 
+                      _use=0,
+                      def=1,
+                       `priority`=10,
+                      `name`='Local',
+                      `host`='localhost',
+                      `homepage`='frdl://repository.webfan/ApplicationComposer/',
+                      `description`='Webfan Software Server',
+                      `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\webfan')."'
+                      
+                      ",                        
              ),
           ),  	      
    	        	      
@@ -445,84 +467,9 @@ final class DBSchema extends DatabaseSchema
    }	
 	
 	
-   public function check(&$schema = null, &$tables = null, $version = null,
-                           $checkTables = false, $createTables = false, $updateTables = false,
-                            \frdl\DB &$db = null, $settings = null, $oldSchema = null, $rootfile = null){
-     	$this->settings($settings);
-	    $this->db = (null === $db) ?   \frdl\DB::_($this->settings, true) : $db;
-		$this->version = (null === $version) ? $this->getVersion() : $version;	
-     	  
-   	   $schema = $this->schema($settings, $rootfile);
-      
-      
-      if(true === $checkTables || true === $createTables || true === $updateTables){
-	  	  $this->tables($tables);
-	  }
-      
-      if(true === $checkTables){
-	  	$this->check_tables($schema, $tables, $oldSchema);
-	  }
-	  
-	  $report = '';
-	  
 
-	  if(true === $createTables || true === $updateTables ){
-	    $report .= $this->create_tables($schema, $oldSchema); 	
-	  }
+   
 
-	  
-	  
-	  return $report;
-   }	
-   
-   
-   public function create_tables($schema, $oldSchema = null){
-   	 $report = '';
-		   foreach($schema->tables as $alias => $t){
-  	   	 if(true === $t['exists']  && isset($oldSchema->tables[$alias])
-  	   	  && $this->isFresh($oldSchema->tables[$alias]['version'], $schema->tables[$alias]['version']) )continue; 
-  	   	  
-  	   	  /**
-			   * 
-			   *  @todo   update tabel : copy data to temp.table, drop table, create table
-			   * 
-			   */
-  	   	  if(!$this->isFresh($oldSchema->version, '0.0.35') ){
-		  	 $report.= 'DROP Table: '.$t['table'].' ';
-		  	try{
-					 $this->db -> query("DROP TABLE `".$t['table']."`");   
-				}catch(\Exception $e){
-					trigger_error($e->getMessage(), E_USER_WARNING);
-					$report.= $e->getMessage();
-				}
-		  }
-		  
-			 $report.= 'Create Table: '.$t['table'].' ';
-			 $c = $this->i($alias); 
-			 $c->install();
-			 
-			 foreach($t['sql'] as $num => $q){
-			 	try{
-					 $this->db -> query($q);
-					 $Alias = new $schema->tables['TableAlias']['ORM_CLASS'];
-					 $Alias->find($alias);
-					 if(!$Alias->find($alias)){
-						 $Alias->table_alias = $alias;
-					     $Alias->table = $t['table'];
-				         $Alias->comment = $schema->tables[$alias]['ORM_CLASS'];		
-				         $Alias->create();		 	
-					 }
-
-				}catch(\Exception $e){
-					trigger_error($e->getMessage(), E_USER_WARNING);
-					$report.= $e->getMessage();
-				}
-			 	 
-			 }
-	   }	  
-   	  return $report;
-   }
-   
  
 
 			

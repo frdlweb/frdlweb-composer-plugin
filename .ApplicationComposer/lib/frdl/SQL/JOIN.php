@@ -26,55 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\ApplicationComposer;
- 
-class Node  extends \frdl\Crud {
-		
-		   const VERSION = '0.0.7';
-		   const ALIAS = 'Nodes';
-		
-			# Your Table name 
-			protected $table = 'nodes';
-			
-			# Primary Key of the Table
-			protected $pk	 = 'id';
-			
+namespace frdl\SQL;
 
-	
-				
-			public function shema(){
-				return array(
-				  'version' => self::VERSION,
-				  'schema' => "(
-				      `id` BIGINT(255) NOT NULL AUTO_INCREMENT,
-				      `id_parent`  BIGINT(255) NOT NULL,
-				      `id_root`  BIGINT(255) NOT NULL DEFAULT '-1',
-				      `table_alias`  varchar(32) NOT NULL DEFAULT '',
-				      `file`  varchar(1024) NOT NULL,
-				      PRIMARY KEY (`id`)
-				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=0",
-				);
-			}
-			
 
-			
-	        public function field($label = null){
-				$l = array(
-				 'id' => '#ID',
-				 'id_parent' => 'ID Parent',
-				 'id_root' => 'ID of tree root',
-				
-				 'table_alias' => 'Alias of the items table',
-				 'file' => 'Filepath',
-				 
-				);
-				if(null === $label){
-					return $l;
-				}
-				
-				return (isset($l[$label])) ? $l[$label] : null;
-			}
-			
+final class JOIN
+{
+	const WORD = 'JOIN';
+	protected $TYPE = '';
+	protected $SUBJECT = null;
+	protected $ON = null;
 	
-			
+	
+	public function __consrtruct($TYPE = '', $SUBJECT = null, $ON = null){
+		$types = array('left', 'right', 'inner', 'outer'  , '');
+		foreach(explode($this->tok(), $TYPE) as $TypeTok){
+			if(!in_array($TypeTok, $types )){
+				trigger_error('Invalid JOIN token: '. $TypeTok .' in '.__METHOD__, E_USER_ERROR);
+				return;
+			}
+		}
+		
+		$this->TYPE = $TYPE;
+		
+		$this->SUBJECT = (is_array($SUBJECT) || is_string($SUBJECT) || is_subclass_of($SUBJECT, 'Query') ) ? $SUBJECT : null;
+		$this->ON = $ON;
 	}
+	
+	public function tok(){
+		return Query::TOK ;
+	}
+	
+	public function __toString(){
+		$str = $this->TYPE . $this->tok() . self::WORD . $this->tok() ;
+		if(is_array($this->SUBJECT )){
+			$str.= $this->SUBJECT ['table']. $this->tok() .  $this->SUBJECT ['alias'];
+		}elseif(is_string( $this->SUBJECT )){
+			$str .= $this->SUBJECT ;
+		}elseif( is_subclass_of($this->SUBJECT , 'Query')){
+	     	$this->SUBJECT ->query($q);
+			$str .= $q;
+		}
+		
+		$str .= $this->ON;
+		
+		return $str;
+	}
+}

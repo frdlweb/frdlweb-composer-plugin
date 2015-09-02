@@ -30,7 +30,8 @@ namespace frdl\ApplicationComposer;
  
 class Repository  Extends \frdl\Crud {
 		
-		   const VERSION = '0.0.4';
+		   const VERSION = '0.0.7';
+		   const ALIAS = 'Repositories';
 		
 			# Your Table name 
 			protected $table = 'repositories';
@@ -47,6 +48,7 @@ class Repository  Extends \frdl\Crud {
 				  'schema' => "(
 				      `_use` tinyint(1) NOT NULL DEFAULT '1',
 				      `def` tinyint(1) NOT NULL DEFAULT '0',
+				      `priority` INT(11) NOT NULL DEFAULT '0',
 				      `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `host` varchar(256) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `homepage` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -63,6 +65,7 @@ class Repository  Extends \frdl\Crud {
 				$l = array(
 				 '_use' => 'Use this repository',
 				 'def' => 'Is default repository?',
+				 'priority' => 'Listing priority',
 				 'name' => 'Name',
 				 'host' => 'Host',
 				 'homepage' => 'Homepage',

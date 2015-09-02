@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Batch  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.1';
+		   const VERSION = '0.0.3';
 		   const ALIAS = 'Batch';
 		   
 			# Your Table name 
@@ -47,19 +47,29 @@ class Batch  extends \frdl\Crud {
 				  'version' => self::VERSION,
 				  'schema' => "(
   `pid` int(11) NOT NULL,
+  `pos` int(11) NOT NULL DEFAULT '0',
+  `errors` int(11) NOT NULL DEFAULT '0',
   `time` int(11) NOT NULL DEFAULT '0',
+  `time_scheduled` int(11) NOT NULL DEFAULT '0',
+  `time_interval` int(11) NOT NULL DEFAULT '0',
   `time_complete` int(11) NOT NULL DEFAULT '0',
   `time_start` int(11) NOT NULL DEFAULT '0',
   `time_expires` int(11) NOT NULL DEFAULT '0',
   `uuid` varchar(64) NOT NULL,
   `group_uuid` varchar(64) NOT NULL,
+  `batch_uuid` varchar(64) NOT NULL,
+  `previous_uuid` varchar(64) NOT NULL,
   `next_uuid` varchar(64) NOT NULL,
+  `comment` varchar(128) NOT NULL,
+  `out` varchar(128) NOT NULL,
   `file` varchar(1024) NOT NULL,
-  `file_result_callback` varchar(1024) NOT NULL,
+  `logfile` varchar(1024) NOT NULL,
   PRIMARY KEY (`uuid`),
+  KEY `time_scheduled` (`time_scheduled`),
+  KEY `time_complete` (`time_complete`),
   KEY `group_uuid` (`group_uuid`),
-  KEY `next_uuid` (`next_uuid`),
-  KEY `time_start` (`time_start`)
+  KEY `batch_uuid` (`batch_uuid`),
+  KEY `batch_uuid2` (`batch_uuid`, `pos`)
 				     ) ENGINE=InnoDB DEFAULT CHARSET=latin1; ",
 				);
 			}

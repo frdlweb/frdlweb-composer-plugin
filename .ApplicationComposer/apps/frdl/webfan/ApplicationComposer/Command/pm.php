@@ -95,6 +95,7 @@ class pm extends CMD
 		$p = new \frdl\ApplicationComposer\Package(array(),  \frdl\xGlobal\webfan::db()->settings(),  \frdl\xGlobal\webfan::db()); 
 	    $packages = $p->select( $start, $limit, array('vendor' => 'ASC', 'package' => 'ASC'));
 	    $this->result->packages = $packages;
+	    $this->result->packages = array_unique($this->result->packages);
 	    $this->result->out = 'OK';
 	}
     
@@ -117,6 +118,8 @@ class pm extends CMD
     	try{
     	$this->F = new \frdl\ApplicationComposer\Repos\Fetch($o);
     	$this->result->searchresults = $this->F->search($this->packagefullname);
+    	$this->result->searchresults = array_unique($this->result->searchresults);
+    	
     			
 		}catch(\Exception $e){
 		  \webdof\wResponse::status(409);

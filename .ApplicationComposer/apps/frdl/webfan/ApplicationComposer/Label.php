@@ -30,7 +30,8 @@ namespace frdl\ApplicationComposer;
  
 class Label  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.1';
+		   const VERSION = '0.0.2';
+		   const ALIAS = 'Labels';
 		
 			# Your Table name 
 			protected $table = 'labels';

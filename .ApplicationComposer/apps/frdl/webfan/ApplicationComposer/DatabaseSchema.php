@@ -30,17 +30,31 @@ namespace frdl\ApplicationComposer;
  
 abstract class DatabaseSchema 
 {
-   const VERSION = '0.0.30';	
+   const VERSION = null;	
 
-
-   protected $db;	
+   
+   public static $s = null;
+   
+   protected $db = null;	
    protected $tables;
-   protected $_tables;   
+   protected $_tables = array();   
    protected $settings = array();
+   
+   protected $schema_tables = null;
 		
 	function __construct($settings = null, \frdl\DB &$db = null){
-        $this->settings($settings);
-        $this->db = (null === $db) ?   \frdl\DB::_($this->settings, true) : $db;
+		if(null === self::$s)self::$s = &$this;
+        $this->connect($settings, $db);
+	}
+	
+	final public static function _($settings = null, \frdl\DB &$db = null){
+		if(null === self::$s)self::$s = new self($settings, $db);
+		return self::$s;
+	}
+		
+	final public function connect($settings = null, \frdl\DB &$db = null){
+	    $this->settings($settings);
+        $this->db = (null === $db) ?  \frdl\xGlobal\webfan::db() : $db;	
 	}
 	
     abstract public function save_schema($l, $linemax = 128);
@@ -48,7 +62,7 @@ abstract class DatabaseSchema
     abstract public function load_schema($l);
  	
 	public function settings($settings = null){
-		 $this->settings = (is_array($settings)) ? $settings : $this->settings;
+		 $this->settings = (is_array($settings)) ? array_merge($this->settings, $settings) : $this->settings;
 		 return  $this->settings;
 	}
 	
@@ -73,27 +87,26 @@ abstract class DatabaseSchema
 	public function i($alias, $settings = null){
 	  $schema = $this->schema($settings);
 		if(isset($schema->tables[$alias])){
-			return new $schema->tables[$alias]['ORM_CLASS'](array(),$this->settings);
+			return new $schema->tables[$alias]['ORM_CLASS']();
 		}else{
 			return null;
 		}
 	}		
 	
-   abstract public function schema($settings = null);
+   abstract public function schema($settings = null, $rootfile = null);
 	
 	
    public function check(&$schema = null, &$tables = null, $version = null,
                            $checkTables = false, $createTables = false, $updateTables = false,
                             \frdl\DB &$db = null, $settings = null, $oldSchema = null){
-     	$this->settings($settings);
-	    $this->db = (null === $db) ?   \frdl\DB::_($this->settings, true) : $db;
+        // $this->connect($settings, $db);
 		$this->version = (null === $version) ? $this->getVersion() : $version;	
      	  
    	   $schema = $this->schema($settings);
       
       
       if(true === $checkTables || true === $createTables || true === $updateTables){
-	  	  $this->tables($tables);
+	  	  $this->tables($tables, false);
 	  	$this->check_tables($schema, $tables, $oldSchema);
 	  }
       
@@ -117,12 +130,17 @@ abstract class DatabaseSchema
   	   	 if(true === $t['exists']  && isset($oldSchema->tables[$alias])
   	   	  && $this->isFresh($oldSchema->tables[$alias]['version'], $schema->tables[$alias]['version']) )continue; 
   	   	  
-  	   	  if(!$this->isFresh($oldSchema->version, '0.0.30') ){
+  	   	  /**
+			   * 
+			   *  @todo   update table : updatestack.process
+			   * 
+			   */
+  	   	  if(!$this->isFresh($oldSchema->version, '0.0.40') && !$this->isFresh($oldSchema->tables[$alias]['version'], $schema->tables[$alias]['version'])){
 		  	 $report.= 'DROP Table: '.$t['table'].' ';
 		  	try{
 					 $this->db -> query("DROP TABLE `".$t['table']."`");   
 				}catch(\Exception $e){
-					trigger_error($e->getMessage(), E_USER_WARNING);
+					trigger_error($e->getMessage(), E_USER_ERROR);
 					$report.= $e->getMessage();
 				}
 		  }
@@ -130,20 +148,21 @@ abstract class DatabaseSchema
 			 $report.= 'Create Table: '.$t['table'].' ';
 			 $c = $this->i($alias); 
 			 $c->install();
+	
+	                 $orm_class = $schema->tables[TableAlias::ALIAS]['ORM_CLASS'];
+					 $Alias = new $orm_class();
+					 if(!$Alias->find($alias)){
+						 $Alias->table_alias = $alias;
+					     $Alias->version = $t['version'];
+					     $Alias->table = $t['table'];
+				         $Alias->comment = $schema->tables[$alias]['ORM_CLASS'].' maps to '.$alias;		
+				         $Alias->create();		 	
+					 }
 			 
 			 foreach($t['sql'] as $num => $q){
 			 	try{
 					 $this->db -> query($q);
-					 $Alias = new $schema->tables['TableAlias']['ORM_CLASS'];
-					 $Alias->find($alias);
-					 if(!$Alias->find($alias)){
-						 $Alias->table_alias = $alias;
-					     $Alias->table = $t['table'];
-				         $Alias->comment = $schema->tables[$alias]['ORM_CLASS'];		
-				         $Alias->create();		 	
-					 }
-
-				}catch(\Exception $e){
+                   }catch(\Exception $e){
 					trigger_error($e->getMessage(), E_USER_WARNING);
 					$report.= $e->getMessage();
 				}
@@ -154,22 +173,30 @@ abstract class DatabaseSchema
    }
    
    
+   
+   
+   
    final public function check_tables(&$schema, $_tables, $oldSchema){
    	   foreach($schema->tables as $title => &$t){
 	  	 $t['exists'] = (isset($_tables[$t['table']]) && $this->isFresh($oldSchema->tables[$title]['version'], $schema->tables[$title]['version']));
 	  }
    }
    
-	final public function tables(&$_tables){
-		$_tables = array();
+	final public function tables(&$_tables, $getFields = false){
+		$_tables = &$this->_tables;
 		
 		try{
 	        foreach ( $this->db->query("SHOW TABLES") as $row) {
-             $_tables[$row['Tables_in_'.$this->settings['dbname']]] = $row; 
+	         $tablename = $row['Tables_in_'.$this->settings['dbname']];	
+	         if(true === $getFields){
+			 	$this->_tables[$tablename] = $row; 
+			 	$this->table_fields($row, $tablename, $this->_tables);
+			 }	
+             $_tables[$tablename] = $row; 
            }	
 		}catch(\Exception $e){
 			trigger_error($e->getMessage(), E_USER_ERROR);
-			die($e->getMessage());
+			 
 		}
 		
 		$this->_tables = $_tables;
@@ -177,6 +204,46 @@ abstract class DatabaseSchema
 	}
 		
 
+
+
+   final public function get_schema_tables($reload = false){
+   	  if(true!== $reload && is_array($this->schema_tables) )return $this->schema_tables;
+   	    $this->schema_tables = array();
+   	    $this->schema_tables[$this->settings['dbname']] = array();
+        $this->tables($this->schema_tables[$this->settings['dbname']], true);
+         
+		return $this->schema_tables;  	  
+   }
+
+
+
+   final public function table_fields(&$fields = null, $tablename = null, $tables = null) {
+    	  $this->connect();
+    	  
+	    if(null === $tables){
+	    	if(!is_arary($this->_tables)){
+	    		$this->tables($tables, false);
+	    	}else{
+				$tables = $this->_tables ;
+			}
+	    	
+	    }
+	    
+	    if(!isset($tables[$tablename]))return null;
+	    
+	    $fields = array();
+	    $q=	"DESCRIBE `".$tablename."`";
+	    
+	    foreach($this->db->query($q) as $row){
+			 $fields[$row['Field']] = $row;
+		}
+		
+	 return $this;	
+   }
+	
+	
+	
+	
 	
 	final public function isFresh($is = null, $should = null){
 		if(null===$is)$is = $this->version;

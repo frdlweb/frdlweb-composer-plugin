@@ -177,7 +177,9 @@ class html extends CMD
       $html.= '</div>';
   
       $this->result->js .= " 
-     	
+      
+      mod.Tabs.openTab('".$tab."');
+     	  
      $.WebfanDesktop.resetReady('Loading...',25, 
 	   	        function(){
 	   	        	var r= ( Dom.isVisible('".$tab."') );
@@ -275,7 +277,7 @@ class html extends CMD
 	     $html .=  $this->item_packages_main();  	
 	     $html .=  $this->item_newpackage();  	     
   	   	 $this->result->js .= "      
-  var mod = $.WebfanDesktop.Registry.Programs['frdl-webfan'];
+
   mod.Tabs.delTabs();	  
  
     mod.Tabs.addTab('#window_main_frdl-webfan-pm-new', 'New', 'window_main_frdl-webfan-pm-new', true);  	   
@@ -304,7 +306,7 @@ class html extends CMD
        $html .=  $this->item_webfan();  
        $html .=  $this->item_api();  
   	   	 $this->result->js .= "      
-  var mod = $.WebfanDesktop.Registry.Programs['frdl-webfan'];
+
   mod.Tabs.delTabs();	   	   	    
     mod.Tabs.addTab('#window_main_frdl-webfan-login', 'Admin', 'window_main_frdl-webfan-login', true);	   	   	    
     mod.Tabs.addTab('#window_main_frdl-webfan-icontem', 'Icontem', 'window_main_frdl-webfan-icontem', true);
@@ -321,6 +323,7 @@ class html extends CMD
      
     protected function item_settings(){
 		$html = '';
+		$html .= '<span id="wd-indicator-settings-visible"></span>';
 	    $html .=  $this->item_login();
 	    $html .=  $this->item_db();	
 	    $html .=  $this->item_wizard();
@@ -333,11 +336,20 @@ class html extends CMD
 	
 	
 	public function check(&$html, $tab, $check_admin = true, $check_errors_wizard = true){
-		
+	     	  $this->result->js .= "  
+	     	  if('undefined' === typeof mod){
+			  	 var mod = $.WebfanDesktop.Registry.Programs['frdl-webfan'];  
+			  }
+	     	   
+	     	    
+	     	    ";
+	     	    		
+	     	    		
+	     	    		
   	    if(true === $check_admin && (!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin'])){
 	     	 $html.= '<div id="'.$tab.'" class="wd-tab">'. $this->item_login(false) .'</div>';
-	     	  $this->result->js .= "      
-	     	    mod.Tabs.openTab('window_main_frdl-webfan-login');
+	     	  $this->result->js .= "  
+	     	     mod.Tabs.openTab('".$tab."');
 	     	  ";
 	     	 return false;
 		  }
@@ -644,7 +656,7 @@ class html extends CMD
 		 	 
 		
 		
-		 $S->check($schema, $tables,  null,  true,  false,  false,   \frdl\DB::_($settings, true), $settings, 
+		 $S->check($schema, $tables,  null,  true,  false,  false,   $this->db, $settings, 
 		              $oldSchema);
 		
 		}catch(\Exception $e){
@@ -681,7 +693,7 @@ class html extends CMD
          $this->wizard_error( '<span>Missing database tables! Please run the database setup!</span>', E_USER_WARNING);
         	 
       	 $html.='<div style="text-align:center;">
-      	 <button style="color:green;font-weight:bold;font-size:1.2em;" onclick="if(true!==confirm(\'Please backup your data first, possible data loss while converting!\nBitte machen Sie zunaechst ein Datenbank Backup, Daten koennen durch der Konvertierung verloren gehen!\n(@ToDo: Convert data from db versions)\'))return false;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cmd(\'frdl setup create-tables -b\', function(){$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].html(\'db\');}); ">
+      	 <button style="color:green;font-weight:bold;font-size:1.2em;" onclick="if(true!==confirm(\'Please backup your data first, possible data loss while converting!\nBitte machen Sie zunaechst ein Datenbank Backup, Daten koennen durch der Konvertierung verloren gehen!\n(@ToDo: Convert data from db versions)\'))return false;$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cmd(\'frdl setup create-tables -bd\', function(){$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].html(\'db\');}); ">
       	 &rArr;&rArr;&rArr;<span>Create</span> <span>Tables</span>&lArr;&lArr;&lArr;
       	 </button>
       	 </div>

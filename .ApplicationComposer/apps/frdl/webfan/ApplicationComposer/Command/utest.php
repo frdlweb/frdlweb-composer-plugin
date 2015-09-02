@@ -124,6 +124,55 @@ class utest extends CMD
 		 return $this->result;
 	}
 	
+	protected function _test_dbqueries(){
+		
+			if(true!== $this->loadConfigFromFile(true)){
+                $this->result->out = 'set config ERROR: cannot readf config file';
+        	 return;			
+		}	
+		ini_set('display_errors', 0);
+		error_reporting(E_ALL);		
+		
+		$db =  \frdl\DB::_(array(
+		   'driver' => $this->data['config']['db-driver'],
+		   'host' => $this->data['config']['db-host'],
+		   'dbname' => $this->data['config']['db-dbname'],
+		   'user' => $this->data['config']['db-user'],
+		   'password' => $this->data['config']['db-pwd'],
+		   'pfx' => $this->data['config']['db-pfx'],
+		   
+		), true);		    	
+	    	
+	    	
+	    	
+	    $db -> query( 	"DROP TABLE IF EXISTS  testdata");  	
+	    	 $this->result->error = print_r($db->errorInfo(), true);
+	    	 
+	    	 
+	   $db -> query( 	"CREATE TABLE IF NOT EXISTS testdata
+(ID INTEGER PRIMARY KEY,
+CITY CHAR(20),
+STATE CHAR(2),
+LAT_N REAL,
+LONG_W REAL); "
+);
+
+	   $db -> query( 	"INSERT INTO testdata VALUES (13, 'Phoenix', 'AZ', 33, 112); 
+
+ "
+);
+
+
+	$this->result->test =   $db -> query( 	"SELECT * FROM STATION LIMIT 1; 
+ "
+);
+
+   $this->result->error .=  print_r($db->errorInfo(), true);
+   
+   $this->result->errorcode =  print_r($db->errorCode(), true);
+	}
+	
+	
 	   
     protected function _test_database(){
 		if(true!== $this->loadConfigFromFile(true)){

@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Download  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.1';
+		   const VERSION = '0.0.2';
 		   const ALIAS = 'Downloads';
 		   
 			# Your Table name 
@@ -58,7 +58,7 @@ class Download  extends \frdl\Crud {
 				      `host`  varchar(256) COLLATE utf8_unicode_ci NOT NULL,
 				      `vendor` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' ,
 				      `package` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-				      `version` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+				      `version` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `checksum` varchar(40) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 				      `time` INT(11) NOT NULL DEFAULT '0',				      
 				      `time_download_start` INT(11) NOT NULL DEFAULT '0',			      

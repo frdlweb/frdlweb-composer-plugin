@@ -30,7 +30,8 @@ namespace frdl\ApplicationComposer;
  
 class Edge  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.5';
+		   const VERSION = '0.0.7';
+		   const ALIAS = 'Edges';
 		
 			# Your Table name 
 			protected $table = 'edges';

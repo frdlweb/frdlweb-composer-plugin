@@ -51,16 +51,14 @@ class setup extends CMD
         	 return;			
 		}	
 		
+		
+   	   if(isset($this->argtoks['flags']['d'])){
+   	   	 ini_set('display_errors', 1);
+		 error_reporting(E_ALL);	   	
+	   }
+	   		
 	try{
-		 $this->_db =  new \frdl\DB(array(
-		   'driver' => $this->data['config']['db-driver'],
-		   'host' => $this->data['config']['db-host'],
-		   'dbname' => $this->data['config']['db-dbname'],
-		   'user' => $this->data['config']['db-user'],
-		   'password' => $this->data['config']['db-pwd'],
-		   'pfx' => $this->data['config']['db-pfx'],
-		   
-		), true);		
+		 $this->_db =  \frdl\xGlobal\webfan::db();		
 		
 
 	 if('create-tables' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
@@ -80,7 +78,12 @@ class setup extends CMD
     
     protected function create_tables(){
 	 
-		 
+	   	if(isset($this->argtoks['flags']['d'])){
+   	   	 ini_set('display_errors', 1);
+		 error_reporting(E_ALL);	   	
+	   }
+	   
+	   	 
 		 if(!is_string($this->data['config']['db-pfx']) || '' === trim($this->data['config']['db-pfx'])){
 		 	$str =  'Please provide a table prefix!';
 		 	 $this->result->out = $str;
@@ -99,7 +102,7 @@ class setup extends CMD
 		);	 
 		
 
-		
+	$this->_db-> Connect($settings,  false);
 		 if(true !== $this->_db->connected){
 		 	$str =  'No database connection!';
 		 	 $this->result->out = $str;
@@ -107,24 +110,39 @@ class setup extends CMD
 		 	return;
 		 }	 
 		 
-		 $schema = new \frdl\o;
-		 $tables = array();
+		 
+		 
+		 
+	    		try{
+
+	     	 $S = new \frdl\_db();	
 	     $cfile =  $this->data['config']['FILES']['database-schema'];
-		 $S = new \frdl\_db();
 	
-	   
+
 		 if(file_exists($cfile)){
 		 	$oldSchema = $S->load_schema(file_get_contents($cfile)); 
 		 	//$oldSchema = $S->load_schema($this->read($cfile, 'rb',  null)); 
 		 }else{
-		 	 $oldSchema = $S->schema($settings,  $this->data['config']['FILES']['composer']);
+		 	 $oldSchema = $S->schema();
 		 }
-		 if(!is_object($oldSchema))$oldSchema = $S->schema($settings,  $this->data['config']['FILES']['composer']);
-		  	
-		 $report = $S->check($schema, $tables,  null,  true,  true,  true,  $this->_db, $settings, $oldSchema,  $this->data['config']['FILES']['composer']); 
+		 if(!is_object($oldSchema))$oldSchema = $S->schema();
+		 	 
+		
+		
+		 $S->check($schema, $tables,  null,  true,  true,  true,   $this->_db, $settings, 
+		              $oldSchema);
 	
-		$S->tables($tables);
-		$S->check_tables($schema, $tables, $schema);
+
+		}catch(\Exception $e){
+	          $tablesOK = false;
+	            $this->result->out ='Error checking tables! '.$e->getMessage();
+		
+	    	return $this->result;
+		}
+       			 
+		 
+		$S->tables($tables, false);
+		$report = $S->check_tables($schema, $tables, $schema);
 		file_put_contents( $cfile, $S->save_schema($schema, 128));
 		
 		$this->data['config']['db-schema-version'] = $schema->version;
@@ -137,8 +155,8 @@ class setup extends CMD
 			 }
 	
 		
-		
-		
+			 
+
 		
 		return $this->result;
 
