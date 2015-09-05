@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 final class DBSchema extends DatabaseSchema
 {
-   const VERSION = '0.0.40';	
+   const VERSION = '0.0.41';	
 
    public static $s = null;
    
@@ -43,6 +43,11 @@ final class DBSchema extends DatabaseSchema
         parent::__construct($settings, $db);
 	}
 	
+	
+	public static function _($settings = null, \frdl\DB &$db = null){
+		if(null === self::$s)self::$s = new self($settings, $db);
+		return self::$s;
+	}	
 
     public function save_schema($l, $linemax = 128){
        $bs = new \frdl\bs;	

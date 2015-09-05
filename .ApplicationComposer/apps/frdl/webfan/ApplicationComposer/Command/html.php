@@ -81,16 +81,9 @@ class html extends CMD
 
 
     try{
-	      $this->db =  \frdl\DB::_(array(
-		   'driver' => $this->data['config']['db-driver'],
-		   'host' => $this->data['config']['db-host'],
-		   'dbname' => $this->data['config']['db-dbname'],
-		   'user' => $this->data['config']['db-user'],
-		   'password' => $this->data['config']['db-pwd'],
-		   'pfx' => $this->data['config']['db-pfx'],
-		   
-		  ), true);
-		   $this->connected = $this->db->connected;			
+	      $this->db = \frdl\xGlobal\webfan::db();		
+	      $this->db-> Connect();
+		  $this->connected = $this->db->connected;			
 		}catch(\Exception $e){
            $this->connected = false;
 		}
@@ -549,7 +542,7 @@ class html extends CMD
     	
 	if(true !== $this->check($html, $tab, true, false))return $html;  
 	
-     $this->_check_db();
+     $this->_check_db(); 
 
 
 		  	
@@ -629,7 +622,13 @@ class html extends CMD
 
 	  
 	$tables = array();
-	  if(true === $this->connected){
+	  if(true === $this->connected && isset($this->data['config']['db-driver'])
+	   && isset($this->data['config']['db-driver']) && isset($this->data['config']['db-host']) 
+	   && isset($this->data['config']['db-driver']) && isset($this->data['config']['db-dbname']) 
+	   && isset($this->data['config']['db-user'])
+	   && isset($this->data['config']['db-pwd'])
+	   && isset($this->data['config']['db-user'])
+	   && isset($this->data['config']['db-pfx'])){
 	  	
      		try{
 
@@ -659,11 +658,9 @@ class html extends CMD
 		 $S->check($schema, $tables,  null,  true,  false,  false,   $this->db, $settings, 
 		              $oldSchema);
 		
-		}catch(\Exception $e){
-	          $tablesOK = false;
-	           $html.= '<span class="webfan-red">Error checking tables!</span>';
-		}
-       		
+		$S->tables($tables, false);
+		$report = $S->check_tables($schema, $tables, $schema);		
+		
 		$html.= '<p>Version: '.$oldSchema->version.'/'.$schema->version.'</p>';
         $newTables = false;
         $T = array();
@@ -674,8 +671,8 @@ class html extends CMD
          foreach($schema->tables as $alias => $t){
 			$_html.='<div>';
 	         $_html.= '<p><span style="color:'.((
-	                     true === $schema->tables[$alias]['exists']
-	                  && true === $oldSchema->tables[$alias]['exists'] && $S->isFresh( $oldSchema->tables[$alias]['version'],  $schema->tables[$alias]['version']) )
+	                     /*   true === $schema->tables[$alias]['exists']
+	               && true === $oldSchema->tables[$alias]['exists']  && */ $S->isFresh( $oldSchema->tables[$alias]['version'],  $schema->tables[$alias]['version']) )
 	                      ? 'green' : 'red').';">'.$alias.' ('. $oldSchema->tables[$alias]['version'].'/'.$schema->tables[$alias]['version'].')</span></p>';					 
 	         $_html.= '<p>'.$t['table'].'</p>';
 		    $_html.='</div>';	
@@ -708,7 +705,7 @@ class html extends CMD
 		    		callback : function(){\$('#window_frdl-webfan').show();$.WebfanDesktop.Registry.Programs['frdl-webfan'].html('db');},
 		    		time : new Date().getTime() / 1000,
 		    		newnotif : true,
-		    		id : 'system-error-no-database-connection-".$this->date->day()."'
+		    		id : 'system-error-database-missing-or-obsolete-tables-".$schema->version."'
 		    	});
 			}catch(err){
 				console.error(err);
@@ -716,7 +713,13 @@ class html extends CMD
           ";	 			
 
 
-      	}
+      	}else{
+					 	   	
+	     	 $this->result->js .= " 
+	   	        $('#window_main_postbox-ttt-all').wdPostbox('deleteMessage', 'system-error-database-missing-or-obsolete-tables-".$schema->version."',  'update', false);	 	   	
+			
+	     	 ";					 	   	
+		}
 
           $html.= $_html;
         $html.='<br />';
@@ -729,7 +732,14 @@ class html extends CMD
 		}
        $html.='</div>';
  
- 
+ 		
+		}catch(\Exception $e){
+	          $tablesOK = false;
+	           $html.= '<span class="webfan-red">Error checking tables!</span>';
+	           return $html;
+		}
+       		
+
        
        }else{
 	   	 $html.= '<span class="webfan-red">Not connected.</span>';
@@ -753,14 +763,20 @@ class html extends CMD
 		    		callback : function(){\$('#window_frdl-webfan').show();\$.WebfanDesktop.Registry.Programs['frdl-webfan'].Tabs.openTab('window_main_frdl-webfan-db');},
 		    		time : new Date().getTime() / 1000,
 		    		newnotif : true,
-		    		id : 'system-error-no-database-connection-".$this->date->day()."'
+		    		id : 'system-error-no-database-connection-".$schema->version."'
 		    	});
 			}catch(err){
 				console.error(err);
 			}	   	 
 ";	   	 
 	   	 
-	   }
+	   }else{
+					 	   	
+	     	 $this->result->js .= " 
+	   	        $('#window_main_postbox-ttt-all').wdPostbox('deleteMessage', 'system-error-no-database-connection-".$schema->version."',  'update', false);	 	   	
+			
+	     	 ";					 	   	
+		}
 		   
 	  return $html;
 	}

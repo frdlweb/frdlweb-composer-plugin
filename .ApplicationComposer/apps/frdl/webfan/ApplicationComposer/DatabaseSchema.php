@@ -47,19 +47,13 @@ abstract class DatabaseSchema
         $this->connect($settings, $db);
 	}
 	
-	final public static function _($settings = null, \frdl\DB &$db = null){
-		if(null === self::$s)self::$s = new self($settings, $db);
-		return self::$s;
-	}
-		
-	final public function connect($settings = null, \frdl\DB &$db = null){
-	    $this->settings($settings);
-        $this->db = (null === $db) ?  \frdl\xGlobal\webfan::db() : $db;	
-	}
+	/*  abstract public static function _($settings = null, \frdl\DB &$db = null);  */
+	abstract public function save_schema($l, $linemax = 128);
+	abstract public function load_schema($l);
+	abstract public function schema($settings = null, $rootfile = null);
 	
-    abstract public function save_schema($l, $linemax = 128);
 
-    abstract public function load_schema($l);
+     
  	
 	public function settings($settings = null){
 		 $this->settings = (is_array($settings)) ? array_merge($this->settings, $settings) : $this->settings;
@@ -93,9 +87,7 @@ abstract class DatabaseSchema
 		}
 	}		
 	
-   abstract public function schema($settings = null, $rootfile = null);
-	
-	
+  	
    public function check(&$schema = null, &$tables = null, $version = null,
                            $checkTables = false, $createTables = false, $updateTables = false,
                             \frdl\DB &$db = null, $settings = null, $oldSchema = null){
@@ -135,7 +127,7 @@ abstract class DatabaseSchema
 			   *  @todo   update table : updatestack.process
 			   * 
 			   */
-  	   	  if(!$this->isFresh($oldSchema->version, '0.0.40') && !$this->isFresh($oldSchema->tables[$alias]['version'], $schema->tables[$alias]['version'])){
+  	   	  if(!$this->isFresh($oldSchema->version, '0.0.41') && !$this->isFresh($oldSchema->tables[$alias]['version'], $schema->tables[$alias]['version'])){
 		  	 $report.= 'DROP Table: '.$t['table'].' ';
 		  	try{
 					 $this->db -> query("DROP TABLE `".$t['table']."`");   
@@ -176,6 +168,7 @@ abstract class DatabaseSchema
    
    
    
+   
    final public function check_tables(&$schema, $_tables, $oldSchema){
    	   foreach($schema->tables as $title => &$t){
 	  	 $t['exists'] = (isset($_tables[$t['table']]) && $this->isFresh($oldSchema->tables[$title]['version'], $schema->tables[$title]['version']));
@@ -188,6 +181,7 @@ abstract class DatabaseSchema
 		try{
 	        foreach ( $this->db->query("SHOW TABLES") as $row) {
 	         $tablename = $row['Tables_in_'.$this->settings['dbname']];	
+	        
 	         if(true === $getFields){
 			 	$this->_tables[$tablename] = $row; 
 			 	$this->table_fields($row, $tablename, $this->_tables);
@@ -251,8 +245,18 @@ abstract class DatabaseSchema
 		return (version_compare($is, $should) >= 0);
 	}
 	
+	
+	
 	final public function getVersion(){
 		return self::VERSION;
 	}
-			
+	
+	
+		
+	final public function connect($settings = null, \frdl\DB &$db = null){
+	    $this->settings($settings);
+        $this->db = (null === $db) ?  \frdl\xGlobal\webfan::db() : $db;	
+	}
+	
+				
 }

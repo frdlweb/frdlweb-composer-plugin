@@ -132,6 +132,12 @@ class setup extends CMD
 		 $S->check($schema, $tables,  null,  true,  true,  true,   $this->_db, $settings, 
 		              $oldSchema);
 	
+       
+          $this->result->js.='
+            	$(\'#window_main_postbox-ttt-all\').wdPostbox(\'deleteMessage\', \'system-error-database-missing-or-obsolete-tables-'.$schema->version.'\',  \'update\', false);	 	   	
+					 	   
+          ';
+
 
 		}catch(\Exception $e){
 	          $tablesOK = false;

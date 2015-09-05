@@ -44,12 +44,14 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
     protected $Console;
     
     protected $task;
+    
+    protected $db = null;
 	
 	function __construct($prepend = true){
 	  $this->prepend = $prepend;	
 	  $this->html = '';
 	  $this->js = '';
-	  
+	  $this->assignDB($this->db);
 		  	
 	}
 	
@@ -71,12 +73,82 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 	}
 	
 	
+	public function assignDB(&$db = null){
+		$db =  \frdl\xGlobal\webfan::db();
+		return $this;
+	}
+	
+	
+	
+	protected function task_suggestions(){
+		
+		
+		$divSerp = 'wd-frdl-webfan-pm-packages-suggestions'.mt_rand(1000,9999);	
+	    $p = new \frdl\ApplicationComposer\Package(); 
+	  //	$packages = $p->all();
+	
+	   // sort($packages);
+	   
+	   $groups = array();
+	   $groups['CMS'] = array(  
+	          'title' => 'Content Management',
+	          'packages' => array(
+	            0 => array( 
+	                'vendor' => 'TerraProject',
+	                'package' => 'pragmamx',
+	                'description' => 'Just another CMS...',
+	                'url' => 'http://www.pragmamx.org',
+	                'img' => 'http://www.pragmamx.org/favicon.ico',
+	              ),
+	          ),
+	   );
+
+			
+			
+		$this->html.='<div id="'.$divSerp.'">';
+		
+	 foreach($groups as $n => $group){	
+	  $this->html.='<div>';
+	   $this->html.='<h2>'.$group['title'].'</h1>';
+	  
+		ksort($group['packages']);
+		 foreach($group['packages'] as $num => $package){
+		 	$this->html.='<div class="data-box">';
+		 	
+		 	
+		 	$this->html.='<h2 class="webfan-blue" onclick="var p = this.getAttribute(\'data-package\'); 
+                 	  	     	var e = explode(\'/\', p);
+							   	$(this).package(\'c\', e[0], e[1]);"
+					  data-package="'.$package['vendor'].'/'.$package['package'].'" style="text-decoration:underline;">';
+			$this->html.='<img src="'.$package['img'].'" style="border:none;" />';	  
+		 	$this->html.= $package['vendor'].'/'.$package['package'];
+		 	$this->html.='</h2>';
+		 	if(isset($package['description'])){
+				$this->html.='<p>'.$package['description'].'</p>';
+			}
+		 	if(isset($package['url'])){
+				$this->html.='<p><a href="'.$package['url'].'" style="text-decoration:underline;" target="_blank">'.$package['url'].'</a></p>';
+			}
+			
+			
+		 	$this->html.='</div>';
+		 }
+	   $this->html.='</div>'; 
+	}	 
+		 
+		 
+		$this->html.='</div>';	
+		
+	
+	}
+	
+	
 	protected function task_packages(){
 		
 		
 		
 		$divSerp = 'wd-frdl-webfan-pm-packages-main'.mt_rand(1000,9999);	
-	    $p = new \frdl\ApplicationComposer\Package(array(),  \frdl\xGlobal\webfan::db()->settings(),  \frdl\xGlobal\webfan::db()); 
+	    $p = new \frdl\ApplicationComposer\Package(); 
 	  //	$packages = $p->all();
 	   $num = 25;
 	   $packages = $p->select( 0, $num, array('vendor' => 'ASC', 'package' => 'ASC'));
@@ -128,7 +200,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
                  	  	     h.onclick=function(ev){
                  	  	     	var p = this.getAttribute(\'data-package\'); 
                  	  	     	var e = explode(\'/\', p);
-							   	$(this).package(\'c\', e[0], e[1]);
+							   	$(this).package(\'c\', e[0], e[1], true);
 							 };
                  	  	     Dom.add(h,d);
                  	  	    
@@ -209,7 +281,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
                  	  	     h.onclick=function(ev){
                  	  	     	var p = this.getAttribute(\'data-package\'); 
                  	  	     	var e = explode(\'/\', p);
-							   	$(this).package(\'c\', e[0], e[1]);
+							   	$(this).package(\'c\', e[0], e[1], true);
 							 };
                  	  	     Dom.add(h,d);
                  	  	    

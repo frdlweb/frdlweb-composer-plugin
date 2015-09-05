@@ -718,15 +718,10 @@ class webfan extends fexe
 			 		    }
 			 			
 			 				 			
-				 	   	$this->data['data_out']->js.= '
-			 		    	$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.INSTALLED = "1";
-			 		    	$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].render();
-			 		    	$(\'#window_\' + \'frdl-webfan\').find(\'#wd-li-frdl-webfan-installPHAR\').find(\'u\').html(\'Upate\');
-			 		    	';		 			
-								
+	
 
 					 	   	$this->data['data_out']->js.= '
-			                	$(\'#window_main_postbox-ttt-all\').wdPostbox(\'deleteMessage\', \'install-frdl-webfan-installer-'.$this->data['config_new']['VERSION'].'\',  \'update\');	 	   	
+			                	$(\'#window_main_postbox-ttt-all\').wdPostbox(\'deleteMessage\', \'install-frdl-webfan-installer-'.$this->data['config_new']['VERSION'].'\',  \'update\', false);	 	   	
 					 	   	
 					 	   	
 					 	   	alert(\'Please set up the configuration next...\');
@@ -915,7 +910,7 @@ document.title = '404 - Not found';
 	   }, 
 	   Guid.newGuid()
 	  );
-	
+	 $.ApplicationComposerOpen({});
   }); 
 });
 </script>
