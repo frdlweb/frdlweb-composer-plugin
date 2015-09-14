@@ -466,6 +466,9 @@ class webfan extends fexe
 		 	if(true !== $this->aSess['isAdmin']){
 		 		$this->isAdmin = false;
 		 		unset($this->aSess['ADMINDATA']);
+		 		$this->aSess['ADMINDATA'] = array(
+		 		   'CONFIGFILE' => $this->data['CONFIGFILE'],
+		 		);
 		 		if(isset( $this->aSess['isAdmin']))unset( $this->aSess['isAdmin']);
 			}else{
 				   $this->aSess['ADMINDATA'] = $this->data;

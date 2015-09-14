@@ -40,15 +40,29 @@ class pm extends CMD
    protected $file;
    
    protected $packagefullname = null;
+   protected $vendor = null;
+   protected $package = null;
    protected $scmd = null;
    
    protected $F; //fetcher
 
+   protected $db;
 
    function __construct(){
 		parent::__construct();
 	}
    
+   
+   protected function isErrorDB(&$errorInfo, $out = true){
+   	 $errorInfo = \frdl\xGlobal\webfan::db()->errorInfo(); 		
+   	 if(0 !== intval($errorInfo[0])){
+   	 	if(true === $out)$this->result->erroinfo = $errorInfo;
+   	 	$this->result->out = 'Database error';
+   	 	\webdof\wResponse::status(500);
+	 	return true;
+	 }
+   	 return false;
+   }
    
    protected function wrongArgumentCount(){
            $this->result->out = 'Invalid arguments count';
@@ -58,53 +72,29 @@ class pm extends CMD
     public function process()
     {
        $args = func_get_args();
-         if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin'] ){
+       
+   		if(true!== $this->loadConfigFromFile(true)){
+                $this->result->out = 'set config ERROR: cannot read config file';
+        	 return;			
+		}    
+       
+         if((!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']) && true !== $this->data['config']['PUBLIC_PROXY'] ){
                 $this->result->out = 'set config ERROR: You are not logged in as Admin';
   	
 	     	 return;
 		  }
 
-		if(true!== $this->loadConfigFromFile(true)){
-                $this->result->out = 'set config ERROR: cannot read config file';
-        	 return;			
-		}
+
+
+     $this->db = \frdl\xGlobal\webfan::db();
 
 	 if(count($this->argtoks['arguments']) < 1 ){
                 $this->wrongArgumentCount();
         	 return;						
 	 }		
-     
-     if('find' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
-		 return $this->find();			
-	 }
-	 
-     if('select' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
-		 return $this->select();			
-	 }	       
-	       
-	      \webdof\wResponse::status(404);
-	         $this->result->out = '(Sub-)Command not found.'; 
-    }
-    
-    
-    public function select(){
-		$start = $this->getRequestOption('start');
-		$limit = $this->getRequestOption('limit');
-		if(null === $start)$start = 0;
-		if(null === $limit)$limit = 25;
-		$p = new \frdl\ApplicationComposer\Package(array(),  \frdl\xGlobal\webfan::db()->settings(),  \frdl\xGlobal\webfan::db()); 
-	    $packages = $p->select( $start, $limit, array('vendor' => 'ASC', 'package' => 'ASC'));
-	    $this->result->packages = $packages;
-	    $this->result->packages = array_unique($this->result->packages);
-	    $this->result->out = 'OK';
-	}
-    
-    public function find(){
-    	
-      	if(!isset($this->argtoks['arguments'][1]) ||  intval($this->argtoks['arguments'][1]['pos']) !== 2)return $this->wrongArgumentCount();
-    	$this->packagefullname = str_replace(array('"', "'"), array('',''), $this->argtoks['arguments'][1]['cmd']);
-    	
-    	$o = array();
+   
+   
+     	$o = array();
     	if(!isset($this->argtoks['flags']['c']))$o['cache_time'] = 0;
     	$o['debug'] = (isset($this->argtoks['flags']['d']));
     	
@@ -113,6 +103,122 @@ class pm extends CMD
 			error_reporting(E_ALL);
 		}
     	$o = array_merge($this->data['config'], $o);
+    	
+    	  
+     
+     if('find' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
+		 return $this->find($o);			
+	 }
+	 
+     if('select' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
+		 return $this->select($o);			
+	 }	       
+	 
+     if('get' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
+		 return $this->package($o);			
+	 }	        
+	 
+     if('stats' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
+		 return $this->stats($o);			
+	 }	       
+	       	       
+	      \webdof\wResponse::status(404);
+	         $this->result->out = '(Sub-)Command not found.'; 
+    }
+    
+     public function stats($o){
+     	
+     	if(true !== $this->aSess['isAdmin']){
+     		$this->result->stats[0] = '<span class="webfan-red">You are not logged in</span>';
+			$this->result->out = 'OK';
+			return;
+		}
+     	
+     	$this->result->stats = array();
+        if(0 === count($this->argtoks['options'])){
+			
+		}elseif(null !== ($package = $this->getRequestOption('package'))){
+			$this->packagefullname = str_replace(array('"', "'"), array('',''), $package);
+            $e = explode('/', $this->packagefullname);
+              if(2 !== count($e)){
+                 $this->result->out = 'Invalid packagename';
+                return;	 				
+	     	  }
+		    $this->vendor = $e[0];
+		    $this->package = $e[1];			
+			$this->result->stats[$this->packagefullname] = new \stdclass;
+			$this->result->stats[$this->packagefullname]->name = $this->packagefullname;
+			
+		    $p = new \frdl\ApplicationComposer\Package(array(),  \frdl\xGlobal\webfan::db()->settings(),  $this->db); 
+		    if(true === $p->find( $this->vendor,  $this->package )){
+		    	$data = $p->variables;
+		    	$data['infotime'] = $data['time_last_fetch_info'];
+		    	unset($data['time_last_fetch_info']);
+				//$this->result->stats[$this->packagefullname] = array_merge($this->result->stats[$this->packagefullname], $data);
+				//$this->result->stats[$this->packagefullname]['info'] = $data;
+				foreach($data as $name => $value){
+					$this->result->stats[$this->packagefullname]->{$name} = $value; 
+				}
+				
+				
+			}
+			if($this->isErrorDB($errorInfo, true))return;
+			
+
+			
+		}
+	    $this->result->out = 'OK';
+	}
+	
+	   
+    public function select($o){
+		$start = $this->getRequestOption('start');
+		$limit = $this->getRequestOption('limit');
+		if(null === $start)$start = 0;
+		if(null === $limit)$limit = 25;
+		$p = new \frdl\ApplicationComposer\Package(array(),  \frdl\xGlobal\webfan::db()->settings(),  $this->db); 
+	    $packages = $p->select( $start, $limit, array('vendor' => 'ASC', 'package' => 'ASC'));
+	    $this->result->packages = $packages;
+	    $this->result->packages = array_unique($this->result->packages);
+	    $this->result->out = 'OK';
+	}
+    
+    
+    public function package($o){
+      	if(!isset($this->argtoks['arguments'][1]) ||  intval($this->argtoks['arguments'][1]['pos']) !== 2)return $this->wrongArgumentCount();
+      	
+    	$this->packagefullname = str_replace(array('"', "'"), array('',''), $this->argtoks['arguments'][1]['cmd']);
+    	
+        $e = explode('/', $this->packagefullname);
+        if(2 !== count($e)){
+              $this->result->out = 'Invalid packagename';
+             return;	 				
+		}
+		$this->vendor = $e[0];
+		$this->package = $e[1];
+		
+    	try{
+    	$this->F = new \frdl\ApplicationComposer\Repos\Fetch($o);
+    	$this->result->searchresults = $this->F->package($this->vendor, $this->package );
+    	//$this->result->searchresults = array_unique($this->result->searchresults);
+    	
+    			
+		}catch(\Exception $e){
+		  \webdof\wResponse::status(409);
+			$this->result->out = $e->getMessage();
+			return;
+		}
+		
+				   	 
+		$this->result->out = 'OK';		   	   			
+	}
+    
+    public function find($o){
+    	
+      	if(!isset($this->argtoks['arguments'][1]) ||  intval($this->argtoks['arguments'][1]['pos']) !== 2)return $this->wrongArgumentCount();
+    	$this->packagefullname = str_replace(array('"', "'"), array('',''), $this->argtoks['arguments'][1]['cmd']);
+    	
+
     
     	
     	try{
@@ -124,10 +230,14 @@ class pm extends CMD
 		}catch(\Exception $e){
 		  \webdof\wResponse::status(409);
 			$this->result->out = $e->getMessage();
+			return;
 		}
 
-        $p = new \frdl\ApplicationComposer\Package(array(),  \frdl\xGlobal\webfan::db()->settings(),  \frdl\xGlobal\webfan::db()); 
-    	if(isset($this->argtoks['flags']['s'])){
+      
+    	if(isset($this->argtoks['flags']['s']) && true === $this->aSess['isAdmin']){
+           $p = new \frdl\ApplicationComposer\Package(array(),  \frdl\xGlobal\webfan::db()->settings(),  $this->db); 
+           $p->db()->begin();  		
+    		
 			foreach($this->result->searchresults as $num => $s){
 				if(is_array($s)){
 					foreach($s as $num2 => $s2){
@@ -154,8 +264,11 @@ class pm extends CMD
 				}
 
 			}
+		  $p->db()->commit();
 		}
     	
+        
+        
     	$this->result->out = 'OK';
 	}
     

@@ -75,15 +75,14 @@ class Package extends \frdl\Crud {
 			return $this->db->query($sql,array($this->pk1=>$vendor, $this->pk2=>$package));
 		}
 	}
-	public function find($vendor = "vendor", $package = 'package') {
-		$vendor = (empty($this->variables[$this->pk1])) ? $vendor : $this->variables[$this->pk1];
-		$package = (empty($this->variables[$this->pk2])) ? $package : $this->variables[$this->pk2];
-		if(!empty($id)) {
-			$sql = "SELECT * FROM " . $this->table ." WHERE " . $this->pk . "= :" . $this->pk . " AND " . $this->pk2 . "= :" . $this->pk2 . " LIMIT 1";	
-			$this->variables = $this->db->row($sql,array($this->pk=>$vendor, $this->pk2=>$package));
-			return true;
-		}
-		return false;
+	public function find($vendor =null, $package =null) {
+		$this->variables[$this->pk1] = (is_string($vendor)) ? $vendor : $this->variables[$this->pk1];
+		$this->variables[$this->pk2] = (is_string($package)) ? $package : $this->variables[$this->pk2];
+
+			$sql = "SELECT * FROM " . $this->table ." WHERE " . $this->pk1 . "= :" . $this->pk1 . " AND " . $this->pk2 . "= :" . $this->pk2 . " LIMIT 1";	
+			$this->variables = $this->db->row($sql,array($this->pk1=>$vendor, $this->pk2=>$package));
+		
+	   return (false !== $this->variables) ? true : false;	
 	}	
 		
 		

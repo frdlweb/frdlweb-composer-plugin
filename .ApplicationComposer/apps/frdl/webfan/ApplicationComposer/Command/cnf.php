@@ -67,6 +67,7 @@ class cnf extends CMD
    	      '______DEFAULT______' =>  $setSessionFunc,
    	       'ADMIN_PWD' =>  $setSessionFunc,
    	       'DISABLE_ADMIN_PWD' => $bool,
+   	       'PUBLIC_PROXY' => $bool,
 		);	
 		
      if(isset($cbs[$k])){
@@ -89,6 +90,12 @@ class cnf extends CMD
 		  },
 		 
 		'DISABLE_ADMIN_PWD' =>  function($v){
+	 	if('true' === $v || 1 === intval($v))$v = true;
+	 	if('false' === $v || 0 === intval($v))$v = false;
+	 	return $v;
+	 } ,
+		 
+		'PUBLIC_PROXY' =>  function($v){
 	 	if('true' === $v || 1 === intval($v))$v = true;
 	 	if('false' === $v || 0 === intval($v))$v = false;
 	 	return $v;

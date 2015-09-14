@@ -128,13 +128,13 @@ class html extends CMD
     	$tab = 'window_main_frdl-webfan-wizard';
     	$tab_messages = 'window_main_frdl-webfan-wizard-messages';
   	   $html = '';
-       if(true !== $this->check($html, $tab, true, false))return $html;  
+      		 if(true !== $this->check($html, $tab, true, false))return $html;    
  
 	
 	
      $html.= '<div id="'.$tab.'" class="wd-tab">';
 
-     $htm.='<h1 class="webfan-blue">What to do next?</h1>';
+     $html.='<h1 class="webfan-blue">What to do next?</h1>';
 
 
         $html.= '<table style="width:100%;vertical-align:top;">';
@@ -169,13 +169,13 @@ class html extends CMD
  
       $html.= '</div>';
   
+  
+  // mod.Tabs.openTab('".$tab."');
       $this->result->js .= " 
-      
-      mod.Tabs.openTab('".$tab."');
-     	  
+        	  
      $.WebfanDesktop.resetReady('Loading...',25, 
 	   	        function(){
-	   	        	var r= ( Dom.isVisible('".$tab."') );
+	   	        	var r= ( 'undefined' !== typeof Dom.g('".$tab."') );
 	   	        	if(true !== r) return r;
 	   	        
 	   	        	$.each($.WebfanDesktop.Registry.Notifs, function(k,m){
@@ -202,10 +202,10 @@ class html extends CMD
 
 	
 	protected function item_suggestions(){
-    	$tab = 'window_main_frdl-webfan-pm-frdl-suggestions';
+    	$tab = 'window_main_frdl-webfan-packages-suggestions';
   	   $html = '';
   	   $this->_check_db();
-       if(true !== $this->check($html, $tab, true, true))return $html;  
+      /* if(true !== $this->check($html, $tab, true, true))return $html;   */
        
 	 $p = new \frdl\ApplicationComposer\Package\Man(true);
 	 $p -> run('suggestions', $this->argtoks, $this->data['config'], $this);
@@ -218,10 +218,10 @@ class html extends CMD
 	  return $html;		
 	}
 	protected function item_packages_main(){
-    	$tab = 'window_main_frdl-webfan-pm-all';
+    	$tab = 'window_main_frdl-webfan-packages-all';
     	$html = '';
     	$this->_check_db();
-       if(true !== $this->check($html, $tab, true, true))return $html;  
+       if(true !== $this->check($html, $tab, true, true))return $html;   
 	
 	 $p = new \frdl\ApplicationComposer\Package\Man(true);
 	 $p -> run('packages', $this->argtoks, $this->data['config'], $this);
@@ -244,10 +244,10 @@ class html extends CMD
 	  return $html;		
 	}	
 	protected function item_newpackage(){
-    	$tab = 'window_main_frdl-webfan-pm-new';
+    	$tab = 'window_main_frdl-webfan-packages-new';
     	$html = '';
     	$this->_check_db();
-       if(true !== $this->check($html, $tab, true, true))return $html;  
+      /* if(true !== $this->check($html, $tab, true, true))return $html;   */
 	
 
 	 $p = new \frdl\ApplicationComposer\Package\Man(true);
@@ -261,11 +261,17 @@ class html extends CMD
 	  return $html;		
 	}	
      protected function item_packages(){
-    	$tab = 'window_main_frdl-webfan-packages-main';
+     	$tpfx = 'window_main_frdl-webfan-packages-';
+    	$tab = $tpfx.'main';
     	$html = '';
     	$this->_check_db();
-       if(true !== $this->check($html, $tab, true, true))return $html;  
-  
+  /*     if(true !== $this->check($html, $tab, true, true))return $html;   */
+   
+     $this->tab = $this->getRequestOption('stab');
+     $this->tab = $tpfx .((is_string($this->tab)) ? $this->tab : 'suggestions');
+
+     
+     
          $html .=  $this->item_suggestions();
 	     $html .=  $this->item_packages_main();  	
 	     $html .=  $this->item_newpackage();  	     
@@ -273,16 +279,18 @@ class html extends CMD
 
   mod.Tabs.delTabs();	  
  
-    mod.Tabs.addTab('#window_main_frdl-webfan-pm-new', 'New', 'window_main_frdl-webfan-pm-new', true);  	   
+    mod.Tabs.addTab('#".$tpfx."new', 'New', '".$tpfx."new', true);  	   
     
-     mod.Tabs.addTab('#window_main_frdl-webfan-pm-all', 'Packages', 'window_main_frdl-webfan-pm-all', true);     
+     mod.Tabs.addTab('#".$tpfx."all', 'Packages', '".$tpfx."all', true);     
     	    
-    mod.Tabs.addTab('#window_main_frdl-webfan-pm-frdl-suggestions', 'Suggestions', 'window_main_frdl-webfan-pm-frdl-suggestions', true);
+    mod.Tabs.addTab('#".$tpfx."suggestions', 'Suggestions', '".$tpfx."suggestions', true);
     	   	   	    
  	
 
     mod.Tabs.render(); 
-    mod.Tabs.openTab('window_main_frdl-webfan-pm-frdl-suggestions');
+    mod.Tabs.openTab('".$this->tab."');
+    
+    frdl.wd().translate();
      ";
      
      /*
@@ -292,6 +300,26 @@ class html extends CMD
       return $html;
 	}
 			 
+
+/*
+     protected function item_package(){
+       $tab = 'window_main_frdl-webfan-packages-package';
+  	   $html = '';
+  	   $this->_check_db();
+       if(true !== $this->check($html, $tab, true, true))return $html;  
+       
+	 $p = new \frdl\ApplicationComposer\Package\Man(true);
+	 $p -> run('package', $this->argtoks, $this->data['config'], $this);
+	$html.= '<div id="'.$tab.'" class="wd-tab">'   ;	 
+	  $html.= $p ->html();   
+    $html.= '</div>';	
+    
+      $this->result->js.=  $p ->js(); 
+      
+	  return $html;			 	
+	 }
+*/
+
 
      protected function item_accounts(){
        $html .=  $this->item_login();
@@ -320,7 +348,8 @@ class html extends CMD
 	    $html .=  $this->item_login();
 	    $html .=  $this->item_db();	
 	    $html .=  $this->item_wizard();
-        $html .=  $this->item_repositories();  
+        $html .=  $this->item_repositories(); 
+        $html .=  $this->item_miscellaneous();  
 	    $html .=  $this->item_expert();  
 	     
 	     
@@ -329,9 +358,13 @@ class html extends CMD
 	
 	
 	public function check(&$html, $tab, $check_admin = true, $check_errors_wizard = true){
+    
+     $this->destination = $this->getRequestOption('destination');		
+	 $this->destination = ((is_string($this->destination)) ? $this->destination : "$.WebfanDesktop.Registry.Programs['frdl-webfan']");
+	 	
 	     	  $this->result->js .= "  
 	     	  if('undefined' === typeof mod){
-			  	 var mod = $.WebfanDesktop.Registry.Programs['frdl-webfan'];  
+			  	 var mod = ".$this->destination.";  
 			  }
 	     	   
 	     	    
@@ -394,10 +427,12 @@ class html extends CMD
 	 $html.= '<h2 class="webfan-blue">Repositories</h2>';	
  
 
- 
+     $id = 'wd-frdl-webfan-settings-html-div-'.$tab;
+     $idTable = 'TABLE-' . $id;
     // $html.= print_r($rep,true);
-    $html.='<div class="data-box" style="margin:2px;padding:2px;">';
+    $html.='<div id="'.$id.'" class="data-box" style="margin:2px;padding:2px;">';
      
+     /*
      foreach($rep as $num => $r){
      	$html.='<div>';
 	 	$html.='<div style="margin:8px;padding:8px;">';
@@ -409,11 +444,95 @@ class html extends CMD
 	 	$html.='</div>';
 	 }
      
+     
+     
+     $html.= '<table id="'.$idTable.'" class="display"></table>';
+ */    
     $html.='</div>';
     
  
      $html.= '</div>';
+		/*   
+		   	 $this->result->js .= " 
+		  (function(){
+		   	   if('undefined' === typeof  frdl.wd().Registry.Programs['frdl-webfan'].DataTables) frdl.wd().Registry.Programs['frdl-webfan'].DataTables = {};
+			  
+			   var r = \$.each(".json_encode($rep).", function(i,k){
+		       		            if(null === i || 'undefined' === typeof i || null === k || 'undefined' === typeof k)return false;
+		       		           });
+		       		           
+		   	   
+		   	    if('object' === typeof Dom.g('".$idTable."')){
+			 	   Dom.g('".$idTable."').style.display='none';
+			 	   Dom.remove('".$idTable."');
+			    }
+			    frdl.wd().Registry.Programs['frdl-webfan'].DataTables['".$idTable."'] = Dom.dataToHtmlTable(r, true, true, null, '-', false); 
+		        frdl.wd().Registry.Programs['frdl-webfan'].DataTables['".$idTable."'].setAttribute('id', '".$idTable."');
+		        frdl.wd().Registry.Programs['frdl-webfan'].DataTables['".$idTable."'].setAttribute('class', 'display data');
+		   	    $('".$id."').html('<img src=\"http://images.webfan.de/ajax-loader_2.gif\" alt=\"lade...\" style=\"border:none;\" class=\"img-ajax-loader\" />');
+		  
+		   	 
+		   	 
+			frdl.wd().resetReady('Load repositories into GUI...........',65, 
+	   	     function(){
+	   	     	  var DATA = r;
+	   	     	  if('object' !== typeof Dom.g('".$id."') )return false;
+	   	     	  Dom.add(frdl.wd().Registry.Programs['frdl-webfan'].DataTables['".$idTable."'], Dom.g('".$id."'));
+
+			frdl.wd().resetReady('Load repositories into GUI..................................',85, 
+	   	     function(){
+	   	     	   	  var T = frdl.wd().Registry.Programs['frdl-webfan'], data = DATA;
+	   	     	   	   if('object' !== typeof Dom.g('".$id."')
+	   	     	   	    || frdl.wd().Registry.Programs['frdl-webfan'].DataTables['".$idTable."'].parentNode.getAttribute('id') 
+	   	          !== Dom.g('".$id."').getAttribute('id')  )return false;	
+	   	          
+	   	            	 
+          try{
+          	    frdl.wd().Registry.Programs['frdl-webfan'].DataTables['".$idTable."'] = $('#".$idTable."').DataTable( );
+		  }catch(err){
+			console.error(err);
+		  }
+		  
+		      return true;
+		  });	
+	   	 
+	   	 
+	   	   return true;
+	   	});	
+	   	
+	   	
+	  })();	   	 
+		   	 ";
+		   */
 		   
+		   	   	 $this->result->js .= " 
+		  (function(){
+		  
+
+		   
+		frdl.wd().resetReady('Load repositories into GUI...........',65, 
+	   	          function(){
+	   	     	        if('object' !== typeof Dom.g('".$id."') )return false;
+	   	     	   	 
+	   	     	   	 
+
+		   	   	     	   	 
+	  	$('#".$id."').html(Dom.renderJSON(\$.each(".json_encode($rep).", function(i,k){
+		       		            if(null === i || 'undefined' === typeof i || null === k || 'undefined' === typeof k)return false;
+		       		           }), 
+		       		           
+		       		           Dom.config.renderJSON.defaultRules(), true, true));   	     	   	 
+	   	     	   	 
+	   	     
+	   	     	   	 
+	   	     	   	 
+	   	                return true;
+	            	});	
+	  })();	   	 
+		   	 
+     ";
+		   	 
+		   	 
 	  return $html;		
 	}
 	
@@ -502,6 +621,8 @@ class html extends CMD
      
      $c = $this->data['config'];
      $c['db-pwd'] = '***';
+     $c['db-pfx'] = '***';
+     $c['PIN'] = '***';
      $c['PIN_HASH'] = '***';
      $c['ADMIN_PWD'] = '***';
      $c['SECRET'] = '***';
@@ -659,7 +780,9 @@ class html extends CMD
 		              $oldSchema);
 		
 		$S->tables($tables, false);
-		$report = $S->check_tables($schema, $tables, $schema);		
+		
+	
+		$report = $S->check_tables($schema, $tables, $oldSchema);		
 		
 		$html.= '<p>Version: '.$oldSchema->version.'/'.$schema->version.'</p>';
         $newTables = false;
@@ -677,7 +800,7 @@ class html extends CMD
 	         $_html.= '<p>'.$t['table'].'</p>';
 		    $_html.='</div>';	
 		    
-		   if(true !== $t['exists'] || !$S->isFresh( $oldSchema->tables[$alias]['version'], $schema->tables[$alias]['version']))  $newTables = true;
+		   if(!isset($tables[$t['table']]) || !$S->isFresh( $oldSchema->tables[$alias]['version'],  $schema->tables[$alias]['version']) )  $newTables = true;
 		   $T[$t['table']] = &$t;
 		}
      
@@ -705,7 +828,7 @@ class html extends CMD
 		    		callback : function(){\$('#window_frdl-webfan').show();$.WebfanDesktop.Registry.Programs['frdl-webfan'].html('db');},
 		    		time : new Date().getTime() / 1000,
 		    		newnotif : true,
-		    		id : 'system-error-database-missing-or-obsolete-tables-".$schema->version."'
+		    		id : 'system-error-database-missing-or-obsolete-tables-".((isset($schema->version))?$schema->version:'')."'
 		    	});
 			}catch(err){
 				console.error(err);
@@ -716,7 +839,8 @@ class html extends CMD
       	}else{
 					 	   	
 	     	 $this->result->js .= " 
-	   	        $('#window_main_postbox-ttt-all').wdPostbox('deleteMessage', 'system-error-database-missing-or-obsolete-tables-".$schema->version."',  'update', false);	 	   	
+	   	        $(document).wdPostbox('deleteMessage', 'system-error-database-missing-or-obsolete-tables-".((isset($oldSchema->version))?$oldSchema->version:'')."',  'update', false);	 	   	
+			    $(document).wdPostbox('deleteMessage', 'system-error-database-missing-or-obsolete-tables-".((isset($schema->version))?$schema->version:'')."',  'update', false);	 	   	
 			
 	     	 ";					 	   	
 		}
@@ -760,10 +884,10 @@ class html extends CMD
 		    		text : '<span>No connection to database</span>. <span>Please goto the database settings!</span>',
 		    		type : 'error',
 		    		show : true,
-		    		callback : function(){\$('#window_frdl-webfan').show();\$.WebfanDesktop.Registry.Programs['frdl-webfan'].Tabs.openTab('window_main_frdl-webfan-db');},
+		    		callback : function(){\$('#window_frdl-webfan').show();$.WebfanDesktop.Registry.Programs['frdl-webfan'].html('db');},
 		    		time : new Date().getTime() / 1000,
 		    		newnotif : true,
-		    		id : 'system-error-no-database-connection-".$schema->version."'
+		    		id : 'system-error-no-database-connection-".((isset($schema->version))?$schema->version:'')."'
 		    	});
 			}catch(err){
 				console.error(err);
@@ -773,7 +897,7 @@ class html extends CMD
 	   }else{
 					 	   	
 	     	 $this->result->js .= " 
-	   	        $('#window_main_postbox-ttt-all').wdPostbox('deleteMessage', 'system-error-no-database-connection-".$schema->version."',  'update', false);	 	   	
+	   	        $('#window_main_postbox-ttt-all').wdPostbox('deleteMessage', 'system-error-no-database-connection-".((isset($schema->version))?$schema->version:'')."',  'update', false);	 	   	
 			
 	     	 ";					 	   	
 		}
@@ -845,5 +969,49 @@ class html extends CMD
 	    $this->loginformIsOut = true;
 		return $html;
 	}
+
+
+
+
+
+	protected function item_miscellaneous(){
+    
+		
+    	$tab = 'window_main_frdl-webfan-miscellaneous';
+
+  	   $html = '';
+      		 if(true !== $this->check($html, $tab, true, true))return $html;    
+ 
+	
+	
+     $html.= '<div id="'.$tab.'" class="wd-tab">';
+
+ 		 		  $html.='<p>';
+		 		   $html.= '<input type="checkbox" name="CHK_PUBLIC_PROXY" '.((isset($this->data['config']['PUBLIC_PROXY']) && true === $this->data['config']['PUBLIC_PROXY']) 
+		 		             ? ' checked ': ' ' ).'   onclick="
+                          
+					        frdl.wd().Registry.Programs[\'frdl-webfan\'].cnf(\'PUBLIC_PROXY\',  this.checked.toString(), null, frdl.wd().Registry.Programs[\'frdl-webfan\'].formConfig); 
+					         "  /> Enable public read (share repositories info)';
+		 		             
+
+		 		  $html.='</p>';
+		 		  
+		 		  
+		 		      
+     $html.='</div>';
+  
+  
+  // mod.Tabs.openTab('".$tab."');
+      $this->result->js .= " 
+        	  
+   
+	   	     
+
+    ";
+
+  
+      
+      return $html;		
+	}	
 	
 }

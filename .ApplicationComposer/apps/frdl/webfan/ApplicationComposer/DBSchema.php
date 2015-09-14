@@ -286,7 +286,7 @@ final class DBSchema extends DatabaseSchema
 
                  "INSERT INTO " . $this->settings['pfx'] . $repos . " 
                      SET 
-                      _use=0,
+                      _use=1,
                       def=1,
                        `priority`=0,
                       `name`='JSclasses.org',
@@ -401,6 +401,8 @@ final class DBSchema extends DatabaseSchema
          
              'table' => null,
              'sql' => array(
+             
+             /*
                 "INSERT INTO " . $this->settings['pfx'] . $packages . " 
                      SET 
                       `vendor`='frdl',
@@ -413,7 +415,7 @@ final class DBSchema extends DatabaseSchema
                       ",
 
       
-                      
+               */       
              ),
           ),         	     
    	      

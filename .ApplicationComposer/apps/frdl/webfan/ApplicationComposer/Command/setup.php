@@ -134,7 +134,8 @@ class setup extends CMD
 	
        
           $this->result->js.='
-            	$(\'#window_main_postbox-ttt-all\').wdPostbox(\'deleteMessage\', \'system-error-database-missing-or-obsolete-tables-'.$schema->version.'\',  \'update\', false);	 	   	
+            	$(document).wdPostbox(\'deleteMessage\', \'system-error-database-missing-or-obsolete-tables-'.$oldSchema->version.'\',  \'update\', false);	 	 
+            	$(document).wdPostbox(\'deleteMessage\', \'system-error-database-missing-or-obsolete-tables-'.$schema->version.'\',  \'update\', false);	 	   	
 					 	   
           ';
 

@@ -118,6 +118,9 @@ abstract class DatabaseSchema
    
    public function create_tables($schema, $oldSchema = null){
    	 $report = '';
+   	 
+   	 $this->db ->begin();
+   	 
 		   foreach($schema->tables as $alias => $t){
   	   	 if(true === $t['exists']  && isset($oldSchema->tables[$alias])
   	   	  && $this->isFresh($oldSchema->tables[$alias]['version'], $schema->tables[$alias]['version']) )continue; 
@@ -161,6 +164,9 @@ abstract class DatabaseSchema
 			 	 
 			 }
 	   }	  
+	   
+	   $this->db ->commit();
+	   
    	  return $report;
    }
    
@@ -176,8 +182,7 @@ abstract class DatabaseSchema
    }
    
 	final public function tables(&$_tables, $getFields = false){
-		$_tables = &$this->_tables;
-		
+				
 		try{
 	        foreach ( $this->db->query("SHOW TABLES") as $row) {
 	         $tablename = $row['Tables_in_'.$this->settings['dbname']];	
@@ -186,14 +191,14 @@ abstract class DatabaseSchema
 			 	$this->_tables[$tablename] = $row; 
 			 	$this->table_fields($row, $tablename, $this->_tables);
 			 }	
-             $_tables[$tablename] = $row; 
+             $this->_tables[$tablename] = $row; 
            }	
 		}catch(\Exception $e){
 			trigger_error($e->getMessage(), E_USER_ERROR);
 			 
 		}
 		
-		$this->_tables = $_tables;
+		$_tables = $this->_tables;
 		return $this;
 	}
 		

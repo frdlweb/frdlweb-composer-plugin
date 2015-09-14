@@ -79,30 +79,91 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 	}
 	
 	
-	
-	protected function task_suggestions(){
+	protected function task_package(){
 		
 		
-		$divSerp = 'wd-frdl-webfan-pm-packages-suggestions'.mt_rand(1000,9999);	
-	    $p = new \frdl\ApplicationComposer\Package(); 
+		$divSerp = 'wd-frdl-webfan-pm-packages-package'.mt_rand(1000,9999);	
+	 //    $p = new \frdl\ApplicationComposer\Package(); 
 	  //	$packages = $p->all();
 	
 	   // sort($packages);
 	   
-	   $groups = array();
+
+
+			
+			
+		$this->html.='<div id="'.$divSerp.'">';
+		
+         $this->html.='package...';
+		 
+		 
+		$this->html.='</div>';	
+		
+	
+	}
+		
+	
+	protected function task_suggestions(){
+	             
+		$divSerp = 'wd-frdl-webfan-pm-packages-suggestions'.mt_rand(1000,9999);	
+	 //    $p = new \frdl\ApplicationComposer\Package(); 
+	  //	$packages = $p->all();
+	
+	   // sort($packages);
+	   
+	   $groups['PROJECT'] = array(  
+	          'title' => 'Project Management',
+	          'packages' => array( ),
+	   );	  
+	   
+	   
+	   $groups['SDK'] = array(  
+	          'title' => 'API SDK',
+	          'packages' => array( ),
+	   );		
+	   
+	       
 	   $groups['CMS'] = array(  
 	          'title' => 'Content Management',
-	          'packages' => array(
-	            0 => array( 
+	          'packages' => array( ),
+	   );
+	   
+
+  
+	   
+	    
+	    
+		   $groups['CMS']['packages'][] = array( 
 	                'vendor' => 'TerraProject',
 	                'package' => 'pragmamx',
 	                'description' => 'Just another CMS...',
 	                'url' => 'http://www.pragmamx.org',
 	                'img' => 'http://www.pragmamx.org/favicon.ico',
-	              ),
-	          ),
-	   );
-
+	              );
+		
+		
+		
+			$groups['PROJECT']['packages'][] = array( 
+	                'vendor' => 'frdl',
+	                'package' => 'webfan',
+	                'description' => 'PHP Package Manager - Application Composer',
+	                'url' => 'https://github.com/frdl/webfan',
+	                'img' => 'http://static.webfan.de/icons/icons-3/icon_package_get.gif',
+	              );		
+			
+			
+			
+			
+			$groups['SDK']['packages'][] = array( 
+	                'vendor' => 'phpclasses',
+	                'package' => 'oauth-api',
+	                'description' => 'OAuth API SDK',
+	                'url' => 'http://www.phpclasses.org/package/7700-PHP-Authorize-and-access-APIs-using-OAuth.html',
+	                'img' => 'http://www.phpclasses.org/favicon.ico',
+	              );		
+			
+					
+			
 			
 			
 		$this->html.='<div id="'.$divSerp.'">';
@@ -110,15 +171,27 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 	 foreach($groups as $n => $group){	
 	  $this->html.='<div>';
 	   $this->html.='<h2>'.$group['title'].'</h1>';
-	  
-		ksort($group['packages']);
-		 foreach($group['packages'] as $num => $package){
+	   
+	    $packs = $group['packages'];
+		ksort($packs);
+		 foreach($packs as $num => $package){
 		 	$this->html.='<div class="data-box">';
 		 	
 		 	
-		 	$this->html.='<h2 class="webfan-blue" onclick="var p = this.getAttribute(\'data-package\'); 
+		 	$this->html.='<h2 class="webfan-blue" onclick="var App = frdl.wd().Registry.Programs[\'frdl-webfan\'];var p = this.getAttribute(\'data-package\'); 
                  	  	     	var e = explode(\'/\', p);
-							   	$(this).package(\'c\', e[0], e[1]);"
+							    var PackageTask = $(App).package(\'c\', e[0], e[1]);
+							     
+						      frdl.wd().resetReady(\'Loading page window.......\',45, 
+                      		   function(){
+                      		   	    var r = (\'undefined\' !== typeof PackageTask.WIN && \'function\' === typeof PackageTask.WIN.set);
+                      		   	    if(true !== r)return r;
+                      		   	    PackageTask.WIN.set(\'img\', \''.$package['img'].'\');
+                      		     return true;
+                               }
+	   	                    );	   	    
+	   	                    	     
+							"
 					  data-package="'.$package['vendor'].'/'.$package['package'].'" style="text-decoration:underline;">';
 			$this->html.='<img src="'.$package['img'].'" style="border:none;" />';	  
 		 	$this->html.= $package['vendor'].'/'.$package['package'];
@@ -163,7 +236,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 		 	
 		 	$this->html.='<h2 class="webfan-blue" onclick="var p = this.getAttribute(\'data-package\'); 
                  	  	     	var e = explode(\'/\', p);
-							   	$(this).package(\'c\', e[0], e[1]);"
+							   	$(frdl.wd()).package(\'c\', e[0], e[1]);"
 					  data-package="'.$package['vendor'].'/'.$package['package'].'" style="text-decoration:underline;">';
 		 	$this->html.= $package['vendor'].'/'.$package['package'];
 		 	$this->html.='</h2>';
@@ -183,11 +256,11 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 		
 		
 		$this->html.='
-		  <button onclick="
-		   $.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset =  $.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset + '.intval($num).';
+		  <button onclick="var App = frdl.wd().Registry.Programs[\'frdl-webfan\'];
+		  frdl.wd().wdFrdlWebfanHtmlPackagesOffset =  frdl.wd().wdFrdlWebfanHtmlPackagesOffset + '.intval($num).';
 		    Dom.g(\''.$divSerp.'\').innerHTML += \'<img src=\' + base64_decode(\'Ig==\') + \'http://images.webfan.de/ajax-loader_2.gif\' + base64_decode(\'Ig==\') + \' alt=\' + base64_decode(\'Ig==\') + \'lade...\' + base64_decode(\'Ig==\') + \' style=\' + base64_decode(\'Ig==\') + \'border:none;\' + base64_decode(\'Ig==\') + \' class=\' + base64_decode(\'Ig==\') + \'img-ajax-loader\' + base64_decode(\'Ig==\') + \' />\';
-	        $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cmd(
-	            \'frdl pm select --start=\' + $.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset + \' --limit='.$num.' -b\',  function(o){
+	        frdl.wd().Registry.Programs[\'frdl-webfan\'].cmd(
+	            \'frdl pm select --start=\' + frdl.wd().wdFrdlWebfanHtmlPackagesOffset + \' --limit='.$num.' -b\',  function(o){
 	             	  $.each(o.packages, function(_k,i){
                  	  	     i.name = i.vendor + \'/\' + i.package;
                  	  	     var d = Dom.create(\'div\'), p, p2, h, a;
@@ -200,7 +273,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
                  	  	     h.onclick=function(ev){
                  	  	     	var p = this.getAttribute(\'data-package\'); 
                  	  	     	var e = explode(\'/\', p);
-							   	$(this).package(\'c\', e[0], e[1], true);
+							   	$(App).package(\'c\', e[0], e[1], true);
 							 };
                  	  	     Dom.add(h,d);
                  	  	    
@@ -232,7 +305,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 		
 		
 		$this->js.= " 
-		$.WebfanDesktop.wdFrdlWebfanHtmlPackagesOffset = ".$num.";
+		frdl.wd().wdFrdlWebfanHtmlPackagesOffset = ".$num.";
 
 		";
 		
@@ -244,7 +317,9 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 
 		$this->html.='<form id="'.$form.'" action="#" method="post">';
 		$this->html.='<div>';
-		 $this->html.='<strong>Find</strong> <input type="text" name="packagename" value="vendor/package"
+		 $this->html.='<strong>Package</strong> 
+		
+		 <input type="text" name="packagename" value="vendor/package"
 		  onclick="if(\'vendor/package\' === this.value)this.value=\'\';" 
 		  />';
 		 
@@ -253,11 +328,19 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 		 * flags -bcs  bounce,use cache, save(not in use yet)
 		 * 
 		 */
-		 $this->html.='<button onclick="
-			   var fd =  $(\'#'.$form.'\').serializeArray().reduce(function(obj, item) {
+		 $this->html.=' <button onclick="var fd =  $(\'#'.$form.'\').serializeArray().reduce(function(obj, item) {
                                              obj[item.name] = item.value;
                                              return obj;
                                         }, {});		 
+                 	  	     	var e = explode(\'/\', fd.packagename), App = frdl.wd().Registry.Programs[\'frdl-webfan\'];
+							   	$(App).package(\'c\', e[0], e[1], true);">create</button>
+		 
+		 <button onclick="
+			   var fd =  $(\'#'.$form.'\').serializeArray().reduce(function(obj, item) {
+                                             obj[item.name] = item.value;
+                                             return obj;
+                                        }, {}), 
+                                             App = frdl.wd().Registry.Programs[\'frdl-webfan\'];		 
                  var cmd = \'frdl pm find \' + base64_decode(\'Ig==\') + fd.packagename + base64_decode(\'Ig==\') ;
                  cmd += \' -bc\';
                  try{
@@ -266,9 +349,9 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 				 	console.warn(err);
 				 }
                 
-                 cmd += (true === $.WebfanDesktop.o.debug) ? \'d\' : \'\';
+                 cmd += (true === frdl.wd().o.debug) ? \'d\' : \'\';
                  Dom.g(\''.$divSerp.'\').innerHTML = \'<img src=\' + base64_decode(\'Ig==\') + \'http://images.webfan.de/ajax-loader_2.gif\' + base64_decode(\'Ig==\') + \' alt=\' + base64_decode(\'Ig==\') + \'lade...\' + base64_decode(\'Ig==\') + \' style=\' + base64_decode(\'Ig==\') + \'border:none;\' + base64_decode(\'Ig==\') + \' class=\' + base64_decode(\'Ig==\') + \'img-ajax-loader\' + base64_decode(\'Ig==\') + \' />\';
-                 $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cmd(cmd,  function(o){
+                 frdl.wd().Registry.Programs[\'frdl-webfan\'].cmd(cmd,  function(o){
                  	  $.each(o.searchresults, function(k,_i){
                  	  	  $.each(_i, function(_k,i){
                  	  	     var d = Dom.create(\'div\'), p, p2, h, a;
@@ -281,7 +364,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
                  	  	     h.onclick=function(ev){
                  	  	     	var p = this.getAttribute(\'data-package\'); 
                  	  	     	var e = explode(\'/\', p);
-							   	$(this).package(\'c\', e[0], e[1], true);
+							   	$(App).package(\'c\', e[0], e[1], true);
 							 };
                  	  	     Dom.add(h,d);
                  	  	    
