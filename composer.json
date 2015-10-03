@@ -187,10 +187,7 @@
     
     "extra": { 
     	"frdl" : {
-    		
-    	
-    	}
-         "suggest" : [
+        "suggest" : [
             {
              "title" : 	"Composer Source",
              "description" : "The Source of the php Composer as helper library",
@@ -227,16 +224,9 @@
                    {"geraintluff/jsv4": "Validation and  normalization"}        	
              	]
              },
-            /* 
-             {
-             "title" : 	"PragmaMx",
-             "description" : "Just another CMS",
-             "packages" : [
-                  {"TerraProject/pragmamx" : "CMS"}
-               	
-             	]
-             },          
-             */
+             
+ 
+             
               
              {
              "title" : 	"SVN/history-rollback",
@@ -249,7 +239,28 @@
              
  
                      	
+         ],
+    
+    
+      "misc" : [
+         
+           {
+             "title" : 	"PragmaMx",
+             "description" : "Just another CMS",
+             "packages" : [
+                  {"TerraProject/pragmamx" : "CMS"}
+               	
+             	]
+             }          
+             
+
+             
+ 
+                     	
          ]
+    	
+    	}
+ 
     }
 
 }
