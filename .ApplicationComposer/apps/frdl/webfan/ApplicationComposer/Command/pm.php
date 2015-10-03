@@ -121,10 +121,93 @@ class pm extends CMD
      if('stats' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
 		 return $this->stats($o);			
 	 }	       
-	       	       
+	 
+     if('download' === strtolower($this->argtoks['arguments'][0]['cmd']) && intval($this->argtoks['arguments'][0]['pos']) === 1){
+		 return $this->stats($o);			
+	 }	      
+	 	       	       
 	      \webdof\wResponse::status(404);
 	         $this->result->out = '(Sub-)Command not found.'; 
     }
+    
+    
+    
+     public function download($o){
+       	if(true !== $this->aSess['isAdmin']){
+     		$this->result->stats[0] = '<span class="webfan-red">You are not logged in</span>';
+			$this->result->out = 'OK';
+			return;
+		}   	
+     	
+	 	$this->packagefullname = $this->getRequestOption('package');
+	 	$url = $this->getRequestOption('url');
+	 	
+	 	$version = $this->getRequestOption('version');
+	 	$checksum = $this->getRequestOption('checksum');
+	 	
+            $e = explode('/', $this->packagefullname);
+              if(2 !== count($e)){
+                 $this->result->out = 'Invalid packagename';
+                return;	 				
+	     	  }
+	     	  
+		    $this->vendor = $e[0];
+		    $this->package = $e[1];		
+		    
+		if(!is_array(($u = parse_url($url)))){
+                 $this->result->out = 'Invalid url';
+                return;	 				
+   		}    	     
+       
+        $this->result->response = new \stdclass; 	
+        $this->result->response->errors = array();	
+   		
+  		    $p = new \frdl\ApplicationComposer\Package(array(),  \frdl\xGlobal\webfan::db()->settings(),  $this->db); 
+		    if(true !== $p->find( $this->vendor,  $this->package )){ 	
+					   $p->vendor = $this->vendor;
+					   $p->package = $this->package;
+					   $p->time_last_fetch_info = time();
+					   $p->create();	    
+		    }	
+   		  if($this->isErrorDB($errorInfo, true)){
+   		  	$this->result->response->errors[] = $errorInfo;
+   		  }
+   		
+     	  $R = new \frdl\ApplicationComposer\Repository( array(), $this->db->settings(), $this->db );
+          $this->repos  = $R->search(array('_use' => 1, 'host' => $u['host']));
+     	  $this->result->response->repos = $this->repos;	
+ 
+           
+          $D = new \frdl\ApplicationComposer\Download( array(), $this->db->settings(), $this->db ); 
+          $D->host = $u['host'];  
+     	  $D->repos = $this->repos['name'];
+     	  $D->success = 0;
+     	  $D->unpacked = 0;
+     	  $D->lid = 0;
+     	  $D->protocoll = $u['scheme'];	
+     	  $D->vendor 	= $this->vendor;
+     	  $D->package   = $this->package;
+     	  $D->version = $version;
+     	  $D->checksum = $checksum;
+     	  $D->time = time();
+     	  
+     	  $e = explode('/', $u['path']);
+     	  $filename = $e[(count($e)-1)];
+     	  $D->dir = $this->data['config']['DIRS']['packages'] . $this->vendor . DIRECTORY_SEPARATOR . $this->package . DIRECTORY_SEPARATOR
+     	            . $this->repos['name'] . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR . 'downloads' .DIRECTORY_SEPARATOR
+     	            ;
+     	  	  
+     	            
+     	  $D->file = $D->dir . $filename;
+     	  
+     	  $D->create();
+     	  
+     	  
+     	  	
+   		  $this->result->out = 'OK';	  	 	
+	 }
+	 
+	 
     
      public function stats($o){
      	

@@ -27,33 +27,16 @@
  * 
  * 
  */
- namespace frdl\common;
+namespace frdl\common;
  
- 
- class Request
- {
-        function __construct(){
-        	$this->protocoll = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
-		$this->method = $_SERVER['REQUEST_METHOD'];
-		$this->get = $_GET;
-		$this->post = $_POST;
-		$this->cookies = $_COOKIE;
-		$this->session = $_SESSION;
-		$this->uri = $_SERVER['REQUEST_URI'];
-		switch($this->method){
-		       case 'HEAD' :
-		       case 'GET' :
-		           $this->request = $_GET;
-		          break;
-		        case 'POST' : 
-		        case 'PUT' : 
-		        case 'DELETE' : 
-		           $this->request = $_POST;
-		          break;
-		        default : 
-		            $this->request = $_REQUEST;	
-		          break;	
-		}
-         }
-         
- }
+abstract class Lazy
+{
+	abstract public function __construct();
+	abstract public function __destruct();	
+    abstract public function __invoke();
+    abstract public function __toString();
+    abstract public function __set($name, $value);	
+    abstract public function &__get($name);
+    abstract public function __call($method, $arguments);		
+    abstract public static function __callStatic($method, $arguments);
+}

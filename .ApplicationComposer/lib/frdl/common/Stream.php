@@ -25,35 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
+ *  shared by yannick http://php.net/manual/de/class.streamwrapper.php#92277
  * 
  */
- namespace frdl\common;
+namespace frdl\common;
  
+interface Stream
+{
+    public function stream_open($url, $mode, $options = STREAM_REPORT_ERRORS, &$opened_path = null);
+    public function dir_closedir();
+    public function dir_opendir($path , $options);
+    public function dir_readdir();
+    public function dir_rewinddir();
+    public function mkdir($path , $mode , $options);
+    public function rename($path_from , $path_to);
+    public function rmdir($path , $options);
+ 	public function stream_cast($cast_as);
+ 	public function stream_close();
+    public function stream_eof();
+    public function stream_flush();
+    public function stream_lock($operation);
+    public function stream_set_option($option , $arg1 , $arg2);
+    public function stream_stat();
+    public function unlink($path);
+    public function url_stat($path , $flags);
+    public function stream_read($count);
+    public function stream_write($data);
+    public function stream_tell();
+    public function stream_seek($offset, $whence);
+    public function stream_metadata($path, $option, $var);
  
- class Request
- {
-        function __construct(){
-        	$this->protocoll = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
-		$this->method = $_SERVER['REQUEST_METHOD'];
-		$this->get = $_GET;
-		$this->post = $_POST;
-		$this->cookies = $_COOKIE;
-		$this->session = $_SESSION;
-		$this->uri = $_SERVER['REQUEST_URI'];
-		switch($this->method){
-		       case 'HEAD' :
-		       case 'GET' :
-		           $this->request = $_GET;
-		          break;
-		        case 'POST' : 
-		        case 'PUT' : 
-		        case 'DELETE' : 
-		           $this->request = $_POST;
-		          break;
-		        default : 
-		            $this->request = $_REQUEST;	
-		          break;	
-		}
-         }
-         
- }
+}

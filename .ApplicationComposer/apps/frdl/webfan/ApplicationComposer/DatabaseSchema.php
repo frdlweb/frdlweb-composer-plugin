@@ -122,6 +122,17 @@ abstract class DatabaseSchema
    	 $this->db ->begin();
    	 
 		   foreach($schema->tables as $alias => $t){
+		   	/*
+	                 $orm_class = $schema->tables[TableAlias::ALIAS]['ORM_CLASS'];
+					 $Alias = new $orm_class(array(),  \frdl\xGlobal\webfan::db()->settings(),  $this->db);
+					 if(true !== $Alias->find($alias)){
+						 $Alias->table_alias = $alias;
+					     $Alias->version = $t['version'];
+					     $Alias->table = $t['table'];
+				         $Alias->comment = $schema->tables[$alias]['ORM_CLASS'].' maps to '.$alias;		
+				         $Alias->create();		 	
+					 }		   	
+		   	*/
   	   	 if(true === $t['exists']  && isset($oldSchema->tables[$alias])
   	   	  && $this->isFresh($oldSchema->tables[$alias]['version'], $schema->tables[$alias]['version']) )continue; 
   	   	  
@@ -144,15 +155,7 @@ abstract class DatabaseSchema
 			 $c = $this->i($alias); 
 			 $c->install();
 	
-	                 $orm_class = $schema->tables[TableAlias::ALIAS]['ORM_CLASS'];
-					 $Alias = new $orm_class();
-					 if(!$Alias->find($alias)){
-						 $Alias->table_alias = $alias;
-					     $Alias->version = $t['version'];
-					     $Alias->table = $t['table'];
-				         $Alias->comment = $schema->tables[$alias]['ORM_CLASS'].' maps to '.$alias;		
-				         $Alias->create();		 	
-					 }
+
 			 
 			 foreach($t['sql'] as $num => $q){
 			 	try{

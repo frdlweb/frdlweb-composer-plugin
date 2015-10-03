@@ -152,7 +152,7 @@
         "vendor-dir" : ".ApplicationComposer/vendor",
         "cache-dir" : ".ApplicationComposer/cache",
         "cache-files-dir":".ApplicationComposer/packages",
-        "cache-files-ttl": "15552000",
+        "cache-files-ttl": 15552000,
         "prepend-autoloader": false,
         "classmap-authoritative": true,
         "notify-on-install": true
@@ -231,6 +231,15 @@
              "packages" : [
                    {"phpclasses/httpclient": "Http Client Class"},
                    {"phpclasses/oauth-api" : "Oauth Client SDK"}           	
+             	]
+             },
+             	
+         	
+            {
+             "title" : 	"jsv4",
+             "description" : "A (coercive) JSON Schema v4 Validator for PHP",
+             "packages" : [
+                   {"geraintluff/jsv4": "Http Client Class"}        	
              	]
              },
              

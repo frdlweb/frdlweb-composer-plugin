@@ -360,7 +360,7 @@ class html extends CMD
 	public function check(&$html, $tab, $check_admin = true, $check_errors_wizard = true){
     
      $this->destination = $this->getRequestOption('destination');		
-	 $this->destination = ((is_string($this->destination)) ? $this->destination : "$.WebfanDesktop.Registry.Programs['frdl-webfan']");
+	 $this->destination = ((is_string($this->destination)) ? $this->destination : "frdl.wd().Registry.Programs['frdl-webfan']");
 	 	
 	     	  $this->result->js .= "  
 	     	  if('undefined' === typeof mod){
@@ -428,26 +428,25 @@ class html extends CMD
  
 
      $id = 'wd-frdl-webfan-settings-html-div-'.$tab;
-     $idTable = 'TABLE-' . $id;
+    //  $idTable = 'TABLE-' . $id;
     // $html.= print_r($rep,true);
-    $html.='<div id="'.$id.'" class="data-box" style="margin:2px;padding:2px;">';
+    $html.='<div id="'.$id.'" style="margin:2px;padding:2px;">';
      
-     /*
+     
      foreach($rep as $num => $r){
-     	$html.='<div>';
-	 	$html.='<div style="margin:8px;padding:8px;">';
-	 	
+     	$html.='<div class="data-box" style="margin:8px;padding:8px;">';
+	
 	 	 $html.='<p><strong>'.$r['name'].'</strong> ('.((1 === intval($r['_use'])) ? 'active' : 'deactivated').')</p>';
 	 	 $html.='<p><a href="'.$r['homepage'].'" target="_blank">'.$r['host'].'</a></p>';
 	 	 $html.='<p>'.$r['description'].'</p>';	 
-	 	 $html.='</div>';
+
 	 	$html.='</div>';
 	 }
      
      
      
-     $html.= '<table id="'.$idTable.'" class="display"></table>';
- */    
+   //   $html.= '<table id="'.$idTable.'" class="display"></table>';
+     
     $html.='</div>';
     
  
@@ -503,7 +502,7 @@ class html extends CMD
 	   	
 	  })();	   	 
 		   	 ";
-		   */
+		  
 		   
 		   	   	 $this->result->js .= " 
 		  (function(){
@@ -531,7 +530,7 @@ class html extends CMD
 	  })();	   	 
 		   	 
      ";
-		   	 
+		 */   	 
 		   	 
 	  return $html;		
 	}

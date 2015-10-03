@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Repository  Extends \frdl\Crud {
 		
-		   const VERSION = '0.0.7';
+		   const VERSION = '0.0.10';
 		   const ALIAS = 'Repositories';
 		
 			# Your Table name 

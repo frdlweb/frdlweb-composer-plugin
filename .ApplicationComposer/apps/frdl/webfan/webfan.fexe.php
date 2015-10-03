@@ -260,8 +260,44 @@ class webfan extends fexe
 	 protected function _boot(){
 	 	$this->default_boot() ;
 		
-	 	\frdl\webfan\Autoloading\SourceLoader::top() 
-          -> addPsr4('frdl\ApplicationComposer\\', __DIR__ . DIRECTORY_SEPARATOR . 'ApplicationComposer' .DIRECTORY_SEPARATOR, false) ;
+	 	\webfan\Loader::top() 
+          -> addPsr4('frdl\ApplicationComposer\\', __DIR__ . DIRECTORY_SEPARATOR . 'ApplicationComposer' .DIRECTORY_SEPARATOR, false) 
+       
+       /* geraintluff/jsv4  */
+          -> class_mapping_add(
+                  'Jsv4',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'geraintluff'
+                      .DIRECTORY_SEPARATOR . 'jsv4-php' 
+                      .DIRECTORY_SEPARATOR . 'master' 
+                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
+                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
+                     . DIRECTORY_SEPARATOR .'jsv4.php', $success) 
+          
+            -> class_mapping_add(
+                  'Jsv4Error',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'geraintluff'
+                      .DIRECTORY_SEPARATOR . 'jsv4-php' 
+                      .DIRECTORY_SEPARATOR . 'master' 
+                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
+                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
+                     . DIRECTORY_SEPARATOR .'jsv4.php', $success)         
+          
+            -> class_mapping_add(
+                  'SchemaStore',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'geraintluff'
+                      .DIRECTORY_SEPARATOR . 'jsv4-php' 
+                      .DIRECTORY_SEPARATOR . 'master' 
+                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
+                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
+                     . DIRECTORY_SEPARATOR .'schema-store.php', $success)         
+          
+          ;
           
           \frdl\webfan\App::God()-> addClass('\frdl\ApplicationComposer\DBSchema', '\frdl\_db',true, $success);
 	 }
@@ -728,7 +764,7 @@ class webfan extends fexe
 					 	   	
 					 	   	
 					 	   	alert(\'Please set up the configuration next...\');
-			 		    	window.location.href = "'.$this->data['config']['URL'].'#app=frdl-webfan&modul=formConfig&rand='.mt_rand(1000,999999999999).'";
+			 		    	window.location.href = "'.$this->data['config']['URL'].'#app=frdl-webfan";
 			 		    	';															 		
 		             
 		              \webdof\wResponse::status(201);

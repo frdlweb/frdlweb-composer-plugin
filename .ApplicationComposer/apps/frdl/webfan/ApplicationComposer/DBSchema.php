@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 final class DBSchema extends DatabaseSchema
 {
-   const VERSION = '0.0.41';	
+   const VERSION = '0.1.5';	
 
    public static $s = null;
    
@@ -231,7 +231,8 @@ final class DBSchema extends DatabaseSchema
              'table' => null,
              'sql' => array(
              
-             
+               
+                
                 "INSERT INTO " . $this->settings['pfx'] . $repos . " 
                      SET 
                       _use=1,
@@ -260,7 +261,7 @@ final class DBSchema extends DatabaseSchema
 
                  "INSERT INTO " . $this->settings['pfx'] . $repos . " 
                      SET 
-                      _use=0,
+                      _use=1,
                       def=1,
                        `priority`=0,
                       `name`='PragmaMx [Package]',
@@ -277,13 +278,14 @@ final class DBSchema extends DatabaseSchema
                       def=1,
                        `priority`=0,
                       `name`='PHPclasses.org',
-                      `host`='phpclasses.org',
+                      `host`='www.phpclasses.org',
                       `homepage`='http://webfan.users.phpclasses.org',
                       `description`='The phpclasses composer repository',
                       `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\phpclasses')."'
                       
                       ",
-
+                 "UPDATE " . $this->settings['pfx'] . $repos . " SET `host`='www.phpclasses.org' WHERE `name`='PHPclasses.org' LIMIT 1",
+                 
                  "INSERT INTO " . $this->settings['pfx'] . $repos . " 
                      SET 
                       _use=1,
@@ -321,7 +323,23 @@ final class DBSchema extends DatabaseSchema
                       `description`='Webfan Software Server',
                       `fetcher_class`='".urlencode('\frdl\ApplicationComposer\Repos\webfan')."'
                       
-                      ",                        
+                      ",     
+                      
+                 "UPDATE " . $this->settings['pfx'] . $repos . " SET _use=1 WHERE 
+                      `name`='Packagist' 
+                  OR  `name`='PragmaMx [Package]' 
+                  OR  `name`='PHPclasses.org'
+                  OR  `name`='JSclasses.org'
+                  
+                ",  
+                
+                "ALTER TABLE " . $this->settings['pfx'] . $repos . " 
+                  ADD `auth` TEXT
+                  
+                ",                                  
+                      
+                      
+                               
              ),
           ),  	      
    	        	      

@@ -1,5 +1,6 @@
 <?php
 /**
+ * 
  * Copyright  (c) 2015, Till Wehowski
  * All rights reserved.
  * 
@@ -10,7 +11,10 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of frdl/webfan nor the
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *    This product includes software developed by the frdl/webfan.
+ * 4. Neither the name of frdl/webfan nor the
  *    names of its contributors may be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  * 
@@ -26,34 +30,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  * 
+ * 
+ * 
+ * 
+ * 
+ * 
  */
- namespace frdl\common;
- 
- 
- class Request
- {
-        function __construct(){
-        	$this->protocoll = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
-		$this->method = $_SERVER['REQUEST_METHOD'];
-		$this->get = $_GET;
-		$this->post = $_POST;
-		$this->cookies = $_COOKIE;
-		$this->session = $_SESSION;
-		$this->uri = $_SERVER['REQUEST_URI'];
-		switch($this->method){
-		       case 'HEAD' :
-		       case 'GET' :
-		           $this->request = $_GET;
-		          break;
-		        case 'POST' : 
-		        case 'PUT' : 
-		        case 'DELETE' : 
-		           $this->request = $_POST;
-		          break;
-		        default : 
-		            $this->request = $_REQUEST;	
-		          break;	
-		}
-         }
-         
- }
+namespace frdl\webfan\Autoloading;
+use frdl\common;
+use frdl\common\Lazy;
+
+
+final class Autoloader extends SourceLoader implements \frdl\common\Stream, Loader  
+{
+	
+}
+
