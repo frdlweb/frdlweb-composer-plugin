@@ -124,7 +124,8 @@
     },
 
     "autoload": {
-    	"files": [
+    	"files":[ 
+    		  ".ApplicationComposer/lib/frdl/A.php",
     	          ".ApplicationComposer/lib/frdl/webfan/Autoloading/SourceLoader.php",
     	          ".ApplicationComposer/lib/frdl/webfan/App.php"
     	         ],
@@ -132,8 +133,8 @@
             "frdl\\": ".ApplicationComposer/lib/frdl/",
             "webfan\\": ".ApplicationComposer/lib/webfan/",
             "webdof\\": ".ApplicationComposer/lib/webdof/",
-            "": ".ApplicationComposer/lib/"
-        }
+            "": ".ApplicationComposer/lib/",
+       }
     },
 
     "autoload-dev": {
@@ -239,7 +240,7 @@
              "title" : 	"jsv4",
              "description" : "A (coercive) JSON Schema v4 Validator for PHP",
              "packages" : [
-                   {"geraintluff/jsv4": "Http Client Class"}        	
+                   {"geraintluff/jsv4": "Validation and  normalization"}        	
              	]
              },
              
