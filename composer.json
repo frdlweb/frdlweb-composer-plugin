@@ -124,7 +124,8 @@
     },
 
     "autoload": {
-    	"files": [
+    	"files":[ 
+    		  ".ApplicationComposer/lib/frdl/A.php",
     	          ".ApplicationComposer/lib/frdl/webfan/Autoloading/SourceLoader.php",
     	          ".ApplicationComposer/lib/frdl/webfan/App.php"
     	         ],
@@ -133,7 +134,7 @@
             "webfan\\": ".ApplicationComposer/lib/webfan/",
             "webdof\\": ".ApplicationComposer/lib/webdof/",
             "": ".ApplicationComposer/lib/"
-        }
+       }
     },
 
     "autoload-dev": {
@@ -185,27 +186,8 @@
     
     
     "extra": { 
-        "frdl" : true,
-        "frdl-apc-type" : "core", 
-        "fexe": {
-	               "PACKAGE" : "{___$PACKAGE___}",
-	               "VERSION" : "{___$VERSION___}",
-	               "OID" : "{___$OID___}",
-	               "HOST" : "{___$HOST___}",
-	               "HOST_HASH" : "{___$HOST_HASH___}",
-	               "URL" : "{$__LOCATION___}",
-	               "DOWNLOADTIME" : "{___$DOWNLOADTIME___}",
-	               "INSTALLTIME" : "{___$INSTALLTIME___}",
-	               "UID" : "{___$UID___}",
-	               "UNAME" : "{___$UNAME___}",
-	               "REGISTERED" : "{___$REGISTERED___}",
-	               "LICENSEKEY" : "{___$LICENSEKEY___}",
-	               "LICENSESERIAL" : "{___$LICENSESERIAL___}",
-	               "DIR" : "{___$APPDIR___}"
-	              
-         },
-         
-         "frdl-addons-suggested" : [
+    	"frdl" : {
+        "suggest" : [
             {
              "title" : 	"Composer Source",
              "description" : "The Source of the php Composer as helper library",
@@ -239,18 +221,11 @@
              "title" : 	"jsv4",
              "description" : "A (coercive) JSON Schema v4 Validator for PHP",
              "packages" : [
-                   {"geraintluff/jsv4": "Http Client Class"}        	
+                   {"geraintluff/jsv4": "Validation and  normalization"}        	
              	]
              },
              
-             {
-             "title" : 	"PragmaMx",
-             "description" : "Just another CMS",
-             "packages" : [
-                  {"TerraProject/pragmamx" : "CMS"}
-               	
-             	]
-             },          
+ 
              
               
              {
@@ -264,7 +239,28 @@
              
  
                      	
+         ],
+    
+    
+      "misc" : [
+         
+           {
+             "title" : 	"PragmaMx",
+             "description" : "Just another CMS",
+             "packages" : [
+                  {"TerraProject/pragmamx" : "CMS"}
+               	
+             	]
+             }          
+             
+
+             
+ 
+                     	
          ]
+    	
+    	}
+ 
     }
 
 }
