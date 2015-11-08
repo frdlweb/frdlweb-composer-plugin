@@ -302,7 +302,7 @@
 		 
 		    foreach($opts['css'] as $pos => $css) {
 		    	$ccheck = parse_url($css);
-		    	  if($ccheck === false || !isset($ccheck['host'])){
+		    	  if($ccheck === false /*||  !isset($ccheck['host']) */){
 		    	  	$head.='<style type="text/css">'.preg_replace("/\s+/", '', $css).'</style>'.PHP_EOL;
 		    	  }else{
                     $head.='<link rel="stylesheet" type="text/css" href="'.$css.'" />'.PHP_EOL;		    	  	
@@ -311,12 +311,17 @@
 			
 		    foreach($opts['js'] as $pos => $js) {
 		    		$ccheck = parse_url($js);
-		    	    if($ccheck === false || !isset($ccheck['host'])){
+		    	    if($ccheck === false /* || !isset($ccheck['host']) */){
 		    	  	$head.='<script type="text/javascript">'.preg_replace("/\s+/", '', $js).'</script>'.PHP_EOL;
 		    	  }else{
                      $head.='<script type="text/javascript" src="'.$js.'"></script>'.PHP_EOL;		    	  	
 		    	  }
 		    }  
+		 
+		 foreach($opts['link'] as $pos => $l) {
+		    		$head.='<link rel="'.$l['rel'].'" type="'.$l['type'].'" href="'.$l['href'].'">';
+		    }  
+		 	 
 		    
 		return $head;     	
    }
@@ -348,7 +353,7 @@
 		 $head.='<!DOCTYPE html>'.PHP_EOL;
 		 $head.='<html>'.PHP_EOL;
 		 $head.='<head>'.PHP_EOL;
-		 $head.='<title>'.$opts['Title'].'</title>'.PHP_EOL;
+		 $head.='<title data-l10n-id="app_title">'.$opts['Title'].'</title>'.PHP_EOL;
 	
 			$head .= $this->HTML_wrap_head_options($opts);
 			

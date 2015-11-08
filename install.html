@@ -14,11 +14,14 @@
 <script type="text/javascript" src="http://api.webfan.de/api-d/4/js-api/library.js"></script>
 </head>
 <body>
+
 <h1 style="color:#6495ED;">frdl/webfan - Application Composer</h1>
-<a href="javascript:;" onclick="$.WebfanDesktop({});" style="color:#6495ED;">!desktop</a>
+<a href="javascript:;" onclick="frdl.wd(true);" style="color:#6495ED;">!desktop</a>
+
 <div class="data-box" data-wd-handle="desktop-content">
- <span style="color:lightgrey;">Application Composer Desktop v1.0.17.951103.7663</span>
+ <span style="color:lightgrey;">Application Composer install.html</span>
 </div>
+
 <script type="text/javascript">
 (function($){
 $(document).ready(function() {
@@ -29,7 +32,7 @@ $(document).ready(function() {
 	   $.ApplicationComposerOpen({
  		loc : {
 			url : window.location,
-			api_url : '',
+			api_url :  'http://example.com',
 			EXTRA_PMX_URL : '',
 			EXTRA_PHAR_URL : ''
 		}	    
@@ -39,7 +42,7 @@ $(document).ready(function() {
 		$.WebfanDesktop.resetReady('Loading...',25, 
 	   	        function(){
 	   	        	var r= ( 'undefined' !== typeof Dom.g('window_frdl-webfan'));
-	   	        	if(true !== r) return r;
+	   	        	if(true !== r) return false;
 	   	        	$.WebfanDesktop.go('frdl-webfan', 'installPHARclick');
 	   	        	return r;
 	   	        }

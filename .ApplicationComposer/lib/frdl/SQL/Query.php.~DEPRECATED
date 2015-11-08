@@ -1,0 +1,195 @@
+<?php
+/**
+ * Copyright  (c) 2015, Till Wehowski
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of frdl/webfan nor the
+ *    names of its contributors may be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY frdl/webfan ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL frdl/webfan BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+namespace frdl\SQL;
+
+
+final class Query
+{
+    const TOK_NAMED = '::';
+    const TOK_NUM = '??';
+    const TOK = " ";
+    
+    
+    
+    protected $errors = array();
+    
+    protected $sec = array();
+
+    protected $isUnparsed = false;
+    protected $isComposed = false;
+
+	protected $q_tables = array();	
+	
+	protected $q_statement;
+	protected $q_subjects = array();
+	protected $q_fields = array();
+	
+	protected $q_joins = array();
+	
+	protected $q_start;
+	protected $q_limit;
+	
+	protected $q_orderBy = array();
+	protected $q_groupBy = array();
+	
+	protected $query = '';
+	
+	
+	
+	
+	public function __construct($compose = false, Array $o = null){
+		$this->sec = array(
+		     'statement' => null,
+		     'subjects' => null,
+		     'tables' => array('from' => null, 'joins' => null),
+		     'where' => null,
+		     'group' => null,
+		     'order' => null, 
+		     'limit' => null,
+		);
+		
+		
+           if(null !== $o)$this->set( $o );	
+		  
+		   if(true === $compose)$this->compose();
+		   
+	}
+	
+	
+	public function _compose(Array $o = null){
+	    if(null !== $o)$this->set( $o );	
+
+		$this->query = '';		 
+		$this->isUnparsed = false;
+		$this->isComposed = false;
+		
+
+		$this->sec['statement'] = $this->command;		
+		$this->sec['subjects'] = trim(implode(',', $this->subjects), ' ,');		
+		
+		
+  	   $this->isComposed = true;
+      return $this; 
+	}
+	
+	
+	protected function _unparse($token = array(self::TOK_NAMED, self::TOK_NUM)){
+		if (!is_subclass_of($Crud, '\frdl\Crud')){
+		 	    $msg = 'Invalid ORM class mu´st be subclass of \'\frdl\Crud\'';
+   	           	$trace = debug_backtrace();
+	          	trigger_error(
+		            $msg.__CLASS__.'_prepare(): ' .
+		           ' in ' . $trace[0]['file'] .
+		           ' on line ' . $trace[0]['line'],
+		           E_USER_ERROR);	
+		          return $this; 		
+		}
+		 	     
+	  
+	    if(true !== $this->isComposed)$this->compose();
+		
+		$this->query = implode(self::TOK, $this->sec);
+		
+		$this->isUnparsed = true;
+	  return $this;	
+	}
+	
+	
+	
+	protected function _query(&$query = null){
+		  $query = trim($this->query);
+    	return $this;	
+	}
+	
+	
+	protected function _Set(Array $o = null){
+		 if(is_array($o)){
+		 	 $props = array_keys($o);
+		 	 foreach($props as $name => $value){
+			 	$this->__set($name, $value);
+			 }
+		 }
+    	return $this;	
+	}
+	
+	protected function _errors(&$errors = null){
+		  $errors  = $this->errors;
+    	return $this;	
+	}
+		
+    protected function error(\Exception $e){
+		array_push($this->errors, $e);
+	}		
+			
+	public function __call($name, $args){
+		 switch($name){
+		 	  case 'unparse' :
+		 	        $this->_unparse(array(self::TOK_NAMED, self::TOK_NUM));
+		          return $this; 		 	  
+		 	    break;
+		 	  case 'compose' :
+		 	        $this->_compose($args[0]);
+		          return $this; 		 	  
+		 	    break;
+		 	  case 'set' :
+		 	        $this->_Set($args[0]);
+		          return $this; 		 	      
+		 	    break;
+		 	  case 'query' :
+		 	       if(true !== $this->isComposed)$this->compose();
+		 	        $this->_query($args[0]);
+		          return $this;
+		 	  case 'errors' :
+		 	        $this->_errors($args[0]);
+		          return $this; 
+		 	    break;
+		 	    
+		 	  default : 
+		 	    $msg = 'Unsupported method call in ';
+   	           	$trace = debug_backtrace();
+	          	trigger_error(
+		            $msg.__CLASS__.'__call(): ' . $name .
+		           ' in ' . $trace[0]['file'] .
+		           ' on line ' . $trace[0]['line'],
+		           E_USER_ERROR);	
+		          return $this; 
+		 	    break;  
+		 }
+	}
+	
+	public function __get($name){
+        if('sec' === $name)return $this->sec;
+		return (isset($this->{'q_'.$name})) ? $this->{'q_'.$name} : ´((isset($this->{'is'.$name})) ? $this->{'is'.$name} : null);
+	}
+	
+	public function __set($name, $value){
+		if(isset($this->{'q_'.$name}))$this->{'q_'.$name} = $value;
+		return $this;
+	}	
+}

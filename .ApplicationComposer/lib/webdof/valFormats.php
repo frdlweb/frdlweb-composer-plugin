@@ -739,15 +739,66 @@ EO;
              }
     }
 
- protected function _isfullname($name)
+ protected function _isfullname(&$name, $strict = true /* allow html entities */, $entityConvert = true)
    {
-	  return ( preg_match("/^[A-ZÄÖÜ]([\wÄÖÜaöüßéè]+)(\.)?(\,\s|\s)[A-ZÄÖÜ]([\wÄÖÜaöüßéè\,\)(\s[\wÄÖÜaöüßéè\,\)s(\.\-]+){1,1}?$/", $name)) ? true : false;
+    	
+   	 $converted =html_entity_decode( 
+                   htmlspecialchars_decode(
+                       htmlentities(
+                             $name,
+                             ENT_QUOTES | ENT_HTML5,
+                             mb_detect_encoding($name, 'auto'),
+                             false
+                          )
+                          ,ENT_QUOTES | ENT_HTML5), 
+                ENT_QUOTES | ENT_HTML5);
+   	 
+   	 if(false === $strict && true === $entityConvert)
+   	   $name = $converted;
+   	 
+     if(preg_match("/^[A-ZÄÖÜ]([\wÄÖÜaöüßéè]+)(\.)?(\,\s|\s)[A-ZÄÖÜ]([\wÄÖÜaöüßéè\,\)(\s[\wÄÖÜaöüßéè\,\)s(\.\-]+){1,1}?$/", 
+     (true === $strict)
+        ? $name
+        : $converted
+                
+     ))
+    {
+     return true;
+    }else{
+          return false;
+       }  	
    }
+   
 	
 
  protected function _isname($name)
    {
-	  return (!is_numeric($name) && preg_match("/^[A-ZÄÖÜ][\A-Za-zÄÖÜaöüßéè\,\)\s(\.\-]+$/", $name)) ? true : false;
+   	   	 $converted =html_entity_decode( 
+                   htmlspecialchars_decode(
+                       htmlentities(
+                             $name,
+                             ENT_QUOTES | ENT_HTML5,
+                             mb_detect_encoding($name, 'auto'),
+                             false
+                          )
+                          ,ENT_QUOTES | ENT_HTML5), 
+                ENT_QUOTES | ENT_HTML5);
+   	 
+   	 if(false === $strict && true === $entityConvert)
+   	   $name = $converted;
+   	 
+     if(preg_match("/^[A-ZÄÖÜ][\A-Za-zÄÖÜaöüßéè\,\)\s(\.\-]+$/", 
+     (true === $strict)
+        ? $name
+        : $converted
+                
+     ))
+    {
+     return true;
+    }else{
+          return false;
+       }  	
+       
    }
 
 
@@ -869,9 +920,28 @@ EO;
 
 
 
-  protected function _isaddress($adress)
+  protected function _isaddress(&$adress, $strict = true /* allow html entities */, $entityConvert = true)
    {
-     if(preg_match("/^[a-zA-Z0-9äöüÄÖÜß\/\-\. ]+ +[0-9]+(|[a-z\/\-\.])+$/", $adress) )
+    	 $converted =html_entity_decode( 
+                   htmlspecialchars_decode(
+                       htmlentities(
+                             $adress,
+                             ENT_QUOTES | ENT_HTML5,
+                             mb_detect_encoding($adress, 'auto'),
+                             false
+                          )
+                          ,ENT_QUOTES | ENT_HTML5), 
+                ENT_QUOTES | ENT_HTML5);
+   	 
+   	 if(false === $strict && true === $entityConvert)
+   	   $adress = $converted;
+   	 
+     if(preg_match("/^[a-zA-Z0-9äöüÄÖÜß\/\-\. ]+[\s]{1,}[0-9]+(|[a-z\/\-\.])+$/", 
+     (true === $strict)
+        ? $adress
+        : $converted
+                
+     ))
     {
      return TRUE;
     }else{

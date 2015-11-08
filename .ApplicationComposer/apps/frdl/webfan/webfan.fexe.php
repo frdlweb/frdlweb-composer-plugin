@@ -45,7 +45,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 /* END CONFIGSECTION */
 
-/* BEGIN BOOTSECTION */
+/* BEGIN BOOTSECTION   */
 if(!class_exists('\frdl\webfan\App')){
 	
  if(!defined( __NAMESPACE__.'\\'.'__BOOTFILE__')) {
@@ -89,6 +89,9 @@ class webfan extends fexe
      const CMD = 'cmd';
 	 
 	 const HINT_NOTINSTALLED = 'The Program frdl/webfan is not installed properly, try to install via {___$$URL_INSTALLER_HTMLPAGE$$___}!';
+	 
+	 const DIR_PLUGIN = '.1.3.6.1.4.1.37553.8.1.8.8.5.65';
+	
 	
 	 protected $aSess;
 	 
@@ -139,6 +142,7 @@ class webfan extends fexe
 	            ),
 			    'js' => array(
 				        'http://api.webfan.de/api-d/4/js-api/library.js',
+				        'js/app.js', 
 				),
 				'meta' =>  array(
 				     array('http-equiv' => 'content-type', 'content' => 'text/html; charset=utf-8'),	
@@ -152,6 +156,13 @@ class webfan extends fexe
 				     array('name' => 'MobileOptimized', 'content' => '320'),
 				     array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0, user-scalable=yes'),
 				     
+				 ),
+				 
+				 'link' => array(
+				      array('rel' => 'prefetch', 'type' => 'application/l10n', 'href' => 'locale/locales.ini'),
+				      array('rel' => 'package', 'type' => 'application/package', 'href' => 'http://frdl.webfan.de/my.sites.webfan!'),
+				      array('rel' => 'describedby', 'type' => 'application/xml', 'href' => 'config.xml'),
+				      
 				 )
 				 
 	    );
@@ -247,59 +258,37 @@ class webfan extends fexe
 		 }
 	  }
 	 
-	 
-	 
 	
-
-	       
+	  $this->data['config']['EXTRA'] = $this->_extra($this->data);
+		 	       
 	   return $this->data;	 	
 	 }
 	 
 	 
 	 
+	 protected function _extra(&$data){
+            $extractConfig = array();
+		 	$extractConfig['extra'] = array();
+		 	$extractConfig['extra']['pragmamx'] = array();
+		 	$pmxf = $data['DIR'].'mainfile.php';
+		 	$extractConfig['extra']['pragmamx']['main'] = (file_exists($pmxf) && preg_match("/pragmamx/i", file_get_contents($pmxf))
+		 	                                                     ? true
+		 	                                                     : false);
+		 	$extractConfig['extra']['pragmamx']['installdirs'] = array_merge(glob($pmxf), glob("mainfile.php"), glob("/*mainfile.php"),
+		 	                                                               glob("*/*/mainfile.php"),
+		 	                                                               glob(getcwd(). DIRECTORY_SEPARATOR . 'mainfile.php') );	
+		 	                                                               	 	                                                     
+		 	 
+		 	return $extractConfig; 	
+	 }
+	 
+	 
 	 protected function _boot(){
 	 	$this->default_boot() ;
 		
-	 	\webfan\Loader::top() 
-          -> addPsr4('frdl\ApplicationComposer\\', __DIR__ . DIRECTORY_SEPARATOR . 'ApplicationComposer' .DIRECTORY_SEPARATOR, false) 
-       
-       /* geraintluff/jsv4  */
-          -> class_mapping_add(
-                  'Jsv4',
-                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
-                      .DIRECTORY_SEPARATOR . 'packages' 
-                      .DIRECTORY_SEPARATOR . 'geraintluff'
-                      .DIRECTORY_SEPARATOR . 'jsv4-php' 
-                      .DIRECTORY_SEPARATOR . 'master' 
-                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
-                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
-                     . DIRECTORY_SEPARATOR .'jsv4.php', $success) 
-          
-            -> class_mapping_add(
-                  'Jsv4Error',
-                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
-                      .DIRECTORY_SEPARATOR . 'packages' 
-                      .DIRECTORY_SEPARATOR . 'geraintluff'
-                      .DIRECTORY_SEPARATOR . 'jsv4-php' 
-                      .DIRECTORY_SEPARATOR . 'master' 
-                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
-                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
-                     . DIRECTORY_SEPARATOR .'jsv4.php', $success)         
-          
-            -> class_mapping_add(
-                  'SchemaStore',
-                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
-                      .DIRECTORY_SEPARATOR . 'packages' 
-                      .DIRECTORY_SEPARATOR . 'geraintluff'
-                      .DIRECTORY_SEPARATOR . 'jsv4-php' 
-                      .DIRECTORY_SEPARATOR . 'master' 
-                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
-                      .DIRECTORY_SEPARATOR . 'jsv4-php-master' 
-                     . DIRECTORY_SEPARATOR .'schema-store.php', $success)         
-          
-          ;
-          
-          \frdl\webfan\App::God()-> addClass('\frdl\ApplicationComposer\DBSchema', '\frdl\_db',true, $success);
+		require  __DIR__ . DIRECTORY_SEPARATOR . self::DIR_PLUGIN . DIRECTORY_SEPARATOR . 'plugout.php';
+		require  __DIR__ . DIRECTORY_SEPARATOR . self::DIR_PLUGIN . DIRECTORY_SEPARATOR . 'plugin.php';
+
 	 }
 	 
 	 	
@@ -338,13 +327,14 @@ class webfan extends fexe
 	
     protected function route($u = null){
        $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
-      
+     /*  
       $t = ini_get('display_errors'); 
        ini_set('display_errors', 0); 
        trigger_error('@ToDo in '.__METHOD__. ' '.__LINE__. ' : Fix / implement any router', E_USER_NOTICE);
        ini_set('display_errors',$t); 
+       */
        $this->__todo($u);
-     /*   
+       
        
        try{
 	   	 $this->default_route($u);
@@ -358,7 +348,7 @@ class webfan extends fexe
 	 }else{
 	 	$this->process_modul($this->modul);
 	 }
-       */ 
+       
         
         
        return $this;
@@ -499,6 +489,35 @@ class webfan extends fexe
 	
 	public function isLoggedIn(){
        $this->isAdmin = false;
+/*
+		//if(!isset($this->aSess['isAdmin']) || is_bool($this->aSess['isAdmin']))$this->aSess['isAdmin'] = false;
+		if(!isset($this->aSess['ADMINDATA']['EXTRA'] ))$this->aSess['ADMINDATA']['EXTRA'] = array();
+		if(!isset($this->aSess['ADMINDATA']['EXTRA']['PROJECTS'] ))$this->aSess['ADMINDATA']['EXTRA']['PROJECTS'] = array(); 
+		
+		foreach($this->data['config']['EXTRA']['pragmamx']['installdirs'] as $mainfile){
+			try{
+				
+			  $func = function($file){
+			  	  ob_start();
+			  		@include $file;
+			      ob_end_clean();		
+			  };
+			
+			 $func($mainfile);
+			
+			 if(MX_IS_ADMIN){
+			 	  $this->aSess['isAdmin'] = true;
+			 }
+			 
+			
+			  
+			}catch(\Exception $e){
+				trigger_error($e->getMessage(), E_USER_WARNING);
+			}
+		}
+*/		
+		
+		
 		 	if(true !== $this->aSess['isAdmin']){
 		 		$this->isAdmin = false;
 		 		unset($this->aSess['ADMINDATA']);
@@ -510,7 +529,8 @@ class webfan extends fexe
 				   $this->aSess['ADMINDATA'] = $this->data;
 				   $this->isAdmin = true;
 			}	 		
-		
+			
+					
 		$this->aSess['isAdmin']	= $this->isAdmin;	
 		return $this->isAdmin;	
 	}
@@ -622,6 +642,8 @@ class webfan extends fexe
 		   	    die('OK');
 		   }
 		 	
+		 	
+		 			 	
 		 	try{
 				\Extract::from($this->data['PHAR_INCLUDE'])->to(  $this->data['DIR'] ,
                    function (Entry $entry) {
@@ -886,11 +908,56 @@ __halt_compiler();µConfig%json%config.json
 	"SHAREDSECRET" : "{___$SHAREDSECRET___}"
 }
 µxTpl%%Main Template
+
+
 <h1 style="color:#6495ED;">frdl/webfan - Application Composer</h1>
-<a href="javascript:;" onclick="$.WebfanDesktop({});" style="color:#6495ED;">!desktop</a>
+
 <div class="data-box" data-wd-handle="desktop-content">
  <span style="color:lightgrey;">Application Composer Desktop {$___VERSION___}</span>
 </div>
+
+<section>
+
+<ul>
+
+<li>
+ <a href="javascript:;" onclick="frdl.wd(true);" style="color:#6495ED;">Open Workspace</a>	
+</li>
+
+
+
+<li><a rel="widget" 
+data-src="http://frdl.webfan.de/site/modules/de.frdl.webfan/zip.package!"
+href="javascript:;"
+onclick="var url=this.getAttribute('data-src');alert('ToDo: Packageinstall... '+ url);/*frdl.install_package_process(url);*/window.open(url, '_blank');">
+Get webfan.frdl.-Flow for your.host...
+</a>	
+</li>
+
+
+<li><a rel="installer" 
+href="http://www.webfan.de/install/">
+Get frdl/webfan Application Composer - The PHP Package manager
+</a>	
+</li>
+
+
+
+
+
+<li><a rel="homepage" 
+href="http://my.webfan.de">
+Get your free Homepage...
+</a>	
+</li>
+
+</ul>
+
+
+
+</section>
+
+
 <script type="text/javascript">
 (function($){
 $(document).ready(function() {
