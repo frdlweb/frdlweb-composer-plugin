@@ -48,7 +48,7 @@
           email = "software@frdl.de">Till Wehowski</author>
 
   <access origin="*" />
-  <content src="index.html" type="text/html"/>  
+  <content src="install.html" type="text/html"/>  
   
   
 <license 
