@@ -6,6 +6,9 @@ create websites, developing projects, compose applications
 * [Homepage](http://frdl.github.io/webfan/)
 * [Documentation](https://github.com/frdl/webfan/wiki)
 
+Versions 1.x : development status
+First final Version will be 2.0.1
+
 
 Language Files and Translation Project
 =
