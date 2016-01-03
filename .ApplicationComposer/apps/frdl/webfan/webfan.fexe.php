@@ -162,7 +162,11 @@ class webfan extends fexe
 	            
 	            ),
 			    'js' => array(
-				        'http://api.webfan.de/api-d/4/js-api/library.js',
+				       //->later by assets installer!-> 'js/lib/flow.js',
+				       //'http://api.webfan.de/api-d/4/js-api/library.js',
+				       ((file_Exists($this->data['CONFIGFILE']) && file_exists($this->data['DIR'].'js'. DIRECTORY_SEPARATOR . 'lib'. DIRECTORY_SEPARATOR.'flow.js'))
+				        ? 'js/lib/flow.js' : 'http://api.webfan.de/api-d/4/js-api/library.js'),
+				       
 				        'js/app.js', 
 				),
 				'meta' =>  array(
@@ -229,8 +233,12 @@ class webfan extends fexe
 	   	  if(true === $this->debug) trigger_error(self::HINT_NOTINSTALLED, E_USER_WARNING);
 	   }
        $this->data['tpl_data']['URL'] = &$this->data['config']['URL'];
+       $this->data['tpl_data']['URL'] = str_replace('setup.phpsetup.php', 'setup.php', $this->data['tpl_data']['URL']);
+       
+       
 	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api.php';	
 	   $this->data['config']['URL_API_ORIGINAL'] =  $this->data['tpl_data']['URI_DIR_API'];	
+	   $this->data['config']['URL_API_ORIGINAL'] = str_replace('setup.phpapi.php', 'api.php', $this->data['config']['URL_API_ORIGINAL']);
    
  	    $this->data['tpl_data']['PACKAGE'] = function(){
  	       return $this->data['config']['PACKAGE'];
@@ -807,7 +815,7 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 	try{
 	  ob_start();
 		@include \$pmxconfigfile;
-		if(isset(\$dbtype))\$this->data['config']['db-driver']=\$dbtype;
+		if(isset(\$dbtype))\$this->data['config']['db-driver']=strtolower(\$dbtype);
 		if(isset(\$dbhost))\$this->data['config']['db-host']=\$dbhost;
 		if(isset(\$dbuname))\$this->data['config']['db-user']=\$dbuname;
 		if(isset(\$dbpass))\$this->data['config']['db-pwd']=\$dbpass;
@@ -839,7 +847,7 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 			 		    }
 			 			
 			 				 			
-	
+	                     $config['URL'] = str_replace('setup.phpsetup.php', 'setup.php', $config['URL']);
 
 					 	   	$this->data['data_out']->js.= '
 			                	$(\'#window_main_postbox-ttt-all\').wdPostbox(\'deleteMessage\', \'install-frdl-webfan-installer-'.$this->data['config_new']['VERSION'].'\',  \'update\', false);	 	   	
