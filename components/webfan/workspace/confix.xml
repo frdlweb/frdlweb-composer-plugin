@@ -1,54 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns       = "http://www.w3.org/ns/widgets"
-        id          = "frdl.my.webfan"
-        version     = "0.0.1-beta"
+        id          = "flow://components/webfan/workspace"
+        version     = "2.0.0"
         height      = "16"
-        width       = "16"
+        width       = "64"
         viewmodes   = "minimized floating">
  
-  <name short="Example 2.0">
-    The example Widget!
-  </name>
+ <name short="locale">The webfan !workspace widget</name>
 
+ <preference  name="opened" value="false" readonly="false" />
+ <preference  name="repository" value="https://github.com/frdl/-Flow/tree/master/components/webfan/workspace" readonly="true" />
+ 
+ <description>
+    Showing a link to open the webfan workspace, if opened=true (in html mark-up) open it initially.
+ </description>
 
-<preference  name="UUID" value=""/>
+ <author href="http://www.webfan.de/Team-op-detail-tid-1.html" email="software@frdl.de">Till Wehowski</author>
 
-<preference  name="$.WebfanDesktop.o.URL_RPC" value="http://shell.frdl.de/jsonrpc/remote.json"/>
-<preference  name="$.WebfanDesktop.o.URL_JSONP" value="http://interface.api.webfan.de/v1/public/frdl/bounce/cli.jsonp"/>
-<preference  name="$.WebfanDesktop.o.URL_CLIENT" value="{$__LOCATION___}"/>
-
-<preference  name     = "desktop.autoinit"
-              value    = "true" />
-              
-              
-
-
-<preference  name     = "api.client"
-              value    = "" />
-              
-<preference  name     = "api.token"
-              value    = "" />
-              
-<preference  name     = "api.key"
-              value    = ""
-              readonly = "true" />
-
-<preference  name     = "apikey"
-              value    = ""
-              readonly = "true" />
-              
-              
-              
-
-  <description>
-    Website Apps and Onlinetools (related to frdl/webfan).
-  </description>
-
-<author href  = "http://frdl.webfan.de/site/#ref=webapp&amp;id=frdl.my.webfan&amp;author=Till.Wehowski"
-          email = "software@frdl.de">Till Wehowski</author>
-
-  <access origin="*" />
-  <content src="install.html" type="text/html"/>  
+ <access origin="*" />
+ <content src="index.html" type="text/html" />  
+ <content src="app.js" type="text/html" />  
   
   
 <license 

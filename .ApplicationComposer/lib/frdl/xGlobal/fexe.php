@@ -319,7 +319,7 @@
 		    }  
 		 
 		 foreach($opts['link'] as $pos => $l) {
-		    		$head.='<link rel="'.$l['rel'].'" type="'.$l['type'].'" href="'.$l['href'].'">';
+		    		$head.='<link rel="'.$l['rel'].'" type="'.$l['type'].'" href="'.$l['href'].'">'.PHP_EOL;
 		    }  
 		 	 
 		    

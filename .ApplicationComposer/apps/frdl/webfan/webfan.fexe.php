@@ -133,6 +133,27 @@ class webfan extends fexe
 	             'cli.class.required.parent' => '\frdl\aSQL\Engines\Terminal\CLI',
 	         ),
 	   );
+	   
+	   
+
+	     
+	     $this->data['tpl_data'] = array(
+	          'FILE' => htmlentities(__FILE__),
+	          'URI_DIR_API' => self::URI_DIR_API,
+ 	          'LOCATION' => 'http://'.$_SERVER['SERVER_NAME']
+ 	                         .implode('/', \webdof\wURI::getInstance()->getU()->dirs)
+ 	                         .'/'.\webdof\wURI::getInstance()->getU()->file,
+ 	          'URL' => '',
+ 	          'EXTRA_PMX_URL' => '',
+ 	          
+	     );	   
+	   
+	   $h  = parse_url($this->data['tpl_data']['LOCATION']);
+	   $pu = \webdof\wURI::parse_uri($h['scheme'], $h['host'], $h['path']);
+	   $path = '/';
+	   foreach($pu->dirs as $num => $dir){
+	   	 $path.= $dir. '/';
+	   }
 	   $this->data['installed'] = false;
 	   $this->data['index'] = 'Main Template';	
        $this->data['template_main_options'] = array(   
@@ -150,6 +171,7 @@ class webfan extends fexe
 				     array('http-equiv' => 'content-script-type', 'content' => 'text/javascript'),		
 				     array('http-equiv' => 'content-script-type', 'content' => 'text/javascript'),				 
 				   /*  array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=7.5'),		  */
+				     array('name' => 'mobile-web-app-capable', 'content' => 'yes'),
 				     array('name' => 'apple-mobile-web-app-capable', 'content' => 'yes'),
 				     array('name' => 'apple-mobile-web-app-status-bar-style', 'content' => 'lightblue'),
 				     array('name' => 'HandheldFriendly', 'content' => 'true'),
@@ -158,26 +180,17 @@ class webfan extends fexe
 				     
 				 ),
 				 
+				
 				 'link' => array(
-				      array('rel' => 'prefetch', 'type' => 'application/l10n', 'href' => 'locale/locales.ini'),
-				      array('rel' => 'package', 'type' => 'application/package', 'href' => 'http://frdl.webfan.de/my.sites.webfan!'),
+				     /* array('rel' => 'prefetch', 'type' => 'application/l10n', 'href' => 'locale/locales.ini'), */
+				      array('rel' => 'package', 'type' => 'application/package', 'href' => 'https://github.com/frdl/webfan/archive/master.zip'),
 				      array('rel' => 'describedby', 'type' => 'application/xml', 'href' => 'config.xml'),
+				      array('rel' => 'manifest', 'type' => 'application/manifest+json', 'href' => ltrim($path, '/ ').'manifest.webapp'),
 				      
 				 )
 				 
 	    );
 
-	     
-	     $this->data['tpl_data'] = array(
-	          'FILE' => htmlentities(__FILE__),
-	          'URI_DIR_API' => self::URI_DIR_API,
- 	          'LOCATION' => 'http://'.$_SERVER['SERVER_NAME']
- 	                         .implode('/', \webdof\wURI::getInstance()->getU()->dirs)
- 	                         .'/'.\webdof\wURI::getInstance()->getU()->file,
- 	          'URL' => '',
- 	          'EXTRA_PMX_URL' => '',
- 	          
-	     );
 	 
 	 
 	  
@@ -267,18 +280,19 @@ class webfan extends fexe
 	 
 	 
 	 protected function _extra(&$data){
+
             $extractConfig = array();
 		 	$extractConfig['extra'] = array();
 		 	$extractConfig['extra']['pragmamx'] = array();
 		 	$pmxf = $data['DIR'].'mainfile.php';
-		 	$extractConfig['extra']['pragmamx']['main'] = (file_exists($pmxf) && preg_match("/pragmamx/i", file_get_contents($pmxf))
+		 	$extractConfig['extra']['pragmamx']['main'] = (file_exists(DIRECTORY_SEPARATOR . realpath( $pmxf)) && preg_match("/pragmamx/i", file_get_contents(DIRECTORY_SEPARATOR . realpath( $pmxf)))
 		 	                                                     ? true
 		 	                                                     : false);
 		 	$extractConfig['extra']['pragmamx']['installdirs'] = array_merge(glob($pmxf), glob("mainfile.php"), glob("/*mainfile.php"),
 		 	                                                               glob("*/*/mainfile.php"),
 		 	                                                               glob(getcwd(). DIRECTORY_SEPARATOR . 'mainfile.php') );	
 		 	                                                               	 	                                                     
-		 	 
+ 
 		 	return $extractConfig; 	
 	 }
 	 
@@ -473,6 +487,11 @@ class webfan extends fexe
 		 	    $this->aSess['isAdmin'] = true;
 			 	session_write_close();
 			 	session_start();    
+			 	
+			 	
+
+	 	
+			 	
 			} elseif(isset($_POST['pwd']) || isset($_POST['PIN'])){
 				if(isset( $this->aSess['isAdmin']))unset( $this->aSess['isAdmin']);
 				if(!isset($_REQUEST['test'])){
@@ -489,11 +508,7 @@ class webfan extends fexe
 	
 	public function isLoggedIn(){
        $this->isAdmin = false;
-/*
-		//if(!isset($this->aSess['isAdmin']) || is_bool($this->aSess['isAdmin']))$this->aSess['isAdmin'] = false;
-		if(!isset($this->aSess['ADMINDATA']['EXTRA'] ))$this->aSess['ADMINDATA']['EXTRA'] = array();
-		if(!isset($this->aSess['ADMINDATA']['EXTRA']['PROJECTS'] ))$this->aSess['ADMINDATA']['EXTRA']['PROJECTS'] = array(); 
-		
+
 		foreach($this->data['config']['EXTRA']['pragmamx']['installdirs'] as $mainfile){
 			try{
 				
@@ -515,7 +530,7 @@ class webfan extends fexe
 				trigger_error($e->getMessage(), E_USER_WARNING);
 			}
 		}
-*/		
+		
 		
 		
 		 	if(true !== $this->aSess['isAdmin']){
@@ -642,36 +657,33 @@ class webfan extends fexe
 		   	    die('OK');
 		   }
 		 	
-		 	
+		 	$EXTRA = &$this->data['config']['EXTRA'];
 		 			 	
 		 	try{
 				\Extract::from($this->data['PHAR_INCLUDE'])->to(  $this->data['DIR'] ,
-                   function (Entry $entry) {
-                      if (false === strpos(basename($entry->getName()), '.')
+                   function (Entry $entry) use(&$EXTRA) {
+                      if (false == strpos(basename($entry->getName()), '.')
                         && (
-                                 true === \webdof\valFormats::is(basename($entry->getName()), 'md5', true)
-                              || true === \webdof\valFormats::is(basename($entry->getName()), 'sha1', true)    
+                                 true == \webdof\valFormats::is(basename($entry->getName()), 'md5', true)
+                              || true == \webdof\valFormats::is(basename($entry->getName()), 'sha1', true)    
                             )     
                       ) {
-                            return true; 
+                            return; 
                       }                    
                       
-                      if('config.frdl.php' === basename($entry->getName()) || 'config.php' === basename($entry->getName())){
-					  	 return true;
+                      if('config.frdl.php' == basename($entry->getName()) || 'config.php' == basename($entry->getName())){
+					  	 return;
 					  }
+					  
+					//  if(true == $EXTRA['extra']['pragmamx']['main'] ){
+					  	 if('.htaccess' === basename($entry->getName())) return;
+					  	 if('index.php' === basename($entry->getName())) return;
+					//   }
+					  
                    });
                    
-          /*         
-                 foreach (new \DirectoryIterator($this->data['DIR'] ) as $fileInfo) {
-                  if($fileInfo->isDot()) continue;
-                  if((
-                                 true === \webdof\valFormats::is(basename($fileInfo->getFilename()), 'md5', true)
-                              || true === \webdof\valFormats::is(basename($fileInfo->getFilename()), 'sha1', true)    
-                            ) ){
-			  	                     unlink($fileInfo->getFilename());
-			                   }
-                 }  
-            */       
+
+                   
 			}catch(\Exception $e){
 				\webdof\wResponse::status(409);
 				$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ' .$e->getMessage();
@@ -680,6 +692,9 @@ class webfan extends fexe
 			}
 		 	 
 		 	 if(file_exists($this->data['DIR']. 'composer.json')){
+		 	 	
+	
+		 	 	
 			 			/*
 			 	   		 $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].config.loc.api_url="'.$this->data['config']['URL_API_ORIGINAL'].'";
 			 			*/
@@ -750,6 +765,14 @@ class webfan extends fexe
 			 			            'database-schema' =>  $this->data['config']['DIRS']['config'] . 'database-schema.dat', 
 			 			            'boot.batch' =>  $this->data['config']['DIRS']['batch'] . '.boot.bat',     
 			 			  ));					 					
+			 				
+			 			
+			 			$config = $this->data['config'];	
+			 			if(true === $EXTRA['extra']['pragmamx']['main'] ){
+                        	$config['URL'] .= 'setup.php';
+                        }
+                        	
+			 				
 			 					 			
 			 			$php = "<?php
 			 			/*
@@ -765,9 +788,46 @@ class webfan extends fexe
 			 			     || is_subclass_of(\$this, 'frdl\ApplicationComposer\Command\CMD')  
 			 			     )
 			 			     ){
-                         	     \$this->data['config'] = ".var_export($this->data['config'], true).";								
-							}		 			
-                        ";
+			 			     	 \$this->data['config'] = ".var_export($config, true).";		
+			 			     	
+                         	    ";
+
+
+
+
+
+$php .= "
+
+
+/*
+* If you have PragmaMx installed, its db-config will be used instead!
+*/
+\$pmxconfigfile=__DIR__.DIRECTORY_SEPARATOR. 'config.php';
+if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file_exists( \$pmxconfigfile)  ){
+	try{
+	  ob_start();
+		@include \$pmxconfigfile;
+		if(isset(\$dbtype))\$this->data['config']['db-driver']=\$dbtype;
+		if(isset(\$dbhost))\$this->data['config']['db-host']=\$dbhost;
+		if(isset(\$dbuname))\$this->data['config']['db-user']=\$dbuname;
+		if(isset(\$dbpass))\$this->data['config']['db-pwd']=\$dbpass;
+		if(isset(\$dbname))\$this->data['config']['db-dbname']=\$dbname;
+		if(isset(\$prefix))\$this->data['config']['db-pfx']=\$prefix;
+	  ob_end_clean();			
+	}catch(\\Exception \$e){
+		
+	}
+
+}
+
+
+
+";      
+
+                     	    
+                         	    						
+						
+						$php .= "}";
 			 			
 			 			file_put_contents($this->data['CONFIGFILE'], $php);
 							 			
@@ -786,7 +846,7 @@ class webfan extends fexe
 					 	   	
 					 	   	
 					 	   	alert(\'Please set up the configuration next...\');
-			 		    	window.location.href = "'.$this->data['config']['URL'].'#app=frdl-webfan";
+			 		    	window.location = "'.$config['URL'].'";
 			 		    	';															 		
 		             
 		              \webdof\wResponse::status(201);
@@ -910,59 +970,20 @@ __halt_compiler();µConfig%json%config.json
 µxTpl%%Main Template
 
 
-<h1 style="color:#6495ED;">frdl/webfan - Application Composer</h1>
 
-<div class="data-box" data-wd-handle="desktop-content">
- <span style="color:lightgrey;">Application Composer Desktop {$___VERSION___}</span>
-</div>
-
-<section>
-
-<ul>
-
-<li>
- <a href="javascript:;" onclick="frdl.wd(true);" style="color:#6495ED;">Open Workspace</a>	
-</li>
-
-
-
-<li><a rel="widget" 
-data-src="http://frdl.webfan.de/site/modules/de.frdl.webfan/zip.package!"
-href="javascript:;"
-onclick="var url=this.getAttribute('data-src');alert('ToDo: Packageinstall... '+ url);/*frdl.install_package_process(url);*/window.open(url, '_blank');">
-Get webfan.frdl.-Flow for your.host...
-</a>	
-</li>
-
-
-<li><a rel="installer" 
-href="http://www.webfan.de/install/">
-Get frdl/webfan Application Composer - The PHP Package manager
-</a>	
-</li>
+{___$TPL_FRDL_WEBFAN_INSTALL_&HTML___}
 
 
 
 
-
-<li><a rel="homepage" 
-href="http://my.webfan.de">
-Get your free Homepage...
-</a>	
-</li>
-
-</ul>
-
-
-
-</section>
 
 
 <script type="text/javascript">
 (function($){
 $(document).ready(function() {
 	try{
-	 $.WebfanDesktop({
+	 frdl.wd({
+	  browseContentOnInit : false,	
       modules : [
         function(){
 	   $.ApplicationComposerOpen({

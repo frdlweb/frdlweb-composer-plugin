@@ -45,3 +45,38 @@
           
           ;
           
+
+
+ 	\webfan\Loader::top() 
+
+       
+       /* outlandish/sync  */
+          -> class_mapping_add(
+                  'Outlandish\AbstractSync',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'outlandishideas'
+                      .DIRECTORY_SEPARATOR . 'sync' 
+                      .DIRECTORY_SEPARATOR . 'master' 
+                      .DIRECTORY_SEPARATOR . 'AbstractSync.php', $success) 
+          
+            -> class_mapping_add(
+                  'Outlandish\Client',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'outlandishideas'
+                      .DIRECTORY_SEPARATOR . 'sync' 
+                      .DIRECTORY_SEPARATOR . 'master' 
+                      .DIRECTORY_SEPARATOR . 'Client.php', $success)      
+          
+            -> class_mapping_add(
+                  'Outlandish\Server',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'outlandishideas'
+                      .DIRECTORY_SEPARATOR . 'sync' 
+                      .DIRECTORY_SEPARATOR . 'master' 
+                      .DIRECTORY_SEPARATOR . 'Server.php', $success)     
+          
+          ;
+          

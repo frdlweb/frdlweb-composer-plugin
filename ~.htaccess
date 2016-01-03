@@ -13,7 +13,7 @@ RewriteRule ^(.*)$ install.html [L]
 RewriteCond %{REQUEST_URI} ^(.*)\/api\/(.*)^ [OR]
 RewriteCond %{REQUEST_FILENAME} api\.php [OR]
 RewriteCond %{REQUEST_FILENAME} frdl\.jsonp [OR]
-RewriteCond %{REQUEST_FILENAME} \.(jsonp|json|xml|bin)$
+RewriteCond %{REQUEST_FILENAME} \.(jsonp|json|bin|cnf)$
 RewriteRule ^(.*)$ api.php [L]
 
 
@@ -29,4 +29,4 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [L]
 
 
-RewriteRule ^(.*)$ index.php [L]
+#RewriteRule ^(.*)$ index.php [L]

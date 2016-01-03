@@ -1,0 +1,5 @@
+RewriteEngine on
+
+RewriteCond %{REQUEST_URI} ^(.*)index.html$
+RewriteRule ^(.*)$ index.html [L]
+
