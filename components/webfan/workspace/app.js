@@ -8,8 +8,8 @@ Copyright (c) 2015, Till Wehowski All rights reserved.
 (function(global){
     'use strict';
  
-       frdl.each(document.querySelectorAll('*[data-frdl-component*="webfan/workspace"]'),  function(i,el){
-
+       frdl.each(document.querySelectorAll('*[data-frdl-component$="webfan\/workspace"]'),  function(i,el){
+       	
       	  if('true'===el.getAttribute('data-frdl-component-loaded-script'))return true;
           el.setAttribute('data-frdl-component-initiated', 'true');
           el.setAttribute('data-frdl-component-loaded-script', 'true');

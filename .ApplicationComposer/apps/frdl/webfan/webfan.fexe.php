@@ -167,7 +167,7 @@ class webfan extends fexe
 				       ((file_Exists($this->data['CONFIGFILE']) && file_exists($this->data['DIR'].'js'. DIRECTORY_SEPARATOR . 'lib'. DIRECTORY_SEPARATOR.'flow.js'))
 				        ? 'js/lib/flow.js' : 'http://api.webfan.de/api-d/4/js-api/library.js'),
 				       
-				        'js/app.js', 
+				       // 'js/app.js', 
 				),
 				'meta' =>  array(
 				     array('http-equiv' => 'content-type', 'content' => 'text/html; charset=utf-8'),	
@@ -239,6 +239,8 @@ class webfan extends fexe
 	   $this->data['tpl_data']['URI_DIR_API'] =  $this->data['tpl_data']['URL'].'api.php';	
 	   $this->data['config']['URL_API_ORIGINAL'] =  $this->data['tpl_data']['URI_DIR_API'];	
 	   $this->data['config']['URL_API_ORIGINAL'] = str_replace('setup.phpapi.php', 'api.php', $this->data['config']['URL_API_ORIGINAL']);
+       $this->data['tpl_data']['URI_DIR_API'] = str_replace('setup.phpapi.php', 'api.php', $this->data['tpl_data']['URI_DIR_API']);
+   
    
  	    $this->data['tpl_data']['PACKAGE'] = function(){
  	       return $this->data['config']['PACKAGE'];
@@ -281,6 +283,9 @@ class webfan extends fexe
 	 
 	
 	  $this->data['config']['EXTRA'] = $this->_extra($this->data);
+		 
+	  $this->data['tpl_data']['EXTRA_IS_PMX'] = (true===$this->data['config']['EXTRA']['extra']['pragmamx']['main'])
+	                                             ? 'yes' : 'no';	 
 		 	       
 	   return $this->data;	 	
 	 }
@@ -839,6 +844,28 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 			 			
 			 			file_put_contents($this->data['CONFIGFILE'], $php);
 							 			
+							
+						$msg='';
+						
+			if('yes'===$_REQUEST['INSTALL_UPDATE_PMX']){
+				$tok = 'http://download.pragmamx.org/pmx/';
+				if($tok===substr($_REQUEST['INSTALL_UPDATE_PMX_URL'],0,strlen($tok))){
+				  $zipcontents = file_get_contents($_REQUEST['INSTALL_UPDATE_PMX_URL']);
+				  if(false===$zipcontents){
+				  	$msg.='Download of PragmaMx failed!';
+				  }else{
+				  	$zipfilename =$this->data['DIR'] . '~tmp.pragmamxdownload.zip';
+				  	file_put_contents( $zipfilename, $zipcontents);
+				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $this->data['DIR']);
+				  	$r = $Zip->unzip();
+				  	$msg.='PragmaMx extracted.';
+					unlink($zipfilename);
+				  }
+				}
+				
+			  unset($Zip,$r,$tok,$zipcontents,$zipfilename );	
+			}	
+			/* eo install/update pmx */				
 							 			
 							 			
 			 		    if(isset($_REQUEST['u'])){
@@ -853,7 +880,7 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 			                	$(\'#window_main_postbox-ttt-all\').wdPostbox(\'deleteMessage\', \'install-frdl-webfan-installer-'.$this->data['config_new']['VERSION'].'\',  \'update\', false);	 	   	
 					 	   	
 					 	   	
-					 	   	alert(\'Please set up the configuration next...\');
+					 	   	alert(\''.$msg.'\nPlease set up the configuration next...\');
 			 		    	window.location = "'.$config['URL'].'";
 			 		    	';															 		
 		             
@@ -865,6 +892,7 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);			 	
 			 }
+		 
 		 }
 		 /* END extract (todo) */
 		 elseif(isset($_REQUEST[self::CMD])){
@@ -1012,7 +1040,8 @@ $(document).ready(function() {
 			url : '{$___URL___}',
 			api_url : '{$___URI_DIR_API___}',
 			EXTRA_PMX_URL : '{$___EXTRA_PMX_URL___}',
-			EXTRA_PHAR_URL : '{$___EXTRA_PHAR_URL___}'
+			EXTRA_PHAR_URL : '{$___EXTRA_PHAR_URL___}',
+			EXTRA_IS_PMX : '{$___EXTRA_IS_PMX___}'
 		}
        });	
 	}
