@@ -286,7 +286,10 @@ class webfan extends fexe
 		 
 	  $this->data['tpl_data']['EXTRA_IS_PMX'] = (true===$this->data['config']['EXTRA']['extra']['pragmamx']['main'])
 	                                             ? 'yes' : 'no';	 
-		 	       
+		 
+	  $this->data['tpl_data']['EXTRA_IS_WP'] = (true===$this->data['config']['EXTRA']['extra']['wordpress']['main'])
+	                                             ? 'yes' : 'no';	 
+		 	       		 	       
 	   return $this->data;	 	
 	 }
 	 
@@ -304,9 +307,19 @@ class webfan extends fexe
 		 	$extractConfig['extra']['pragmamx']['installdirs'] = array_merge(glob($pmxf), glob("mainfile.php"), glob("/*mainfile.php"),
 		 	                                                               glob("*/*/mainfile.php"),
 		 	                                                               glob(getcwd(). DIRECTORY_SEPARATOR . 'mainfile.php') );	
+	
+		 	$extractConfig['extra']['wordpress'] = array();
+		 	$file = 'wp-config.php';
+		 	$pmxf = $data['DIR'].'wordpress'. DIRECTORY_SEPARATOR. $file;
+		 	$extractConfig['extra']['wordpress']['main'] = (file_exists(DIRECTORY_SEPARATOR . realpath( $pmxf)) && preg_match("/wordpress/i", file_get_contents(DIRECTORY_SEPARATOR . realpath( $pmxf)))
+		 	                                                     ? true
+		 	                                                     : false);
+		 	$extractConfig['extra']['wordpress']['installdirs'] = array_merge(glob($pmxf), glob($file), glob("/*".$file),
+		 	                                                               glob("*/*/".$file),
+		 	                                                               glob(getcwd(). DIRECTORY_SEPARATOR .$file) );	
+		 	                    	
 		 	                                                               	 	                                                     
- 
-		 	return $extractConfig; 	
+    	 	return $extractConfig; 	
 	 }
 	 
 	 
@@ -522,7 +535,9 @@ class webfan extends fexe
 	public function isLoggedIn(){
        $this->isAdmin = false;
 
-		foreach($this->data['config']['EXTRA']['pragmamx']['installdirs'] as $mainfile){
+
+/*
+		foreach($this->data['config']['EXTRA']['extra']['pragmamx']['installdirs'] as $mainfile){
 			try{
 				
 			  $func = function($file){
@@ -540,11 +555,36 @@ class webfan extends fexe
 			
 			  
 			}catch(\Exception $e){
-				trigger_error($e->getMessage(), E_USER_WARNING);
+				
 			}
 		}
-		
-		
+*/		
+      if(true===$this->data['config']['EXTRA']['extra']['pragmamx']['main'] 
+       && file_exists( $this->data['DIR'] . 'config.php')){
+			try{
+			  $file = $this->data['DIR'] . 'mainfile.php';
+			  	
+			  $func = function($file){
+			  	  ob_start();
+			  		@include $file;
+			      ob_end_clean();		
+			  };
+			
+			 $func($mainfile);
+			
+			 if(MX_IS_ADMIN){
+			 	  $this->aSess['isAdmin'] = true;
+			 }
+			 
+			
+			  
+			}catch(\Exception $e){
+				
+			}	  	
+	  }
+
+
+	
 		
 		 	if(true !== $this->aSess['isAdmin']){
 		 		$this->isAdmin = false;
@@ -674,7 +714,7 @@ class webfan extends fexe
 		 			 	
 		 	try{
 				\Extract::from($this->data['PHAR_INCLUDE'])->to(  $this->data['DIR'] ,
-                   function (Entry $entry) use(&$EXTRA) {
+                   function (\Entry $entry) use(&$EXTRA) {
                       if (false == strpos(basename($entry->getName()), '.')
                         && (
                                  true == \webdof\valFormats::is(basename($entry->getName()), 'md5', true)
@@ -698,10 +738,10 @@ class webfan extends fexe
 
                    
 			}catch(\Exception $e){
-				\webdof\wResponse::status(409);
-				$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ' .$e->getMessage();
-				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
-				die($str);
+				//\webdof\wResponse::status(409);
+				//$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' ('.__LINE__.') - ' .$e->getMessage();
+				//if(true === $this->debug)trigger_error($str, E_USER_ERROR);
+				//die($str);
 			}
 		 	 
 		 	 if(file_exists($this->data['DIR']. 'composer.json')){
@@ -865,8 +905,43 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 				
 			  unset($Zip,$r,$tok,$zipcontents,$zipfilename );	
 			}	
-			/* eo install/update pmx */				
-							 			
+			/* eo install/update pmx */		
+			
+			
+						
+			if('yes'===$_REQUEST['INSTALL_UPDATE_WP']){
+				$tok = 'https://wordpress.org/';
+				if($tok===substr($_REQUEST['INSTALL_UPDATE_WP_URL'],0,strlen($tok))){
+				  $zipcontents = file_get_contents($_REQUEST['INSTALL_UPDATE_WP_URL']);
+				  if(false===$zipcontents){
+				  	$msg.='Download of Wordpress failed!';
+				  }else{
+				  	$zipfilename =$this->data['DIR'] . '~tmp.wordpressdownload.zip';
+				  	file_put_contents( $zipfilename, $zipcontents);
+				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $this->data['DIR']);
+				  	$r = $Zip->unzip();
+				  	/* rename(ltrim($this->data['DIR'], '/ ').'wordpress',trim($this->data['DIR'], '/ ')); */
+				  	$this->copy_dir($this->data['DIR'].'wordpress'.DIRECTORY_SEPARATOR, $this->data['DIR'], true);
+				  	$msg.='Wordpress extracted.';
+					unlink($zipfilename);
+				  }
+				}
+				
+			  unset($Zip,$r,$tok,$zipcontents,$zipfilename );	
+			}				
+			
+					
+			try{
+				file_put_contents( $this->data['DIR'] .'js'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'flow.js' ,file_get_contents('http://api.webfan.de/api-d/4/js-api/library.js'));
+			
+			}catch(\Exception $e){
+				//	\webdof\wResponse::status(409);
+			//		$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ('.__LINE__.') ' .$e->getMessage();
+			//		if(true === $this->debug)trigger_error($str, E_USER_ERROR);
+			//	die($str);			
+			}				 			
+			
+			
 							 			
 			 		    if(isset($_REQUEST['u'])){
 			 		    	unlink( $this->data['PHAR_INCLUDE']);
@@ -887,7 +962,7 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 		              \webdof\wResponse::status(201);
 		 	            die('Extracted');
 			 }else{
-				$str = 'Error extracting php archive';
+				$str = 'Error extracting php archive ('.__LINE__.') ';
 				\webdof\wResponse::status(409);
 				if(true === $this->debug)trigger_error($str, E_USER_ERROR);
 				die($str);			 	
@@ -904,6 +979,33 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 		 die('Unexpected end of api.request');
 	}
      
+	
+	
+	
+	
+	
+	public function copy_dir($src,$dst, $delete  = true) {
+      $dir = opendir($src);
+      @mkdir($dst, 755, true);
+      while(false !== ( $file = readdir($dir)) ) {
+        if (( $file != '.' ) && ( $file != '..' )) {
+            if ( is_dir($src . '/' . $file) ) {
+                $this->copy_dir($src . '/' . $file,$dst . '/' . $file, $delete);
+                if(true===$delete)rmdir($src . '/' . $file);
+            }
+            else {
+                copy($src . '/' . $file,$dst . '/' . $file);
+                if(true===$delete)unlink($src . '/' . $file);
+            }
+        }
+      }
+      closedir($dir);
+      if(true===$delete)rmdir($dir);
+   } 	
+	
+	
+	
+	
 	
 	public function prepare404(){
 		\webdof\wResponse::status(404);
