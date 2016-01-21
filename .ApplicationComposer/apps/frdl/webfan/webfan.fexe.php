@@ -310,8 +310,8 @@ class webfan extends fexe
 	
 		 	$extractConfig['extra']['wordpress'] = array();
 		 	$file = 'wp-config.php';
-		 	$pmxf = $data['DIR'].'wordpress'. DIRECTORY_SEPARATOR. $file;
-		 	$extractConfig['extra']['wordpress']['main'] = (file_exists(DIRECTORY_SEPARATOR . realpath( $pmxf)) && preg_match("/wordpress/i", file_get_contents(DIRECTORY_SEPARATOR . realpath( $pmxf)))
+		 	$pmxf = $data['DIR']. $file;
+		 	$extractConfig['extra']['wordpress']['main'] = (file_exists(DIRECTORY_SEPARATOR . realpath( $pmxf)) && preg_match("/ABSPATH/", file_get_contents(DIRECTORY_SEPARATOR . realpath( $pmxf)))
 		 	                                                     ? true
 		 	                                                     : false);
 		 	$extractConfig['extra']['wordpress']['installdirs'] = array_merge(glob($pmxf), glob($file), glob("/*".$file),
