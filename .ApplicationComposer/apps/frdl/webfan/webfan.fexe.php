@@ -156,46 +156,7 @@ class webfan extends fexe
 	   }
 	   $this->data['installed'] = false;
 	   $this->data['index'] = 'Main Template';	
-       $this->data['template_main_options'] = array(   
-                'Title' =>  'Webfan - Application Composer',
-	            'css' => array(
-	            
-	            ),
-			    'js' => array(
-				       //->later by assets installer!-> 'js/lib/flow.js',
-				       //'http://api.webfan.de/api-d/4/js-api/library.js',
-				       ((file_Exists($this->data['CONFIGFILE']) && file_exists($this->data['DIR'].'js'. DIRECTORY_SEPARATOR . 'lib'. DIRECTORY_SEPARATOR.'flow.js'))
-				        ? 'js/lib/flow.js' : 'http://api.webfan.de/api-d/4/js-api/library.js'),
-				       
-				       // 'js/app.js', 
-				),
-				'meta' =>  array(
-				     array('http-equiv' => 'content-type', 'content' => 'text/html; charset=utf-8'),	
-				     array('http-equiv' => 'content-style-type', 'content' => 'text/css'),	
-				     array('http-equiv' => 'content-script-type', 'content' => 'text/javascript'),		
-				     array('http-equiv' => 'content-script-type', 'content' => 'text/javascript'),				 
-				   /*  array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=7.5'),		  */
-				     array('name' => 'mobile-web-app-capable', 'content' => 'yes'),
-				     array('name' => 'apple-mobile-web-app-capable', 'content' => 'yes'),
-				     array('name' => 'apple-mobile-web-app-status-bar-style', 'content' => 'lightblue'),
-				     array('name' => 'HandheldFriendly', 'content' => 'true'),
-				     array('name' => 'MobileOptimized', 'content' => '320'),
-				     array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0, user-scalable=yes'),
-				     
-				 ),
-				 
-				
-				 'link' => array(
-				     /* array('rel' => 'prefetch', 'type' => 'application/l10n', 'href' => 'locale/locales.ini'), */
-				      array('rel' => 'package', 'type' => 'application/package', 'href' => 'https://github.com/frdl/webfan/archive/master.zip'),
-				      array('rel' => 'describedby', 'type' => 'application/xml', 'href' => 'config.xml'),
-				      array('rel' => 'manifest', 'type' => 'application/manifest+json', 'href' => ltrim($path, '/ ').'manifest.webapp'),
-				      
-				 )
-				 
-	    );
 
-	 
 	 
 	  
 	   	   
@@ -289,6 +250,48 @@ class webfan extends fexe
 		 
 	  $this->data['tpl_data']['EXTRA_IS_WP'] = (true===$this->data['config']['EXTRA']['extra']['wordpress']['main'])
 	                                             ? 'yes' : 'no';	 
+
+
+       $this->data['template_main_options'] = array(   
+                'Title' =>  'Webfan - Application Composer',
+	            'css' => array(
+	            
+	            ),
+			    'js' => array(
+				       //->later by assets installer!-> 'js/lib/flow.js',
+				       //'http://api.webfan.de/api-d/4/js-api/library.js',
+				       (('phar'!==$this->data['tpl_data']['INSTALLER'] && file_Exists($this->data['CONFIGFILE']) && file_exists($this->data['DIR'].'js'. DIRECTORY_SEPARATOR . 'lib'. DIRECTORY_SEPARATOR.'flow.js'))
+				        ? 'js/lib/flow.js' : 'http://api.webfan.de/api-d/4/js-api/library.js'),
+				       
+				       // 'js/app.js', 
+				),
+				'meta' =>  array(
+				     array('http-equiv' => 'content-type', 'content' => 'text/html; charset=utf-8'),	
+				     array('http-equiv' => 'content-style-type', 'content' => 'text/css'),	
+				     array('http-equiv' => 'content-script-type', 'content' => 'text/javascript'),		
+				     array('http-equiv' => 'content-script-type', 'content' => 'text/javascript'),				 
+				   /*  array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=7.5'),		  */
+				     array('name' => 'mobile-web-app-capable', 'content' => 'yes'),
+				     array('name' => 'apple-mobile-web-app-capable', 'content' => 'yes'),
+				     array('name' => 'apple-mobile-web-app-status-bar-style', 'content' => 'lightblue'),
+				     array('name' => 'HandheldFriendly', 'content' => 'true'),
+				     array('name' => 'MobileOptimized', 'content' => '320'),
+				     array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0, user-scalable=yes'),
+				     
+				 ),
+				 
+				
+				 'link' => array(
+				     /* array('rel' => 'prefetch', 'type' => 'application/l10n', 'href' => 'locale/locales.ini'), */
+				      array('rel' => 'package', 'type' => 'application/package', 'href' => 'https://github.com/frdl/webfan/archive/master.zip'),
+				      array('rel' => 'describedby', 'type' => 'application/xml', 'href' => 'config.xml'),
+				      array('rel' => 'manifest', 'type' => 'application/manifest+json', 'href' => ltrim($path, '/ ').'manifest.webapp'),
+				      
+				 )
+				 
+	    );
+
+	 
 		 	       		 	       
 	   return $this->data;	 	
 	 }
@@ -903,7 +906,7 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 				  }
 				}
 				
-			  unset($Zip,$r,$tok,$zipcontents,$zipfilename );	
+			  	
 			}	
 			/* eo install/update pmx */		
 			
@@ -921,25 +924,46 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $this->data['DIR']);
 				  	$r = $Zip->unzip();
 				  	/* rename(ltrim($this->data['DIR'], '/ ').'wordpress',trim($this->data['DIR'], '/ ')); */
-				  	$this->copy_dir($this->data['DIR'].'wordpress'.DIRECTORY_SEPARATOR, $this->data['DIR'], true);
+				  	$this->copy_dir($this->data['DIR'].'wordpress'.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR.$this->data['DIR'], true);
+				  	rmdir($this->data['DIR'].'wordpress'.DIRECTORY_SEPARATOR);
 				  	$msg.='Wordpress extracted.';
 					unlink($zipfilename);
 				  }
 				}
 				
-			  unset($Zip,$r,$tok,$zipcontents,$zipfilename );	
+
 			}				
 			
 					
 			try{
-				file_put_contents( $this->data['DIR'] .'js'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'flow.js' ,file_get_contents('http://api.webfan.de/api-d/4/js-api/library.js'));
+				file_put_contents($this->data['DIR'] .'js'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'flow.js' ,file_get_contents('http://api.webfan.de/api-d/4/js-api/library.js'));
 			
 			}catch(\Exception $e){
 				//	\webdof\wResponse::status(409);
 			//		$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ('.__LINE__.') ' .$e->getMessage();
 			//		if(true === $this->debug)trigger_error($str, E_USER_ERROR);
-			//	die($str);			
+			//	die($str);	 		
 			}				 			
+			
+			
+			      $zipcontents = file_get_contents('https://github.com/frdlweb/flow4pmx/archive/master.zip');
+				  if(false===$zipcontents){
+				  	$msg.='Download of flow4pmx failed!';
+				  }else{
+				  	$zipfilename =$this->data['DIR'] . '~tmp.flow4pmx.zip';
+				  	file_put_contents( $zipfilename, $zipcontents);
+				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $this->data['DIR']);
+				  	$r = $Zip->unzip();
+				  	$this->copy_dir($this->data['DIR'].'flow4pmx-master'.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR.$this->data['DIR'], true);
+				  	rmdir($this->data['DIR'].'flow4pmx-master'.DIRECTORY_SEPARATOR);
+				  	$msg.='flow4pmx extracted.';
+					unlink($zipfilename);
+				  }
+				  
+				  
+		    	unset($Zip,$r,$tok,$zipcontents,$zipfilename );
+			
+			
 			
 			
 							 			
@@ -984,21 +1008,37 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 	
 	
 	
-	public function copy_dir($src,$dst, $delete  = true) {
+	public function copy_dir($src,$dst, $delete  = true, $chmod = 0755) {
       $dir = opendir($src);
       @mkdir($dst, 755, true);
       while(false !== ( $file = readdir($dir)) ) {
         if (( $file != '.' ) && ( $file != '..' )) {
             if ( is_dir($src . '/' . $file) ) {
-                $this->copy_dir($src . '/' . $file,$dst . '/' . $file, $delete);
-                if(true===$delete)rmdir($src . '/' . $file);
+               
             }
             else {
                 copy($src . '/' . $file,$dst . '/' . $file);
+                chmod($dst . '/' . $file, $chmod);
                 if(true===$delete)unlink($src . '/' . $file);
             }
         }
       }
+      closedir($dir);
+      
+     $dir = opendir($src); 
+       while(false !== ( $file = readdir($dir)) ) {
+        if (( $file != '.' ) && ( $file != '..' )) {
+            if ( is_dir($src . '/' . $file) ) {
+                $this->copy_dir($src . '/' . $file,$dst . '/' . $file, $delete);
+                if(true===$delete)rmdir($src . '/' . $file);
+                chmod($dst . '/' . $file, $chmod);
+            }
+            else {
+               
+            }
+        }
+      }
+           
       closedir($dir);
       if(true===$delete)rmdir($dir);
    } 	
