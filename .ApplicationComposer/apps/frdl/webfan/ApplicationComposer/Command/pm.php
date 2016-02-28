@@ -78,12 +78,13 @@ class pm extends CMD
         	 return;			
 		}    
        
+       /*
          if((!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']) && true !== $this->data['config']['PUBLIC_PROXY'] ){
                 $this->result->out = 'set config ERROR: You are not logged in as Admin';
   	
 	     	 return;
 		  }
-
+*/
 
 
      $this->db = \frdl\xGlobal\webfan::db();
@@ -210,13 +211,13 @@ class pm extends CMD
 	 
     
      public function stats($o){
-     	
+     	/*
      	if(true !== $this->aSess['isAdmin']){
      		$this->result->stats[0] = '<span class="webfan-red">You are not logged in</span>';
 			$this->result->out = 'OK';
 			return;
 		}
-     	
+     	*/
      	$this->result->stats = array();
         if(0 === count($this->argtoks['options'])){
 			

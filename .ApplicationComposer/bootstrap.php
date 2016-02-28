@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * Copyright  (c) 2015, Till Wehowski
+ * Copyright  (c) 2016, Till Wehowski
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -31,14 +31,45 @@
  * 
  * 
  *  @author 	Till Wehowski <software@frdl.de>
- *  @copyright 	2014 Copyright (c) Till Wehowski
- *  @version 	1.0
+ *  @copyright 	2016 Copyright (c) Till Wehowski
+ *  @version 	2.0
  *    
  */
-require __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan' . DIRECTORY_SEPARATOR .  'App.php';
-require __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'. DIRECTORY_SEPARATOR . 'Autoloading' . DIRECTORY_SEPARATOR . 'SourceLoader.php';
+ //error_reporting(E_ALL);
+ //ini_set('display_errors',1);
+ 
+call_user_func((function(){ 
 
-frdl\webfan\Autoloading\SourceLoader::top() 
+
+
+if(true===version_compare(PHP_VERSION, '5.5', '>=')) {
+$fF = function(){
+yield (__DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan' . DIRECTORY_SEPARATOR .  'App.php');
+yield (__DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'common'. DIRECTORY_SEPARATOR . 'Stream.php');
+yield (__DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'. DIRECTORY_SEPARATOR . 'Autoloading' . DIRECTORY_SEPARATOR .  'Loader.php');
+yield (__DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'. DIRECTORY_SEPARATOR . 'Autoloading' . DIRECTORY_SEPARATOR . 'SourceLoader.php');
+yield (__DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'. DIRECTORY_SEPARATOR . 'Autoloading' . DIRECTORY_SEPARATOR . 'Autoloader.php');
+}; 	
+}else{
+$fF = function(){
+return array(	
+ __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan' . DIRECTORY_SEPARATOR .  'App.php',
+ __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'common'. DIRECTORY_SEPARATOR . 'Stream.php',
+ __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'. DIRECTORY_SEPARATOR . 'Autoloading' . DIRECTORY_SEPARATOR .  'Loader.php',
+ __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'. DIRECTORY_SEPARATOR . 'Autoloading' . DIRECTORY_SEPARATOR . 'SourceLoader.php',
+ __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' . DIRECTORY_SEPARATOR . 'webfan'. DIRECTORY_SEPARATOR . 'Autoloading' . DIRECTORY_SEPARATOR . 'Autoloader.php',
+);
+}; 	
+}
+
+foreach($fF() as $file) {
+  require $file;
+}
+ 
+ 
+
+
+\frdl\webfan\Autoloading\SourceLoader::top() 
   -> addPsr4('frdl\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'frdl' .DIRECTORY_SEPARATOR, true) 
   -> addPsr4('webfan\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'webfan' .DIRECTORY_SEPARATOR, true) 
   -> addPsr4('webdof\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . 'webdof' .DIRECTORY_SEPARATOR, true)  
@@ -46,7 +77,7 @@ frdl\webfan\Autoloading\SourceLoader::top()
    -> addPsr4('\\', __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . '' .DIRECTORY_SEPARATOR, false) 
   ;
   
-frdl\webfan\App::God(true, 'frdl\webfan\Autoloading\SourceLoader','AC boot') 
+\frdl\webfan\App::God(true, 'frdl\webfan\Autoloading\Autoloader','AC boot') 
 
 ;
 
@@ -55,4 +86,26 @@ if(defined('FRDL_WEBFAN_DIR_MAIN'))define('FRDL_WEBFAN_DIR_MAIN', __DIR__ . DIRE
 \frdl\webfan\App::God()-> addClass('\frdl\webfan\Serialize\Binary\bin', '\frdl\bs',true, $success);
 \frdl\webfan\App::God()-> addClass('\webdof\Http\Client', '\frdl\Broxy',true, $success);
 
-frdl\webfan\Autoloading\SourceLoader::repository('webfan');
+\frdl\webfan\Autoloading\SourceLoader::repository('webfan');
+
+
+
+call_user_func(($bootfiles=function($src){
+	$dir = opendir($src);
+      while(false !== ( $file = readdir($dir)) ) {
+        if (( $file != '.' ) && ( $file != '..' )) {
+            if ( is_dir($src . '/' . $file) ) {
+               $bootfiles($src . '/' . $file);
+            }
+            else {
+                include $src . '/' . $file;
+            }
+        }
+      }
+      closedir($dir);
+}), __DIR__ . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR . '.inc' . DIRECTORY_SEPARATOR);
+
+
+
+}));
+

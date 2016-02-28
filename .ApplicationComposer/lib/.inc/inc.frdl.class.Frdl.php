@@ -1,6 +1,7 @@
 <?php
 /**
- * Copyright  (c) 2015, Till Wehowski
+ * 
+ * Copyright  (c) 2016, Till Wehowski
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +11,10 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of frdl/webfan nor the
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *    This product includes software developed by the frdl/webfan.
+ * 4. Neither the name of frdl/webfan nor the
  *    names of its contributors may be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  * 
@@ -25,56 +29,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
+ * 
+ *  @author 	Till Wehowski <software@frdl.de>
+ *  @copyright 	2016 Copyright (c) Till Wehowski
+ *  @version 	2.0
+ *    
  */
-namespace frdl\ApplicationComposer;
- 
-class ClosureTreeHelper  extends \frdl\Crud {
-		
-		   const VERSION = '0.0.2';
-		   const ALIAS = 'Tree';
-		   
-		   
-			# Your Table name 
-			protected $table = 'ct_tree';
-			
-			# Primary Key of the Table
-			protected $pk	 = 'id';
-			
-
-	
-				
-			public function shema(){
-				return array(
-				  'version' => self::VERSION,
-				  'schema' => "(
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_parent` int(11) NOT NULL,
-  `id_child` int(11) NOT NULL,
-  `depth` int(11) NOT NULL DEFAULT '0',
-  `id_root`  BIGINT(255) NOT NULL, 
-  PRIMARY KEY (`id`)
-                   
-				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ",
-				);
-			}
-			
-
-			
-	        public function field($label = null){
-				$l = array(
-				 'id' => '#ID',
-				 'id_parent' => '#ID parent',
-				 'id_child' => '#ID Child',
-				 'depth' => 'Depth of relationship',
-				 'id_root' => 'Root Node of Tree'
-				);
-				if(null === $label){
-					return $l;
-				}
-				
-				return (isset($l[$label])) ? $l[$label] : null;
-			}
-			
-	
-			
-	}

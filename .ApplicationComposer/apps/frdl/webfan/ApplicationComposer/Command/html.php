@@ -400,6 +400,7 @@ class html extends CMD
 	protected function item_repositories(){
 	 $html = '';
     	$tab = 'window_main_frdl-webfan-repositories';
+    	ini_set('display_errors', 0);
        $this->_check_db();
         if(true !== $this->check($html, $tab, true, true))return $html;  
     
@@ -417,7 +418,7 @@ class html extends CMD
      $R = $S->i('Repositories', $this->db);
      $rep = $R->all();				
 	}catch(\Exception $e){
-	    $this->wizard_error( '<span>Cannot fetch repository database</span>', E_USER_WARNING);
+	    // $this->wizard_error( '<span>Cannot fetch repository database</span>', E_USER_WARNING);
 	     if(true !== $this->check($html, $tab, true, true))return $html;  
 	}	
     		

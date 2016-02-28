@@ -41,7 +41,7 @@ use frdl\common;
 use frdl\common\Lazy;
 
 
-final class Autoloader extends SourceLoader implements \frdl\common\Stream, Loader  
+final class Autoloader extends SourceLoader implements \frdl\common\Stream
 {
 	
 }

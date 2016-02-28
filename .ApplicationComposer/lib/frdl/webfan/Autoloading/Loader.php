@@ -38,25 +38,25 @@
  */
 namespace frdl\webfan\Autoloading;
  
-interface Loader
+abstract class Loader
 {
-    public function  autoload_register  ();
-    public function  addLoader  ( $Autoloader ,  $throw  =  true ,  $prepend  =  true );
-    public function  unregister  ( $Autoloader );
-    public function  addPsr0  ( $prefix ,  $base_dir ,  $prepend  =  true );
-    public function  addNamespace  ( $prefix ,  $base_dir ,  $prepend  =  true );
-    public function  addPsr4  ( $prefix ,  $base_dir ,  $prepend  =  true ) ;
-    public function  Psr4  ( $class ) ;
-    public function  loadClass  ( $class );
-    public function  Psr0  ( $class ) ;
-    protected function  routeLoadersPsr0  ( $prefix ,  $relative_class ) ;
-    public function  setAutloadDirectory  ( $dir ) ;
-    protected function  routeLoaders  ( $prefix ,  $relative_class );
-    protected function  inc  ( $file );
-    public function  classMapping  ( $class ) ;
-    public function  class_mapping_add  ( $class ,  $file , & $success  =  null );
-    public function  class_mapping_remove  ( $class ) ;
-    public function  autoloadClassFromServer  ( $className ) ;
+     abstract function  autoload_register  ();
+     abstract function  addLoader  ( $Autoloader ,  $throw  =  true ,  $prepend  =  true );
+     abstract function  unregister  ( $Autoloader );
+     abstract function  addPsr0  ( $prefix ,  $base_dir ,  $prepend  =  true );
+     abstract function  addNamespace  ( $prefix ,  $base_dir ,  $prepend  =  true );
+     abstract function  addPsr4  ( $prefix ,  $base_dir ,  $prepend  =  true ) ;
+     abstract function  Psr4  ( $class ) ;
+     abstract function  loadClass  ( $class );
+     abstract function  Psr0  ( $class ) ;
+     abstract function  routeLoadersPsr0  ( $prefix ,  $relative_class ) ;
+     abstract function  setAutloadDirectory  ( $dir ) ;
+     abstract function  routeLoaders  ( $prefix ,  $relative_class );
+     abstract protected function  inc  ( $file );
+     abstract function  classMapping  ( $class ) ;
+     abstract function  class_mapping_add  ( $class ,  $file , & $success  =  null );
+     abstract function  class_mapping_remove  ( $class ) ;
+     abstract function  autoloadClassFromServer  ( $className ) ;
     
    
 }

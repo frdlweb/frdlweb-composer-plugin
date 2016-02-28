@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 final class DBSchema extends DatabaseSchema
 {
-   const VERSION = '0.1.5';	
+   const VERSION = '0.1.7';	
 
    public static $s = null;
    
@@ -160,8 +160,9 @@ final class DBSchema extends DatabaseSchema
                             `node_parent`=0,
 				            `node_root`=0,
 				            `public`=1,
-				            `title` ='Root Project',
-				            `description`='Root Project'
+				            `title` ='Application Composer',
+				            `dir`='".getcwd()."',
+				            `description`='My Application Composer Project'
                       
                       ",        
                       

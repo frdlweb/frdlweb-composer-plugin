@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns       = "http://www.w3.org/ns/widgets"
-        id          = "flow://components/webfan/workspace"
+        id          = "http://cdn.frdl.webfan.de/cdn/frdl/flow/components/webfan/workspace"
         version     = "2.0.0"
         height      = "16"
         width       = "64"
@@ -24,8 +24,8 @@
  <author href="http://www.webfan.de/Team.html" email="software@frdl.de">Till Wehowski</author>
 
  <access origin="*" />
- <content src="index.html" type="text/html" />  
- <content src="app.js" type="text/html" />  
+ 
+ <content src="app.js" type="text/javascript" />  
   
   
 <license 

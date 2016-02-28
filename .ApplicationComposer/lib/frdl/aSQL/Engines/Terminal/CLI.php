@@ -28,7 +28,7 @@
  *  @author 	Till Wehowski <software@frdl.de>
  *  @package    webfan://frdl.aSQL.Engines.Terminal.CLI.code
  *  @uri        /v1/public/software/class/webfan/frdl.aSQL.Engines.Terminal.CLI/source.php
- *  @version 	1.0.0.4
+ *  @version 	1.0.0.5
  *  @file       frdl\aSQL\Engines\Terminal\CLI.code.php
  *  @role       Command Line Parser
  *  @copyright 	2015 Copyright (c) Till Wehowski
@@ -282,7 +282,7 @@ REGEX;
 
 
       $value = trim($value , '"\'');
-	  if(empty($value))$value = true;
+	  if(empty($value))$value = null;
 
       $ret['options'][] = array(
 	        'opt' => $com,

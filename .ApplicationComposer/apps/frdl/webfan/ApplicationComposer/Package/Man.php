@@ -131,7 +131,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 
   
 	   
-	    
+	    /*
 	    
 		   $groups['CMS']['packages'][] = array( 
 	                'vendor' => 'TerraProject',
@@ -150,7 +150,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 	                'url' => 'https://github.com/frdl/webfan',
 	                'img' => 'http://static.webfan.de/icons/icons-3/icon_package_get.gif',
 	              );		
-			
+		*/	
 			
 			
 			
@@ -315,14 +315,27 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 		$form = 'form-wd-frdl-webfan-package-new'.mt_rand(1000,9999);
 		$divSerp = 'wd-frdl-webfan-pm-new-serp'.mt_rand(1000,9999);
 
-		$this->html.='<form id="'.$form.'" action="#" method="post">';
+		$this->html.='<form id="'.$form.'">';
 		$this->html.='<div>';
 		 $this->html.='<strong>Package</strong> 
 		
-		 <input type="text" name="packagename" value="vendor/package"
+	';
+		 $this->html.='<form id="'.$form.'">&nbsp;	 <input type="text" name="packagename" value="vendor/package"
 		  onclick="if(\'vendor/package\' === this.value)this.value=\'\';" 
 		  />';
+		 $this->html.='<input type="checkbox" name="save" />';
+		 $this->html.=' <span>Save found packages</span>';
 		 
+		$this->html.='</div>';
+		
+		$this->html.='<div id="'.$divSerp.'">';
+		
+		$this->html.='</div>';
+		
+		
+		
+		$this->html.='</form>';
+				 
 		 /**
 		 * 
 		 * flags -bcs  bounce,use cache, save(not in use yet)
@@ -398,25 +411,12 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 		  $this->html.='Search';
 		 $this->html.='</button>';
 		 
-		 $this->html.='&nbsp;';
-		 $this->html.='<input type="checkbox" name="save" />';
-		 $this->html.=' <span>Save found packages</span>';
-		 
-		$this->html.='</div>';
-		
-		$this->html.='<div id="'.$divSerp.'">';
-		
-		$this->html.='</div>';
-		
-		
-		
-		$this->html.='</form>';
-		
+
 		$this->js.= " 
 		
-		$('#'.$form.'').on('submit', function(ev){
+		$('#".$form."').on('submit', function(ev){
 			   ev.stopPropagation();
-			   e.preventdefault();
+			   ev.preventdefault();
 			   return false;
 			});
 		

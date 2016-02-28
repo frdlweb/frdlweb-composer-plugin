@@ -284,8 +284,8 @@ class webfan extends fexe
 				 'link' => array(
 				     /* array('rel' => 'prefetch', 'type' => 'application/l10n', 'href' => 'locale/locales.ini'), */
 				      array('rel' => 'package', 'type' => 'application/package', 'href' => 'https://github.com/frdl/webfan/archive/master.zip'),
-				      array('rel' => 'describedby', 'type' => 'application/xml', 'href' => 'config.xml'),
-				      array('rel' => 'manifest', 'type' => 'application/manifest+json', 'href' => ltrim($path, '/ ').'manifest.webapp'),
+				   //   array('rel' => 'describedby', 'type' => 'application/xml', 'href' => 'config.xml'),
+				      array('rel' => 'manifest', 'type' => 'application/manifest+json', 'href' => ltrim(str_replace('setup.php','',$path), '/ ').'manifest.webapp'),
 				      
 				 )
 				 
@@ -675,6 +675,53 @@ class webfan extends fexe
 			}
 		 	
 		 	
+		 	
+		 	
+		 	
+		 	
+		 	
+		 	    try{
+	                     $userInfo=posix_getpwuid(fileowner(__FILE__)); 		
+			 			$this->data['config']['DIR_PACKAGE'] = $userInfo['dir'].DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR;
+			 			chmod($this->data['config']['DIR_PACKAGE'],0755);
+			 			if(!is_dir($this->data['config']['DIR_PACKAGE']) || !is_writable($this->data['config']['DIR_PACKAGE'])){
+							$this->data['config']['DIR_PACKAGE'] =$userInfo['dir'].DIRECTORY_SEPARATOR;
+							chmod($this->data['config']['DIR_PACKAGE'],0755);
+						}
+			 		
+			 		   if(!is_dir($this->data['config']['DIR_PACKAGE']) || !is_writable($this->data['config']['DIR_PACKAGE'])){	
+			 			$this->data['config']['DIR_PACKAGE'] = $this->data['DIR'];
+			 		  }		 	
+		 					
+				}catch(\Exception $e){
+			       $str ='Warning: Cannot get home dir';
+				   if(true === $this->debug)trigger_error($str, E_USER_WARNING);
+				   $this->data['config']['DIR_PACKAGE'] = $this->data['DIR'];			
+				}
+            if(isset($_REQUEST['DIR_PACKAGE']) && is_dir($_REQUEST['DIR_PACKAGE']) ){
+				 chmod($_REQUEST['DIR_PACKAGE'],0755);
+				 $this->data['config']['DIR_PACKAGE'] = $_REQUEST['DIR_PACKAGE'];		
+			}
+		 	
+			if(!is_dir($this->data['config']['DIR_PACKAGE']) || !is_writable($this->data['config']['DIR_PACKAGE'])){	
+			   $this->data['config']['DIR_PACKAGE'] = $this->data['DIR'];
+			}		
+			 		  		
+			 		  		
+			 		  		
+	        if(isset($_REQUEST['DIR_WWW']) && is_dir($_REQUEST['DIR_WWW']) ){
+				 chmod($_REQUEST['DIR_WWW'],0755);
+				 $this->data['config']['DIRS']['www'] = $_REQUEST['DIR_WWW'];		
+			}         		 		  		
+			if(!is_dir($this->data['config']['DIRS']['www']) || !is_writable($this->data['config']['DIRS']['www'])){	
+			   $this->data['config']['DIRS']['www'] = $this->data['DIR'].'www'.DIRECTORY_SEPARATOR;
+			}		
+			 					 		  		
+			 		  		
+			 		  		
+		   $this->data['CONFIGFILE'] = $this->data['config']['DIR_PACKAGE'].'config.frdl.php';
+			 		 
+			 		  		 	
 		   if(isset($_REQUEST['test']) && 'response' === $_REQUEST['test']){
 		   	    \webdof\wResponse::status(200);
 		   	    $this->data['data_out']->code = 200;
@@ -709,14 +756,27 @@ class webfan extends fexe
                 $this->data['data_out']->config->UID =  $this->data['config']['UID'];
                 $this->data['data_out']->config_new->UID =  $this->data['config_new']['UID'];
                 
-                              		   	    	   	       	       
+                
+              		
+                $this->data['data_out']->config->DIR_PACKAGE =  $this->data['config']['DIR_PACKAGE'];
+                $this->data['data_out']->config_new->DIR_PACKAGE =  $this->data['config_new']['DIR_PACKAGE']; 
+                
+                
+                $wwwdir =(is_dir($this->data['config']['DIRS']['www'])) ? $this->data['config']['DIRS']['www'] : $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR;
+                $this->data['data_out']->config->DIR_WWW =  $wwwdir;
+                $this->data['data_out']->config_new->DIR_WWW =  $wwwdir;   
+                
+                
+                                           		   	    	   	       	       
 		   	    die('OK');
 		   }
 		 	
 		 	$EXTRA = &$this->data['config']['EXTRA'];
+		 	
+		 	mkdir($this->data['config']['DIR_PACKAGE'],0755,true);
 		 			 	
 		 	try{
-				\Extract::from($this->data['PHAR_INCLUDE'])->to(  $this->data['DIR'] ,
+				\Extract::from($this->data['PHAR_INCLUDE'])->to( /* $this->data['DIR'] */ $this->data['config']['DIR_PACKAGE'] ,
                    function (\Entry $entry) use(&$EXTRA) {
                       if (false == strpos(basename($entry->getName()), '.')
                         && (
@@ -747,7 +807,7 @@ class webfan extends fexe
 				//die($str);
 			}
 		 	 
-		 	 if(file_exists($this->data['DIR']. 'composer.json')){
+		 	 if(file_exists($this->data['config']['DIR_PACKAGE']. 'composer.json')){
 		 	 	
 	
 		 	 	
@@ -761,12 +821,21 @@ class webfan extends fexe
 			 			}catch(err){console.error(err);}			 			
 			 			'));
 			 			
+			 			
+			 			if(''===$this->data['config_new']['ADMIN_PWD']){
+							$this->data['config_new']['ADMIN_PWD']= $this->data['config']['ADMIN_PWD'];
+						}
+			 			
+			 			
 			 			if($this->data['config_new']['ADMIN_PWD'] !== $this->data['config']['ADMIN_PWD']){
 							$this->data['data_out']->js.= ' 
 					     		alert("Attention: Password has changed ('.trim($_POST['pwd'], '"\' ').')!");
 							 ';
 						}
 			 			
+			 			if(''===$this->data['config_new']['PIN']){
+							$this->data['config_new']['PIN']= $this->data['config']['PIN'];
+						}			 			
 			 			if($this->data['config_new']['PIN'] !== $this->data['config']['PIN']){
 							$this->data['data_out']->js.= ' 
 					     		alert("Attention: PIN has changed ('.$this->aSess['PIN'].')!");
@@ -782,8 +851,10 @@ class webfan extends fexe
 			 			
 			 			$this->data['config']['ADMIN_PWD'] = $this->aSess['ADMIN_PWD'];
 			 			$this->data['config']['PIN'] = $this->aSess['PIN'];
-			 			$this->data['config']['DIR_PACKAGE'] = $this->data['DIR'];
 			 			
+			 			
+	
+			 		 	
 			 			if(0 === intval($this->data['config']['UID']) && 0 !== intval($this->data['config_new']['UID']) ){
 							$this->data['config']['UID'] = $this->data['config_new']['UID'];
 						}
@@ -792,6 +863,7 @@ class webfan extends fexe
 			 			if( '' === $this->data['config']['UNAME'] && '' !== $this->data['config_new']['UNAME']){
 							$this->data['config']['UNAME'] = $this->data['config_new']['UNAME'];
 						}
+	 			
 	 			
 			 			$this->data['config']['DIRS'] = array_merge((isset($this->data['config']['DIRS']) && is_array($this->data['config']['DIRS']))
 			 			         ? $this->data['config']['DIRS'] : array(), array(
@@ -807,7 +879,8 @@ class webfan extends fexe
 			 			            'share' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'share'. DIRECTORY_SEPARATOR,
 			 			            'tmp' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'tmp'. DIRECTORY_SEPARATOR,
 			 			            'vendor' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'vendor'. DIRECTORY_SEPARATOR,
-			 			                 
+                                    'www' =>   (is_dir($this->data['config']['DIRS']['www']) && is_writable($this->data['config']['DIRS']['www'])) ? $this->data['config']['DIRS']['www'] : $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR ,
+			 						 			                 
 			 			  ));
 			 					
 			 					
@@ -887,8 +960,20 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 			 			
 			 			file_put_contents($this->data['CONFIGFILE'], $php);
 							 			
+						
+						/*
+						if(dirname(realpath($this->data['DIR']))!==dirname(realpath($this->data['config']['DIR_PACKAGE']))){
+							$this->copy_dir($this->data['DIR'], $this->data['config']['DIR_PACKAGE'], true);
+							rmdir($this->data['DIR'].'.ApplicationComposer'.DIRECTORY_SEPARATOR);
+							
+						}
+						*/
 							
 						$msg='';
+						
+			$EXTRA_DIR = (''!==$_REQUEST['DIR_WWW'] && is_dir($_REQUEST['DIR_WWW'])) ? rtrim($_REQUEST['DIR_WWW'], '/ ') : $this->data['config']['DIRS']['www'];			
+			mkdir($EXTRA_DIR, 0755, true);
+			
 						
 			if('yes'===$_REQUEST['INSTALL_UPDATE_PMX']){
 				$tok = 'http://download.pragmamx.org/pmx/';
@@ -897,9 +982,9 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 				  if(false===$zipcontents){
 				  	$msg.='Download of PragmaMx failed!';
 				  }else{
-				  	$zipfilename =$this->data['DIR'] . '~tmp.pragmamxdownload.zip';
+				  	$zipfilename =sys_get_temp_dir().DIRECTORY_SEPARATOR . '~tmp.pragmamxdownload.zip';
 				  	file_put_contents( $zipfilename, $zipcontents);
-				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $this->data['DIR']);
+				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $EXTRA_DIR);
 				  	$r = $Zip->unzip();
 				  	$msg.='PragmaMx extracted.';
 					unlink($zipfilename);
@@ -919,12 +1004,12 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 				  if(false===$zipcontents){
 				  	$msg.='Download of Wordpress failed!';
 				  }else{
-				  	$zipfilename =$this->data['DIR'] . '~tmp.wordpressdownload.zip';
+				  	$zipfilename =sys_get_temp_dir().DIRECTORY_SEPARATOR . '~tmp.wordpressdownload.zip';
 				  	file_put_contents( $zipfilename, $zipcontents);
 				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $this->data['DIR']);
 				  	$r = $Zip->unzip();
 				  	/* rename(ltrim($this->data['DIR'], '/ ').'wordpress',trim($this->data['DIR'], '/ ')); */
-				  	$this->copy_dir($this->data['DIR'].'wordpress'.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR.$this->data['DIR'], true);
+				  	$this->copy_dir($EXTRA_DIR.'wordpress'.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR.ltrim($EXTRA_DIR,'/ '), true);
 				  	rmdir($this->data['DIR'].'wordpress'.DIRECTORY_SEPARATOR);
 				  	$msg.='Wordpress extracted.';
 					unlink($zipfilename);
@@ -950,20 +1035,60 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 				  if(false===$zipcontents){
 				  	$msg.='Download of flow4pmx failed!';
 				  }else{
-				  	$zipfilename =$this->data['DIR'] . '~tmp.flow4pmx.zip';
+				  	$zipfilename =sys_get_temp_dir().DIRECTORY_SEPARATOR. '~tmp.flow4pmx.zip';
 				  	file_put_contents( $zipfilename, $zipcontents);
-				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $this->data['DIR']);
+				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $EXTRA_DIR);
 				  	$r = $Zip->unzip();
-				  	$this->copy_dir($this->data['DIR'].'flow4pmx-master'.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR.$this->data['DIR'], true);
-				  	rmdir($this->data['DIR'].'flow4pmx-master'.DIRECTORY_SEPARATOR);
+				  	$this->copy_dir($EXTRA_DIR.'flow4pmx-master'.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR.ltrim($EXTRA_DIR,'/ '), true);
+				  	rmdir($EXTRA_DIR.'flow4pmx-master'.DIRECTORY_SEPARATOR);
 				  	$msg.='flow4pmx extracted.';
 					unlink($zipfilename);
 				  }
 				  
 				  
 		    	unset($Zip,$r,$tok,$zipcontents,$zipfilename );
+	
+
+$DIR_PACKAGE = rtrim(realpath($this->data['config']['DIR_PACKAGE']), '/ ').DIRECTORY_SEPARATOR;
+$VERSION=$this->data['config']['VERSION'];
+$SERVERCODE=<<<PHP
+<?php
+/**
+*  Generated by frdl/webfan
+*  This file should NOT be edited manually!
+*  
+*  @role:      server
+*  @app:       frdl/webfan
+*  @version:   $VERSION
+*  @project:   @root  
+*  @dir:       $DIR_PACKAGE
+*
+*/
+namespace frdlweb\\webfan\\server;
+\$dir = '$DIR_PACKAGE';
+chdir(\$dir);
+require \$dir.'.ApplicationComposer'. DIRECTORY_SEPARATOR .  'bootstrap.php';
+require \$dir.'.ApplicationComposer'. DIRECTORY_SEPARATOR .  'apps' . DIRECTORY_SEPARATOR . 'webfan.fexe.php';
+
+
+PHP;
+
+
+foreach(array(
+ DIRECTORY_SEPARATOR.ltrim($this->data['DIR'],'/ ').'~index.php',
+ DIRECTORY_SEPARATOR.ltrim($this->data['DIR'],'/ ').'api.php',
+ DIRECTORY_SEPARATOR.ltrim($this->data['DIR'],'/ ').'app.php',
+ DIRECTORY_SEPARATOR.ltrim($this->data['DIR'],'/ ').'setup.php',
+
+) as $serverFile){
+	file_put_contents( $serverFile, $SERVERCODE);
+}
+	
+	
 			
-			
+			  if(!file_exists( DIRECTORY_SEPARATOR.ltrim($this->data['DIR'],'/ '). 'index.php')){
+			     copy('~index.php',DIRECTORY_SEPARATOR.ltrim($this->data['DIR'],'/ '). 'index.php' );
+			  }
 			
 			
 							 			
@@ -1010,7 +1135,7 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 	
 	public function copy_dir($src,$dst, $delete  = true, $chmod = 0755) {
       $dir = opendir($src);
-      @mkdir($dst, 755, true);
+      @mkdir($dir, 755, true);
       while(false !== ( $file = readdir($dir)) ) {
         if (( $file != '.' ) && ( $file != '..' )) {
             if ( is_dir($src . '/' . $file) ) {
@@ -1143,7 +1268,8 @@ __halt_compiler();µConfig%json%config.json
 	"LICENSEKEY" : "{___$LICENSEKEY___}",
 	"LICENSESERIAL" : "{___$LICENSESERIAL___}",
 	"SECRET" : "{___$SECRET___}",
-	"SHAREDSECRET" : "{___$SHAREDSECRET___}"
+	"SHAREDSECRET" : "{___$SHAREDSECRET___}",
+	"REGISTRATIONKEY" : "{___$REGISTRATIONKEY___}"
 }
 µxTpl%%Main Template
 

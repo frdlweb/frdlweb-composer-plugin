@@ -80,3 +80,123 @@
           
           ;
           
+
+   	\webfan\Loader::top()     
+       /* phpclasses/sasl  */
+          -> class_mapping_add(
+                  'basic_sasl_client_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'sasl' 
+                      .DIRECTORY_SEPARATOR . 'basic_sasl_client.php', $success) 
+          
+       
+            -> class_mapping_add(
+                  'cram_md5_sasl_client_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'sasl' 
+                      .DIRECTORY_SEPARATOR . 'cram_md5_sasl_client.php', $success) 
+       
+            -> class_mapping_add(
+                  'digest_sasl_client_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'sasl' 
+                      .DIRECTORY_SEPARATOR . 'digest_sasl_client.php', $success) 
+       
+            -> class_mapping_add(
+                  'login_sasl_client_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'sasl' 
+                      .DIRECTORY_SEPARATOR . 'login_sasl_client.php', $success) 
+                      
+       
+            -> class_mapping_add(
+                  'ntlm_sasl_client_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'sasl' 
+                      .DIRECTORY_SEPARATOR . 'ntlm_sasl_client.php', $success) 
+       
+            -> class_mapping_add(
+                  'plain_sasl_client_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'sasl' 
+                      .DIRECTORY_SEPARATOR . 'plain_sasl_client.php', $success) 
+       
+            -> class_mapping_add(
+                  'sasl_interact_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'sasl' 
+                      .DIRECTORY_SEPARATOR . 'sasl.php', $success) 
+                      
+            -> class_mapping_add(
+                  'sasl_client_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'sasl' 
+                      .DIRECTORY_SEPARATOR . 'sasl.php', $success) 
+                      
+                      
+                      
+                              
+          ;
+          
+          
+     	\webfan\Loader::top() 
+
+
+
+       
+       /* phpclasses/httpclient  */
+          -> class_mapping_add(
+                  'http_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'httpclient' 
+                      .DIRECTORY_SEPARATOR . 'http.php', $success) 
+  
+                      
+                              
+          ;
+          
+ 	\webfan\Loader::top() 
+
+
+
+       
+       /* phpclasses/oauth-api  */
+          -> class_mapping_add(
+                  'oauth_session_value_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'oauth-api' 
+                      .DIRECTORY_SEPARATOR . 'oauth_client.php', $success) 
+  
+            -> class_mapping_add(
+                  'oauth_client_class',
+                       __DIR__ . DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' .DIRECTORY_SEPARATOR . '..' 
+                      .DIRECTORY_SEPARATOR . 'packages' 
+                      .DIRECTORY_SEPARATOR . 'phpclasses'
+                      .DIRECTORY_SEPARATOR . 'oauth-api' 
+                      .DIRECTORY_SEPARATOR . 'oauth_client.php', $success) 
+  
+                      
+                                          
+                              
+          ;      
+          

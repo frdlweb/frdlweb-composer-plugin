@@ -51,7 +51,7 @@ namespace frdl\webfan\Autoloading;
 use frdl\common;
 
 
-class SourceLoader
+class SourceLoader extends Loader
 {
     const NS = __NAMESPACE__;
     const DS = DIRECTORY_SEPARATOR;
@@ -412,7 +412,7 @@ class SourceLoader
         return false;  
     }
   		
-    protected function routeLoadersPsr0($prefix, $relative_class)
+   public function routeLoadersPsr0($prefix, $relative_class)
     {
         if (!isset($this->autoloadersPsr0[$prefix])) {
             return false;
@@ -444,7 +444,7 @@ class SourceLoader
 	   return true;	
     }	 
   		
-    protected function routeLoaders($prefix, $relative_class)
+    public function routeLoaders($prefix, $relative_class)
     {
 
         if (!isset($this->autoloaders[$prefix])) {

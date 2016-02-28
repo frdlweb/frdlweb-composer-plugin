@@ -30,7 +30,7 @@ namespace frdl\ApplicationComposer;
  
 class Project  extends \frdl\Crud {
 		
-		   const VERSION = '0.0.1';
+		   const VERSION = '0.0.2';
 		   const ALIAS = 'Projects';
 		
 			# Your Table name 
@@ -65,10 +65,11 @@ class Project  extends \frdl\Crud {
 				            `node_root`  BIGINT(255) NOT NULL DEFAULT '0',
 				            `public` tinyint(1) NOT NULL DEFAULT '1',
 				            `title` VARCHAR(128) NOT NULL DEFAULT 'UNTITLED',
-				            
+				            `dir` VARCHAR(1024) NOT NULL,
 				            `description` VARCHAR(1024) NOT NULL,
 				            
-                        PRIMARY KEY (`node`)
+                        PRIMARY KEY (`node`),
+                        UNIQUE KEY `dir` (`node_parent`, `dir`)
 				     )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ",
 				);
 			}
