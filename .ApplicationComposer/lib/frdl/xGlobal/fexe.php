@@ -531,7 +531,7 @@
 	     	           $file = basename($file);
 	     	      }), $this);
          
-  
+         $_file = $this->data['config']['DIR_PACKAGE'].$u->getU()->file;
  
     	if(
 	         in_array( self::URI_DIR_API , $u->getU()->dirs) 
@@ -555,7 +555,7 @@
 	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
 	   ){
 	       $this->route = self::SERVER_PAGE;
-	   } elseif (file_exists($u->getU()->path) && is_file($u->getU()->path)){
+	   } elseif (file_exists($_file) && is_file($_file)){
 	   	    $this->route = self::SERVER_HTML;
 	   }
 	    else{

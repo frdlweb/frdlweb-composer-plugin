@@ -111,6 +111,13 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 	
 	   // sort($packages);
 	   
+	       
+	   $groups['CMS'] = array(  
+	          'title' => 'Content Management',
+	          'packages' => array( ),
+	   );	   
+	   
+	   
 	   $groups['PROJECT'] = array(  
 	          'title' => 'Project Management',
 	          'packages' => array( ),
@@ -121,13 +128,12 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 	          'title' => 'API SDK',
 	          'packages' => array( ),
 	   );		
+
 	   
-	       
-	   $groups['CMS'] = array(  
-	          'title' => 'Content Management',
+	   $groups['LOCALE'] = array(  
+	          'title' => 'Localization &amp; Translation',
 	          'packages' => array( ),
-	   );
-	   
+	   );		   
 
   
 	   
@@ -163,7 +169,14 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 	              );		
 			
 					
-			
+			$groups['LOCALE']['packages'][] = array( 
+	                'vendor' => 'gettext',
+	                'package' => 'gettext',
+	                'description' => 'gettext Compliant',
+	                'url' => 'https://github.com/oscarotero/Gettext',
+	                'img' => 'https://camo.githubusercontent.com/2a794b2cf192bfdbf5b64ad332f24b5f29f9711b/68747470733a2f2f696e73696768742e73656e73696f6c6162732e636f6d2f70726f6a656374732f34393664633261362d343362652d343034362d613238332d6638333730323339646434372f6269672e706e67',
+	              );		
+						
 			
 			
 		$this->html.='<div id="'.$divSerp.'">';

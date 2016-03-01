@@ -86,8 +86,8 @@ class project extends CMD
     	   if(empty($parent))$parent=0; 
     	   $this->result->projects = $p->selectAll(array('node_parent' =>$parent));
   
-		     $this->result->js.= 'alert("test");';
-/**/		         
+/*		     $this->result->js.= 'alert("test");';
+*/		         
 	}
     
     public function required()
