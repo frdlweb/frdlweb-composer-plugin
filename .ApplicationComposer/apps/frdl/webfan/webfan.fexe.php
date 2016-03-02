@@ -542,26 +542,26 @@ class webfan extends fexe
  	      $this->data['tpl_data']['TPL_FRDL_WEBFAN_INSTALL_HTML'] = function(){
  	      	 $html='';
  	      	 $u=\webdof\wURI::getInstance();
- 	      	 $fromLocal=('install.phar' === $u->getU()->file || 'install.php' === $u->getU()->file) ? false : true;
  	      	 
- 	      	 $this->ComponentsManager->html( $MainComponentHtml ,'frdl/webfan', 'Widget',$fromLocal);
- 	      	 $html.=$MainComponentHtml;
+ 	      	 $options = array(
+                       'preferLocal'=>('install.phar' === $u->getU()->file || 'install.php' === $u->getU()->file) ? false : true,
+                       'forceLibraryJSInvocation' => false,
+                       'URL_DEFAULT' => 'widget://example.com/',
+                       'components_dir' => null,
+                       'components_url' => null,
+       
+             );
  	      	 
- 	      	 
+ 	      	 $html.= $this->ComponentsManager->html('frdl/webfan', 'Widget', $options);
+    	 
  	      	 
 /* 	 Getting
 <div data-frdl-desktop-widget="widget://example.com/frdl/webfan"></div>
 <div data-frdl-desktop-widget="widget://example.com/webfan/marketplace"></div>
 */
- 	      	 $this->ComponentsManager->html( $MainDesktopWidget ,'frdl/webfan', 'DesktopWidget',$fromLocal);
- 	      	 $html.=$MainDesktopWidget;
- 	      	  	      	 
- 	      	 $this->ComponentsManager->html( $MerketcplaceDektopWidget ,'frdl/webfan', 'DesktopWidget',$fromLocal);
- 	      	 $html.=$MerketcplaceDektopWidget;
- 	      	 
- 	      	 
- 	      	 
- 	      	 
+             $html.= $this->ComponentsManager->html('frdl/webfan', 'DesktopWidget', $options); 
+ 	      	 $html.= $this->ComponentsManager->html('webfan/marketplace', 'DesktopWidget', $options);  	      	 
+	 
  	      	 
  	         return $html;
  	      };	 

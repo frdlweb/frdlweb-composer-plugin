@@ -31,7 +31,7 @@ namespace frdl\Flow;
 
 class ComponentType extends Element
 {
-
+	protected $name; //id/selector
 	protected $data; /* = array(
 	     'html' => array(
 	           'attributes' => array(
@@ -44,13 +44,13 @@ class ComponentType extends Element
 	*/
 	function __construct(){
 		$args = func_get_args();
-		parent::__construct($args);
 		$this->name=$args[0];
 		$this->data=$args[1];
+
 	}
 	public static function create(){
-	   $args = func_get_args();
-	   return parent::create($args[0], $args[1]);
+	   $_call='\\'.get_class(self).'::__construct';	
+	   return call_user_func_array($_call, func_get_args());
 	}	
 	
 	/*	

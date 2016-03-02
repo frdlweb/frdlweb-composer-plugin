@@ -80,7 +80,7 @@ class Component
      $this->components_url=$data['config']['URL'].'/components/';
      if(true===$defaults){
      	$this->options($this->defaultOptions());
-     	$this->types($this->FlowComponentTypes());
+     	$this->Types=$this->FlowComponentTypes();
 	 	$shop=$this->shop($shop, 'webfan/marketplace', 'http://interface.api.webfan.de/v1/public/software/marketplace/components.json');
 	 }
  }
@@ -91,37 +91,54 @@ class Component
      
   $WidgetTypeData = array(
          'ComponentMethods' => array(
-    'html' => function($component, $preferLocal=true, $components_dir=null, $components_url=null){
-    	    $URL_DEFAULT='widget://example.com/';
-            $preferLocal=(bool)$preferLocal;
-          
-          if(true===$preferLocal && is_dir($components_dir.str_replace('/', DIRECTORY_SEPARATOR, $component))){
-            $url=$components_url;
+    'html' => function($component, $options){
+
+          if(true===$options['preferLocal'] && is_dir($options['components_dir'].str_replace('/', DIRECTORY_SEPARATOR, $component))){
+            $url=$options['components_url'];
             $url= str_replace('widget://', 'http://', $url).$component;
 
           }else{
-             $url=$URL_DEFAULT.$component;
+             $url=$options['URL_DEFAULT'].$component;
           }
+          
+          $JSInvocation = (false===$options['forceLibraryJSInvocation'])
+?''
+:<<<SCRIPTtag
+
+<script>(function(){if('undefined'===typeof frdl && 0===document.querySelectorAll('script[src*="api.webfan.de\/api-d\/4\/js-api\/library.js"]').length && 0===document.querySelectorAll('script[src*="flow.js"]').length){var h=document.getElementsByTagName("head",document)[0];var s=document.createElement('script');s.setAttribute('async','true');s.setAttribute('src','http://api.webfan.de/api-d/4/js-api/library.js');h.insertBefore(s,h.firstChild);}}());</script>          
+
+SCRIPTtag;
+
+
+
+          
+
 
 
               $html=<<<WEBAPP
 
-<div data-frdl-component="$url"></div><script>(function(){if('undefined'===typeof frdl && 0===document.querySelectorAll('script[src*="api.webfan.de\/api-d\/4\/js-api\/library.js"]').length && 0===document.querySelectorAll('script[src*="flow.js"]').length){var h=document.getElementsByTagName("head",document)[0];var s=document.createElement('script');s.setAttribute('async','true');s.setAttribute('src','http://api.webfan.de/api-d/4/js-api/library.js');h.insertBefore(s,h.firstChild);}}());</script>
+<div data-frdl-component="$url"></div>$JSInvocation
 
 WEBAPP;
 
 
-          			
-          			
+
+
+
+
+
+
+
           		   return $html; 	
 			 },
          ),
      );
-     $Types['Widget']=new ComponentType('Widget', $WidgetTypeData);
+     $WidgetTypeData['ComponentType']=new ComponentType('Widget', $WidgetTypeData);
+     $Types['Widget']=$WidgetTypeData;
      /*
      get:
        $types=$this->types();
-       $componentTypeData= $types['Widget']->dump;
+       $componentTypeData= $types['Widget'];
        $getHtml = $componentTypeData['ComponentMethods']['html'];
        $html=$getHtml($component, $preferLocal, $components_dir, $components_url);
      */
@@ -130,22 +147,33 @@ WEBAPP;
      
   $DesktopWidgetTypeData = array(
          'ComponentMethods' => array(
-    'html' => function($component, $preferLocal=true, $components_dir=null, $components_url=null){
-    	    $URL_DEFAULT='widget://example.com/';
-            $preferLocal=(bool)$preferLocal;
-          
-          if(true===$preferLocal && is_dir($components_dir.str_replace('/', DIRECTORY_SEPARATOR, $component))){
-            $url=$components_url;
+    'html' => function($component, $options){
+
+          if(true===$options['preferLocal'] && is_dir($options['components_dir'].str_replace('/', DIRECTORY_SEPARATOR, $component))){
+            $url=$options['components_url'];
             $url= str_replace('widget://', 'http://', $url).$component;
 
           }else{
-             $url=$URL_DEFAULT.$component;
+             $url=$options['URL_DEFAULT'].$component;
           }
+          
+          $JSInvocation = (false===$options['forceLibraryJSInvocation'])
+?''
+:<<<SCRIPTtag
+
+<script>(function(){if('undefined'===typeof frdl && 0===document.querySelectorAll('script[src*="api.webfan.de\/api-d\/4\/js-api\/library.js"]').length && 0===document.querySelectorAll('script[src*="flow.js"]').length){var h=document.getElementsByTagName("head",document)[0];var s=document.createElement('script');s.setAttribute('async','true');s.setAttribute('src','http://api.webfan.de/api-d/4/js-api/library.js');h.insertBefore(s,h.firstChild);}}());</script>          
+
+SCRIPTtag;
+
+
+
+          
+
 
 
               $html=<<<WEBAPP
 
-<div data-frdl-desktop-widget="$url"></div><script>(function(){if('undefined'===typeof frdl && 0===document.querySelectorAll('script[src*="api.webfan.de\/api-d\/4\/js-api\/library.js"]').length && 0===document.querySelectorAll('script[src*="flow.js"]').length){var h=document.getElementsByTagName("head",document)[0];var s=document.createElement('script');s.setAttribute('async','true');s.setAttribute('src','http://api.webfan.de/api-d/4/js-api/library.js');h.insertBefore(s,h.firstChild);}}());</script>
+<div data-frdl-desktop-widget="$url"></div>$JSInvocation
 
 WEBAPP;
 
@@ -156,8 +184,10 @@ WEBAPP;
 			 },
          ),
      );
-     $Types['DesktopWidget']=new ComponentType('DesktopWidget', $DesktopWidgetTypeData);     
+     $DesktopWidgetTypeData['ComponentType']=new ComponentType('DesktopWidget', $DesktopWidgetTypeData);
+     $Types['DesktopWidget']=$DesktopWidgetTypeData;     
      
+     return $Types;
  }	
      
  /*
@@ -248,37 +278,64 @@ WEBAPP;
 * 
 * @return $this : methodchain
 */
- public function html(&$html=null, $component, $Type = null, $preferLocal=true){
+ public function html($component, $Type = null, $options = array(
+       'preferLocal'=>true,
+       'forceLibraryJSInvocation' => true,
+       'URL_DEFAULT' => null,
+       'components_dir' => null,
+       'components_url' => null,
+       
+ )){
  	$types=$this->types();
+ 	
+ 	if(!is_string($options['components_dir']) || !is_dir($options['components_dir']))$options['components_dir']=$this->components_dir;
+ 	if(!is_string($options['components_url']) )$options['components_url']=$this->components_url; 	
+ 	if(!is_string($options['URL_DEFAULT']) )$options['URL_DEFAULT']=self::URL_DEFAULT; 	 
+ 	if(true!==$options['preferLocal'] && false !== $options['preferLocal']){
+		$u= \webdof\wURI::getInstance();
+		$options['preferLocal']=('install.phar' === $u->getU()->file || 'install.php' === $u->getU()->file) ? false : true;
+	}
+ 	
  	if(isset($types[$Type])){
-	  $componentTypeData= $types[$Type]->dump;	
+	  $componentTypeData= $types[$Type];	
 	  $get = $componentTypeData['ComponentMethods']['html'];	
-	  $html=$get($component, $preferLocal, $this->components_dir, $this->components_url);
-	  
-	  return $this;
+	  $html=$get($component, $options);
+	  return $html;
 	}
  	
  	
        $preferLocal=(bool)$preferLocal;
           
-          if(true===$preferLocal && is_dir($this->components_dir.str_replace('/', DIRECTORY_SEPARATOR, $component))){
-            $url=$this->components_url;
+          if(true===$options['preferLocal'] && is_dir($options['components_dir'].str_replace('/', DIRECTORY_SEPARATOR, $component))){
+            $url=$options['components_url'];
             $url= str_replace('widget://', 'http://', $url).$component;
 
           }else{
-             $url=self::URL_DEFAULT.$component;
+             $url=$options['URL_DEFAULT'].$component;
           }
+          
+          $JSInvocation = (false===$options['forceLibraryJSInvocation'])
+?''
+:<<<SCRIPTtag
+
+<script>(function(){if('undefined'===typeof frdl && 0===document.querySelectorAll('script[src*="api.webfan.de\/api-d\/4\/js-api\/library.js"]').length && 0===document.querySelectorAll('script[src*="flow.js"]').length){var h=document.getElementsByTagName("head",document)[0];var s=document.createElement('script');s.setAttribute('async','true');s.setAttribute('src','http://api.webfan.de/api-d/4/js-api/library.js');h.insertBefore(s,h.firstChild);}}());</script>          
+
+SCRIPTtag;
+
+
+
+          
 
 
               $html=<<<WEBAPP
 
-<div data-frdl-component="$url"></div><script>(function(){if('undefined'===typeof frdl && 0===document.querySelectorAll('script[src*="api.webfan.de\/api-d\/4\/js-api\/library.js"]').length && 0===document.querySelectorAll('script[src*="flow.js"]').length){var h=document.getElementsByTagName("head",document)[0];var s=document.createElement('script');s.setAttribute('async','true');s.setAttribute('src','http://api.webfan.de/api-d/4/js-api/library.js');h.insertBefore(s,h.firstChild);}}());</script>
+<div data-frdl-component="$url"></div>$JSInvocation
 
 WEBAPP;
 
 
           
-   return $this;       
+   return $html;       
  }	
  
  /**

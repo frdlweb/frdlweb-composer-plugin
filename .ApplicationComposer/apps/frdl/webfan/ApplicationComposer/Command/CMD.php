@@ -31,6 +31,10 @@ namespace frdl\ApplicationComposer\Command;
 
 abstract class CMD
 {
+   //ini_set('display_errors') can invalidate the API output 	
+   public $display_errors = 0;	
+	
+	
    protected $aSess;
    
    protected $Console;	
@@ -192,7 +196,7 @@ abstract class CMD
    	   $this->argtoks = $argtoks;
    	   
    	   if(isset($this->argtoks['flags']['d'])){
-   	   	 ini_set('display_errors', 1);
+   	   	 ini_set('display_errors', $this->display_errors);
 		 error_reporting(E_ALL);	   	
 	   }
 

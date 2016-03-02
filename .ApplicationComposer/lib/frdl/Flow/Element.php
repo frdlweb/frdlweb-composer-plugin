@@ -300,7 +300,7 @@ abstract class Element {
 			trigger_error('Cannot trigger Event '.$event.' on Listener #'.$indexOf, E_USER_WARNING);
 			continue;
 		} 	
-      if (call_user_func_array($callback, $payload) === false) break;
+	  if(frdl\run($callback, $payload) === false) break;
       $indexOf++;
     }
     return $this;
