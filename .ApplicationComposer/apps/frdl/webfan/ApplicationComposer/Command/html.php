@@ -926,7 +926,7 @@ class html extends CMD
 		 		   $html.= '<input type="checkbox" name="CHK_ENABLE_ADMIN_PWD" id="CHK_ENABLE_ADMIN_PWD" '.((!isset($this->data['config']['DISABLE_ADMIN_PWD']) || false === $this->data['config']['DISABLE_ADMIN_PWD']) 
 		 		             ? ' checked onclick="
 					
-						 if(true !== confirm(\'Sure you want to disable the Adminlogin?\nATTENTION YOU MAY LOOSE ACCESS TO YOUR ADMINLOGIN\nIF NO OTHER LOGIN-METHOD AVAILABLE!\'))
+						 if(true !== confirm(\'Sure you want to disable the Adminlogin?\nATTENTION YOU MAY LOOSE ACCESS TO YOUR ADMINLOGIN AND HAVE TO RUN AN UPDATE!\nIF NO OTHER LOGIN-METHOD AVAILABLE!\'))
 		 		    	        { this.setAttribute(\'checked\', 1); return false;	}
 					        $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].cnf(\'DISABLE_ADMIN_PWD\',  \'true\', null, $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].formConfig);  
 					        $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].html(\'login\');
@@ -961,6 +961,12 @@ class html extends CMD
 		 	 $html.='<input id="wd-login-ac-PASS" type="password" name="pwd" style="width:200px;" />';
 		 	 $html.= '<br /><br />'; 
 		 	 $html.= '<p><button onclick="$.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].login();" >Login...</button>';
+		 	 
+		 	  if(true !== $isTab ){
+			  	$this->result->js =' 
+			  	  $.WebfanDesktop.Registry.Programs[\'frdl-webfan\'].html(\'login\');    
+			  	';
+			  }
   
 	  }
 

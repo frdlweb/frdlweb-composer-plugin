@@ -84,7 +84,49 @@ class Component
 	 	$shop=$this->shop($shop, 'webfan/marketplace', 'http://interface.api.webfan.de/v1/public/software/marketplace/components.json');
 	 }
  }
- 
+
+  public function commands(){
+  	return array('hooks', 'q', 'types', 'extract');
+  }
+  
+  public function hooks(){
+  	return array('create', 'html', 'schema', 'install', 'edit', 'delete', 'apply', 'shop', 'options', 'mime',
+  	      'format',
+  	      'copy',
+  	      'config', 
+  	      'help',
+  	      'register',
+  	      'publish',
+  	      'post',
+  	      
+  	);
+  }
+
+  public function q($method, $Type=null){
+  	//todo : load type definition from lazy
+  	$types=$this->types();
+  	if(isset($types[$Type]['ComponentMethods'][$method])){
+	  return $types[$Type]['ComponentMethods'][$method];
+	}
+    return false;
+  }
+
+  //  hookmethod(create($compent, $Type=null, $options =array())
+  public function __call($name, $args){
+  	$hooks = $this->hooks();
+  	if(isset($hooks[$name])){
+  		$component = $args[0];
+  		$Type =$args[1];
+  		$options=$args[2];
+  		$get = $this->q($name, $Type);
+ 	  if(is_callable($get))return call_user_func_array($get, array($component, $options) );
+
+	}
+  	 return false; 
+  }
+
+
+
  
  public function FlowComponentTypes(){
      $Types = array();
@@ -187,6 +229,31 @@ WEBAPP;
      $DesktopWidgetTypeData['ComponentType']=new ComponentType('DesktopWidget', $DesktopWidgetTypeData);
      $Types['DesktopWidget']=$DesktopWidgetTypeData;     
      
+     
+     
+     
+      
+  $ManifestWebAppTypeData = array(
+         'ComponentMethods' => array(
+    'html' => function($component, $options){
+                 return false; 	
+			 },
+			 
+    'create' => function($component, $options = array(
+                     'data' => null,
+                     'destination' => null,
+               )){
+                 return false; 	
+			 },
+			 			 
+         ),
+     );
+     $ManifestWebAppTypeData['ComponentType']=new ComponentType('ManifestWebApp', $ManifestWebAppTypeData);
+     $Types['ManifestWebApp']=$ManifestWebAppTypeData;     
+     
+         
+     
+     
      return $Types;
  }	
      
@@ -268,7 +335,7 @@ WEBAPP;
 	
 	return $this;
  } 
- 
+
 
 /**  <div data-frdl-desktop-widget="widget://example.com/webfan/marketplace"></div>
 * 
@@ -296,13 +363,10 @@ WEBAPP;
 		$options['preferLocal']=('install.phar' === $u->getU()->file || 'install.php' === $u->getU()->file) ? false : true;
 	}
  	
- 	if(isset($types[$Type])){
-	  $componentTypeData= $types[$Type];	
-	  $get = $componentTypeData['ComponentMethods']['html'];	
-	  $html=$get($component, $options);
-	  return $html;
-	}
- 	
+
+ 	$get = $this->q('html', $Type);
+ 	if(is_callable($get))return call_user_func_array($get, array($component, $options) );
+ 	return false;
  	
        $preferLocal=(bool)$preferLocal;
           
@@ -450,9 +514,12 @@ WEBAPP;
   \$expires = ".(time() + intval($this->opts['cache_time'])).";
   \$value = ".str_replace("stdClass::__set_state", "(object)", var_export($value, true)).";
              	  
-";
+";  
+   if(file_exists($file)){
    	   file_put_contents($file, $code);
-   	   chmod($file, 0644);
+   	   chmod($file, 0644);   	
+   }
+
  }
  
  protected function getShopFromUrl($url){

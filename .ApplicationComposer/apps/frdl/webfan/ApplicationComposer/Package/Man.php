@@ -190,19 +190,21 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 		 foreach($packs as $num => $package){
 		 	$this->html.='<div class="data-box">';
 		 	
-		 	
-		 	$this->html.='<h2 class="webfan-blue" onclick="var App = frdl.wd().Registry.Programs[\'frdl-webfan\'];var p = this.getAttribute(\'data-package\'); 
-                 	  	     	var e = explode(\'/\', p);
-							    var PackageTask = $(App).package(\'c\', e[0], e[1]);
-							     
-						      frdl.wd().resetReady(\'Loading page window.......\',45, 
+	/*
+							      frdl.wd().resetReady(\'Loading page window.......\',45, 
                       		   function(){
                       		   	    var r = (\'undefined\' !== typeof PackageTask.WIN && \'function\' === typeof PackageTask.WIN.set);
                       		   	    if(true !== r)return r;
                       		   	    PackageTask.WIN.set(\'img\', \''.$package['img'].'\');
                       		     return true;
                                }
-	   	                    );	   	    
+	   	                    );	
+	   	                    */	 	
+		 	$this->html.='<h2 class="webfan-blue" onclick="var App = frdl.wd().Registry.Programs[\'frdl-webfan\'];var p = this.getAttribute(\'data-package\'); 
+                 	  	     	var e = explode(\'/\', p);
+							    var PackageTask = $(App).package(\'c\', e[0], e[1]);
+							     
+   	    
 	   	                    	     
 							"
 					  data-package="'.$package['vendor'].'/'.$package['package'].'" style="text-decoration:underline;">';

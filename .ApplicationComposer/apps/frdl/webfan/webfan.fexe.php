@@ -169,7 +169,7 @@ class webfan extends fexe
 	   $data = $this->data(); 
 		 
 		 
-       if( false !== $required && (!isset($data['CONFIGFILE']) || !file_exists($data['CONFIGFILE']))){
+       if( (false !== $required && !isset($data['CONFIGFILE']) || !file_exists($data['CONFIGFILE']))){
               return false;
 	   }
 		 $file = $data['CONFIGFILE']; 
@@ -241,8 +241,10 @@ class webfan extends fexe
 	
 	  
 	   \webfan\App::God()->{'?session_started'}(true);
-       if(!isset($_SESSION[__CLASS__]))$_SESSION[__CLASS__] = array();
-       $this->aSess = & $_SESSION[__CLASS__] ;
+//		   $sessionKey = __CLASS__. sha1( $h['host'] );
+       $sessionKey=__CLASS__;
+       if(!isset($_SESSION[$sessionKey]))$_SESSION[$sessionKey] = array();
+       $this->aSess = & $_SESSION[$sessionKey] ;
         
         
          
@@ -255,7 +257,7 @@ class webfan extends fexe
 	   	$this->data['installed'] = "0";
 	   }
        $this->data['config_new'] = (array)$this->data['config_new'];        
-       $this->data['config'] = (array)$this->data['config'];
+       $this->data['config'] = array_merge($this->data['config_new'], (array)$this->data['config']);
        $this->data['config']['INSTALLED'] = $this->data['installed'];
 
        
@@ -363,6 +365,12 @@ class webfan extends fexe
 				     array('name' => 'MobileOptimized', 'content' => '320'),
 				     array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0, user-scalable=yes'),
 				     
+				     array('name' => 'flow.component.frdl.webfan.api.url', 'content' => $this->data['tpl_data']['URI_DIR_API']),
+				     array('name' => 'flow.component.frdl.webfan.api.url.initial', 'content' => $this->data['tpl_data']['URI_DIR_API']),
+				     				     
+				     array('name' => 'webfan-registration-key', 'content' =>  (isset($this->data['config']['REGISTRATIONKEY']))?$this->data['config']['REGISTRATIONKEY']
+				                                                          :(isset($this->data['config_new']['REGISTRATIONKEY']))?$this->data['config_new']['REGISTRATIONKEY']
+				                                                          :''),
 				 ),
 				 
 				
@@ -370,7 +378,7 @@ class webfan extends fexe
 				     /* array('rel' => 'prefetch', 'type' => 'application/l10n', 'href' => 'locale/locales.ini'), */
 				      array('rel' => 'package', 'type' => 'application/package', 'href' => 'https://github.com/frdl/webfan/archive/master.zip'),
 				   //   array('rel' => 'describedby', 'type' => 'application/xml', 'href' => 'config.xml'),
-				      array('rel' => 'manifest', 'type' => 'application/manifest+json', 'href' => ltrim(str_replace('setup.php','',$path), '/ ').'manifest.webapp'),
+				      array('rel' => 'manifest', 'type' => 'application/manifest+json', 'href' => 'http://'.$_SERVER['SERVER_NAME'].'/'.ltrim(str_replace('setup.php','',$path), '/ ').'manifest.webapp'),
 				      
 				 )
 				 
@@ -529,7 +537,51 @@ class webfan extends fexe
 	   ){
 		 	   /* $this->prepare_api();  */
 		 	    $this->_api();
-	   }elseif(
+		 	    return $this;
+	   }
+	   
+	 ob_start(function($content){
+	   $parseHeaders =function($serverVars = NULL)
+      {
+
+	
+      if( !is_array($serverVars))$serverVars = $_SERVER;
+
+       $headers = array();
+       foreach($_SERVER as $key=>$value)
+         {
+                if (substr($key,0,5)=="HTTP_") {
+                     $key=str_replace(" ","-",ucwords(strtolower(str_replace("_"," ",substr($key,5)))));
+                     $headers[$key]=$value;
+                     if( $key == 'If-None-Match' )
+                      {
+                        $ifNoneMatch = $headers['If-None-Match'];
+                        if(substr($ifNoneMatch, 0, 1) != '"')$ifNoneMatch = NULL;
+                      }
+                     if( $key == 'If-Modified-Since' )
+                      {
+                        $ifModifiedSince = $headers['If-Modified-Since'];
+                      }
+                }
+      }
+       return $headers;
+      };
+
+       $headers=$parseHeaders($_SERVER);
+       if(isset($headers['X-Requested-With']) && 'XMLHttpRequest'===$headers['X-Requested-With']){
+	
+		preg_match("/<body>(.*)<\/body>/s", $content, $matches);
+			//for cache GET:
+			$_GET['_______X-Requested-With']='XMLHttpRequest';
+			if(isset($matches[1]))$content=((isset($documentTitle)) ? '<meta name="document.title" content="'.strip_tags($documentTitle).'" />' : '').$matches[1];
+	
+       }	
+       return $content; 	
+	});  
+
+
+	   
+	   if(
 	          'html' === $u->getU()->file_ext      
 	       || '/' === $u->getU()->req_uri 
 	       || basename(__FILE__) ===  $u->getU()->file
@@ -562,6 +614,41 @@ class webfan extends fexe
              $html.= $this->ComponentsManager->html('frdl/webfan', 'DesktopWidget', $options); 
  	      	 $html.= $this->ComponentsManager->html('webfan/marketplace', 'DesktopWidget', $options);  	      	 
 	 
+ 
+ 
+$html.=<<<HTML
+
+
+<img src="http://images.webfan.de/ajax-loader_2.gif"  class="img-ajax-loader" style="float:center;top:50%;left:50%;position:fixed;" />
+<script type="text/javascript">
+(function($){
+\$(document).ready(function() {
+  frdl.addReadyCheck(function(){
+  	     return (0<frdl.UI.widgets.length) ? true : false;
+  }); 
+  		
+frdl.ready(function() {
+	setTimeout(function(){
+      frdl.each(frdl.\$q('img[src$="ajax-loader_2.gif"]'), function(i,el){
+  	     el.style.display='none';
+      });		
+	},5000);
+});
+});	
+})(jQuery);	
+</script>	
+
+
+
+HTML;
+
+
+
+ 
+
+
+
+ 
  	      	 
  	         return $html;
  	      };	 
@@ -771,7 +858,7 @@ class webfan extends fexe
          	            $o = json_encode($r);
                 }  else {
                 	       $r->callback = $callback;
-                           $o = $callback.'(' . json_encode($r) . ');';
+                           $o = $callback.'(' . json_encode($r) . ')';
 		                }
 		        
 		  
@@ -1129,6 +1216,22 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 				  	$r = $Zip->unzip();
 				  	$msg.='PragmaMx extracted.';
 					unlink($zipfilename);
+					
+					
+					$zipcontents = file_get_contents('https://github.com/frdlweb/flow4pmx/archive/master.zip');
+				  if(false===$zipcontents){
+				  	$msg.='Download of flow4pmx failed!';
+				  }else{
+				  	$zipfilename =sys_get_temp_dir().DIRECTORY_SEPARATOR. '~tmp.flow4pmx.zip';
+				  	file_put_contents( $zipfilename, $zipcontents);
+				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $EXTRA_DIR);
+				  	$r = $Zip->unzip();
+				  	$this->copy_dir($EXTRA_DIR.'flow4pmx-master'.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR.ltrim($EXTRA_DIR,'/ '), true);
+				  	rmdir($EXTRA_DIR.'flow4pmx-master'.DIRECTORY_SEPARATOR);
+				  	$msg.='flow4pmx extracted.';
+					unlink($zipfilename);
+				  }
+					
 				  }
 				}
 				
@@ -1171,21 +1274,7 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 			//	die($str);	 		
 			}				 			
 			
-			
-			      $zipcontents = file_get_contents('https://github.com/frdlweb/flow4pmx/archive/master.zip');
-				  if(false===$zipcontents){
-				  	$msg.='Download of flow4pmx failed!';
-				  }else{
-				  	$zipfilename =sys_get_temp_dir().DIRECTORY_SEPARATOR. '~tmp.flow4pmx.zip';
-				  	file_put_contents( $zipfilename, $zipcontents);
-				  	$Zip = new \frdl\webfan\Compress\zip\wUnzip($zipfilename, $EXTRA_DIR);
-				  	$r = $Zip->unzip();
-				  	$this->copy_dir($EXTRA_DIR.'flow4pmx-master'.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR.ltrim($EXTRA_DIR,'/ '), true);
-				  	rmdir($EXTRA_DIR.'flow4pmx-master'.DIRECTORY_SEPARATOR);
-				  	$msg.='flow4pmx extracted.';
-					unlink($zipfilename);
-				  }
-				  
+						  
 				  
 		    	unset($Zip,$r,$tok,$zipcontents,$zipfilename );
 	
@@ -1248,6 +1337,9 @@ foreach(array(
 					 	   	alert(\''.$msg.'\nPlease set up the configuration next...\');
 			 		    	window.location = "'.$config['URL'].'";
 			 		    	';															 		
+		             
+		             
+		             $this->writeToConfigFile();
 		             
 		              \webdof\wResponse::status(201);
 		 	            die('Extracted');
@@ -1523,49 +1615,7 @@ __halt_compiler();µConfig%json%config.json
 
 
 
-<script type="text/javascript">
-(function($){
-$(document).ready(function() {
-	try{
-	 frdl.wd({
-	  browseContentOnInit : false,	
-      modules : [
-        function(){
-	   $.ApplicationComposerOpen({
- 	    PACKAGE : '{$___PACKAGE___}',
- 	    VERSION : '{$___VERSION___}',
- 	    INSTALLED : '{$___INSTALLED___}',
- 	    INSTALLER : '{$___INSTALLER___}',
- 	    REGISTERED : '{$___REGISTERED___}',
-		EXTRA_INSTALLER : '{$___INSTALLER_PHAR_AVAILABLE___}',
- 	    INSTALLER_PHAR_AVAILABLE : '{$___INSTALLER_PHAR_AVAILABLE___}',
- 	    
-		user : {
-			uid : '{$___UNAME___}',
-			uname : '{$___UID___}'
-		},
- 	    
-		loc : {
-			url : '{$___URL___}',
-			api_url : '{$___URI_DIR_API___}',
-			EXTRA_PMX_URL : '{$___EXTRA_PMX_URL___}',
-			EXTRA_PHAR_URL : '{$___EXTRA_PHAR_URL___}',
-			EXTRA_IS_PMX : '{$___EXTRA_IS_PMX___}'
-		}
-       });	
-	}
-  ]
-});
- 
 
-	}catch(err){
-		console.error(err);
-	}
-     	
-     
-});	
-})(jQuery);
-</script>	
 µxTpl%%404
 <span style="color:red;">The requested content was not found!</span>
 <br />

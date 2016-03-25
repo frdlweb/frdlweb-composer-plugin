@@ -26,48 +26,13 @@
 </head>
 <body>
 
-{___$TPL_FRDL_WEBFAN_INSTALL_&HTML___}
 
+<div data-frdl-component="widget://example.com/frdl/webfan"></div>
 
+<div data-frdl-desktop-widget="widget://example.com/frdl/webfan"></div>
 
-<script type="text/javascript">
-(function($){
-$(document).ready(function() {
-	try{
-	 $.WebfanDesktop({
-      modules : [
-        function(){
-	   $.ApplicationComposerOpen({
- 		loc : {
-			url : window.location,
-			api_url :  '{$__LOCATION___}',
-			EXTRA_PMX_URL : '',
-			EXTRA_PHAR_URL : ''
-		}	    
-       });	
-	},
-	function(){
-		$.WebfanDesktop.resetReady('Loading...',25, 
-	   	        function(){
-	   	        	var r= ( 'undefined' !== typeof Dom.g('window_frdl-webfan'));
-	   	        	if(true !== r) return false;
-	   	        	$.WebfanDesktop.go('frdl-webfan', 'installPHARclick');
-	   	        	return r;
-	   	        }
-	   	     );
-	}
-  ]
-});
- 
+<div data-frdl-desktop-widget="widget://example.com/webfan/marketplace"></div>
 
-	}catch(err){
-		console.error(err);
-	}
-     	
-     
-});	
-}(jQuery));
-</script>	
 
 </body>
 </html>

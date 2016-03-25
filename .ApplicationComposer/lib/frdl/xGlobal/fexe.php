@@ -531,7 +531,7 @@
 	     	           $file = basename($file);
 	     	      }), $this);
          
-         $_file = $this->data['config']['DIR_PACKAGE'].$u->getU()->file;
+         $_file = ((isset($this->data['config']['DIR_PACKAGE']))?$this->data['config']['DIR_PACKAGE']:getcwd().DIRECTORY_SEPARATOR).$u->getU()->file;
  
     	if(
 	         in_array( self::URI_DIR_API , $u->getU()->dirs) 

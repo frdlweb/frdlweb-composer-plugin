@@ -32,7 +32,7 @@ namespace frdl\Flow;
 *   
 *   @provides the public methods:
 *   ::create(mixed $context)
-*   ->__invoke(mixed $context)     
+*   ->__invoke(mixed $context)            > apply $context and returns $this method chain
 * 
 *  ->Iterator($type = 'Array')           >not chainable returns Iterator
 *  ->iterate(Array,callback,&result,&resultLog)
@@ -44,7 +44,7 @@ namespace frdl\Flow;
 *  ->removeEventListener($event, $listener)
 * 
 *  ->context(mixed $context = undefined) >if getter not chainable returns context or $this
-* 
+*  ->walk($Array)                        >IteratorGenerator 
 
 * 
 * Example 
