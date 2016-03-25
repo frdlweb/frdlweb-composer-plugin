@@ -1,5 +1,6 @@
 Application Composer (frdl/webfan)
 =
+[Install newest](http://www.webfan.de/install/)
 [![Latest Stable Version](https://poser.pugx.org/frdl/webfan/v/stable)](https://packagist.org/packages/frdl/webfan) [![Total Downloads](https://poser.pugx.org/frdl/webfan/downloads)](https://packagist.org/packages/frdl/webfan) [![Latest Unstable Version](https://poser.pugx.org/frdl/webfan/v/unstable)](https://packagist.org/packages/frdl/webfan) [![License](https://poser.pugx.org/frdl/webfan/license)](https://packagist.org/packages/frdl/webfan)
 
 
