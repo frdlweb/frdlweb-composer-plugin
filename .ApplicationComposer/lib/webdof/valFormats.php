@@ -5,7 +5,7 @@
 *  License: Do What The Fuck You Want To Public License, some funcs
 *           by users from stackoverflow or php.net
 *
-*  Version: 5.2.3
+*  Version: 5.2.4
 * 
 *  Change Log:
 *    - fixed isint
@@ -14,6 +14,7 @@
 *    - add and overwrite validation rules dynamically
 *    - saved file as utf-8
 *  
+*    - added is($in, 'mime', true, &$FormattedOutputArray)
 * 
 * Test / Example :
 *<?php
@@ -86,6 +87,7 @@
 */
 namespace webdof;
 
+
 class valFormats
 {
 
@@ -135,13 +137,13 @@ class valFormats
 	 	   $tok = '1.3.6.1.4.1';
 		   $tl = strlen($tok);
 		   $l = strlen($in);
-	 	   $r = \webdof\valFormats::is($in,'oid'); 
+	 	   $r = valFormats::is($in,'oid'); 
 	 	   return (false !== $r && $tok === substr($in,0,$tl) && $l > $tl) ? true : false;
 	 });
 	 
 	 $this->addRule('oid.weid', function($in){
 	 	   $tok = '1.3.6.1.4.1.37553.8';
-	 	   $r = \webdof\valFormats::is($in,'oid'); 
+	 	   $r = valFormats::is($in,'oid'); 
 	 	   return (false !== $r && $tok === substr($in,0,strlen($tok))) ? true : false;
 	 });	
 	 
@@ -154,16 +156,16 @@ class valFormats
 	  * german aliasis
 	  */
 	 $this->addRule('ungerade', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'odd');
+	 	   return valFormats::create()->is($in, 'odd');
 	 });	 	 
 
 	 $this->addRule('gerade', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'even');
+	 	   return valFormats::create()->is($in, 'even');
 	 });
 	 
 
 	 $this->addRule('primzahl', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'prime');
+	 	   return valFormats::create()->is($in, 'prime');
 	 });	
 	 
 	 return $this;		 		 	
@@ -172,46 +174,62 @@ class valFormats
  
  
  public function defaults(){
+	
+	 $this->addRule('mime', function($in){
+	 	 preg_match("/^(?<mime>(?<type>[a-z][a-z0-9\-]+)\/(?<subtype>[a-z][a-z0-9\-]+|vnd)(\.(?<vendor>[a-z][a-z0-9\-]+))?(\.(?<typegroup>[a-z][a-z0-9\-]+))?(\.(?<complextype>[a-z][a-z0-9\-]+))?(\+(?<format>[a-z][a-z0-9\-]+))?(;([\s]+)?(?<params>[A-Za-z0-9\=\-\.\,\s]+)+)?)$/", 
+             $in, $mimeType, 0);
+        if(isset($mimeType['params'])){
+	      $mimeType['params']=preg_replace("/\s/", "", $mimeType['params']);
+	      $mimeType['params']=str_replace(",", "&", $mimeType['params']);
+	      parse_str($mimeType['params'], $mimeType['params']);
+        }	
+        foreach($mimeType as $key => $val){
+	       if(is_numeric($key))unset($mimeType[$key]);
+         }
+         
+         return (is_array($mimeType) && 0 < count($mimeType) ) ? $mimeType : false;
+	 });		
+	
 	 
 	 $this->addRule('float', function($in){
 	 	  return (preg_match("/^[0-9]{1,}\.[0-9]{1,}$/", $in)) ? true : false;
 	 });		
 	 
 	 $this->addRule('uuid.timebased', function($in){
-	 	   return (intval(\webdof\valFormats::is($in,'uuidversion')) === 1) ? true : false;
+	 	   return (intval(valFormats::is($in,'uuidversion')) === 1) ? true : false;
 	 });		
 	 $this->addRule('uuid.random', function($in){
-	 	   return (intval(\webdof\valFormats::is($in,'uuidversion')) === 4) ? true : false;
+	 	   return (intval(valFormats::is($in,'uuidversion')) === 4) ? true : false;
 	 });		
 	 $this->addRule('uuid.namebased.md5', function($in){
-	 	   return (intval(\webdof\valFormats::is($in,'uuidversion')) === 3) ? true : false;
+	 	   return (intval(valFormats::is($in,'uuidversion')) === 3) ? true : false;
 	 });		
 	 $this->addRule('uuid.namebased.sha1', function($in){
-	 	   return (intval(\webdof\valFormats::is($in,'uuidversion')) === 5) ? true : false;
+	 	   return (intval(valFormats::is($in,'uuidversion')) === 5) ? true : false;
 	 });		   
 	 $this->addRule('uuid.DCE', function($in){
-	 	   return (intval(\webdof\valFormats::is($in,'uuidversion')) === 2) ? true : false;
+	 	   return (intval(valFormats::is($in,'uuidversion')) === 2) ? true : false;
 	 });		   
 	 
 	 
 	 
 	 
 	 $this->addRule('integer.int8_t', function($in){
-	 	   if(!\webdof\valFormats::is($in,'int')) return false; 
+	 	   if(!valFormats::is($in,'int')) return false; 
 		   if($in < -128 || $in > 127)return false;
 	 	   return true;
 	 });	
 	 $this->addRule('byte', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'integer.int8_t');
+	 	   return valFormats::create()->is($in, 'integer.int8_t');
 	 });	
 	 
 	 $this->addRule('integer.uint8_t', function($in){
-	 	   if(!\webdof\valFormats::is($in,'int')) return false; 
+	 	   if(!valFormats::is($in,'int')) return false; 
 		   if($in < 0 || $in > 255)return false;
 	 	   return true;
 	 });	
 	 $this->addRule('byte.unsigned', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'integer.uint8_t');
+	 	   return valFormats::create()->is($in, 'integer.uint8_t');
 	 });	
 	 
 		  
@@ -219,76 +237,76 @@ class valFormats
 	 
 	 
 	 $this->addRule('integer.int16_t', function($in){
-	 	   if(!\webdof\valFormats::is($in,'int') )return false; 
+	 	   if(!valFormats::is($in,'int') )return false; 
 		   if($in < -32768 || $in > 32767)return false;
 	 	   return true;
 	 });	
 	 $this->addRule('word', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'integer.int16_t');
+	 	   return valFormats::create()->is($in, 'integer.int16_t');
 	 });	
 	 
 	 $this->addRule('integer.uint16_t', function($in){
-	 	   if(!\webdof\valFormats::is($in,'int')) return false; 
+	 	   if(!valFormats::is($in,'int')) return false; 
 		   if($in < 0 || $in > 65535)return false;
 	 	   return true;
 	 });	
 	 $this->addRule('word.unsigned', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'integer.uint16_t');
+	 	   return valFormats::create()->is($in, 'integer.uint16_t');
 	 });	
 	 		  
 		  
 		 
 	 
 	 $this->addRule('integer.int32_t', function($in){
-	 	   if(!\webdof\valFormats::is($in,'int') )return false; 
+	 	   if(!valFormats::is($in,'int') )return false; 
 		   if($in < -2147483648 || $in > 2147483647)return false;
 	 	   return true;
 	 });	
 	 $this->addRule('double', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'integer.int32_t');
+	 	   return valFormats::create()->is($in, 'integer.int32_t');
 	 });	
 	 
 	 $this->addRule('integer.uint32_t', function($in){
-	 	   if(!\webdof\valFormats::is($in,'int')) return false; 
+	 	   if(!valFormats::is($in,'int')) return false; 
 		   if($in < 0 || $in > 4294967295)return false;
 	 	   return true;
 	 });	
 	 $this->addRule('double.unsigned', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'integer.uint32_t');
+	 	   return valFormats::create()->is($in, 'integer.uint32_t');
 	 });	
 	 		  
 		 
 	 
 	 $this->addRule('integer.int64_t', function($in){
-	 	   if(!\webdof\valFormats::is($in,'int') )return false; 
+	 	   if(!valFormats::is($in,'int') )return false; 
 		   if($in < -9223372036854775808 || $in > 9223372036854775807)return false;
 	 	   return true;
 	 });	
 	 $this->addRule('long', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'integer.int64_t');
+	 	   return valFormats::create()->is($in, 'integer.int64_t');
 	 });	
 	 
 	 $this->addRule('integer.uint64_t', function($in){
-	 	   if(!\webdof\valFormats::is($in,'int')) return false; 
+	 	   if(!valFormats::is($in,'int')) return false; 
 		   if($in < 0 || $in > 18446744073709551615)return false;
 	 	   return true;
 	 });	
 	 $this->addRule('long.unsigned', function($in){
-	 	   return \webdof\valFormats::create()->is($in, 'integer.uint64_t');
+	 	   return valFormats::create()->is($in, 'integer.uint64_t');
 	 });	
 	 		  
 			  
 			  
 	 $this->addRule('odd', function($in){
-	 	   return (false !== \webdof\valFormats::is($in,'int') && $in % 2 !== 0) ? true : false;
+	 	   return (false !== valFormats::is($in,'int') && $in % 2 !== 0) ? true : false;
 	 });		
 	 $this->addRule('even', function($in){
-	 	  return (false !==\webdof\valFormats::is($in,'int') && $in % 2 === 0) ? true : false;
+	 	  return (false !==valFormats::is($in,'int') && $in % 2 === 0) ? true : false;
 	 });			 
 			  
 			  
 	 $this->addRule('prime', function($in){
-	  if(!\webdof\valFormats::is($in,'int')) return false; 
+	  if(!valFormats::is($in,'int')) return false; 
 	  $in = intval($in);
       if($in <= 1)return false;
       if($in === 2)return true;
@@ -352,12 +370,12 @@ class valFormats
 	echo "The following example code\n- adds rules dynamically (NOTE: The added rule overwrites the built in method if exists),\r\n- and validate some tests:";	
 	//http://interface.api.webfan.de/v1/public/software/class/frdl/webdof.valFormats/source.php
 $code = <<<EO
-\$TEST = \webdof\\valFormats::create(true,true)
+\$TEST =  valFormats::create(true,true)
  ->addRule('url.API-D', '(http|https)\:\/\/interface\.api\.webfan\.de\/v([0-9]+)\/(public|i[0-9]+)\/software\/class\/frdl\/([\w\.]+)\/source\.php')
  ->addRule('me', "Jon Doe", true)
  ->addRule('me.mention', "/Jon Doe/i", false)
  ->addRule('url.www.phpclasses.org', function(\$in){
-         	 \$r = \webdof\\valFormats::is(\$in,'url'); return (false !== \$r && isset(\$r['host']) && \$r['host'] === 'www.phpclasses.org') ? true : false;
+         	 \$r = \valFormats::is(\$in,'url'); return (false !== \$r && isset(\$r['host']) && \$r['host'] === 'www.phpclasses.org') ? true : false;
     });	
 
 echo print_r(\$TEST->is('A string with JON doe' , 'me'), true)."\\r\\n";             //false
@@ -371,7 +389,8 @@ EO;
 
     echo "\r\n\r\n";
 
-		
+    $TEST = &$this;
+    		
 	echo "VALIDATE METHODS (summary):\r\n";	
     echo print_r($TEST->formats(),true);
 	
@@ -394,6 +413,7 @@ EO;
 	echo "TESTING SOME STRINGS:\r\n";	
 	echo "\r\n\r\n";			
  	$str = array(
+ 	  'application/vnd.frdl.webfan.project+json; charset=UTF-8, version=0.9',
  	  'Any U&$tring% with $ome noise: *+~#\'"hello world"',
 	   'http://www.phpclasses.org/package/8412-PHP-Validate-string-values-in-different-formats.html',
 	   'http://interface.api.webfan.de/v1/public/software/class/frdl/webdof.valFormats/source.php',
@@ -578,36 +598,40 @@ EO;
 
  public function is($in, $format = null, $strict = true){
    $r = false;
+   
+   $Obj = (is_object($this)) ? $this :  valFormats::create();
+   
    try{
   	if(is_string($format)){
- 		if(isset($this->rules[$format])){
-  			$r = $this->_is($in, $format);
+ 		if(isset($Obj->rules[$format])){
+  			$r = $Obj->_is($in, $format);
  		}else{
  	    	$method = '_is'.strtolower($format);
-		    $r = $this->{$method}($in, $strict);
+		    $r = $Obj->{$method}($in, $strict);
 		}
  	}elseif(is_array($format)){
  		$r = array();
 		foreach($format as $pos => $f){
 			$method = '_is'.strtolower($f);
-			$r[$f] = $this->{$method}($in, $strict);
+			$r[$f] = $Obj->{$method}($in, $strict);
 		}
     }elseif(null === $format){
-    	$ref = new \ReflectionClass(get_class($this));
+    	$ref = new \ReflectionClass(get_class($Obj));
 		$methods = $ref->getMethods();
  		$r = array();
 		
-		foreach($this->rules as $format => $regex){
-			$r[$format] = $this->_is($in, $format);	
+		foreach($Obj->rules as $format => $regex){
+			$r[$format] = $Obj->_is($in, $format);	
 		}
 		
 		foreach($methods as $index => $m){
 			if('is' === substr($m->name,1,2) && 'is' !== $m->name  && '_is' !== $m->name ){
          		$method = '_is'.substr($m->name,3,strlen($m->name));
-			    $r[substr($m->name,3,strlen($m->name))] = $this->{$method}($in, $strict);				
+			    $r[substr($m->name,3,strlen($m->name))] = $Obj->{$method}($in, $strict);				
 			}
        }
     }
+	
 	
    if(is_array($r) && 0 === count($r))$r = false;	
 	
