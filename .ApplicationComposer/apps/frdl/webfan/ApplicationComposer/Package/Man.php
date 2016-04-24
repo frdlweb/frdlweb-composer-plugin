@@ -251,7 +251,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
 		 	
 		 	$this->html.='<h2 class="webfan-blue" onclick="var p = this.getAttribute(\'data-package\'); 
                  	  	     	var e = explode(\'/\', p);
-							   	$(frdl.wd()).package(\'c\', e[0], e[1]);"
+							   	$(frdl.wd()).pack(\'c\', e[0], e[1]);"
 					  data-package="'.$package['vendor'].'/'.$package['package'].'" style="text-decoration:underline;">';
 		 	$this->html.= $package['vendor'].'/'.$package['package'];
 		 	$this->html.='</h2>';
@@ -288,7 +288,7 @@ class Man implements \frdl\ApplicationComposer\OutputInterface
                  	  	     h.onclick=function(ev){
                  	  	     	var p = this.getAttribute(\'data-package\'); 
                  	  	     	var e = explode(\'/\', p);
-							   	$(App).package(\'c\', e[0], e[1], true);
+							   	$(App).pack(\'c\', e[0], e[1], true);
 							 };
                  	  	     Dom.add(h,d);
                  	  	    

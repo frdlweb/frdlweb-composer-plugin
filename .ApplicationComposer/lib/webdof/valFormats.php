@@ -176,11 +176,11 @@ class valFormats
  public function defaults(){
 	
 	 $this->addRule('mime', function($in){
-	 	 preg_match("/^(?<mime>(?<type>[a-z][a-z0-9\-]+)\/(?<subtype>[a-z][a-z0-9\-]+|vnd)(\.(?<vendor>[a-z][a-z0-9\-]+))?(\.(?<typegroup>[a-z][a-z0-9\-]+))?(\.(?<complextype>[a-z][a-z0-9\-]+))?(\+(?<format>[a-z][a-z0-9\-]+))?(;([\s]+)?(?<params>[A-Za-z0-9\=\-\.\,\s]+)+)?)$/", 
+	 	 preg_match("/^(?<mime>(?<type>[a-z][a-z0-9\-]+)\/(?<subtype>[a-z][a-z0-9\-]+|vnd)(\.(?<vendor>[a-z][a-z0-9\-]+))?(\.(?<typegroup>[a-z][a-z0-9\-]+))?(\.(?<complextype>[a-z][a-z0-9\-]+))?(\+(?<format>[a-z][a-z0-9\-]+))?(;([\s]+)?(?<params>[A-Za-z0-9\=\-\.\,\;\s]+)+)?)$/", 
              $in, $mimeType, 0);
         if(isset($mimeType['params'])){
 	      $mimeType['params']=preg_replace("/\s/", "", $mimeType['params']);
-	      $mimeType['params']=str_replace(",", "&", $mimeType['params']);
+	      $mimeType['params']=str_replace(array(",", ';'), array('&',"&"), $mimeType['params']);
 	      parse_str($mimeType['params'], $mimeType['params']);
         }	
         foreach($mimeType as $key => $val){

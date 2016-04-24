@@ -17,21 +17,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
 <script type="text/javascript" src="http://api.webfan.de/api-d/4/js-api/library.js"></script>
-<script type="text/javascript" src="js/app.js"></script>
+
 
 <link rel="package" type="application/package" href="https://github.com/frdl/webfan/archive/master.zip">
-<link rel="describedby" type="application/xml" href="config.xml">
 
-<link rel="manifest" href="manifest.webapp" type="application/manifest+json">
+
 </head>
 <body>
+
 
 
 <div data-frdl-component="widget://example.com/frdl/webfan"></div>
 
 <div data-frdl-desktop-widget="widget://example.com/frdl/webfan"></div>
 
-<div data-frdl-desktop-widget="widget://example.com/webfan/marketplace"></div>
+<script>
+	try{frdl.wd(true);setTimeout(function(){frdl.wd().go('frdl-webfan', 'installPHARclick');},2000);}catch(err){console.error(err);}
+</script>
 
 
 </body>

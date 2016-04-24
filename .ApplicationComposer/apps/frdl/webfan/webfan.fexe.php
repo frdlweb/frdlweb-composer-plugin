@@ -82,6 +82,12 @@ if(!class_exists('\frdl\webfan\App')){
 /* END BOOTSECTION */ 
 
  
+ 
+
+ 
+ 
+ 
+ 
    
 class webfan extends fexe    
 {
@@ -278,6 +284,7 @@ class webfan extends fexe
        $this->data['tpl_data']['URI_DIR_API'] = str_replace('setup.phpapi.php', 'api.php', $this->data['tpl_data']['URI_DIR_API']);
    
    
+   /*
  	    $this->data['tpl_data']['PACKAGE'] = function(){
  	       return $this->data['config']['PACKAGE'];
  	    };
@@ -296,7 +303,7 @@ class webfan extends fexe
   	    $this->data['tpl_data']['UID'] =  function(){
  	       return $this->data['config']['UID'];	  
  	    };   
-         	
+     */   	
        $this->data['INSTALLER_PHAR_AVAILABLE'] = '0';
        $this->data['tpl_data']['EXTRA_PHAR_URL'] = '';
        $this->data['tpl_data']['INSTALLER'] = '';
@@ -306,10 +313,12 @@ class webfan extends fexe
 	    ){
 	   	  $this->_installFromPhar( \webdof\wURI::getInstance() );
 	   }
+	   
+	/*   
 	   $this->data['tpl_data']['INSTALLER_PHAR_AVAILABLE'] = function(){
  	       return $this->data['INSTALLER_PHAR_AVAILABLE'];
  	    };   
-    	
+    */	
     	
 	  }else{
 	  	if(is_array($data)){
@@ -344,14 +353,6 @@ class webfan extends fexe
 	            'css' => array(
 	            
 	            ),
-			    'js' => array(
-				       //->later by assets installer!-> 'js/lib/flow.js',
-				       //'http://api.webfan.de/api-d/4/js-api/library.js',
-				       (('phar'!==$this->data['tpl_data']['INSTALLER'] && file_Exists($this->data['CONFIGFILE']) && file_exists($this->data['DIR'].'js'. DIRECTORY_SEPARATOR . 'lib'. DIRECTORY_SEPARATOR.'flow.js'))
-				        ? 'js/lib/flow.js' : 'http://api.webfan.de/api-d/4/js-api/library.js'),
-				       
-				       // 'js/app.js', 
-				),
 				'meta' =>  array(
 				     array('http-equiv' => 'content-type', 'content' => 'text/html; charset=utf-8'),	
 				     array('http-equiv' => 'content-style-type', 'content' => 'text/css'),	
@@ -371,6 +372,8 @@ class webfan extends fexe
 				     array('name' => 'webfan-registration-key', 'content' =>  (isset($this->data['config']['REGISTRATIONKEY']))?$this->data['config']['REGISTRATIONKEY']
 				                                                          :(isset($this->data['config_new']['REGISTRATIONKEY']))?$this->data['config_new']['REGISTRATIONKEY']
 				                                                          :''),
+				                                                          
+				                                                     
 				 ),
 				 
 				
@@ -378,13 +381,23 @@ class webfan extends fexe
 				     /* array('rel' => 'prefetch', 'type' => 'application/l10n', 'href' => 'locale/locales.ini'), */
 				      array('rel' => 'package', 'type' => 'application/package', 'href' => 'https://github.com/frdl/webfan/archive/master.zip'),
 				   //   array('rel' => 'describedby', 'type' => 'application/xml', 'href' => 'config.xml'),
-				      array('rel' => 'manifest', 'type' => 'application/manifest+json', 'href' => 'http://'.$_SERVER['SERVER_NAME'].'/'.ltrim(str_replace('setup.php','',$path), '/ ').'manifest.webapp'),
-				      
-				 )
+				      array('rel' => 'manifest', 'type' => 'application/manifest+json', 'href' => str_replace('setup.php','',$this->data['config']['URL']).'manifest.webapp'),
+				     array('rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => str_replace('setup.php','',$this->data['config']['URL']).'/favicon.ico'),  
+				 ),
+			    'js' => array(
+				       //->later by assets installer!-> 'js/lib/flow.js',
+				       //'http://api.webfan.de/api-d/4/js-api/library.js',
+				       (('phar'!==$this->data['tpl_data']['INSTALLER'] && file_Exists($this->data['CONFIGFILE']) && file_exists($this->data['DIR'].'js'. DIRECTORY_SEPARATOR . 'lib'. DIRECTORY_SEPARATOR.'flow.js'))
+				        ? 'js/lib/flow.js' : 'http://api.webfan.de/api-d/4/js-api/library.js'),
+				       
+				       // 'js/app.js', 
+				),
 				 
 	    );
 
-	 
+	  if(isset($_GET['intents'])){
+	  	 $this->data['template_main_options']['js'][]='http://webfan.de/cdn/frdl/flow/components/webfan/webfat/js/intents.js';	
+	  }
 		 	       		 	       
 	   return $this->data;	 	
 	 }
@@ -513,6 +526,38 @@ class webfan extends fexe
        return $this;
 	}
 
+ protected function runApp($u){
+ 	 // $this->cmd('frdl cnf set --test="test" -w ;');
+ 	 
+ 	 
+ 	return $this;
+ }
+
+ protected function autoupdate(){
+ 	
+ // if(!isset($this->data['config']['autoupdate'])){
+ // 	 $this->data['config']['autoupdate']=true;
+  //	 $this->cmd('frdl cnf set --autoupdate=true -w ;');
+ // }	
+ 	
+ if(isset($this->data['config']['autoupdate']) && true!==$this->data['config']['autoupdate'])return;
+ 
+   		
+   		register_shutdown_function(function(&$T){
+  			$flowfile=$T->data['DIR'] .'js'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'flow.js';
+			if(file_exists($flowfile) && filemtime($flowfile) < time() - 24 * 60 * 60){
+				  file_put_contents($flowfile ,file_get_contents('http://api.webfan.de/api-d/4/js-api/library.js?skipcache='.mt_rand(100000,999999999999999)));
+		          chmod($flowfile, 0755); 			
+   		    }
+   		}, $this);
+					
+
+			
+			
+ 	return $this;
+ }
+
+
  protected function __todo(\webdof\wURI $u = null){
        $u = (null === $u) ? \webdof\wURI::getInstance() : $u;
        $inc_files =  get_included_files();
@@ -520,9 +565,28 @@ class webfan extends fexe
 	     	           $file = basename($file);
 	     	      }), $this);
          
+         
+
+		 	$this->autoupdate();
+
+
   
- 
-    	if(
+
+	 $this->login();
+	 
+  //frdl cnf set --' + k + '="' + v + '"
+  // $this->cmd('frdl cnf set --test="tst" -w ;');	
+	 
+	 
+	 ini_set('display_errors', (isset($this->aSess['isAdmin'])) ? $this->aSess['isAdmin'] : 0);
+   // echo 'Test: '. print_r($this->cmd('frdl cnf set --VERSION="test";'), true);
+  
+            if(  
+             'apps' === \webdof\wURI::getInstance()->getU()->dirs[0]
+	     ||  'app' === \webdof\wURI::getInstance()->getU()->file_ext   ){
+		 	
+		 	return $this->runApp(\webdof\wURI::getInstance()->getU());
+		 }elseif(
 	         in_array( self::URI_DIR_API , $u->getU()->dirs) 
 	     ||  in_array( 'api.php' , $inc_files ) 
 	     ||  'api.php' === $u->getU()->file     
@@ -539,6 +603,8 @@ class webfan extends fexe
 		 	    $this->_api();
 		 	    return $this;
 	   }
+	   
+	   
 	   
 	 ob_start(function($content){
 	   $parseHeaders =function($serverVars = NULL)
@@ -576,6 +642,18 @@ class webfan extends fexe
 			if(isset($matches[1]))$content=((isset($documentTitle)) ? '<meta name="document.title" content="'.strip_tags($documentTitle).'" />' : '').$matches[1];
 	
        }	
+       
+      if( preg_match("/<\/html>(?<rest>.*)/s", $content, $matches)){
+	     if(isset($matches['rest'])){
+		 	$content=str_replace('</html>'.$matches['test'], $matches['test'].'</html>', $content);
+		 }
+	  }
+       
+      if( preg_match("/(?<start>.*)<\!DOCTYPE html>/s", $content, $matches)){
+	     if(isset($matches['start'])){
+		 	$content=str_replace( $matches['start'].'<!DOCTYPE html>','<!DOCTYPE html>'.$matches['start'], $content);
+		 }
+	  }      
        return $content; 	
 	});  
 
@@ -590,7 +668,10 @@ class webfan extends fexe
 	       || substr($u->getU()->location,0,strlen($this->data['config']['URL']))  === $this->data['config']['URL']
 	   ){
 	   
-	   	   
+	
+
+    
+     	   
  	      $this->data['tpl_data']['TPL_FRDL_WEBFAN_INSTALL_HTML'] = function(){
  	      	 $html='';
  	      	 $u=\webdof\wURI::getInstance();
@@ -606,19 +687,15 @@ class webfan extends fexe
  	      	 
  	      	 $html.= $this->ComponentsManager->html('frdl/webfan', 'Widget', $options);
     	 
- 	      	 
-/* 	 Getting
-<div data-frdl-desktop-widget="widget://example.com/frdl/webfan"></div>
-<div data-frdl-desktop-widget="widget://example.com/webfan/marketplace"></div>
-*/
-             $html.= $this->ComponentsManager->html('frdl/webfan', 'DesktopWidget', $options); 
- 	      	 $html.= $this->ComponentsManager->html('webfan/marketplace', 'DesktopWidget', $options);  	      	 
+            $html.= $this->ComponentsManager->html('frdl/webfan', 'DesktopWidget', $options); 
+ 	      	 $html.= $this->ComponentsManager->html('webfan/marketplace', 'DesktopWidget', $options);  
+ 	      	      	 
 	 
- 
- 
+
+
+          if(1===intval($this->data['INSTALLER_PHAR_AVAILABLE'])){
+          	
 $html.=<<<HTML
-
-
 <img src="http://images.webfan.de/ajax-loader_2.gif"  class="img-ajax-loader" style="float:center;top:50%;left:50%;position:fixed;" />
 <script type="text/javascript">
 (function($){
@@ -628,22 +705,29 @@ $html.=<<<HTML
   }); 
   		
 frdl.ready(function() {
+	
+  frdl.addReadyCheck(function(){
+  	     return ('undefined'!==typeof frdl.wd(true).o ) ? true : false;
+  }); 
+  			
+frdl.ready(function() {	
 	setTimeout(function(){
+     frdl.wd(true).go('frdl-webfan', 'installPHARclick');
       frdl.each(frdl.\$q('img[src$="ajax-loader_2.gif"]'), function(i,el){
   	     el.style.display='none';
-      });		
+      });
 	},5000);
+   });	
+	
 });
 });	
 })(jQuery);	
 </script>	
 
-
-
 HTML;
 
-
-
+	  	
+		  }
  
 
 
@@ -815,7 +899,7 @@ HTML;
 
 	
 		
-		 	if(true !== $this->aSess['isAdmin']){
+		 	if(!isset($this->aSess['isAdmin']) || true !== $this->aSess['isAdmin']){
 		 		$this->isAdmin = false;
 		 		unset($this->aSess['ADMINDATA']);
 		 		$this->aSess['ADMINDATA'] = array(
@@ -1093,6 +1177,9 @@ HTML;
 	 			
 			 			$this->data['config']['DIRS'] = array_merge((isset($this->data['config']['DIRS']) && is_array($this->data['config']['DIRS']))
 			 			         ? $this->data['config']['DIRS'] : array(), array(
+			 			            'psr-0' => null,
+			 			            
+			 			            'psr-4' =>  $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'lib'. DIRECTORY_SEPARATOR,			 			         
 			 			            'apps' =>  $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'apps'. DIRECTORY_SEPARATOR,
 			 			            'components' =>  $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR,			 			            
 			 			            'batch' =>  $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'batch'. DIRECTORY_SEPARATOR,
@@ -1107,7 +1194,9 @@ HTML;
 			 			            'tmp' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'tmp'. DIRECTORY_SEPARATOR,
 			 			            'vendor' =>   $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'vendor'. DIRECTORY_SEPARATOR,
                                     'www' =>   (is_dir($this->data['config']['DIRS']['www']) && is_writable($this->data['config']['DIRS']['www'])) ? $this->data['config']['DIRS']['www'] : $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR ,
-			 					    'files' =>	(isset($_REQUEST['EXTRA_DIR']) && is_dir($_REQUEST['EXTRA_DIR']) )	? $_REQUEST['EXTRA_DIR'] : getcwd(),
+			 					    'files' =>	(isset($_REQUEST['EXTRA_DIR']) && is_dir($_REQUEST['EXTRA_DIR']) )	? $_REQUEST['EXTRA_DIR'] : (
+			 					      (is_dir($this->homedir().DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR)) ? $this->homedir().DIRECTORY_SEPARATOR.'files'. DIRECTORY_SEPARATOR
+			 					       : $this->data['config']['DIR_PACKAGE'] . '.ApplicationComposer'. DIRECTORY_SEPARATOR .'.files'. DIRECTORY_SEPARATOR),
 			 					    	                 
 			 			  ));
 			 					
@@ -1129,6 +1218,9 @@ HTML;
                         	$config['URL'] .= 'setup.php';
                         }
                         	
+                        if(!isset($this->data['config']['autoupdate'])){
+							$this->data['config']['autoupdate']=true;
+						}	
 			 				
 			 					 			
 			 			$php = "<?php
@@ -1143,6 +1235,7 @@ HTML;
 			 			     || is_subclass_of(\$this, '\\frdl\ApplicationComposer\Command\CMD')  
 			 			     || get_class(\$this) === '".get_class($this)."' 
 			 			     || is_subclass_of(\$this, 'frdl\ApplicationComposer\Command\CMD')  
+			 			     || is_subclass_of(\$this, 'frdl\xGlobal\fexe')  
 			 			     )
 			 			     ){
 			 			     	 \$this->data['config'] = ".var_export($config, true).";		
@@ -1177,6 +1270,12 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 
 }
 
+if(!isset(\$this->data['config']['db-driver']))\$this->data['config']['db-driver']='';
+if(!isset(\$this->data['config']['db-host']))\$this->data['config']['db-host']='';
+if(!isset(\$this->data['config']['db-user']))\$this->data['config']['db-user']='';
+if(!isset(\$this->data['config']['db-pwd']))\$this->data['config']['db-pwd']='';
+if(!isset(\$this->data['config']['db-dbname']))\$this->data['config']['db-dbname']='';
+if(!isset(\$this->data['config']['db-pfx']))\$this->data['config']['db-pfx']='';
 
 
 ";      
@@ -1265,8 +1364,9 @@ if(true === \$this->data['config']['EXTRA']['extra']['pragmamx']['main'] && file
 			
 					
 			try{
-				file_put_contents($this->data['DIR'] .'js'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'flow.js' ,file_get_contents('http://api.webfan.de/api-d/4/js-api/library.js'));
-			
+				$flowfile=$this->data['DIR'] .'js'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'flow.js';
+				file_put_contents($flowfile ,file_get_contents('http://api.webfan.de/api-d/4/js-api/library.js?skipcache='.mt_rand(100000,999999999999999)));
+			    chmod($flowfile, 0755);
 			}catch(\Exception $e){
 				//	\webdof\wResponse::status(409);
 			//		$str = $this->data['PHAR_INCLUDE'] .' -> '.$this->data['DIR'].' - ('.__LINE__.') ' .$e->getMessage();
@@ -1365,7 +1465,27 @@ foreach(array(
 	
 	
 	
-	
+//http://stackoverflow.com/questions/1894917/how-to-get-the-home-directory-from-a-php-cli-script
+  function homedir() {
+  // Cannot use $_SERVER superglobal since that's empty during UnitUnishTestCase
+  // getenv('HOME') isn't set on Windows and generates a Notice.
+    $home = getenv('HOME');
+   if (!empty($home)) {
+    // home should never end with a trailing slash.
+     $home = rtrim($home, '/');
+    }
+    elseif (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
+    // home on windows
+     $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
+    // If HOMEPATH is a root directory the path can end with a slash. Make sure
+    // that doesn't happen.
+     $home = rtrim($home, '\\/');
+    }
+    return empty($home) ? NULL : $home;
+  }
+
+
+
 	public function copy_dir($src,$dst, $delete  = true, $chmod = 0755) {
       $dir = opendir($src);
       @mkdir($dir, 755, true);
@@ -1421,7 +1541,7 @@ foreach(array(
 	*    return value is an array of corresponsing results if count($processors) > 1
 	* 
 	*/
-	public function cmd($cmd, $processors = null/* run the comand on multiple clis, just like hooks or similar 
+	public function cmd($cmd, $loadDB = false, $processors = null/* run the comand on multiple clis, just like hooks or similar 
 	
 	example (default) 
 	array(
@@ -1436,16 +1556,18 @@ foreach(array(
 	         ),
 	   );
 	*/, &$errorlog=array(), $eLevel=/*null=>disables trigger error*/E_USER_WARNING){
-		
+
+	  
+        	 
     if(!is_array($processors))$processors=&$this->data['settings']->cli;
     $result=(1 < count($processors)) ? array() : null;
     $mulitMode = (null===$result) ? false : true;
     $i=0;
     
 	try{
-	if(null === self::$_db){
-		self::$_db =\frdl\DB::_(array(
-		//self::$_db =  new \frdl\DB(array(
+	if(true===$loadDB && null === self::$_db){
+		//self::$_db =\frdl\DB::_(array(
+		self::$_db =  new \frdl\DB(array(
 		   'driver' => $this->data['config']['db-driver'],
 		   'host' => $this->data['config']['db-host'],
 		   'dbname' => $this->data['config']['db-dbname'],
@@ -1577,9 +1699,12 @@ foreach(array(
  
  
  
-  
- $fexe = new webfan(__FILE__, __COMPILER_HALT_OFFSET__);
- $fexe->run();
+		try{
+			 $fexe = new webfan(__FILE__, __COMPILER_HALT_OFFSET__);
+             $fexe->run();
+		}catch(\Exception $e){
+			trigger_error($e->getMessage(), E_USER_WARNING);
+		}  
 
 
 __halt_compiler();µConfig%json%config.json
@@ -1620,20 +1745,3 @@ __halt_compiler();µConfig%json%config.json
 <span style="color:red;">The requested content was not found!</span>
 <br />
 [ <a href="/">Go to startpage</a> ]
-<br />
-<script type="text/javascript">
-$(document).ready(function(){
-$.WebfanDesktop({});	
-document.title = '404 - Not found';
- uhrTimer.add("Timer_" + window.location.href + "_notification_404", function(){
-	  if('function' !== typeof $.notificationcenter.newAlert)return;	
-	  uhrTimer.remove("Timer_" + window.location.href + "_notification_404");
-  	 $.notificationcenter.newAlert("Der angeforderte Inhalt unter " + window.location.href + " wurde nicht gefunden!", "error", true, function(notif){
-		   document.title = notif.text;
-	   }, 
-	   Guid.newGuid()
-	  );
-	 $.ApplicationComposerOpen({});
-  }); 
-});
-</script>

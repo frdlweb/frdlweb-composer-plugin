@@ -505,13 +505,23 @@
     }
 	
 	protected function readFile($file){
-		if(!is_array($this->files))$this->Files();
-		return (isset($this->files[$file])) ? $this->files[$file]['content'] : false;
+		try{
+			if(!is_array($this->files))$this->Files();
+		
+		}catch(\Exception $e){
+			trigger_error($e->getMessage(), E_USER_WARNING);
+		}
+       return (isset($this->files[$file])) ? $this->files[$file]['content'] : false;		
 	}
 	
 	protected function FileInfo($file){
-		if(!is_array($this->files))$this->Files();
-		return (isset($this->files[$file])) ? $this->files[$file] : false;
+		try{
+				if(!is_array($this->files))$this->Files();
+		
+		}catch(\Exception $e){
+			trigger_error($e->getMessage(), E_USER_WARNING);
+		}
+  		return (isset($this->files[$file])) ? $this->files[$file] : false;
 	}
 		
 	protected function setFuncs(){
@@ -700,10 +710,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */	
-   final public function unserialize(&$var){$i=0;return $this->_unserialize($var,false,$i);}		
+   final public function unserialize(&$var){
+   	try{
+			$i=0;return $this->_unserialize($var,false,$i);
+	}catch(Exception $e) {
+       	trigger_error($e->getMessage(). ' in '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
+								  return;
+	}
+   
+   	}		
    protected function _unserialize(&$var,$just_first=false,&$start) {
-       try{ $len = strlen($var); }catch(Exception $e) {trigger_error($e->getMessage(). ' in '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
-								  return;}
+       try{ $len = strlen($var); }catch(Exception $e) {
+       	trigger_error($e->getMessage(). ' in '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
+								  return;
+								  }
         $out = null;  for($i = &$start; $i < $len; $i++) {
             $type = ord($var[$i++]);
             switch ($type) {
@@ -798,7 +818,11 @@
         return $out;
     }
    final public function serialize($var) {
-        $str = "";
+   	
+   	
+   	try{
+	
+	     $str = "";
         if (is_integer($var) && $var==0) {
             return chr(self::V_ZERO);
         }
@@ -854,10 +878,14 @@
 			case "null" :
             default:
 				$str .= chr(self::V_NULL);  
-                trigger_error(self::UNKNOWN_TYPE. ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
+                  trigger_error(self::UNKNOWN_TYPE. ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
                 break;
         }
         return $str;
+	   }catch(Exception $e) {
+       	trigger_error($e->getMessage(). ' in '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
+								  return;
+	   }
     }
     final protected function __toint($string,$blen=4) {
         $out  = 0;

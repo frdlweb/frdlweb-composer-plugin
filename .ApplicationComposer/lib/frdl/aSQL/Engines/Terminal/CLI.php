@@ -271,8 +271,8 @@ REGEX;
 		   if(strpos($v,'\\') !== FALSE)$escape = true;
            $value .= $v.self::SPACE;  
            
-           if($escape = false && ((strpos($v,'"') !== FALSE && $quotes === '"') || (strpos($v,"'") !== FALSE && $quotes === "'")))break;
-		   if($escape = true && ((strpos($v,'"') !== FALSE && $quotes === '"') || (strpos($v,"'") !== FALSE && $quotes === "'")))$escape = false;
+           if($escape === false && ((strpos($v,'"') !== FALSE && $quotes === '"') || (strpos($v,"'") !== FALSE && $quotes === "'")))break;
+		   if($escape === true && ((strpos($v,'"') !== FALSE && $quotes === '"') || (strpos($v,"'") !== FALSE && $quotes === "'")))$escape = false;
          }
 		 
         $value = trim($value, self::SPACE);
