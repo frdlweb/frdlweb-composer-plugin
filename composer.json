@@ -129,10 +129,10 @@
     	          ".ApplicationComposer/lib/frdl/webfan/App.php"
     	         ],
         "psr-4": {
-            "frdl\\": ".ApplicationComposer/lib/frdl/",
-            "webfan\\": ".ApplicationComposer/lib/webfan/",
-            "webdof\\": ".ApplicationComposer/lib/webdof/",
-            "": ".ApplicationComposer/lib/"
+                 'frdl\\' : '.ApplicationComposer/lib/frdl/',
+                 'webfan\\' : '.ApplicationComposer/lib/webfan/',
+                 'webdof\\' : '.ApplicationComposer/lib/webdof/',
+                 '_empty_' : '.ApplicationComposer/lib/'
         }
     },
 
