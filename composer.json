@@ -186,18 +186,7 @@
     
     "extra": { 
         "frdl" : true,
-        "frdl-apc-type" : "core", 
-        "fexe": {
-	               "PACKAGE" : "{___$PACKAGE___}",
-	               "VERSION" : "{___$VERSION___}",
-	               "OID" : "{___$OID___}",
-	               "HOST" : "{___$HOST___}",
-	               "HOST_HASH" : "{___$HOST_HASH___}",
-	               "URL" : "{$__LOCATION___}",
-	               "DOWNLOADTIME" : "{___$DOWNLOADTIME___}",
-	               "INSTALLTIME" : "{___$INSTALLTIME___}" 
-	              
-         },
+        "frdl-apc-type" : "core",
          
          "frdl-addons-suggested" : [
             {
