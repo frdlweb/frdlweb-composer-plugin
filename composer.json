@@ -2,7 +2,7 @@
     "name": "frdl/webfan",
     "type": "project",
     "description": "create websites, developing projects, compose applications",
-    "keywords": ["php", "packages", "pluginsystem", "development", "websites", "webfan", "frdl", "api", "pragmamx", "library", "framework"],
+    "keywords": ["homepage", "php", "packages", "pluginsystem", "development", "websites", "webfan", "frdl", "api","library", "framework"],
     "homepage": "http:\/\/frdl.github.io\/webfan\/",
     "license":  [ "BSD-4-Clause", "BSD-3-Clause", "1.3.6.1.4.1.37553.8.1.8.4.5" ],
     "support": {
@@ -43,19 +43,6 @@
        "type": "composer",
        "url": "http:\/\/www.jsclasses.org\/"
     },
-
-    
-        {
-            "type": "package",
-            "package": {
-                "name": "TerraProject/pragmamx",
-                "version": "2.2.2",
-                "source": {
-                    "url": "http:\/\/download.pragmamx.org\/pmx\/pragmaMx_2.2.4_2015-08-25--20-17_full.zip",
-                    "type": "zip"
-                }
-            }
-        },
         
         {
             "type": "package",
@@ -77,35 +64,12 @@
     },
 
     "require-dev": {
-    	"phine/phar" : "*",
-        "crodas/php-git":"*",
-        "phpseclib/phpseclib": ">=0.3.10",
-        "jquery/jquery-ui":"*",
-        "pachanka/ptty":">=0.0.3",
-        "nathansmith/jQuery-Desktop":"*",
-        "crada/php-apidoc": "*"
+
     },
 
 
     "suggest": {
 
-        "phpclasses/httpclient": "Original source of a fork",
-        "phpclasses/oauth-api" : "Oauth Client SDK",
- 
-        "phpclasses/text-diff-rollback": "optimized diff patching",
-        "phpclasses/bserialization":"Original source of a fork",       
-        
-        "gettext/languages": "dev-master",
-        "gettext/gettext": "dev-master",
-       
-        "composer/composer": "Composer functionallities",
-        "ext-zip" : "ZipArchive",
-        "phine/phar" : "Using Phar without the extension installed",
-        "crodas/php-git":"Acces git repositories and files",
-        "phpseclib/phpseclib": "RSA, X.509, SSL without OpenSSL installed or better",
-        "jquery/jquery-ui":"jQuery UI Widgets",
-        "pachanka/ptty":"jQuery Terminal emulator",
-        "nathansmith/jQuery-Desktop":"jQuery Desktop look and feel"
     },
 
     "conflict": {
@@ -113,31 +77,22 @@
     },    
     
     "provide" : {
-    	"frdl/package-fetcher" : "dev-master",
-    	"frdl/-Flow" : "dev-master", 
-        "phpclasses/source-loader": "0.9.17",
-        "phpclasses/validate-formats": "5.0.4",
-        "phpclasses/asql-cli": "1.0.0",
-        "phpclasses/frdl-app": "1.0.0",
-        "frdl/mini-orm" : "dev-master",
-        "phpclasses/text-diff-rollback" : "4.0.1"
+        "phpclasses/frdl-app": "1.0.0"
     },
 
     "autoload": {
     	"files": [
-    	          ".ApplicationComposer/lib/frdl/webfan/Autoloading/SourceLoader.php",
-    	          ".ApplicationComposer/lib/frdl/webfan/App.php"
+
     	         ],
         "psr-4": {
-                 "frdl\\" : ".ApplicationComposer/lib/frdl/",
-                 "webfan\\" : ".ApplicationComposer/lib/webfan/",
-                 "webdof\\" : ".ApplicationComposer/lib/webdof/",
-                 "_empty_\\" : ".ApplicationComposer/lib/"
+
         }
     },
 
     "autoload-dev": {
-        "psr-4": { "": ".ApplicationComposer/lib/Tests" }
+        "psr-4": { 
+        
+        }
     },
 
     "prefer-stable": false,
@@ -160,93 +115,12 @@
 
    
   "scripts": {
-        "command": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
-        ],
-        "pre-install-cmd": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
-        ],
-       "pre-package-install": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
-        ],
-        "post-create-project-cmd": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
-        ],
-        "post-root-package-install": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
-        ],
-        "pre-file-download": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
-        ],
-        "pre-package-uninstall": [
-            "webfan\\InstallShield\\bridge\\ComposerBridge::dispatch"
-        ]
-    },
+
+   },
     
     
-    "extra": { 
-        "frdl" : true,
-        "frdl-apc-type" : "core",
+  "extra": { 
          
-         "frdl-addons-suggested" : [
-            {
-             "title" : 	"Composer Source",
-             "description" : "The Source of the php Composer as helper library",
-             "skip-required" : true,
-             "packages" : [
-                    {"composer/composer": "Composer Source Code"}
-             	]
-             },
-             
-            {
-             "title" : 	"gettext",
-             "description" : "Localization",
-             "packages" : [
-                    {"gettext/languages": "gettext/gettext requirement"},
-                    {"gettext/gettext": "_(); - function of gettext compliant"}
-             	]
-             },
-             	
-         	
-            {
-             "title" : 	"OAuth Client",
-             "description" : "Enables OAuth 3.rd party logins and API SDKs",
-             "packages" : [
-                   {"phpclasses/httpclient": "Http Client Class"},
-                   {"phpclasses/oauth-api" : "Oauth Client SDK"}           	
-             	]
-             },
-             	
-         	
-            {
-             "title" : 	"jsv4",
-             "description" : "A (coercive) JSON Schema v4 Validator for PHP",
-             "packages" : [
-                   {"geraintluff/jsv4": "Http Client Class"}        	
-             	]
-             },
-             
-             {
-             "title" : 	"PragmaMx",
-             "description" : "Just another CMS",
-             "packages" : [
-                  {"TerraProject/pragmamx" : "CMS"}
-               	
-             	]
-             },          
-             
-              
-             {
-             "title" : 	"SVN/history-rollback",
-             "description" : "Advanced source code manager requirements",
-             "packages" : [
-                      {"phpclasses/text-diff-rollback": "optimized string diff patching"},
-                      {"phpclasses/bserialization":"Binary serialization"}
-             	]
-             }     
-             
- 
-                     	
-         ]
-    }
+  }
+    
 }    
