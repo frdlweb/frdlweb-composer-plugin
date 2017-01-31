@@ -460,7 +460,7 @@ class App extends \frdl\A
 				return false;	
 		}
 				
-    	return  call_user_func(array($this->Controller, __FUNCTION__),$url, $mode, $options, $opened_path );
+    	return  call_user_func(array($this->Controller, __FUNCTION__),$url, $mode, $options );
     }
     public function dir_closedir(){return  call_user_func(array($this->Controller, __FUNCTION__) );}
     public function dir_opendir($path , $options){return  call_user_func(array($this->Controller, __FUNCTION__), $path , $options );}
