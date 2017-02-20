@@ -255,7 +255,7 @@ abstract class Element {
   public function removeEventListener($event, $listener){
      if (!$this->events[$event]) return $this;
    
-   	$Iterator = $this->Iterator('Array');
+   	$Iterator = $this->Iterator('Array', $this->events[$event]);
     $indexOf = 0;
     foreach ($Iterator($this->events[$event]) as $EventListener) {
        if($EventListener === $listener)	{
@@ -286,7 +286,7 @@ abstract class Element {
   public function trigger($event, $data = array()) {
     if (!$this->events[$event]) return $this;
    
-   	$Iterator = $this->Iterator('Array');
+   	$Iterator = $this->Iterator('Array', $this->events[$event]);
     $indexOf=0;
     foreach ($Iterator($this->events[$event]) as $callback) {
       	$payload = array();
