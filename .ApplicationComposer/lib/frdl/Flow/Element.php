@@ -283,7 +283,7 @@ abstract class Element {
   public function dispatchEvent(){
   	return call_user_func_array(array($this,'trigger'), func_get_args());
   }
-  public function trigger($event, &$data = array()) {
+  public function trigger($event, $data = array()) {
     if (!$this->events[$event]) return $this;
    
    	$Iterator = $this->Iterator('Array');
