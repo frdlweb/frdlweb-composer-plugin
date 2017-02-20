@@ -94,7 +94,7 @@
 * 
 *  - edited by webfan.de
 */
-namespace webfan\InstallShield\MimeStubAPC679775304;
+namespace webfan\InstallShield\MimeStubAPC857877811;
 use frdl;;
 
 
@@ -1835,9 +1835,9 @@ $this->Context->apc->config->config_source = array(
 );
 $this->Context->apc->config->data=array (
   'PACKAGE' => 'frdl/webfan',
-  'VERSION' => '1.2.0.0.1487622318.8644',
+  'VERSION' => '1.2.0.0.1487624093.8573',
   'OID' => '1.3.6.1.4.1.37553.8.1.8.8.5.65',
-  'DOWNLOADTIME' => 1487622318,
+  'DOWNLOADTIME' => 1487624093,
   'INSTALLTIME' => false,
   'PIN_I' => false,
   'UID' => 0,
@@ -1846,12 +1846,12 @@ $this->Context->apc->config->data=array (
   'REGISTERED' => false,
   'LICENSEKEY' => false,
   'LICENSESERIAL' => false,
-  'SECRET' => 'rt9TU41*-5Sqy_NPiNs-)N9tO/:ID_j1:mYlI)x?QE%umX{6E)9sl9348cnsz(SJeJ2f7tM=|UAItQ^&MBc18:vhjHC6+A1v{nibT{UI|FFN8o&k*5WJVNYdo$}8ve%`GtZ_x)msx[b,?tG)dTP5P4$(D!D]YlpCV(>UJj/$`bU^/{N/aVU4yKyhCXw^qqjL_mWL]g2,iYLuyno2:E>FZ[xk*1(O43`>+?]/i,Y3Py8p^lb4WQ2-2AR`6qLS:=l5',
+  'SECRET' => 'qV3[:e4dS!CZOQRLIBdK*}?6HOx;R%gh<RfF<21KfQqm?fUF-5t_E>D*J?{I~*61?j_Ok|(dL%scqM]$Eke8v]O~q=&k`wy1uskzkM[f1U+<df3lQ-!({uxYhnef`uKBAPlsL{=%Rhams>nY]gCeWf<c0Th(TXbvVESQw:%zj2X>sbl3CWe4L2OU2R$z1nAps(gH>UdFt.Ne4]rCmtv>HYKcoK>d2S:KR`.*cnT`[ys`s0U;JMxD!x)cj!7)hyR+',
   'SHAREDSECRET' => false,
-  'SHAREDSECRET_apc_1_2_0' => 'vu>GVk?6iylp6c(pH0D,y>X]:luo>6gIB}i9S<.,xtYdBG<2VIm2E{I)e_ow|N1E6MDo|TJHe,?AkG|W|II^q]Qm{(l9f`ug{ttCwrbiD9,2:}RDOT>uBw|4e0r>I/c:WXOtc0UIh%~+OYNh~:E;C%YN7x+B[s]IG3MGC.?wJVu,w78]D96qGFU96[&k([ryBJlq<}0;Fz,]tV/Sxaiwg7)W[4$Vrwy9r|OtU~vbLWeFH7DVV);vodX!,=A/YU/T',
-  'KEY_RANDOM_apc_1_2_0' => 'kM_?nQo,-h!<0{-it&J:-l<ss`jp8JUD$08QZI,/i$|k6EGbXvX6-_cL~LH=-isHux$B1$_U57k9%-[|sHZD{Mq[~0V}$j1ICDNhQ*Y2=j5/^:Sdyg5n$GoIHQJc~=~c3m6bPLgB2yTiux,c*GlL37V,37O-v?rfS.<0^Xx9Lj*wz&=McSDB~kfb%X?2hL<VdikX)((FL,on/k;YLN8Y1s<$0N~*VfmQe=|]Qh[)}?oX0K04[c$-aM`]/ib.ax95',
-  'KEY_COMPUTED_apc_1_2_0' => '9134cba3ae9ba5048ddcb8c2a881d94be1461720',
-);$this->Context->apc->config->version_installer="1.2.0.0.1487622318.8644";
+  'SHAREDSECRET_apc_1_2_0' => 'K~iZJy*%Hjz.Jz2MftKqBtQ`!6cdYZx?W7[f}5t8B|XEqZfO=;+`nW^?AQv(De+w.2x9.k4Myuok`r2.b|t;s2=2P!:SAmq>0FaDzSvu/1Sy3/1/N%Q>3Z`ejs]yY.WDSL086JT3L}BTnov^A.p/UT(kY8,a<_du0JXzzX3cD~Jw5`Y`5e<Dd~/Ib&/w|eA}WcdcY:=TYm,G+e}eLZCZu}L<&3mj)IGJCi0O`}/a<L16.D1ZcnTzvJ-Zk3C%;,Rz',
+  'KEY_RANDOM_apc_1_2_0' => 'fj`B1->Kd<%x6:(jE|*ai$<E3L~?<aw<E<6oE>hiO]3`t/WJ$4&cy_k|DAE1|wmj[~Dcp9XU=-74Af3NxRZ+qWjWHYz:LDUOY?,2[H2q|hz`v20rYIIvQ4,IN.lzG:4p52`qlKv>wGgNfKk,7l+S}br]~K1]c}7}>wX*+~;$_^BsqndT[7$28)*!I7N`&KLTxdD/hEN$&w$?,=-EuPiV).P,TH{>I&zH-)<dtGfg*Poa~;%mdlI)B&)r!L9~+(EC',
+  'KEY_COMPUTED_apc_1_2_0' => 'f0e9e890aca69bed4a38785b196a3d15484b52e8',
+);$this->Context->apc->config->version_installer="1.2.0.0.1487624093.8573";
 --4444EVGuDPPT
 Content-Type: application/x-httpd-php;charset=utf-8
 Content-Disposition: php ;filename="$HOME/apc_install.php";name="stub apc_install.php"
@@ -2191,7 +2191,7 @@ Content-Disposition: php ;filename="$DIR_LIB/frdl/A.php";name="class frdl\A"
  	
   const FN_ASPECTS = 'aspects';	
      /**
-    *  default $SEMR√Ç¬¥s
+    *  default $SEMR¬¥s
 	*  const  SERVER_ROUTER = {$cmd=SERVER} . {$format} . {$modul} . {$outputbuffers = explode(',')} 
 	*/
 	const TPL_SERVER_ROUTE = '{$cmd}.{$responseformat}.{$modul}.{$responsebuffers}';
@@ -5091,22 +5091,21 @@ Content-Disposition: httpd ;filename="$HOME/$WEBmanifest.webapp";name="$WEB mani
 
 
   
-  {"id":"frdl.my.webfan.v1.2.0.0.1487622318.8644","short_name":"Webfan SDK InstallShield","installOrigin":"http:\/\/www.webfan.de\/install\/","external":true,"installs_allowed_from":["http:\/\/www.webfan.de\/install\/"],"related_applications":[{"platform":"webfan","url":"http:\/\/domainundhomepagespeicher.webfan.de\/shop\/webfan-application-composer.255.html","id":"frdl.my.webfan.v1.2.0.0.1487622318.8644"}],"version":"1.2.0.0.1487622318.8644","release_notes":"Pre-Beta release","description":"Application Comoposer Application","developer":{"name":"Till Wehowski","url":"http:\/\/frdl.webfan.de"},"icons":[{"src":"icons\/icon16x16.ico","sizes":"16x16"},{"src":"http:\/\/www.webfan.de\/modules\/Sitebanner\/images\/wy_88x31.gif","sizes":"88x31"},{"src":"http:\/\/static.webfan.de\/site_gadgets\/icon128x128.ico","sizes":"128x128"}],"type":"web","permissions":{"systemXHR":{"description":"Required to load remote content"}},"default_locale":"en","chrome":{"navigation":true},"display":"browser","orientation":"landscape","receipts":[]}
+  {"id":"frdl.my.webfan.v1.2.0.0.1487624093.8573","short_name":"Webfan SDK InstallShield","installOrigin":"http:\/\/www.webfan.de\/install\/","external":true,"installs_allowed_from":["http:\/\/www.webfan.de\/install\/"],"related_applications":[{"platform":"webfan","url":"http:\/\/domainundhomepagespeicher.webfan.de\/shop\/webfan-application-composer.255.html","id":"frdl.my.webfan.v1.2.0.0.1487624093.8573"}],"version":"1.2.0.0.1487624093.8573","release_notes":"Pre-Beta release","description":"Application Comoposer Application","developer":{"name":"Till Wehowski","url":"http:\/\/frdl.webfan.de"},"icons":[{"src":"icons\/icon16x16.ico","sizes":"16x16"},{"src":"http:\/\/www.webfan.de\/modules\/Sitebanner\/images\/wy_88x31.gif","sizes":"88x31"},{"src":"http:\/\/static.webfan.de\/site_gadgets\/icon128x128.ico","sizes":"128x128"}],"type":"web","permissions":{"systemXHR":{"description":"Required to load remote content"}},"default_locale":"en","chrome":{"navigation":true},"display":"browser","orientation":"landscape","receipts":[]}
 --3333EVGuDPPT
 Content-Type: image/x-icon
 Content-Disposition: httpd ;filename="$HOME/$WEB/images/apc.ico";name="$WEB /images/apc.ico"
 
 
 
-
--/Fyyy>X\`eCJR8B^yy[]qO
-3vyyyyyyyyyyv;*vyyyyyyyyyyyyyUnyyyyyyy√ø√ø
+        h     (                                   Æ‡˙ ﬁ˙ ∞⁄ m∞◊ Yó∏ ü∆⁄ à…Í xß ’Ï˘ ï”Û N÷ó Z«å Ö∆Ë É√Â Å√Ê Œˆ ^ùæ uØÕ ™÷Ó á»Í Mõƒ OÁ® √Ë˙ Q‹ú Çœˆ Ñ∆Ë º‰¯ —Ì˚ ‘Ô˝ πÂ˙ ÿÈÒ u§ {¥“ ¡Ë˚ ‚Ú˚ Ñ≈Ê 2Ñ≠ Dá™ Ì¯˛ \¶Õ s≤” Púƒ V™x ZÆ| c£ƒ t£ —Ó˝ pü ¡Ë¸ yΩ‡ {∫⁄ \≤ â∫‘ W÷ò àÀÌ iƒê ó’ı √È˙ ‹Ò¸ M÷ñ …Î˝ fÆ” c¢√ e≠” ˙˝˛ §’Ó oû ¬Ë˚ éƒ‡ ©’Ï }Õˆ ¯¸˛ s¢ ƒË˙ x∏Ÿ +}® è≈‡ z∂÷ Xó∏ ≤„˙ ®€ı "|´ ÅƒÊ AÅ¢ Æ€Û SÕè Û˘¸ ŸÒ¸ Ù˚˛ ê– r° Uì¥ ı˚˛ ˆ˚˛ k±÷ ÆÿÔ ≠ﬂ˙ d§≈ ˜¸˛ ¥„˙ Eîæ ©ﬁ˚ ´›ˆ Y≈ã oú b¢√ Z•Ã êŒÌ v• ª€ V©w ˙¸˛ ã—ı ∑‰˙ x≥“ Qﬁü a†¡ wªﬂ Cå` ˇˇˇ ˇˇˇ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             yyyyyyyyyyyyyyyyyyyyyypMlyyyyyyyyyyE%$0Hyyyyyy_&<!#-/Fyyy>X\`eCJR8B^yy[]qO 2kY	hyyNb9DAcIm1?d	ZyyrL( T)=PyytW:@ yy "fjyyioGuyvvyu'Qyy,Vuuyv+vyuu6Kyy4ayv5sgvy.S yyyvvv7vvvyyyyyyv
+3vyyyyyyyyyyv;*vyyyyyyyyyyyyyUnyyyyyyyˇˇ  ¸?    ¿  Ä  Ä  Ä  Ä  ÅÅ  ÇA  Ñ!  à  ¿    ¸?  ˛  
 --3333EVGuDPPT
 Content-Type: text/plain
 Content-Disposition: httpd ;filename="$HOME/$CNF/JWT/1.3.6.1.4.1.37553.8.1.8.2.2:pwd/0/computed/handshake/apc/1.2.0";name="JWT /pwd/0/computed/handshake/apc/1.2.0"
 
 
 
-eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiIsImtpZCI6IjEuMy42LjEuNC4xLjM3NTUzLjguMS44LjIuMjpwd2RcLzBcL2NvbXB1dGVkXC9oYW5kc2hha2VcL2FwY1wvMS4yLjAifQ.eyJleHAiOjI0MzM3MDIzMTgsImlzcyI6IjEuMy42LjEuNC4xLjM3NTUzLjguMS44LjgiLCJhdWQiOiJhcGNAbG9jYWxob3N0IiwidHlwZSI6InVybjpvaWQ6MS4zLjYuMS40LjEuMzc1NTMuOC4xLjguMi4yOlwvcHdkXC8wXC9jb21wdXRlZFwvaGFuZHNoYWtlXC9hcGNcLzEuMi4wIiwicGFja2FnZSI6ImZyZGxcL3dlYmZhbiIsInZlcnNpb24iOiIxLjIuMC4wLjE0ODc2MjIzMTguODY0NCIsIm9pZCI6IjEuMy42LjEuNC4xLjM3NTUzLjguMS44LjguNS42NSIsImRsdGltZSI6MTQ4NzYyMjMxOCwiaXRpbWUiOmZhbHNlLCJpcGluIjpmYWxzZSwidWlkIjowLCJ1c2VybmFtZSI6IkBhbm9ueW1vdXMiLCJlbWFpbCI6ZmFsc2UsImxrZXkiOmZhbHNlLCJscyI6ZmFsc2UsImtzMTIwIjoidnU-R1ZrPzZpeWxwNmMocEgwRCx5PlhdOmx1bz42Z0lCfWk5UzwuLHh0WWRCRzwyVkltMkV7SSllX293fE4xRTZNRG98VEpIZSw_QWtHfFd8SUlecV1RbXsobDlmYHVne3R0Q3dyYmlEOSwyOn1SRE9UPnVCd3w0ZTByPklcL2M6V1hPdGMwVUloJX4rT1lOaH46RTtDJVlON3grQltzXUlHM01HQy4_d0pWdSx3NzhdRDk2cUdGVTk2WyZrKFtyeUJKbHE8fTA7RnosXXRWXC9TeGFpd2c3KVdbNCRWcnd5OXJ8T3RVfnZiTFdlRkg3RFZWKTt2b2RYISw9QVwvWVVcL1QiLCJrcjEyMCI6ImtNXz9uUW8sLWghPDB7LWl0Jko6LWw8c3NganA4SlVEJDA4UVpJLFwvaSR8azZFR2JYdlg2LV9jTH5MSD0taXNIdXgkQjEkX1U1N2s5JS1bfHNIWkR7TXFbfjBWfSRqMUlDRE5oUSpZMj1qNVwvXjpTZHlnNW4kR29JSFFKY349fmMzbTZiUExnQjJ5VGl1eCxjKkdsTDM3ViwzN08tdj9yZlMuPDBeWHg5TGoqd3omPU1jU0RCfmtmYiVYPzJoTDxWZGlrWCkoKEZMLG9uXC9rO1lMTjhZMXM8JDBOfipWZm1RZT18XVFoWyl9P29YMEswNFtjJC1hTWBdXC9pYi5heDk1Iiwia2MxMjAiOiI5MTM0Y2JhM2FlOWJhNTA0OGRkY2I4YzJhODgxZDk0YmUxNDYxNzIwIn0.Kld61ueGETaO-8XSn1UdbVBb9EhjGj7l5_2W6B6_HD0
+eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiIsImtpZCI6IjEuMy42LjEuNC4xLjM3NTUzLjguMS44LjIuMjpwd2RcLzBcL2NvbXB1dGVkXC9oYW5kc2hha2VcL2FwY1wvMS4yLjAifQ.eyJleHAiOjI0MzM3MDQwOTMsImlzcyI6IjEuMy42LjEuNC4xLjM3NTUzLjguMS44LjgiLCJhdWQiOiJhcGNAbG9jYWxob3N0IiwidHlwZSI6InVybjpvaWQ6MS4zLjYuMS40LjEuMzc1NTMuOC4xLjguMi4yOlwvcHdkXC8wXC9jb21wdXRlZFwvaGFuZHNoYWtlXC9hcGNcLzEuMi4wIiwicGFja2FnZSI6ImZyZGxcL3dlYmZhbiIsInZlcnNpb24iOiIxLjIuMC4wLjE0ODc2MjQwOTMuODU3MyIsIm9pZCI6IjEuMy42LjEuNC4xLjM3NTUzLjguMS44LjguNS42NSIsImRsdGltZSI6MTQ4NzYyNDA5MywiaXRpbWUiOmZhbHNlLCJpcGluIjpmYWxzZSwidWlkIjowLCJ1c2VybmFtZSI6IkBhbm9ueW1vdXMiLCJlbWFpbCI6ZmFsc2UsImxrZXkiOmZhbHNlLCJscyI6ZmFsc2UsImtzMTIwIjoiS35pWkp5KiVIanouSnoyTWZ0S3FCdFFgITZjZFlaeD9XN1tmfTV0OEJ8WEVxWmZPPTsrYG5XXj9BUXYoRGUrdy4yeDkuazRNeXVva2ByMi5ifHQ7czI9MlAhOlNBbXE-MEZhRHpTdnVcLzFTeTNcLzFcL04lUT4zWmBlanNdeVkuV0RTTDA4NkpUM0x9QlRub3ZeQS5wXC9VVChrWTgsYTxfZHUwSlh6elgzY0R-Snc1YFlgNWU8RGR-XC9JYiZcL3d8ZUF9V2NkY1k6PVRZbSxHK2V9ZUxaQ1p1fUw8JjNtailJR0pDaTBPYH1cL2E8TDE2LkQxWmNuVHp2Si1aazNDJTssUnoiLCJrcjEyMCI6ImZqYEIxLT5LZDwleDY6KGpFfCphaSQ8RTNMfj88YXc8RTw2b0U-aGlPXTNgdFwvV0okNCZjeV9rfERBRTF8d21qW35EY3A5WFU9LTc0QWYzTnhSWitxV2pXSFl6OkxEVU9ZPywyW0gycXxoemB2MjByWUlJdlE0LElOLmx6Rzo0cDUyYHFsS3Y-d0dnTmZLayw3bCtTfWJyXX5LMV1jfTd9PndYKit-OyRfXkJzcW5kVFs3JDI4KSohSTdOYCZLTFR4ZERcL2hFTiQmdyQ_LD0tRXVQaVYpLlAsVEh7PkkmekgtKTxkdEdmZypQb2F-OyVtZGxJKUImKXIhTDl-KyhFQyIsImtjMTIwIjoiZjBlOWU4OTBhY2E2OWJlZDRhMzg3ODViMTk2YTNkMTU0ODRiNTJlOCJ9.qLy8yZU1nNlWNsaDPmB0XGqosyLrGKQtWYwJ1Ov_TKY
 --3333EVGuDPPT--
 --hoHoBundary12344dh--
