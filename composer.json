@@ -90,9 +90,16 @@
     },
 
     "autoload-dev": {
-        "psr-4": { 
-        
-        }
+    	"files": [
+    	          ".ApplicationComposer/lib/frdl/webfan/Autoloading/SourceLoader.php",
+    	          ".ApplicationComposer/lib/frdl/webfan/App.php"
+    	         ],
+        "psr-4": {
+                 "frdl\\" : ".ApplicationComposer/lib/frdl/",
+                 "webfan\\" : ".ApplicationComposer/lib/webfan/",
+                 "webdof\\" : ".ApplicationComposer/lib/webdof/",
+                 "_empty_\\" : ".ApplicationComposer/lib/"
+       } 
     },
 
     "prefer-stable": false,
