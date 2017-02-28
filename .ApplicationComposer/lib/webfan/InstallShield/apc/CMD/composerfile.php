@@ -190,6 +190,8 @@ class composerfile extends \webfan\InstallShield\apc\Command1
 				}
        }		
         	
+			 }elseif('files'===$type){
+			 	$php .= 'require \''.dirname($composerFile).DIRECTORY_SEPARATOR.$dir.'\'';
 			 }	else{
 			 		$php .= '/* '.$type.'  '.$namespace.'  '.$dir.'  */';
 			 }
