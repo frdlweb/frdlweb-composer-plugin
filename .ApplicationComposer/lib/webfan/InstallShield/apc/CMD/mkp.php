@@ -81,7 +81,7 @@ $IPHP = "<?php".PHP_EOL."
 /**".PHP_EOL."
 * just include this file to INVOKE your project !".PHP_EOL."
 */".PHP_EOL."
- require '$dir_project_bootstrap' . 'bootstrap.php'; ".PHP_EOL."
+ require __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'bootstrap.php'; ".PHP_EOL."
 
 ";
 
