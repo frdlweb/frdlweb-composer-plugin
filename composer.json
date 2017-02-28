@@ -85,7 +85,9 @@
 
     	         ],
         "psr-4": {
-
+                 "frdl\\" : ".ApplicationComposer/lib/frdl/",
+                 "webfan\\" : ".ApplicationComposer/lib/webfan/",
+                 "webdof\\" : ".ApplicationComposer/lib/webdof/"
         }
     },
 
