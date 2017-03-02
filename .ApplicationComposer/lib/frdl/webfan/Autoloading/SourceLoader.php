@@ -111,7 +111,14 @@ class SourceLoader extends Loader
 	
 	
         protected $dir_autoload;
-	protected static $config_source;
+	protected static $config_source = array( 
+	 'install' =>  false,
+         'dir_lib' => false,
+         'session' => false,
+         'zip_stream' => false,
+         'append_eval_to_file' => false,
+         
+	   );
         protected $autoloaders = array();
         protected $autoloadersPsr0 = array();
 	protected $classmap = array();
@@ -139,14 +146,7 @@ class SourceLoader extends Loader
 	   self::$instances[$this->sid] = &$this;	
 	   
 	   $this->interface = null;	
-	   self::$config_source = array( 
-	 'install' =>  false,
-         'dir_lib' => false,
-         'session' => false,
-         'zip_stream' => false,
-         'append_eval_to_file' => false,
-         
-	   );
+
 	   $this->dir_autoload = '';	
 	   self::repository(((!isset($_SESSION[self::SESSKEY]['id_repository']))?'frdl':$_SESSION[self::SESSKEY]['id_repository']));	 
 	   self::$id_interface =  'public';	 
