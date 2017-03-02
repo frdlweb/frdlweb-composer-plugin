@@ -255,7 +255,7 @@ abstract class Element {
   public function removeEventListener($event, $listener){
      if (!$this->events[$event]) return $this;
    
-   	$Iterator = $this->Iterator('Array', $this->events[$event]);
+   	$Iterator = $this->Iterator('Array');
     $indexOf = 0;
     foreach ($Iterator($this->events[$event]) as $EventListener) {
        if($EventListener === $listener)	{
@@ -286,9 +286,9 @@ abstract class Element {
   public function trigger($event, $data = array()) {
     if (!$this->events[$event]) return $this;
    
-   	$Iterator = $this->Iterator('Array', $this->events[$event]);
+  
     $indexOf=0;
-    foreach ($Iterator($this->events[$event]) as $callback) {
+    foreach ($this->Iterator('Array', $this->events[$event]) as $callback) {
       	$payload = array();
       	$ev = &$event;
       	$target = &$this;
@@ -300,7 +300,8 @@ abstract class Element {
 			trigger_error('Cannot trigger Event '.$event.' on Listener #'.$indexOf, E_USER_WARNING);
 			continue;
 		} 	
-	  if(frdl\run($callback, $payload) === false) break;
+	//  if(frdl\run($callback, $payload) === false) break;
+	  if(false === call_user_func_array($callback, $payload))break;
       $indexOf++;
     }
     return $this;
