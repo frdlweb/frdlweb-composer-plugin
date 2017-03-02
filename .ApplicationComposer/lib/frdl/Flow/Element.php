@@ -237,9 +237,8 @@ abstract class Element {
 		   	  return $result;
 		   }   
    */, &$result=null, &$resultLog=null){
-   	$func = $this->Iterator('Array', $Collection);
    	$resultLog=array();
-     foreach($func as $item) {
+     foreach($this->Iterator('Array', $Collection) as $item) {
         $resultLog[] = call_user_func_array($callback, array($item)) ;
      }
      return $this;	
@@ -255,9 +254,9 @@ abstract class Element {
   public function removeEventListener($event, $listener){
      if (!$this->events[$event]) return $this;
    
-   	$Iterator = $this->Iterator('Array');
+
     $indexOf = 0;
-    foreach ($Iterator($this->events[$event]) as $EventListener) {
+    foreach ($this->Iterator('Array') as $EventListener) {
        if($EventListener === $listener)	{
          array_splice($this->events[$event], $indexOf, 1);	   	
          $indexOf--;
@@ -266,7 +265,11 @@ abstract class Element {
     }
     return $this; 	
   }
-  
+   
+  public function off(){
+  	return call_user_func_array(array($this,'removeEventListener'), func_get_args());
+  }  
+   
   public function addEventListener(){
   	return call_user_func_array(array($this,'on'), func_get_args());
   }
@@ -280,6 +283,10 @@ abstract class Element {
   }
   
   
+  
+  public function emit(){
+  	return call_user_func_array(array($this,'trigger'), func_get_args());
+  }  
   public function dispatchEvent(){
   	return call_user_func_array(array($this,'trigger'), func_get_args());
   }
