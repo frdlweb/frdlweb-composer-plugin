@@ -186,9 +186,13 @@ class SourceLoader extends Loader
   public function config_source($key = null, $value = null){
   	   if(!is_string($key))return self::$config_source;
 	   if(!isset(self::$config_source[$key]))return false;
-	   self::$config_source[$key] = $value;
+	   self::$config_source[$key]=$value;
+	   if(null===$value)unset(self::$config_source[$key]);
+	   $this->config['source'] = &self::$config_source;
+	   $this->top()->config['source'] = &self::$config_source;
 	   return true;
   }  
+	 
 	 
 
 	 
