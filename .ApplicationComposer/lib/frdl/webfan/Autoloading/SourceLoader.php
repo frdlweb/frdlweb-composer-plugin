@@ -259,8 +259,11 @@ class SourceLoader extends Loader
 		if(!isset($code['php']))return false;
 		if(isset($code['installed']) && $code['installed'] === true)return true;
 		
+		if($class !== '\frdl\webfan\Serialize\Binary\bin' && class_exists('\frdl\webfan\Serialize\Binary\bin')){
 	     $bs = new \frdl\webfan\Serialize\Binary\bin();
-		 $code['doc'] = $bs->unserialize($this->unpack_license($code['d']));
+		 $code['doc'] = $bs->unserialize($this->unpack_license($code['d']));			
+		}
+
 			 		
 		 $error = '';
 		 $r = false;
