@@ -270,9 +270,13 @@ abstract class Element {
   	return call_user_func_array(array($this,'removeEventListener'), func_get_args());
   }  
    
+   
+   
+   
   public function addEventListener(){
   	return call_user_func_array(array($this,'on'), func_get_args());
   }
+    
   public function on($event, $callback, $obj = null) {
     if (!$this->events[$event]) {
       $this->events[$event] = array();
@@ -283,6 +287,30 @@ abstract class Element {
   }
   
   
+  
+   public function once($event, $callback, $obj = null) {
+   	  $THAT = &$this; 
+   	  $this->on($event, function() use($callback, &$THAT){
+   	    	$THAT->removeListener($event, $callback);
+   	  	     call_user_func_array($callback, func_get_args());
+   	  }, $obj);
+   	  
+    return $this;
+  }
+  
+  /*
+		EventEmitter.prototype.once = function (event, listener)
+		{
+			this.on(event, function g ()
+				{
+					this.removeListener(event, g);
+					listener.apply(this, arguments);
+				});
+
+
+			return this;
+		};  
+  */
   
   public function emit(){
   	return call_user_func_array(array($this,'trigger'), func_get_args());
