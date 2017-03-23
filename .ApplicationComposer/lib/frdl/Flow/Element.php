@@ -265,6 +265,10 @@ abstract class Element {
     }
     return $this; 	
   }
+  public function removeListener(){
+  	return call_user_func_array(array($this,'removeEventListener'), func_get_args());
+  }  
+  
    
   public function off(){
   	return call_user_func_array(array($this,'removeEventListener'), func_get_args());
@@ -290,10 +294,12 @@ abstract class Element {
   
    public function once($event, $callback, $obj = null) {
    	  $THAT = &$this; 
-   	  $this->on($event, function() use($callback, &$THAT){
-   	    	$THAT->removeListener($event, $callback);
-   	  	     call_user_func_array($callback, func_get_args());
-   	  }, $obj);
+   	  $obj = $obj;
+   	  $callback= $callback;
+   	  $this->on($event, function() use(&$callback, &$THAT, &$obj){
+   	    	$THAT->removeEventListener($event, ($obj === null)  ? $callback : array($obj, $callback));
+   	  	     call_user_func_array(($obj === null)  ? $callback : array($obj, $callback), func_get_args());
+   	  });
    	  
     return $this;
   }
