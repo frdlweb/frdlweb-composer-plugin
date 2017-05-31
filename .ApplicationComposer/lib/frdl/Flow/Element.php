@@ -49,7 +49,7 @@ namespace frdl\Flow;
 * 
 * Example 
 * frdl\Flow\TestElement in __vendor__/frdl/Flow/Flow/TestElement.php
-<?php 
+* 
 use frdl\Flow;
 
 log('Starting testCase: '.__FILE__);
