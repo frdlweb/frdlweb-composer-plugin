@@ -200,7 +200,7 @@ abstract class Element {
 	   $_call='\\'.get_class(self).'::__construct';	
 	   return call_user_func_array($_call, func_get_args());
 	}	
-	function __destuct(){
+	function __destruct(){
 		
 	}
     final public function __invoke(/* mixed */)
