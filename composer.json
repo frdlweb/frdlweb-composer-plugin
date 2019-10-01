@@ -30,9 +30,7 @@
   "repositories":
   [
  
-    {
-      "packagist": true
-    },
+
     
     {
        "type": "composer",
