@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * Copyright  (c) 2015, Till Wehowski
  * All rights reserved.
@@ -26,8 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-namespace frdl\Flow;
 
+namespace frdl\Flow;
 /**
 *   
 *   @provides the public methods:
@@ -45,7 +45,6 @@ namespace frdl\Flow;
 * 
 *  ->context(mixed $context = undefined) >if getter not chainable returns context or $this
 *  ->walk($Array)                        >IteratorGenerator 
-
 * 
 * Example 
 * frdl\Flow\TestElement in __vendor__/frdl/Flow/Flow/TestElement.php
@@ -183,15 +182,12 @@ namespace frdl\Flow;
 *     
 *    ;
 */
-
-
 abstract class Element {
 	protected static $tagName;
 	protected $name; //id/selector
 	protected $_context = null;
 	
     protected $events = array();
-
 	function __construct(){
 		$this->_context=func_get_args();
 		self::$tagName = get_class($this);
@@ -217,7 +213,6 @@ abstract class Element {
 	  return $this($args);
 	}
 	
-
   /*
     Iterator "Trait"
   */	
@@ -247,19 +242,20 @@ abstract class Element {
 	
 	
 	
-
   /*
     Event "Trait"
   */	
   public function removeEventListener($event, $listener){
-     if (!$this->events[$event]) return $this;
-   
 
+     if (!isset($this->events[$event])) return $this;
+    
     $indexOf = 0;
-    foreach ($this->Iterator('Array') as $EventListener) {
-       if($EventListener === $listener)	{
-         array_splice($this->events[$event], $indexOf, 1);	   	
+    foreach ($this->Iterator('Array', $this->events[$event]) as $EventListener) {
+      // if($EventListener === $listener)	{
+	   if(spl_object_id((object)$EventListener) === spl_object_id((object)$listener))	{
+         array_splice($this->events[$event], $indexOf, 1);
          $indexOf--;
+		 
 	   }
          $indexOf++;
     }
@@ -282,7 +278,7 @@ abstract class Element {
   }
     
   public function on($event, $callback, $obj = null) {
-    if (!$this->events[$event]) {
+    if (!isset($this->events[$event])) {
       $this->events[$event] = array();
     }
    
@@ -293,13 +289,18 @@ abstract class Element {
   
   
    public function once($event, $callback, $obj = null) {
-   	  $THAT = &$this; 
+	    
+
+
+   	  $THAT =$this; 
    	  $obj = $obj;
    	  $callback= $callback;
-   	  $this->on($event, function() use(&$callback, &$THAT, &$obj){
-   	    	$THAT->removeEventListener($event, ($obj === null)  ? $callback : array($obj, $callback));
+
+      $listener = (function() use($event, &$callback, &$THAT, &$obj, &$listener){
+   	    	$THAT->removeEventListener($event, $listener);
    	  	     call_user_func_array(($obj === null)  ? $callback : array($obj, $callback), func_get_args());
    	  });
+   	  $this->on($event, $listener);
    	  
     return $this;
   }
@@ -312,8 +313,6 @@ abstract class Element {
 					this.removeListener(event, g);
 					listener.apply(this, arguments);
 				});
-
-
 			return this;
 		};  
   */
@@ -356,7 +355,6 @@ abstract class Element {
 /*
 private...
 */
-
    public function walk($list){
       foreach ($list as $value) {
          yield ($value);
@@ -377,5 +375,4 @@ private...
        }		
   }
  	
-
 }
