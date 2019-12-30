@@ -175,7 +175,7 @@ class bin extends \frdl\webfan\Serialize\aSerializer
 					
 				case self::V_NULL:	
                 default:
-                    trigger_error(self::UNKNOWN_TYPE. ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
+                    //trigger_error(self::UNKNOWN_TYPE. ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
                    $out = null;
             }
             if (!is_null($out)) {
@@ -241,8 +241,8 @@ class bin extends \frdl\webfan\Serialize\aSerializer
                 break;
 			case "null" :
             default:
-				$str .= chr(self::V_NULL);  
-                trigger_error(self::UNKNOWN_TYPE. ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
+		  $str .= chr(self::V_NULL);  
+             //   trigger_error(self::UNKNOWN_TYPE. ' '.__CLASS__.'::'.__METHOD__.' line '.__LINE__,E_USER_WARNING);
                 break;
         }
         return $str;
