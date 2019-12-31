@@ -264,7 +264,7 @@ class bin extends \frdl\webfan\Serialize\aSerializer
         $n    = ($blen-1) * 8;
         for($bits=0; $bits < $blen; $bits++) {
             $bytes[$bits] = chr($int  >> $n);
-            $int -= $bytes[$bits] << $n;
+            $int -= intval($bytes[$bits]) << intval($n);
             $n -= 8;
         }
         return $bytes;
