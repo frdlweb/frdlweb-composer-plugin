@@ -30,7 +30,10 @@
   "repositories":
   [
  
-
+  {
+    "type": "composer",
+    "url": "https://packages.frdl.de"
+  },
     
     {
        "type": "composer",
@@ -67,7 +70,8 @@
 
 
     "suggest": {
-
+        "frdl/project" : "Boilerplate for the Frdlweb Framework.",
+        "frdl/web" : "Main Modules of the Frdlweb Framework."
     },
 
     "conflict": {
