@@ -1,8 +1,8 @@
 {
     "name": "frdl/webfan",
-    "type": "project",
+    "type": "library",
     "description": "create websites, developing projects, compose applications",
-    "keywords": ["homepage", "php", "packages", "pluginsystem", "development", "websites", "webfan", "frdl", "api","library", "framework"],
+    "keywords": ["php", "webfan", "frdl"],
     "homepage": "http:\/\/frdl.github.io\/webfan\/",
     "license":  [ "BSD-4-Clause", "BSD-3-Clause"],
     "support": {
@@ -27,45 +27,13 @@
         }
     ],
 
-  "repositories":
-  [
  
-  {
-    "type": "composer",
-    "url": "https://packages.frdl.de"
-  },
-    
-    {
-       "type": "composer",
-       "url": "http:\/\/www.phpclasses.org\/"
-     },
-
-    { 
-       "type": "composer",
-       "url": "http:\/\/www.jsclasses.org\/"
-    },
-        
-        {
-            "type": "package",
-            "package": {
-                "name": "composer/composer",
-                "version": "1.0.0-alpha10",
-                "source": {
-                    "url": "https:\/\/github.com\/composer\/composer\/archive\/1.0.0-alpha10.zip",
-                    "type": "zip"
-                }
-            }
-        }
-
-
- ],
-
     "require": {
         "php": ">=5.3.3"
     },
 
     "require-dev": {
-
+        "frdl/web" : "*"
     },
 
 
@@ -74,19 +42,13 @@
         "frdl/web" : "Main Modules of the Frdlweb Framework."
     },
 
-    "conflict": {
-    
-    },    
     
     "provide" : {
         "phpclasses/frdl-app": "1.0.0"
     },
 
     "autoload": {
-    	"files": [
-
-    	         ],
-        "psr-4": {
+         "psr-4": {
                  "frdl\\" : ".ApplicationComposer/lib/frdl/",
                  "webfan\\" : ".ApplicationComposer/lib/webfan/",
                  "webdof\\" : ".ApplicationComposer/lib/webdof/"
@@ -104,34 +66,5 @@
                  "webdof\\" : ".ApplicationComposer/lib/webdof/",
                  "_empty_\\" : ".ApplicationComposer/lib/"
        } 
-    },
-
-    "prefer-stable": false,
-
-    "config": {
-        "bin-dir": "packages/bin",
-        "preferred-install": "auto",
-        "store-auths": "prompt",
-        "github-protocols" : [ "git", "https","ssh"],
-        "github-oauth": {"github.com": "oauthtoken"},
-        "github-domains": ["github.com"],
-        "vendor-dir" : ".ApplicationComposer/vendor",
-        "cache-dir" : ".ApplicationComposer/cache",
-        "cache-files-dir":".ApplicationComposer/packages",
-        "cache-files-ttl": 15552000,
-        "prepend-autoloader": false,
-        "classmap-authoritative": true,
-        "notify-on-install": true
-    },
-
-   
-  "scripts": {
-
-   },
-    
-    
-  "extra": { 
-         
-  }
-    
+    }    
 }    
