@@ -28,6 +28,9 @@
  */
 
 namespace frdl\Flow;
+
+use frdl\Flow\arrayIterator;
+use frdl\Flow\LazyIterator;
 /**
 *   
 *   @provides the public methods:
@@ -251,8 +254,10 @@ abstract class Element {
     
     $indexOf = 0;
     foreach ($this->Iterator('Array', $this->events[$event]) as $EventListener) {
-      // if($EventListener === $listener)	{
-	   if(spl_object_id((object)$EventListener) === spl_object_id((object)$listener))	{
+        if(( (function_exists('\spl_object_id') || (class_exists(\frdl_polyfill::class) && true === \frdl_polyfill::defined) )
+	      && (\spl_object_id((object)$EventListener) === \spl_object_id((object)$listener))	
+	    )	
+	   || ($EventListener === $listener)){
          array_splice($this->events[$event], $indexOf, 1);
          $indexOf--;
 		 
