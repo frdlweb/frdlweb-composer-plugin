@@ -226,7 +226,7 @@ abstract class Element {
       };   	  
    }
    
-   public function iterate(Array $Collection, $callback/* 
+   public function iterate(array $Collection, $callback/* 
            function($item) use(&$result){
 		   	  // ... process item
 		   	  return $result;
@@ -362,7 +362,7 @@ private...
    }
  	
    public function _ArraIterator($arr){
-     if(true===version_compare(PHP_VERSION, '5.5', '>=')) {
+     if(true===version_compare(\PHP_VERSION, '5.5', '>=')) {
        $iterator=new LazyIterator($this->walk($arr));  
        return $iterator->generator();  
      }else{
