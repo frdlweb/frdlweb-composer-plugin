@@ -324,7 +324,7 @@ abstract class Element {
   	return call_user_func_array(array($this,'trigger'), func_get_args());
   }
   public function trigger($event, $data = array()) {
-    if (!$this->events[$event]) return $this;
+    if (!isset($this->events[$event])) return $this;
    
   
     $indexOf=0;
