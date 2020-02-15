@@ -4,7 +4,7 @@ create websites, developing projects, compose applications
 
 Versions 
 * 1.x : development status
-* 2.0.0 : changed package type to `library` 
+* 2.0.0 : changed package type to `library`, 
   `project` package and [Installer](https://webfan.de/install/) moved to [frdl/project](https://github.com/frdl/project)
 
 First final Version will be 2.0.1
