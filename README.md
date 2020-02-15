@@ -3,17 +3,21 @@ Application Composer (frdl/webfan)
 create websites, developing projects, compose applications
 
 Versions 1.x : development status
+         2.0.0 : changed package type to `library` 
+                 `project` package and [Installer](https://webfan.de/install/) moved to [frdl/project](https://github.com/frdl/project)
 First final Version will be 2.0.1
 
-[Install newest](http://www.webfan.de/install/)
+
+[Install newest](https://webfan.de/install/)
 [![Latest Stable Version](https://poser.pugx.org/frdl/webfan/v/stable)](https://packagist.org/packages/frdl/webfan) [![Total Downloads](https://poser.pugx.org/frdl/webfan/downloads)](https://packagist.org/packages/frdl/webfan) [![Latest Unstable Version](https://poser.pugx.org/frdl/webfan/v/unstable)](https://packagist.org/packages/frdl/webfan) [![License](https://poser.pugx.org/frdl/webfan/license)](https://packagist.org/packages/frdl/webfan)
 
-* @requires          PHP >= 5.3
-* [Homepage](http://frdl.github.io/webfan/)
-* [Documentation](https://github.com/frdl/webfan/wiki)
+* @requires          PHP >= 5.6.3 | >= 7.3
+* [Homepage (deprecated, ->ToDo)](http://frdl.github.io/webfan/)
+* [Documentation (deprecated, ->ToDo)](https://github.com/frdl/webfan/wiki)
+* [Frdl Packages Repository](https://packages.frdl.de/)
 
 
-Language Files and Translation Project
+Language Files and Translation Project (deprecated, ->ToDo)
 =
 https://github.com/frdl/translations
 
