@@ -85,7 +85,8 @@ class EventEmitter extends Element{
 									  		$ready = false;
 									  		foreach($that->Iterator('Array', $eventArray) as $event){
 									  			  $k = array_search($event, $eventArray);
-									  			  if(false===$k || null===$eventData[$k]){
+									  		//	  if(false===$k || null===$eventData[$k]){
+												if(false===$k || !isset($eventData[$k])){
 												  	 $waiting = true;
 												  	 break;
 												  }
@@ -110,7 +111,8 @@ class EventEmitter extends Element{
 									  	;								  	
 									  	
 									
-		                                                        $updateState = function ($eventName) use ( &$eventArray, &$eventData, &$stateCheck){
+		                                                   
+		$updateState = function ($eventName) use ( &$eventArray, &$eventData, &$stateCheck){
 									  		$index = array_search($eventName, $eventArray);
 									  		return function ($data = null) use ( &$eventData, &$index, &$stateCheck){
 									  			if(null===$data)
@@ -129,7 +131,7 @@ class EventEmitter extends Element{
 									  	$stateReady = function ($s) use ( &$eventData, &$eventArray)
 									  	{
 									  		 $k = array_search($s, $eventArray);
-									  		 return (false===$k || null===$eventData[$k]) ? false : true;
+									  		 return (false===$k || !isset($eventData[$k])) ? false : true;
 									  	}
 									  	;
 									  	
@@ -144,7 +146,8 @@ class EventEmitter extends Element{
 									  	
 									  	
 									  										 
-		                                         $addState =	function () use ( &$eventArray, &$updateData, $updateState, $listen, &$that)
+		                                     
+		$addState =	function () use ( &$eventArray, &$updateData, $updateState, $listen, &$that)
 									  	{
 									  		$events = func_get_args();
 									  		
@@ -205,5 +208,3 @@ class EventEmitter extends Element{
 	
 
 }
-
-
