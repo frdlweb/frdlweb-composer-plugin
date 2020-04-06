@@ -189,8 +189,6 @@ class EventEmitter extends Element{
 			}										  	
 
 
-       /* $finStateObj = new \O; */
-      // $fo = new \O;
        $fo = new \stdclass;		
        $fo->cancel = $clear;
        $fo->add = $addState;
