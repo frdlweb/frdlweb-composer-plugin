@@ -109,7 +109,8 @@ class EventEmitter extends Element{
 									  	}
 									  	;								  	
 									  	
-									  	$updateState = function ($eventName) use ( &$eventArray, &$eventData, &$stateCheck){
+									
+		                                                        $updateState = function ($eventName) use ( &$eventArray, &$eventData, &$stateCheck){
 									  		$index = array_search($eventName, $eventArray);
 									  		return function ($data = null) use ( &$eventData, &$index, &$stateCheck){
 									  			if(null===$data)
@@ -142,15 +143,28 @@ class EventEmitter extends Element{
 									  	
 									  	
 									  	
-									  	$addState =	function () use ( &$eventArray, &$updateData, $updateState, $listen, &$that, $addState)
+									  										 
+		                                         $addState =	function () use ( &$eventArray, &$updateData, $updateState, $listen, &$that)
 									  	{
 									  		$events = func_get_args();
 									  		
 									  		foreach($that->Iterator('Array', $events) as $event){
-                                                if(is_array($event)){
-                                                	foreach($event as $ev){
-													   call_user_func_array($addState, array($ev));
-													}
+                                              
+												if(is_array($event)){                                                	
+												
+												  foreach($event as $ev){													
+												
+												  	$index = array_search($ev, $eventArray);
+									  				if($index === false)
+									  				{
+									  					array_push($eventArray, $ev);
+									  					$index = count($eventArray) - 1;
+									  				}
+									  				$updateData[$index] = $updateState($ev);
+
+									  				 call_user_func_array($listen, array($ev,$updateData[$index])); 													
+													
+												   }
 												}else{
 													$index = array_search($event, $eventArray);
 									  				if($index === false)
@@ -167,13 +181,14 @@ class EventEmitter extends Element{
 									  	};
 									  	
 									  	
-			foreach($that->Iterator('Array', $eventArray) as $event){
-                $addState($event);
+			foreach($that->Iterator('Array', $eventArray) as $event){                
+				$addState($event);
 			}										  	
 
 
        /* $finStateObj = new \O; */
-       $fo = new \O;
+      // $fo = new \O;
+       $fo = new \stdclass;		
        $fo->cancel = $clear;
        $fo->add = $addState;
        $fo->events = $eventArray;
