@@ -191,6 +191,7 @@ class EventEmitter extends Element{
        $fo = new \stdclass;		
        $fo->cancel = $clear;
        $fo->add = $addState;
+       $fo->addState = $addState;
        $fo->events = $eventArray;
        $fo->status = $eventData;
        $fo->stateReady = $stateReady;
