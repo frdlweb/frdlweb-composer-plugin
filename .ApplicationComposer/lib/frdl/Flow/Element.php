@@ -186,14 +186,14 @@ use frdl\Flow\LazyIterator;
 *    ;
 */
 abstract class Element {
-	protected static $tagName;
+	//protected static $tagName;
 	protected $name; //id/selector
 	protected $_context = null;
 	
     protected $events = array();
 	function __construct(){
 		$this->_context=func_get_args();
-		self::$tagName = get_class($this);
+		//self::$tagName = get_class($this);
 	}
 	public static function create(){
 	   $_call='\\'.get_class(self).'::__construct';	
@@ -205,7 +205,7 @@ abstract class Element {
     final public function __invoke(/* mixed */)
     {
         $this->_context=func_get_args();
-		return $this;
+	return $this;
     }	
     
     final public function context(){
