@@ -34,7 +34,8 @@
         "civicrm/composer-compile-plugin" : "*",
         "civicrm/composer-downloads-plugin": "*",
         "civicrm/composer-compile-lib": "*",
-         "foxy/foxy": "*"
+         "foxy/foxy": "*",
+         "frdl/remote-psr4": "*"
     },
      
     "scripts-descriptions": {
