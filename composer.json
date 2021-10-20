@@ -1,6 +1,6 @@
 {
     "name": "frdl/webfan",
-    "type": "library",
+    "type": "composer-plugin",
     "description": "create websites, developing projects, compose applications",
     "keywords": ["php", "webfan", "frdl", "webfan-extension"],
     "homepage": "http:\/\/frdl.github.io\/webfan\/",
@@ -30,12 +30,34 @@
  
     "require": {
         "php": ">=7.2 | >= 8.0",
+        "composer-plugin-api": "^1.1|^2.0",
         "civicrm/composer-compile-plugin" : "*",
-        "civicrm/composer-downloads-plugin": "~2.1"
+        "civicrm/composer-downloads-plugin": "*",
+        "civicrm/composer-compile-lib": "*",
+         "foxy/foxy": "*"
     },
+     
+    "scripts-descriptions": {
+        "webfantize": "Invoke Webfan 'Magic Shield Scripts' on/in the current context"
+    }, 
     
-    
+ "scripts": {
+        "command": [
+            "@composer webfantize"
+        ],
+     
+        "webfantize": [
+            "@putenv WEBFAN_WITH_COMPOSER='deterministic'",
+            "@putenv WEBFAN_CONTEXT_CONTEXT=WEBFAN_WITH_COMPOSER",
+            "@php webfan/runtime/run/autostart/_.php",
+            "Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield""
+        ]
+     
+     
+    },   
 "extra": {
+    "compile-mode": "all",
+    "foxy": true,
     "downloads": {
       "*": {
         "path": "vendor/vendor-patch/{$id}",
@@ -47,26 +69,21 @@
         "ignore": [".*"]
       }
     }
-  },
-    
-    
+  },    
     "require-dev": {
          
     },
-
-
     "suggest": {
-
-    },
-
-    
+        "frdl/project" : "Frdlweb Project Template"
+    },    
     "provide" : {
         "phpclasses/frdl-app": "1.0.0"
     },
-
     "autoload": {
-         "classmap" : ["src/lib/"],
+         "files": [".runtime/run/*/*.php"],
+         "classmap" : ["src/lib/**"],
          "psr-4": {
+                 "Webfan\\App\\Patches\\" : "src/webfan-app-patches/",
                  "frdl\\" : ".ApplicationComposer/lib/frdl/",
                  "webfan\\" : ".ApplicationComposer/lib/webfan/",
                  "webdof\\" : ".ApplicationComposer/lib/webdof/"
