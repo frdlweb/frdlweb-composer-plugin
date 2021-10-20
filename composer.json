@@ -2,7 +2,7 @@
     "name": "frdl/webfan",
     "type": "library",
     "description": "create websites, developing projects, compose applications",
-    "keywords": ["php", "webfan", "frdl"],
+    "keywords": ["php", "webfan", "frdl", "webfan-extension"],
     "homepage": "http:\/\/frdl.github.io\/webfan\/",
     "license":  [ "BSD-4-Clause", "BSD-3-Clause"],
     "support": {
@@ -30,7 +30,7 @@
  
     "require": {
         "php": ">=7.2 | >= 8.0",
-        "civicrm/composer-compile-plugin" "*",
+        "civicrm/composer-compile-plugin" : "*",
         "civicrm/composer-downloads-plugin": "~2.1"
     },
     
