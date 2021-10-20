@@ -50,7 +50,7 @@
             "@putenv WEBFAN_WITH_COMPOSER='deterministic'",
             "@putenv WEBFAN_CONTEXT_CONTEXT=WEBFAN_WITH_COMPOSER",
             "@php webfan/runtime/run/autostart/_.php",
-            "Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield""
+            "Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield"
         ]
      
      
