@@ -29,17 +29,34 @@
 
  
     "require": {
-        "php": ">=5.6.3"
+        "php": ">=7.2 | >= 8.0",
+        "civicrm/composer-compile-plugin" "*",
+        "civicrm/composer-downloads-plugin": "~2.1"
     },
-
+    
+    
+"extra": {
+    "downloads": {
+      "*": {
+        "path": "vendor/vendor-patch/{$id}",
+        "ignore": ["test", "tests", "doc", "docs"]
+      },
+      "frdl/array-helper": {
+        "url": "https://github.com/frdl/array-helper/archive/refs/heads/main.zip",
+        "path": "vendor/frdl/array-helper",
+        "ignore": [".*"]
+      }
+    }
+  },
+    
+    
     "require-dev": {
-        "frdl/web" : "*"
+         
     },
 
 
     "suggest": {
-        "frdl/project" : "Boilerplate for the Frdlweb Framework.",
-        "frdl/web" : "Main Modules of the Frdlweb Framework."
+
     },
 
     
@@ -48,23 +65,11 @@
     },
 
     "autoload": {
+         "classmap" : ["src/lib/"],
          "psr-4": {
                  "frdl\\" : ".ApplicationComposer/lib/frdl/",
                  "webfan\\" : ".ApplicationComposer/lib/webfan/",
                  "webdof\\" : ".ApplicationComposer/lib/webdof/"
         }
-    },
-
-    "autoload-dev": {
-    	"files": [
-    	          ".ApplicationComposer/lib/frdl/webfan/Autoloading/SourceLoader.php",
-    	          ".ApplicationComposer/lib/frdl/webfan/App.php"
-    	         ],
-        "psr-4": {
-                 "frdl\\" : ".ApplicationComposer/lib/frdl/",
-                 "webfan\\" : ".ApplicationComposer/lib/webfan/",
-                 "webdof\\" : ".ApplicationComposer/lib/webdof/",
-                 "_empty_\\" : ".ApplicationComposer/lib/"
-       } 
     }    
 }    
