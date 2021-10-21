@@ -2,9 +2,9 @@
     "name": "frdl/webfan",
     "type": "composer-plugin",
     "description": "create websites, developing projects, compose applications",
-    "keywords": ["php", "webfan", "frdl", "webfan-extension"],
+    "keywords": ["php", "webfan", "webfan-module", "webfan-extension", "frdl", "webfan-extension"],
     "homepage": "http:\/\/frdl.github.io\/webfan\/",
-    "license":  [ "BSD-4-Clause", "BSD-3-Clause"],
+    "license":  [ "MIT", "BSD-4-Clause", "BSD-3-Clause"],
     "support": {
         "email": "support@webfan.de",
         "issues": "https:\/\/github.com\/frdl\/webfan\/issues",
@@ -16,7 +16,7 @@
         {
             "name": "Till Wehowski",
             "email": "software@frdl.de",
-            "homepage": "http:\/\/www.webfan.de",
+            "homepage": "https:\/\/webfan.de",
             "role": "Developer"
         },
         {
@@ -29,7 +29,7 @@
 
  
     "require": {
-        "php": ">=7.2 | >= 8.0",
+        "php": ">=7.2|>= 8.0",
         "composer-plugin-api": "^1.1|^2.0",
         "civicrm/composer-compile-plugin" : "*",
         "civicrm/composer-downloads-plugin": "*",
@@ -78,16 +78,17 @@
         "frdl/project" : "Frdlweb Project Template"
     },    
     "provide" : {
-        "phpclasses/frdl-app": "1.0.0"
+        "phpclasses/frdl-app": "1.0.0",        
+        "frdl/runtime": "1.0.0"
     },
     "autoload": {
          "files": [".runtime/run/*/*.php"],
          "classmap" : ["src/lib/**"],
          "psr-4": {
-                 "Webfan\\App\\Patches\\" : "src/webfan-app-patches/",
+                 "Webfan\\App\\Patches\\" : "src/patches/",
                  "frdl\\" : ".ApplicationComposer/lib/frdl/",
                  "webfan\\" : ".ApplicationComposer/lib/webfan/",
                  "webdof\\" : ".ApplicationComposer/lib/webdof/"
         }
     }    
-}    
+} 
