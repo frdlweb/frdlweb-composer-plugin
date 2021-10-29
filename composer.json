@@ -4,7 +4,7 @@
     "description": "create websites, developing projects, compose applications",
     "keywords": ["php", "webfan", "webfan-module", "webfan-extension", "frdl", "webfan-extension"],
     "homepage": "http:\/\/frdl.github.io\/webfan\/",
-    "license":  [ "MIT", "BSD-4-Clause", "BSD-3-Clause"],
+    "license":  ["MIT"],
     "support": {
         "email": "support@webfan.de",
         "issues": "https:\/\/github.com\/frdl\/webfan\/issues",
@@ -34,7 +34,6 @@
         "civicrm/composer-compile-plugin" : "*",
         "civicrm/composer-downloads-plugin": "*",
         "civicrm/composer-compile-lib": "*",
-         "foxy/foxy": "*",
          "frdl/remote-psr4": "*"
     },
      
@@ -61,21 +60,30 @@
     "foxy": true,
     "downloads": {
       "*": {
-        "path": "vendor/vendor-patch/{$id}",
-        "ignore": ["test", "tests", "doc", "docs"]
+        "path": "./vendor/vendor-patch/{$id}",
+        "ignore": ["test", "tests", "doc", "docs", ".*"]
       },
       "frdl/array-helper": {
         "url": "https://github.com/frdl/array-helper/archive/refs/heads/main.zip",
-        "path": "vendor/frdl/array-helper",
+        "path": "./vendor/frdl/array-helper",
+        "ignore": [".*"]
+      },
+      "vendor-patch/secure_dotenv": {
+        "url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
+        "path": "./vendor/vendor-patch/secure_dotenv",
         "ignore": [".*"]
       }
     }
   },    
+    
+    
+    
     "require-dev": {
          
     },
     "suggest": {
-        "frdl/project" : "Frdlweb Project Template"
+        "frdl/project" : "Frdlweb Project Template",        
+        "foxy/foxy": "Manage npm depencencies/assets"
     },    
     "provide" : {
         "phpclasses/frdl-app": "1.0.0",        
