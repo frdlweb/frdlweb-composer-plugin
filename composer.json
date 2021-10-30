@@ -98,7 +98,11 @@
         "foxy/foxy": "Manage npm depencencies/assets",
         "frdlweb/app-implementation" : "Implements \\frdlweb\\AppInterface",
         "frdlweb/runtime-implementation" : "Implements runtime",
-        "frdlweb/workspace-implementation" : "Implements workspace"
+        "frdlweb/workspace-implementation" : "Implements workspace",
+        "webfan-pro/rgb-paradigma" : "Blue-Green-Deployment-Paradigma Implements frdlweb/rgb-paradigma-implementation",
+        "webfan-pro/svl-paradigma" : "Single-Version-Line-Paradigma Implements frdlweb/svl-paradigma-implementation",
+        "frdlweb/codebase-implementation" : "Implements Frdlweb Codebase",
+        "webfan-pro/rootaware-paradigma" : "Implements A Webfantized Root-Package Installation frdlweb/root-package-implementation"
     },    
     "provide" : {
         "wikimedia/composer-merge-plugin": "dev-master",
