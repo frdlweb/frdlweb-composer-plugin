@@ -88,7 +88,7 @@
     "suggest": {
         "frdl/project" : "Frdlweb Project Template",        
         "foxy/foxy": "Manage npm depencencies/assets",
-        "frdlweb/app-implementation" : "Implements \frdlweb\AppInterface",
+        "frdlweb/app-implementation" : "Implements \\frdlweb\\AppInterface",
         "frdlweb/runtime-implementation" : "Implements runtime",
         "frdlweb/workspace-implementation" : "Implements workspace"
     },    
