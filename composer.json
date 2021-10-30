@@ -1,14 +1,14 @@
 {
     "name": "frdl/webfan",
     "type": "composer-plugin",
-    "description": "create websites, developing projects, compose applications",
-    "keywords": ["php", "webfan", "webfan-module", "webfan-extension", "frdl", "webfan-extension"],
-    "homepage": "http:\/\/frdl.github.io\/webfan\/",
+    "description": "Frdlweb Codehub Helpers Plugin",
+    "keywords": ["webfan", "webfan-module", "webfan-extension", "webfan-plugin", "frdl", "frdlweb", "frdl-helper"],
+    "homepage": "https:\/\/frdl.github.io\/webfan\/",
     "license":  ["MIT"],
     "support": {
         "email": "support@webfan.de",
         "issues": "https:\/\/github.com\/frdl\/webfan\/issues",
-        "forum": "http:\/\/tillwehowski.webfan.de\/forum\/",
+        "forum": "https:\/\/startforum.de\/s\/webfan\/",
         "wiki": "https:\/\/github.com\/frdl\/webfan\/wiki",
         "source": "https:\/\/github.com\/frdl\/webfan\/tree\/master"
     },
@@ -34,6 +34,7 @@
         "civicrm/composer-compile-plugin" : "*",
         "civicrm/composer-downloads-plugin": "*",
         "civicrm/composer-compile-lib": "*",
+        "wikimedia/composer-merge-plugin": "*",
         "frdl/remote-psr4": "*"
     },
      
@@ -76,7 +77,11 @@
     }
   },    
     
-    
+    "minimum-stability": "dev",
+    "prefer-stable": true,   
+    "config": {
+        "bin-dir": "~/bin"
+    },
     
     "require-dev": {
          
