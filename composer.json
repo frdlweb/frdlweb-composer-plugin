@@ -56,6 +56,11 @@
      
     },   
 "extra": {
+    "class": [
+        "Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
+        "LastCall\\DownloadsPlugin\\Plugin",
+        "Civi\\CompilePlugin\\CompilePlugin"        
+    ],
     "compile-mode": "all",
     "foxy": true,
     "downloads": {
@@ -65,16 +70,27 @@
       },
       "frdl/array-helper": {
         "url": "https://github.com/frdl/array-helper/archive/refs/heads/main.zip",
-        "path": "./vendor/frdl/array-helper",
+        "path": "~/.webfan/share/vendor/frdl/array-helper",
+          "~/.webfan/runtime/vendor/vendor-patch/secure_dotenv",
         "ignore": [".*"]
       },
-      "vendor-patch/secure_dotenv": {
+      "vendor-patch/psecio.secure_dotenv": {
         "url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
+        "path": "./vendor/vendor-patch/secure_dotenv",
+        "ignore": [".*"]
+      },
+      "vendor-patch/wikimedia.composer-merge-plugin": {
+        "url": "https://github.com/vendor-patch/composer-merge-plugin/archive/refs/heads/master.zip",
         "path": "./vendor/vendor-patch/secure_dotenv",
         "ignore": [".*"]
       }
     }
   },    
+    
+    
+    
+    
+    
     
     "minimum-stability": "dev",
     "prefer-stable": true,   
