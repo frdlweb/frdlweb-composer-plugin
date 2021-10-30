@@ -106,7 +106,7 @@
     },
     "autoload": {
          "files": [".runtime/run/*/*.php"],
-         "classmap" : ["src/lib/**"],
+         "classmap" : ["src/lib/*/*.php", "src/lib/*.php"],
          "psr-4": {
                  "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
                  "Webfan\\App\\Patches\\" : "src/patches/",
