@@ -34,7 +34,6 @@
         "civicrm/composer-compile-plugin" : "*",
         "civicrm/composer-downloads-plugin": "*",
         "civicrm/composer-compile-lib": "*",
-        "wikimedia/composer-merge-plugin": "*",
         "frdl/remote-psr4": "*"
     },
      
@@ -85,12 +84,6 @@
       }
     }
   },    
-    
-    
-    
-    
-    
-    
     "minimum-stability": "dev",
     "prefer-stable": true,   
     "config": {
@@ -108,6 +101,7 @@
         "frdlweb/workspace-implementation" : "Implements workspace"
     },    
     "provide" : {
+        "wikimedia/composer-merge-plugin": "dev-master",
         "phpclasses/frdl-app": "1.0.0"
     },
     "autoload": {
