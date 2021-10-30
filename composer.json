@@ -50,7 +50,6 @@
         "webfantize": [
             "@putenv WEBFAN_WITH_COMPOSER='deterministic'",
             "@putenv WEBFAN_CONTEXT_CONTEXT=WEBFAN_WITH_COMPOSER",
-            "@php webfan/runtime/run/autostart/_.php",
             "Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield"
         ]
      
@@ -98,6 +97,7 @@
          "files": [".runtime/run/*/*.php"],
          "classmap" : ["src/lib/**"],
          "psr-4": {
+                 "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
                  "Webfan\\App\\Patches\\" : "src/patches/",
                  "frdl\\" : ".ApplicationComposer/lib/frdl/",
                  "webfan\\" : ".ApplicationComposer/lib/webfan/",
