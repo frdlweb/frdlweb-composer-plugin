@@ -65,6 +65,14 @@
      "merge-plugin": {
             "include": [
                 "composer.local.json",
+                "userdata/*/*/*/composer.json",
+                "plugins/*/*/*/composer.json",
+                "vendor/webfan-pro/*/*/composer.json",
+                "vendor/webfan-pro/*/composer.json",
+                "vendor/webfan3/*/*/composer.json",
+                "vendor/webfan3/*/composer.json",
+                "vendor/frdl/*/*/composer.json",
+                "vendor/frdl/*/composer.json",
                 "extensions/*/*/composer.json",
                 "extensions/*/composer.json",
                 "modules/extensions/*/*/composer.json",
