@@ -142,7 +142,6 @@
         "phpclasses/frdl-app": "1.0.0"
     },
     "autoload": {
-         "files": [".runtime/run/*/*.php"],
          "classmap" : ["src/lib/"],
          "psr-4": {
                  "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
