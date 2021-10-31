@@ -89,7 +89,7 @@
             ],
             "recurse": true,
             "replace": false,
-            "ignore-duplicates": false,
+            "ignore-duplicates": true,
             "merge-dev": false,
             "merge-extra": true,
             "merge-extra-deep": true,
