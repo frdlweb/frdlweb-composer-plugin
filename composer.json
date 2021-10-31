@@ -62,6 +62,30 @@
     ],
     "compile-mode": "all",
     "foxy": true,
+     "merge-plugin": {
+            "include": [
+                "composer.local.json",
+                "extensions/*/*/composer.json",
+                "extensions/*/composer.json",
+                "modules/extensions/*/*/composer.json",
+                "modules/extensions/*/composer.json",
+                "modules/plugin/*/*/composer.json",
+                "modules/plugin/*/composer.json",
+                "modules/theme/*/*/composer.json",
+                "modules/theme/*/composer.json",
+                "~/.webfan/red/modules/extension/*/*/composer.json"
+            ],
+            "require": [
+                "submodule/composer.json"
+            ],
+            "recurse": true,
+            "replace": false,
+            "ignore-duplicates": false,
+            "merge-dev": false,
+            "merge-extra": true,
+            "merge-extra-deep": true,
+            "merge-scripts": true       
+     },
     "downloads": {
       "*": {
         "path": "./vendor/vendor-patch/{$id}",
