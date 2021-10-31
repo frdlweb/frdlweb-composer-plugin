@@ -84,7 +84,7 @@
                 "~/.webfan/red/modules/extension/*/*/composer.json"
             ],
             "require": [
-                "submodule/composer.json"
+                "./composer.json"
             ],
             "recurse": true,
             "replace": false,
