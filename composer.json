@@ -81,7 +81,8 @@
                 "modules/plugin/*/composer.json",
                 "modules/theme/*/*/composer.json",
                 "modules/theme/*/composer.json",
-                "~/.webfan/red/modules/extension/*/*/composer.json"
+                "~/.webfan/red/*/*/*/*/composer.json",
+                "~/.webfan/red/*/*/*/composer.json"
             ],
             "require": [
                 "./composer.json"
