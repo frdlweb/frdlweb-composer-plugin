@@ -113,17 +113,17 @@
       },
       "frdl/array-helper": {
         "url": "https://github.com/frdl/array-helper/archive/refs/heads/main.zip",
-        "path": "modules/shared/frdl/array-helper",
+        "path": "modules/frdl/array-helper",
         "ignore": [".*"]
       },
       "vendor-patch/psecio.secure_dotenv": {
         "url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
-        "path": "modules/shared/vendor-patch/secure_dotenv",
+        "path": "modules/vendor-patch/secure_dotenv",
         "ignore": [".*"]
       },
       "vendor-patch/wikimedia.composer-merge-plugin": {
         "url": "https://github.com/vendor-patch/composer-merge-plugin/archive/refs/heads/master.zip",
-        "path": "modules/shared/vendor-patch/composer-merge-plugin",
+        "path": "modules/vendor-patch/composer-merge-plugin",
         "ignore": [".*"]
       }
     }
