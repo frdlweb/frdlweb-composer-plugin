@@ -71,8 +71,8 @@
             "include": [
                 "composer.dist.json",
                 "composer.local.json",
-                "userdata/*/*/*/composer.json
-                "runtime/*/*/*/composer.json
+                "userdata/*/*/*/composer.json",
+                "runtime/*/*/*/composer.json",
                 "vendor/webfan-pro/*/*/composer.json",
                 "vendor/webfan-pro/*/composer.json",
                 "vendor/webfan3/*/*/composer.json",
