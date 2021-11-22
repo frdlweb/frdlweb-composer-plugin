@@ -27,7 +27,12 @@
         }
     ],
 
- 
+     "repositories": [
+        {
+            "type": "path",
+            "url": "./../../../packages"
+        }
+    ],
     "require": {
         "php": ">= 8.0",
         "composer-plugin-api": "^1.1||>=2.0",
@@ -66,8 +71,8 @@
             "include": [
                 "composer.dist.json",
                 "composer.local.json",
-                "userdata/*/*/*/composer.json",
-                "plugins/*/*/*/composer.json",
+                "userdata/*/*/*/composer.json
+                "runtime/*/*/*/composer.json
                 "vendor/webfan-pro/*/*/composer.json",
                 "vendor/webfan-pro/*/composer.json",
                 "vendor/webfan3/*/*/composer.json",
@@ -76,16 +81,19 @@
                 "vendor/frdl/*/composer.json",
                 "extensions/*/*/composer.json",
                 "extensions/*/composer.json",
+                "modules/shared/*/*/composer.json",
+                "modules/shared/*/composer.json",
                 "modules/extensions/*/*/composer.json",
                 "modules/extensions/*/composer.json",
                 "modules/plugin/*/*/composer.json",
                 "modules/plugin/*/composer.json",
                 "modules/theme/*/*/composer.json",
-                "modules/theme/*/composer.json",
-                "./.webfan/red/*/*/*/*/composer.json",
-                "./.webfan/red/*/*/*/composer.json",
-                "./.webfan/shared/*/*/*/*/composer.json",
-                "./.webfan/shared/*/*/*/composer.json"
+                "modules/theme/*/composer.json",               
+                "modules/*/*/composer.json",
+                "~/.webfan/red/*/*/*/*/composer.json",
+                "~/.webfan/red/*/*/*/composer.json",
+                "~/.webfan/shared/*/*/*/*/composer.json",
+                "~/.webfan/shared/*/*/*/composer.json"
             ],
             "require": [
                 "./composer.json"
@@ -100,22 +108,22 @@
      },
     "downloads": {
       "*": {
-        "path": "./vendor/vendor-patch/{$id}",
+        "path": "modules/vendor-patch/{$id}",
         "ignore": ["test", "tests", "doc", "docs", ".*"]
       },
       "frdl/array-helper": {
         "url": "https://github.com/frdl/array-helper/archive/refs/heads/main.zip",
-        "path": "./.webfan/red/packages/frdl/array-helper",
+        "path": "modules/shared/frdl/array-helper",
         "ignore": [".*"]
       },
       "vendor-patch/psecio.secure_dotenv": {
         "url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
-        "path": "./.webfan/red/modules/extension/vendor-patch/secure_dotenv",
+        "path": "modules/shared/vendor-patch/secure_dotenv",
         "ignore": [".*"]
       },
       "vendor-patch/wikimedia.composer-merge-plugin": {
         "url": "https://github.com/vendor-patch/composer-merge-plugin/archive/refs/heads/master.zip",
-        "path": "./.webfan/red/modules/extension/vendor-patch/secure_dotenv",
+        "path": "modules/shared/vendor-patch/composer-merge-plugin",
         "ignore": [".*"]
       }
     }
@@ -123,7 +131,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,   
     "config": {
-       
+       "vendor-dir" : "modules",
+       "bin-dir" : "bin"  
     },
     
     "suggest": {
