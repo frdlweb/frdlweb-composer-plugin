@@ -57,6 +57,7 @@
      
     },   
 "extra": {
+    "compile-mode": "all",
     "class": [        
         "LastCall\\DownloadsPlugin\\Plugin",
         "Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
@@ -123,7 +124,8 @@
     "prefer-stable": true,   
     "config": {
        "vendor-dir" : "modules",
-       "bin-dir" : "bin"  
+       "bin-dir" : "bin",
+       "cache-files-ttl": 900
     },
     
     "suggest": {
