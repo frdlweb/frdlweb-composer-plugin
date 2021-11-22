@@ -57,10 +57,10 @@
      
     },   
 "extra": {
-    "class": [
-        "Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
+    "class": [        
         "LastCall\\DownloadsPlugin\\Plugin",
-        "Civi\\CompilePlugin\\CompilePlugin"        
+        "Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
+        "Civi\\CompilePlugin\\CompilePlugin"
     ],
     "compile-mode": "all",
     "foxy": true,
@@ -114,7 +114,7 @@
       },
       "vendor-patch/psecio.secure_dotenv": {
         "url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
-        "path": "modules/vendor-patch/secure_dotenv",
+        "path": "modules/vendor-patch/psecio.secure_dotenv",
         "ignore": [".*"]
       }
     }
