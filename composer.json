@@ -67,33 +67,34 @@
     "foxy": true,
      "merge-plugin": {
             "include": [
-                "./composer.dist.json",
-                "./composer.local.json",
-                "./userdata/*/*/*/composer.json",
-                "./runtime/*/*/*/composer.json",
-                "./vendor/webfan-pro/*/*/composer.json",
-                "./vendor/webfan-pro/*/composer.json",
-                "./vendor/webfan3/*/*/composer.json",
-                "./vendor/webfan3/*/composer.json",
-                "./vendor/frdl/*/*/composer.json",
-                "./vendor/frdl/*/composer.json",
-                "./extensions/*/*/composer.json",
-                "./extensions/*/composer.json",
-                "./modules/shared/*/*/composer.json",
-                "./modules/shared/*/composer.json",
-                "./modules/extensions/*/*/composer.json",
-                "./modules/extensions/*/composer.json",
-                "./modules/plugin/*/*/composer.json",
-                "./modules/plugin/*/composer.json",
-                "./modules/theme/*/*/composer.json",
-                "./modules/theme/*/composer.json",   
-                "~/.webfan/red/*/*/*/*/composer.json",
-                "~/.webfan/red/*/*/*/composer.json",
-                "~/.webfan/shared/*/*/*/*/composer.json",
-                "~/.webfan/shared/*/*/*/composer.json"
+                "./../../../composer.dist.json",
+                "./../../../composer.local.json",
+                "./../../../userdata/*/*/*/composer.json",
+                "./../../../runtime/*/*/*/composer.json",
+                "./../../../vendor/webfan-pro/*/*/composer.json",
+                "./../../../vendor/webfan-pro/*/composer.json",
+                "./../../../vendor/webfan3/*/*/composer.json",
+                "./../../../vendor/webfan3/*/composer.json",
+                "./../../../vendor/frdl/*/*/composer.json",
+                "./../../../vendor/frdl/*/composer.json",
+                "./../../../extensions/*/*/composer.json",
+                "./../../../extensions/*/composer.json",
+                "./../../../modules/shared/*/*/composer.json",
+                "./../../../modules/shared/*/composer.json",
+                "./../../../modules/extensions/*/*/composer.json",
+                "./../../../modules/extensions/*/composer.json",
+                "./../../../modules/plugin/*/*/composer.json",
+                "./../../../modules/plugin/*/composer.json",
+                "./../../../modules/theme/*/*/composer.json",
+                "./../../../modules/theme/*/composer.json",   
+                "~/../../../.webfan/red/*/*/*/*/composer.json",
+                "~/../../../.webfan/red/*/*/*/composer.json",
+                "~/../../../.webfan/shared/*/*/*/*/composer.json",
+                "~/../../../.webfan/shared/*/*/*/composer.json"
             ],
             "require": [
-                "./composer.json"
+                "./composer.json",
+                "./../../../composer.json"
             ],
             "recurse": true,
             "replace": false,
@@ -105,17 +106,17 @@
      },
     "downloads": {
       "*": {
-        "path": "./modules/vendor-patch/{$id}",
+        "path": "./../../../modules/vendor-patch/{$id}",
         "ignore": ["test", "tests", "doc", "docs", ".*"]
       },
       "frdl/array-helper": {
         "url": "https://github.com/frdl/array-helper/archive/refs/heads/main.zip",
-        "path": "./modules/frdl/array-helper",
+        "path": "./../../../modules/frdl/array-helper",
         "ignore": [".*"]
       },
       "vendor-patch/psecio.secure_dotenv": {
         "url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
-        "path": "./modules/vendor-patch/psecio.secure_dotenv",
+        "path": "./../../../modules/vendor-patch/psecio.secure_dotenv",
         "ignore": [".*"]
       }
     }
