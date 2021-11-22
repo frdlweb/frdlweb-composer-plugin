@@ -64,6 +64,8 @@
     "foxy": true,
      "merge-plugin": {
             "include": [
+                "composer.dist.json",
+                "composer.json",
                 "composer.local.json",
                 "userdata/*/*/*/composer.json",
                 "plugins/*/*/*/composer.json",
@@ -82,7 +84,9 @@
                 "modules/theme/*/*/composer.json",
                 "modules/theme/*/composer.json",
                 "~/.webfan/red/*/*/*/*/composer.json",
-                "~/.webfan/red/*/*/*/composer.json"
+                "~/.webfan/red/*/*/*/composer.json",
+                "~/.webfan/shared/*/*/*/*/composer.json",
+                "~/.webfan/shared/*/*/*/composer.json"
             ],
             "require": [
                 "./composer.json"
@@ -97,7 +101,7 @@
      },
     "downloads": {
       "*": {
-        "path": "./vendor/vendor-patch/{$id}",
+        "path": "vendor/vendor-patch/{$id}",
         "ignore": ["test", "tests", "doc", "docs", ".*"]
       },
       "frdl/array-helper": {
@@ -132,7 +136,7 @@
         "phpclasses/frdl-app": "1.0.0"
     },
     "autoload": {
-         "classmap" : ["src/lib/"],
+         "classmap" : ["src/lib/*", "src/modules/**/*"],
          "psr-4": {
                  "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
                  "Webfan\\App\\Patches\\" : "src/patches/",
