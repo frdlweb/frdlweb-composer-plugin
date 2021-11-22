@@ -136,7 +136,7 @@
         "phpclasses/frdl-app": "1.0.0"
     },
     "autoload": {
-         "classmap" : ["src/lib", "src/modules/**/*"],
+         "classmap" : [ "src/modules/**/*"],
          "psr-4": {
                  "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
                  "Webfan\\App\\Patches\\" : "src/patches/",
