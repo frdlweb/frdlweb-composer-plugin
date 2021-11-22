@@ -24,6 +24,10 @@
             "email": "contact@tradezone.fr",
             "homepage": "http:\/\/tradezone.fr",
             "role": "Translator"
+        },       
+        {
+            "name": "Bryan Davis",
+            "email": "bd808@wikimedia.org"
         }
     ],
 
@@ -120,11 +124,6 @@
         "url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
         "path": "modules/vendor-patch/secure_dotenv",
         "ignore": [".*"]
-      },
-      "vendor-patch/wikimedia.composer-merge-plugin": {
-        "url": "https://github.com/vendor-patch/composer-merge-plugin/archive/refs/heads/master.zip",
-        "path": "modules/vendor-patch/composer-merge-plugin",
-        "ignore": [".*"]
       }
     }
   },    
@@ -145,6 +144,7 @@
     },
     "autoload": {
          "psr-4": {
+                 "Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
                  "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
                  "Webfan\\App\\Patches\\" : "src/patches/",
                  "frdl\\" : ".ApplicationComposer/lib/frdl/",
