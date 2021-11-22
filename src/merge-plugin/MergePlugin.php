@@ -80,7 +80,7 @@ class MergePlugin implements PluginInterface, EventSubscriberInterface
     /**
      * Official package name
      */
-    public const PACKAGE_NAME = 'wikimedia/composer-merge-plugin';
+    public const PACKAGE_NAME = 'frdl/webfan';
 
     /**
      * Priority that plugin uses to register callbacks.
@@ -393,4 +393,4 @@ class MergePlugin implements PluginInterface, EventSubscriberInterface
         // @codeCoverageIgnoreEnd
     }
 }
-// vim:sw=4:ts=4:sts=4:et:
+ 
