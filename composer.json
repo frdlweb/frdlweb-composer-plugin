@@ -29,14 +29,7 @@
             "name": "Bryan Davis",
             "email": "bd808@wikimedia.org"
         }
-    ],
-
-     "repositories": [
-        {
-            "type": "path",
-            "url": "./../../../packages"
-        }
-    ],
+    ] ,
     "require": {
         "php": ">= 8.0",
         "composer-plugin-api": "^1.1||>=2.0",
@@ -92,8 +85,7 @@
                 "modules/plugin/*/*/composer.json",
                 "modules/plugin/*/composer.json",
                 "modules/theme/*/*/composer.json",
-                "modules/theme/*/composer.json",               
-                "modules/*/*/composer.json",
+                "modules/theme/*/composer.json",   
                 "~/.webfan/red/*/*/*/*/composer.json",
                 "~/.webfan/red/*/*/*/composer.json",
                 "~/.webfan/shared/*/*/*/*/composer.json",
