@@ -82,35 +82,35 @@
                 "WEBFAN_CONTAINER_WEID": ""
             },
             "packages": {
-                "@frdl/*": : {
+                "@frdl/*" : {
                     "dependencies": "install",
                     "script": "build"
                 },
-                "frdl/*": : {
+                "frdl/*" : {
                     "dependencies": "install",
                     "script": "build"
                 },
-                "@webfan3/*": : {
+                "@webfan3/*" : {
                     "dependencies": "install",
                     "script": "build"
                 },
-                "webfan3/*": : {
+                "webfan3/*" : {
                     "dependencies": "install",
                     "script": "build"
                 },
-                "frdl": : {
+                "frdl" : {
                     "dependencies": "install",
                     "script": "build"
                 },
-                "yarn": : {
+                "yarn" : {
                     "dependencies": "install",
                     "script": "build"
                 },
-                "webpack": : {
+                "webpack" : {
                     "dependencies": "install",
                     "script": "build"
                 },
-                "*webpack*": : {
+                "*webpack*" : {
                     "dependencies": "install",
                     "script": "build"
                 }
