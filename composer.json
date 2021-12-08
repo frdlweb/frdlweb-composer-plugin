@@ -36,6 +36,7 @@
         "civicrm/composer-compile-plugin" : "*",
         "civicrm/composer-downloads-plugin": "*",
         "civicrm/composer-compile-lib": "*",
+        "inpsyde/composer-assets-compiler": "*",
         "frdl/remote-psr4": "*"
     },
      
@@ -61,10 +62,60 @@
     "class": [        
         "LastCall\\DownloadsPlugin\\Plugin",
         "Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
-        "Civi\\CompilePlugin\\CompilePlugin"
+        "Civi\\CompilePlugin\\CompilePlugin",
+        "Inpsyde\\AssetsCompiler\\Composer\\Plugin"
     ],
     "compile-mode": "all",
     "foxy": true,
+    "composer-asset-compiler": {
+            "stop-on-failure": false,
+            "auto-discover": false,
+            "auto-run": false,
+            "defaults": {
+                "dependencies": "none",
+                "script": "test"
+            },
+            "default-env": {
+                "WEBFAN_STAGE_COLOR": "~",
+                "WEBFAN_PUBLIC_WEID": "",
+                "WEBFAN_PRIVATE_WEID": "",
+                "WEBFAN_CONTAINER_WEID": ""
+            },
+            "packages": {
+                "@frdl/*": : {
+                    "dependencies": "install",
+                    "script": "build"
+                },
+                "frdl/*": : {
+                    "dependencies": "install",
+                    "script": "build"
+                },
+                "@webfan3/*": : {
+                    "dependencies": "install",
+                    "script": "build"
+                },
+                "webfan3/*": : {
+                    "dependencies": "install",
+                    "script": "build"
+                },
+                "frdl": : {
+                    "dependencies": "install",
+                    "script": "build"
+                },
+                "yarn": : {
+                    "dependencies": "install",
+                    "script": "build"
+                },
+                "webpack": : {
+                    "dependencies": "install",
+                    "script": "build"
+                },
+                "*webpack*": : {
+                    "dependencies": "install",
+                    "script": "build"
+                }
+            }       
+    },       
      "merge-plugin": {
             "include": [
                 "./../../../composer.dist.json",
