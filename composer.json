@@ -108,27 +108,27 @@
       },
       "frdl/array-helper": {
         "url": "https://github.com/frdl/array-helper/archive/refs/heads/main.zip",
-        "path": "./../../../modules/frdl/array-helper",
+        "path": "~/.webfan/shared/modules/frdl/array-helper",
         "ignore": [".*"]
       },
       "vendor-patch/psecio.secure_dotenv": {
         "url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
-        "path": "./../../../modules/vendor-patch/psecio.secure_dotenv",
+        "path": "~/.webfan/shared/modules/vendor-patch/psecio.secure_dotenv",
         "ignore": [".*"]
       },
       "inverisoss/tiny-php-queue": {
             "url": "https://github.com/inverisOSS/tiny-php-queue/archive/refs/tags/1.0.0.zip",
-            "path": "./../../../modules/inverisoss/tiny-php-queue",
+            "path": "~/.webfan/shared/modules/inverisoss/tiny-php-queue",
             "ignore": [".*"]
         }       
     }
   },    
-    "minimum-stability": "dev",
-    "prefer-stable": true,   
+    "minimum-stability": "dev", 
     "config": {
-       "vendor-dir" : "modules",
-       "bin-dir" : "bin",
-       "cache-files-ttl": 900
+        "bin-dir": "~/.webfan/bin",
+        "preferred-install": "auto",
+        "cache-files-ttl": 3600,
+        "prepend-autoloader": true
     },
     
     "suggest": {
