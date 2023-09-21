@@ -43,8 +43,8 @@
 		}
 	],
 	"require": {
-		"php": ">=7.0||>= 8.0",
-		"composer-plugin-api": "^1.1||>=2.0",
+		"php": ">=7.2 | >=8.0",
+		"composer-plugin-api": "^1.1 | >=2.0",
 		"civicrm/composer-compile-plugin": "*",
 		"civicrm/composer-downloads-plugin": "*",
 		"civicrm/composer-compile-lib": "*"
@@ -56,8 +56,7 @@
 	"autoload": {
 		"psr-4": {
 			"Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
-			"Webfan\\Module\\Webfantize\\": "src/modules/webfan/",
-			"Webfan\\App\\Patches\\": "src/patches/"
+			"Webfan\\Module\\Webfantize\\": "src/modules/webfan/"
 		}
 	},
 
@@ -73,39 +72,15 @@
 			"Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield"
 		]
 	},
-	"extra": {
-		"compile-mode": "all",
+	"extra": {	
+		"compile-mode": "all",	
+		"foxy": true,
 		"class": [
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
 			"LastCall\\DownloadsPlugin\\Plugin",
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
 			"Civi\\CompilePlugin\\CompilePlugin"
 		],
-		"merge-plugin": {
-			"include": [
-				"./composer.json",
-				"./../../../vendor/*/*/*/composer.json",
-				"./../../../plugins/*/*/*/composer.json"
-			],
-			"require": [
-				"./composer.json",
-				"./../../../composer.json"
-			],
-			"recurse": true,
-			"replace": false,
-			"ignore-duplicates": true,
-			"merge-dev": false,
-			"merge-extra": true,
-			"merge-extra-deep": true,
-			"merge-scripts": true
-		},
-		"downloads": {
-			"*": {
-				"path": "./../../../vendor/{$id}",
-				"ignore": ["test", "tests", "doc", "docs", ".*"]
-			}
-		},
-
 		"installer-types": [
 			"oiplus-plugin-publicPages",
 			"oiplus-plugin-raPages",
@@ -122,6 +97,30 @@
 			"oiplus-plugin-bundle",
 			"oiplus-plugin-io4"
 		],
+		"merge-plugin": {
+			"include": [
+				"./composer.json",
+				"./../../../composer.json",
+				"./../../../plugins/*/*/composer.json"
+			],
+			"require": [
+				"./../../../composer.json",
+				"./composer.json"
+			],
+			"recurse": true,
+			"replace": false,
+			"ignore-duplicates": true,
+			"merge-dev": true,
+			"merge-extra": true,
+			"merge-extra-deep": true,
+			"merge-scripts": true
+		},
+		"downloads": {
+			"*": {
+				"path": "./../../../vendor/{$id}",
+				"ignore": ["test", "tests", "doc", "docs", ".*"]
+			}
+		},
 		"installer-paths": {
 			"plugins\/{$vendor}\/publicPages\/{$name}\/": [
 				"type:oiplus-plugin-publicPages"
@@ -157,6 +156,7 @@
 				"type:oiplus-plugin-captcha"
 			]
 		},
+		"config-plugin-output-dir": "config",
 		"dependency-scripts": {
 			"run": true,
 			"trust": [
@@ -189,8 +189,10 @@
 			]
 		}
 	},
-	"minimum-stability": "dev",
-	"config": {
+	"config": {		
+		"preferred-install": "auto",
+		"cache-files-ttl": 3600,
+		"prepend-autoloader": true,
 		"allow-plugins": {
 			"danielmarschall/*": true,
 			"airmad/*": true,
