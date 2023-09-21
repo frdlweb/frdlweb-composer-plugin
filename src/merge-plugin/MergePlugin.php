@@ -80,7 +80,7 @@ class MergePlugin implements PluginInterface, EventSubscriberInterface
     /**
      * Official package name
      */
-    public const PACKAGE_NAME = 'frdl/webfan';
+    public const PACKAGE_NAME = 'frdl/oiplus-composer-plugin';
 
     /**
      * Priority that plugin uses to register callbacks.
