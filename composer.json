@@ -128,37 +128,37 @@
 		"oiplus-plugin-io4"
 	],
 	"installer-paths": {
-		"plugins\/{$vendor}\/publicPages\/{$name}\/: [
+		"plugins\/{$vendor}\/publicPages\/{$name}\/": [
 			"type:oiplus-plugin-publicPages"
 		],
-		"plugins\/{$vendor}\/raPages\/{$name}\/: [
+		"plugins\/{$vendor}\/raPages\/{$name}\/": [
 			"type:oiplus-plugin-raPages"
 		],
-		"plugins\/{$vendor}\/adminPages\/{$name}\/: [
+		"plugins\/{$vendor}\/adminPages\/{$name}\/": [
 			"type:oiplus-plugin-adminPages"
 		],
-		"plugins\/{$vendor}\/auth\/{$name}\/: [
+		"plugins\/{$vendor}\/auth\/{$name}\/": [
 			"type:oiplus-plugin-auth"
 		],
-		"plugins\/{$vendor}\/database\/{$name}\/: [
+		"plugins\/{$vendor}\/database\/{$name}\/": [
 			"type:oiplus-plugin-database"
 		],
-		"plugins\/{$vendor}\/sqlSlang\/{$name}\/: [
+		"plugins\/{$vendor}\/sqlSlang\/{$name}\/": [
 			"type:oiplus-plugin-sqlSlang"
 		],
-		"plugins\/{$vendor}\/logger\/{$name}\/: [
+		"plugins\/{$vendor}\/logger\/{$name}\/": [
 			"type:oiplus-plugin-logger"
 		],
-		"plugins\/{$vendor}\/objectTypes\/{$name}\/: [
+		"plugins\/{$vendor}\/objectTypes\/{$name}\/": [
 			"type:oiplus-plugin-objectTypes"
 		],
 		"plugins\/{$vendor}\/language\/{$name}\/: [
 			"type:oiplus-plugin-language"
 		],
-		"plugins\/{$vendor}\/design\/{$name}\/: [
+		"plugins\/{$vendor}\/design\/{$name}\/": [
 			"type:oiplus-plugin-design"
 		],
-		"plugins\/{$vendor}\/captcha\/{$name}\/: [
+		"plugins\/{$vendor}\/captcha\/{$name}\/": [
 			"type:oiplus-plugin-captcha"
 		]
 	},
