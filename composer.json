@@ -1,203 +1,205 @@
 {
-    "name": "frdl/oiplus-composer-plugin",
-    "type": "composer-plugin",
-    "description": "Composer Plugin for OIDplus Installations",
-    "keywords": ["OIDplus", "Composer Plugin"],
-    "homepage": "https:\/\/www.oidplus.com\/",
-    "license":  ["MIT"],
-    "support": {
-        "email": "co@weid.info",
-        "issues": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/issues",
-        "forum": "https:\/\/startforum.de\/s\/oiplus-composer-plugin\/",
-        "wiki": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/wiki",
-        "source": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/tree\/master"
-    },
-    "authors": [        
-		{
+	"name": "frdl/oiplus-composer-plugin",
+	"type": "composer-plugin",
+	"description": "Composer Plugin for OIDplus Installations",
+	"keywords": ["OIDplus", "Composer Plugin"],
+	"homepage": "https:\/\/www.oidplus.com\/",
+	"license": ["MIT"],
+	"support": {
+		"email": "co@weid.info",
+		"issues": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/issues",
+		"forum": "https:\/\/startforum.de\/s\/oiplus-composer-plugin\/",
+		"wiki": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/wiki",
+		"source": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/tree\/master"
+	},
+	"authors": [{
 			"name": "Daniel Marschall",
 			"email": "info@daniel-marschall.de",
 			"homepage": "https://www.daniel-marschall.de/"
 		},
-        {
-            "name": "Till Wehowski",
-            "email": "software@frdl.de",
-            "homepage": "https:\/\/webfan.de",
-            "role": "Developer"
-        },
-        {
-            "name": "Bryan Davis",
-            "email": "bd808@wikimedia.org"
-        }
-    ],    
-
-   "suggest": {
-        "danielmarschall/oidplus" : "The main project! # Insert the repository section and require this composer-plugin in your projects root composer.json of OIDplus"
-    },
-    
-    "repositories": [
-          {"type": "composer", "url": "https://oidplus-plugins.repo.pkg.frdl.de"},
-          {
-			  "type": "composer",
-			  "url": "https://frdl.repo.pkg.frdl.de"
-		  }
-    ],
-    "require": {
-        "php": ">=7.0||>= 8.0",
-        "composer-plugin-api": "^1.1||>=2.0",
-        "civicrm/composer-compile-plugin" : "*",
-        "civicrm/composer-downloads-plugin": "*",
-        "civicrm/composer-compile-lib": "*"
-    },
-    
-    "provide" : {
-        "wikimedia/composer-merge-plugin": "dev-master"
-    },
-    "autoload": {
-         "psr-4": {
-                 "Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
-                 "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
-                 "Webfan\\App\\Patches\\" : "src/patches/",
-                 "frdl\\" : ".ApplicationComposer/lib/frdl/",
-                 "webfan\\" : ".ApplicationComposer/lib/webfan/",
-                 "webdof\\" : ".ApplicationComposer/lib/webdof/"
-        }
-    },
-     
-    "scripts-descriptions": {
-        "webfantize": "Invoke Webfan 'Magic Shield Scripts' on/in the current context @ToDo CHANGE TO e.g. 'OIDplusInstallshield'"
-    }, 
-    
- "scripts": {
-        "command": [
-            "@composer webfantize"
-        ],     
-        "webfantize": [
-            "Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield"
-        ]     
-    },   
-"extra": {
-    "compile-mode": "all",
-    "class": [        
-        "Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
-        "LastCall\\DownloadsPlugin\\Plugin",
-        "Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
-        "Civi\\CompilePlugin\\CompilePlugin"
-    ], 
-    "merge-plugin": {
-            "include": [
-                "./../../../composer.dist.json",
-                "./../../../composer.local.json",
-                "./../../../vendor/*/*/*/composer.json",
-                "./../../../plugins/*/*/*/composer.json"
-            ],
-            "require": [
-                "./composer.json",
-                "./../../../composer.json"
-            ],
-            "recurse": true,
-            "replace": false,
-            "ignore-duplicates": true,
-            "merge-dev": false,
-            "merge-extra": true,
-            "merge-extra-deep": true,
-            "merge-scripts": true       
-     },
-    "downloads": {
-      "*": {
-        "path": "./../../../vendor/{$id}",
-        "ignore": ["test", "tests", "doc", "docs", ".*"]
-      }  
-    },
-
-	"installer-types": [
-		"oiplus-plugin-publicPages",
-		"oiplus-plugin-raPages",
-		"oiplus-plugin-adminPages",
-		"oiplus-plugin-auth",
-		"oiplus-plugin-database",
-		"oiplus-plugin-sqlSlang",
-		"oiplus-plugin-logger",
-		"oiplus-plugin-objectTypes",
-		"oiplus-plugin-language",
-		"oiplus-plugin-design",
-		"oiplus-plugin-captcha",
-        
-		"oiplus-plugin-bundle",
-		"oiplus-plugin-io4"
+		{
+			"name": "Till Wehowski",
+			"email": "software@frdl.de",
+			"homepage": "https:\/\/webfan.de",
+			"role": "Developer"
+		},
+		{
+			"name": "Bryan Davis",
+			"email": "bd808@wikimedia.org"
+		}
 	],
-	"installer-paths": {
-		"plugins\/{$vendor}\/publicPages\/{$name}\/": [
-			"type:oiplus-plugin-publicPages"
+
+	"suggest": {
+		"danielmarschall/oidplus": "The main project! # Insert the repository section and require this composer-plugin in your projects root composer.json of OIDplus"
+	},
+
+	"repositories": [{
+			"type": "composer",
+			"url": "https://oidplus-plugins.repo.pkg.frdl.de"
+		},
+		{
+			"type": "composer",
+			"url": "https://frdl.repo.pkg.frdl.de"
+		}
+	],
+	"require": {
+		"php": ">=7.0||>= 8.0",
+		"composer-plugin-api": "^1.1||>=2.0",
+		"civicrm/composer-compile-plugin": "*",
+		"civicrm/composer-downloads-plugin": "*",
+		"civicrm/composer-compile-lib": "*"
+	},
+
+	"provide": {
+		"wikimedia/composer-merge-plugin": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
+			"Webfan\\Module\\Webfantize\\": "src/modules/webfan/",
+			"Webfan\\App\\Patches\\": "src/patches/",
+			"frdl\\": ".ApplicationComposer/lib/frdl/",
+			"webfan\\": ".ApplicationComposer/lib/webfan/",
+			"webdof\\": ".ApplicationComposer/lib/webdof/"
+		}
+	},
+
+	"scripts-descriptions": {
+		"webfantize": "Invoke Webfan 'Magic Shield Scripts' on/in the current context @ToDo CHANGE TO e.g. 'OIDplusInstallshield'"
+	},
+
+	"scripts": {
+		"command": [
+			"@composer webfantize"
 		],
-		"plugins\/{$vendor}\/raPages\/{$name}\/": [
-			"type:oiplus-plugin-raPages"
-		],
-		"plugins\/{$vendor}\/adminPages\/{$name}\/": [
-			"type:oiplus-plugin-adminPages"
-		],
-		"plugins\/{$vendor}\/auth\/{$name}\/": [
-			"type:oiplus-plugin-auth"
-		],
-		"plugins\/{$vendor}\/database\/{$name}\/": [
-			"type:oiplus-plugin-database"
-		],
-		"plugins\/{$vendor}\/sqlSlang\/{$name}\/": [
-			"type:oiplus-plugin-sqlSlang"
-		],
-		"plugins\/{$vendor}\/logger\/{$name}\/": [
-			"type:oiplus-plugin-logger"
-		],
-		"plugins\/{$vendor}\/objectTypes\/{$name}\/": [
-			"type:oiplus-plugin-objectTypes"
-		],
-		"plugins\/{$vendor}\/language\/{$name}\/": [
-			"type:oiplus-plugin-language"
-		],
-		"plugins\/{$vendor}\/design\/{$name}\/": [
-			"type:oiplus-plugin-design"
-		],
-		"plugins\/{$vendor}\/captcha\/{$name}\/": [
-			"type:oiplus-plugin-captcha"
+		"webfantize": [
+			"Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield"
 		]
 	},
-	"dependency-scripts": {
-		"run": true,
-		"trust": [
-			"airmad\/*",
-			"composer\/*",
-			"symfony",
-			"symfony\/symfony",
-			"symfony\/console",
-			"frdl\/console",
-			"frdl\/*",
-			"webfan3\/*",
-			"wehowski\/*"
+	"extra": {
+		"compile-mode": "all",
+		"class": [
+			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
+			"LastCall\\DownloadsPlugin\\Plugin",
+			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
+			"Civi\\CompilePlugin\\CompilePlugin"
 		],
-		"exclude": [],
-	"types": [
-		"oiplus-plugin-publicPages",
-		"oiplus-plugin-raPages",
-		"oiplus-plugin-adminPages",
-		"oiplus-plugin-auth",
-		"oiplus-plugin-database",
-		"oiplus-plugin-sqlSlang",
-		"oiplus-plugin-logger",
-		"oiplus-plugin-objectTypes",
-		"oiplus-plugin-language",
-		"oiplus-plugin-design",
-		"oiplus-plugin-captcha",
-        
-		"oiplus-plugin-bundle",
-		"oiplus-plugin-io4"
-	] 
-  },    
-    "minimum-stability": "dev", 
-    "config": {
-        "bin-dir": "./../../../bin",
-        "preferred-install": "auto",
-        "cache-files-ttl": 3600,
-        "prepend-autoloader": true,        
-         "allow-plugins": {
+		"merge-plugin": {
+			"include": [
+				"./../../../composer.dist.json",
+				"./../../../composer.local.json",
+				"./../../../vendor/*/*/*/composer.json",
+				"./../../../plugins/*/*/*/composer.json"
+			],
+			"require": [
+				"./composer.json",
+				"./../../../composer.json"
+			],
+			"recurse": true,
+			"replace": false,
+			"ignore-duplicates": true,
+			"merge-dev": false,
+			"merge-extra": true,
+			"merge-extra-deep": true,
+			"merge-scripts": true
+		},
+		"downloads": {
+			"*": {
+				"path": "./../../../vendor/{$id}",
+				"ignore": ["test", "tests", "doc", "docs", ".*"]
+			}
+		},
+
+		"installer-types": [
+			"oiplus-plugin-publicPages",
+			"oiplus-plugin-raPages",
+			"oiplus-plugin-adminPages",
+			"oiplus-plugin-auth",
+			"oiplus-plugin-database",
+			"oiplus-plugin-sqlSlang",
+			"oiplus-plugin-logger",
+			"oiplus-plugin-objectTypes",
+			"oiplus-plugin-language",
+			"oiplus-plugin-design",
+			"oiplus-plugin-captcha",
+
+			"oiplus-plugin-bundle",
+			"oiplus-plugin-io4"
+		],
+		"installer-paths": {
+			"plugins\/{$vendor}\/publicPages\/{$name}\/": [
+				"type:oiplus-plugin-publicPages"
+			],
+			"plugins\/{$vendor}\/raPages\/{$name}\/": [
+				"type:oiplus-plugin-raPages"
+			],
+			"plugins\/{$vendor}\/adminPages\/{$name}\/": [
+				"type:oiplus-plugin-adminPages"
+			],
+			"plugins\/{$vendor}\/auth\/{$name}\/": [
+				"type:oiplus-plugin-auth"
+			],
+			"plugins\/{$vendor}\/database\/{$name}\/": [
+				"type:oiplus-plugin-database"
+			],
+			"plugins\/{$vendor}\/sqlSlang\/{$name}\/": [
+				"type:oiplus-plugin-sqlSlang"
+			],
+			"plugins\/{$vendor}\/logger\/{$name}\/": [
+				"type:oiplus-plugin-logger"
+			],
+			"plugins\/{$vendor}\/objectTypes\/{$name}\/": [
+				"type:oiplus-plugin-objectTypes"
+			],
+			"plugins\/{$vendor}\/language\/{$name}\/": [
+				"type:oiplus-plugin-language"
+			],
+			"plugins\/{$vendor}\/design\/{$name}\/": [
+				"type:oiplus-plugin-design"
+			],
+			"plugins\/{$vendor}\/captcha\/{$name}\/": [
+				"type:oiplus-plugin-captcha"
+			]
+		},
+		"dependency-scripts": {
+			"run": true,
+			"trust": [
+				"airmad\/*",
+				"composer\/*",
+				"symfony",
+				"symfony\/symfony",
+				"symfony\/console",
+				"frdl\/console",
+				"frdl\/*",
+				"webfan3\/*",
+				"wehowski\/*"
+			],
+			"exclude": [],
+			"types": [
+				"oiplus-plugin-publicPages",
+				"oiplus-plugin-raPages",
+				"oiplus-plugin-adminPages",
+				"oiplus-plugin-auth",
+				"oiplus-plugin-database",
+				"oiplus-plugin-sqlSlang",
+				"oiplus-plugin-logger",
+				"oiplus-plugin-objectTypes",
+				"oiplus-plugin-language",
+				"oiplus-plugin-design",
+				"oiplus-plugin-captcha",
+
+				"oiplus-plugin-bundle",
+				"oiplus-plugin-io4"
+			]
+		}
+	},
+	"minimum-stability": "dev",
+	"config": {
+		"bin-dir": "./../../../bin",
+		"preferred-install": "auto",
+		"cache-files-ttl": 3600,
+		"prepend-autoloader": true,
+		"allow-plugins": {
 			"danielmarschall/*": true,
 			"airmad/*": true,
 			"civicrm/*": true,
@@ -206,5 +208,5 @@
 			"webfan3/*": true,
 			"kylekatarnls/update-helper": true
 		}
-    }
-} 
+	}
+}
