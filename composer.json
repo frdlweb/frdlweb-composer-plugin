@@ -57,10 +57,7 @@
 		"psr-4": {
 			"Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
 			"Webfan\\Module\\Webfantize\\": "src/modules/webfan/",
-			"Webfan\\App\\Patches\\": "src/patches/",
-			"frdl\\": ".ApplicationComposer/lib/frdl/",
-			"webfan\\": ".ApplicationComposer/lib/webfan/",
-			"webdof\\": ".ApplicationComposer/lib/webdof/"
+			"Webfan\\App\\Patches\\": "src/patches/"
 		}
 	},
 
@@ -86,6 +83,7 @@
 		],
 		"merge-plugin": {
 			"include": [
+				"./composer.json",
 				"./../../../vendor/*/*/*/composer.json",
 				"./../../../plugins/*/*/*/composer.json"
 			],
