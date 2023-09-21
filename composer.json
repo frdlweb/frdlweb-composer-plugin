@@ -86,8 +86,6 @@
 		],
 		"merge-plugin": {
 			"include": [
-				"./../../../composer.dist.json",
-				"./../../../composer.local.json",
 				"./../../../vendor/*/*/*/composer.json",
 				"./../../../plugins/*/*/*/composer.json"
 			],
