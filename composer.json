@@ -25,12 +25,6 @@
             "role": "Developer"
         },
         {
-            "name": "Mahel Plasson",
-            "email": "contact@tradezone.fr",
-            "homepage": "http:\/\/tradezone.fr",
-            "role": "Translator"
-        },       
-        {
             "name": "Bryan Davis",
             "email": "bd808@wikimedia.org"
         }
@@ -87,37 +81,6 @@
         "path": "./../../../vendor/{$id}",
         "ignore": ["test", "tests", "doc", "docs", ".*"]
       }  
-    }
-  },    
-    "minimum-stability": "dev", 
-    "config": {
-        "bin-dir": "./../../../bin",
-        "preferred-install": "auto",
-        "cache-files-ttl": 3600,
-        "prepend-autoloader": true,        
-         "allow-plugins": {
-			"danielmarschall/*": true,
-			"airmad/*": true,
-			"civicrm/*": true,
-			"composer/*": true,
-			"frdl/*": true,
-			"webfan3/*": true,
-			"kylekatarnls/update-helper": true
-		}
-    },
-    
-    "provide" : {
-        "wikimedia/composer-merge-plugin": "dev-master"
-    },
-    "autoload": {
-         "psr-4": {
-                 "Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
-                 "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
-                 "Webfan\\App\\Patches\\" : "src/patches/",
-                 "frdl\\" : ".ApplicationComposer/lib/frdl/",
-                 "webfan\\" : ".ApplicationComposer/lib/webfan/",
-                 "webdof\\" : ".ApplicationComposer/lib/webdof/"
-        }
     },
 
 	"installer-types": [
@@ -200,11 +163,38 @@
         
 		"oiplus-plugin-bundle",
 		"oiplus-plugin-io4"
-	]
-},
-
-
+	] 
+  },    
+    "minimum-stability": "dev", 
+    "config": {
+        "bin-dir": "./../../../bin",
+        "preferred-install": "auto",
+        "cache-files-ttl": 3600,
+        "prepend-autoloader": true,        
+         "allow-plugins": {
+			"danielmarschall/*": true,
+			"airmad/*": true,
+			"civicrm/*": true,
+			"composer/*": true,
+			"frdl/*": true,
+			"webfan3/*": true,
+			"kylekatarnls/update-helper": true
+		}
+    },
     
+    "provide" : {
+        "wikimedia/composer-merge-plugin": "dev-master"
+    },
+    "autoload": {
+         "psr-4": {
+                 "Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
+                 "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
+                 "Webfan\\App\\Patches\\" : "src/patches/",
+                 "frdl\\" : ".ApplicationComposer/lib/frdl/",
+                 "webfan\\" : ".ApplicationComposer/lib/webfan/",
+                 "webdof\\" : ".ApplicationComposer/lib/webdof/"
+        }
+    },    
 
   "suggest": {
         "danielmarschall/oidplus" : "The main project! # Below follows example project composer.json:"
