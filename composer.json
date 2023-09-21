@@ -28,13 +28,39 @@
             "name": "Bryan Davis",
             "email": "bd808@wikimedia.org"
         }
-    ] ,
+    ],    
+
+   "suggest": {
+        "danielmarschall/oidplus" : "The main project! # Insert the repository section and require this composer-plugin in your projects root composer.json of OIDplus"
+    },
+    
+    "repositories": [
+          {"type": "composer", "url": "https://oidplus-plugins.repo.pkg.frdl.de"},
+          {
+			  "type": "composer",
+			  "url": "https://frdl.repo.pkg.frdl.de"
+		  }
+    ],
     "require": {
         "php": ">=7.0||>= 8.0",
         "composer-plugin-api": "^1.1||>=2.0",
         "civicrm/composer-compile-plugin" : "*",
         "civicrm/composer-downloads-plugin": "*",
         "civicrm/composer-compile-lib": "*"
+    },
+    
+    "provide" : {
+        "wikimedia/composer-merge-plugin": "dev-master"
+    },
+    "autoload": {
+         "psr-4": {
+                 "Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
+                 "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
+                 "Webfan\\App\\Patches\\" : "src/patches/",
+                 "frdl\\" : ".ApplicationComposer/lib/frdl/",
+                 "webfan\\" : ".ApplicationComposer/lib/webfan/",
+                 "webdof\\" : ".ApplicationComposer/lib/webdof/"
+        }
     },
      
     "scripts-descriptions": {
@@ -180,31 +206,5 @@
 			"webfan3/*": true,
 			"kylekatarnls/update-helper": true
 		}
-    },
-    
-    "provide" : {
-        "wikimedia/composer-merge-plugin": "dev-master"
-    },
-    "autoload": {
-         "psr-4": {
-                 "Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
-                 "Webfan\\Module\\Webfantize\\" : "src/modules/webfan/",
-                 "Webfan\\App\\Patches\\" : "src/patches/",
-                 "frdl\\" : ".ApplicationComposer/lib/frdl/",
-                 "webfan\\" : ".ApplicationComposer/lib/webfan/",
-                 "webdof\\" : ".ApplicationComposer/lib/webdof/"
-        }
-    },    
-
-  "suggest": {
-        "danielmarschall/oidplus" : "The main project! # Below follows example project composer.json:"
-    },
-    
-    "repositories": [
-          {"type": "composer", "url": "https://oidplus-plugins.repo.pkg.frdl.de"},
-          {
-			  "type": "composer",
-			  "url": "https://frdl.repo.pkg.frdl.de"
-		  }
-    ]		
+    }
 } 
