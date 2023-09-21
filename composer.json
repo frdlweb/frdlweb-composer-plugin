@@ -152,7 +152,7 @@
 		"plugins\/{$vendor}\/objectTypes\/{$name}\/": [
 			"type:oiplus-plugin-objectTypes"
 		],
-		"plugins\/{$vendor}\/language\/{$name}\/: [
+		"plugins\/{$vendor}\/language\/{$name}\/": [
 			"type:oiplus-plugin-language"
 		],
 		"plugins\/{$vendor}\/design\/{$name}\/": [
