@@ -94,7 +94,16 @@
         "bin-dir": "./../../../bin",
         "preferred-install": "auto",
         "cache-files-ttl": 3600,
-        "prepend-autoloader": true
+        "prepend-autoloader": true,        
+         "allow-plugins": {
+			"danielmarschall/*": true,
+			"airmad/*": true,
+			"civicrm/*": true,
+			"composer/*": true,
+			"frdl/*": true,
+			"webfan3/*": true,
+			"kylekatarnls/update-helper": true
+		}
     },
     
     "provide" : {
@@ -199,16 +208,7 @@
 
   "suggest": {
         "danielmarschall/oidplus" : "The main project! # Below follows example project composer.json:"
-    },        
-    "allow-plugins": {
-			"danielmarschall/*": true,
-			"airmad/*": true,
-			"civicrm/*": true,
-			"composer/*": true,
-			"frdl/*": true,
-			"webfan3/*": true,
-			"kylekatarnls/update-helper": true
-		},
+    },
     
     "repositories": [
           {"type": "composer", "url": "https://oidplus-plugins.repo.pkg.frdl.de"},
