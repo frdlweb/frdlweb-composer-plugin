@@ -1,18 +1,23 @@
 {
-    "name": "frdl/webfan",
+    "name": "frdl/oiplus-composer-plugin",
     "type": "composer-plugin",
-    "description": "Frdlweb Codehub Helpers Plugin",
-    "keywords": ["webfan", "webfan-module", "webfan-extension", "webfan-plugin", "frdl", "frdlweb", "frdl-helper"],
-    "homepage": "https:\/\/frdl.github.io\/webfan\/",
+    "description": "Composer Plugin for OIDplus Installations",
+    "keywords": ["OIDplus", "Composer Plugin"],
+    "homepage": "https:\/\/www.oidplus.com\/",
     "license":  ["MIT"],
     "support": {
-        "email": "support@webfan.de",
-        "issues": "https:\/\/github.com\/frdl\/webfan\/issues",
-        "forum": "https:\/\/startforum.de\/s\/webfan\/",
-        "wiki": "https:\/\/github.com\/frdl\/webfan\/wiki",
-        "source": "https:\/\/github.com\/frdl\/webfan\/tree\/master"
+        "email": "co@weid.info",
+        "issues": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/issues",
+        "forum": "https:\/\/startforum.de\/s\/oiplus-composer-plugin\/",
+        "wiki": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/wiki",
+        "source": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/tree\/master"
     },
-    "authors": [
+    "authors": [        
+		{
+			"name": "Daniel Marschall",
+			"email": "info@daniel-marschall.de",
+			"homepage": "https://www.daniel-marschall.de/"
+		},
         {
             "name": "Till Wehowski",
             "email": "software@frdl.de",
@@ -31,16 +36,15 @@
         }
     ] ,
     "require": {
-        "php": ">= 8.0",
+        "php": ">=7.0||>= 8.0",
         "composer-plugin-api": "^1.1||>=2.0",
         "civicrm/composer-compile-plugin" : "*",
         "civicrm/composer-downloads-plugin": "*",
-        "civicrm/composer-compile-lib": "*",
-        "frdl/remote-psr4": "*"
+        "civicrm/composer-compile-lib": "*"
     },
      
     "scripts-descriptions": {
-        "webfantize": "Invoke Webfan 'Magic Shield Scripts' on/in the current context"
+        "webfantize": "Invoke Webfan 'Magic Shield Scripts' on/in the current context @ToDo CHANGE TO e.g. 'OIDplusInstallshield'"
     }, 
     
  "scripts": {
@@ -48,8 +52,6 @@
             "@composer webfantize"
         ],     
         "webfantize": [
-            "@putenv WEBFAN_WITH_COMPOSER='deterministic'",
-            "@putenv WEBFAN_CONTEXT_CONTEXT=WEBFAN_WITH_COMPOSER",
             "Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield"
         ]     
     },   
@@ -65,29 +67,8 @@
             "include": [
                 "./../../../composer.dist.json",
                 "./../../../composer.local.json",
-                "./../../../userdata/*/*/*/composer.json",
-                "./../../../runtime/*/*/*/composer.json",
-                "./../../../vendor/webfan-pro/*/*/composer.json",
-                "./../../../vendor/webfan-pro/*/composer.json",
-                "./../../../vendor/webfan3/*/*/composer.json",
-                "./../../../vendor/webfan3/*/composer.json",
-                "./../../../vendor/frdl/*/*/composer.json",
-                "./../../../vendor/frdl/*/composer.json",
-                "./../../../extensions/*/*/composer.json",
-                "./../../../extensions/*/composer.json",
-                "./../../../modules/shared/*/*/composer.json",
-                "./../../../modules/shared/*/composer.json",
-                "./../../../modules/extensions/*/*/composer.json",
-                "./../../../modules/extensions/*/composer.json",
-                "./../../../modules/plugin/*/*/composer.json",
-                "./../../../modules/plugin/*/composer.json",
-                "./../../../modules/theme/*/*/composer.json",
-                "./../../../modules/theme/*/composer.json",                   
-                "./../../../modules/*/*/composer.json",
-                "~/../../../.webfan/red/*/*/*/*/composer.json",
-                "~/../../../.webfan/red/*/*/*/composer.json",
-                "~/../../../.webfan/shared/*/*/*/*/composer.json",
-                "~/../../../.webfan/shared/*/*/*/composer.json"
+                "./../../../vendor/*/*/*/composer.json",
+                "./../../../plugins/*/*/*/composer.json"
             ],
             "require": [
                 "./composer.json",
@@ -103,24 +84,9 @@
      },
     "downloads": {
       "*": {
-        "path": "./../../../modules/{$id}",
+        "path": "./../../../vendor/{$id}",
         "ignore": ["test", "tests", "doc", "docs", ".*"]
-      },
-      "frdl/array-helper": {
-        "url": "https://github.com/frdl/array-helper/archive/refs/heads/main.zip",
-        "path": "./../../../modules/frdl/array-helper",
-        "ignore": [".*"]
-      },
-      "vendor-patch/psecio.secure_dotenv": {
-        "url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
-        "path": "./../../../modules/vendor-patch/psecio.secure_dotenv",
-        "ignore": [".*"]
-      },
-      "inverisoss/tiny-php-queue": {
-            "url": "https://github.com/inverisOSS/tiny-php-queue/archive/refs/tags/1.0.0.zip",
-            "path": "./../../../modules/inverisoss/tiny-php-queue",
-            "ignore": [".*"]
-        }       
+      }  
     }
   },    
     "minimum-stability": "dev", 
@@ -131,14 +97,8 @@
         "prepend-autoloader": true
     },
     
-    "suggest": {
-        "frdl/project" : "Frdlweb Project Template", 
-        "frdl/codebase" : "My favorites...",        
-        "foxy/foxy": "Manage npm depencencies/assets"
-    },    
     "provide" : {
-        "wikimedia/composer-merge-plugin": "dev-master",
-        "phpclasses/frdl-app": "1.0.0"
+        "wikimedia/composer-merge-plugin": "dev-master"
     },
     "autoload": {
          "psr-4": {
@@ -149,5 +109,112 @@
                  "webfan\\" : ".ApplicationComposer/lib/webfan/",
                  "webdof\\" : ".ApplicationComposer/lib/webdof/"
         }
-    }    
+    },
+
+	"installer-types": [
+		"oiplus-plugin-publicPages",
+		"oiplus-plugin-raPages",
+		"oiplus-plugin-adminPages",
+		"oiplus-plugin-auth",
+		"oiplus-plugin-database",
+		"oiplus-plugin-sqlSlang",
+		"oiplus-plugin-logger",
+		"oiplus-plugin-objectTypes",
+		"oiplus-plugin-language",
+		"oiplus-plugin-design",
+		"oiplus-plugin-captcha",
+        
+		"oiplus-plugin-bundle",
+		"oiplus-plugin-io4"
+	],
+	"installer-paths": {
+		"plugins\/{$vendor}\/publicPages\/{$name}\/: [
+			"type:oiplus-plugin-publicPages"
+		],
+		"plugins\/{$vendor}\/raPages\/{$name}\/: [
+			"type:oiplus-plugin-raPages"
+		],
+		"plugins\/{$vendor}\/adminPages\/{$name}\/: [
+			"type:oiplus-plugin-adminPages"
+		],
+		"plugins\/{$vendor}\/auth\/{$name}\/: [
+			"type:oiplus-plugin-auth"
+		],
+		"plugins\/{$vendor}\/database\/{$name}\/: [
+			"type:oiplus-plugin-database"
+		],
+		"plugins\/{$vendor}\/sqlSlang\/{$name}\/: [
+			"type:oiplus-plugin-sqlSlang"
+		],
+		"plugins\/{$vendor}\/logger\/{$name}\/: [
+			"type:oiplus-plugin-logger"
+		],
+		"plugins\/{$vendor}\/objectTypes\/{$name}\/: [
+			"type:oiplus-plugin-objectTypes"
+		],
+		"plugins\/{$vendor}\/language\/{$name}\/: [
+			"type:oiplus-plugin-language"
+		],
+		"plugins\/{$vendor}\/design\/{$name}\/: [
+			"type:oiplus-plugin-design"
+		],
+		"plugins\/{$vendor}\/captcha\/{$name}\/: [
+			"type:oiplus-plugin-captcha"
+		]
+	},
+	"dependency-scripts": {
+		"run": true,
+		"trust": [
+			"airmad\/*",
+			"composer\/*",
+			"symfony",
+			"symfony\/symfony",
+			"symfony\/console",
+			"frdl\/console",
+			"frdl\/*",
+			"webfan3\/*",
+			"wehowski\/*"
+		],
+		"exclude": [],
+	"types": [
+		"oiplus-plugin-publicPages",
+		"oiplus-plugin-raPages",
+		"oiplus-plugin-adminPages",
+		"oiplus-plugin-auth",
+		"oiplus-plugin-database",
+		"oiplus-plugin-sqlSlang",
+		"oiplus-plugin-logger",
+		"oiplus-plugin-objectTypes",
+		"oiplus-plugin-language",
+		"oiplus-plugin-design",
+		"oiplus-plugin-captcha",
+        
+		"oiplus-plugin-bundle",
+		"oiplus-plugin-io4"
+	]
+},
+
+
+    
+
+  "suggest": {
+        "danielmarschall/oidplus" : "The main project! # Below follows example project composer.json:"
+    },        
+    "allow-plugins": {
+			"danielmarschall/*": true,
+			"airmad/*": true,
+			"civicrm/*": true,
+			"composer/*": true,
+			"frdl/*": true,
+			"webfan3/*": true,
+			"kylekatarnls/update-helper": true
+		},
+    
+    "repositories": [
+          {"type": "composer", "url": "https://oidplus-plugins.repo.pkg.frdl.de"},
+          {
+			  "type": "composer",
+			  "url": "https://frdl.repo.pkg.frdl.de"
+		  }
+    ]		
 } 
