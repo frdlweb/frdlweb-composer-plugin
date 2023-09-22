@@ -217,6 +217,7 @@
 			"composer/*": true,
 			"frdl/*": true,
 			"kylekatarnls/update-helper": true,
+			"vendor-patch/composer-custom-directory-installer" : true,
 			"vendor-patch/composer-installers-extender" : true,
 			"vendor-patch/composer-installers-extender" : true,
 			"vendor-patch/oiplus-composer-plugin" : true,
