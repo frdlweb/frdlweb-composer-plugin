@@ -74,6 +74,7 @@
 		]
 	},
 	"extra": {	
+		"plugin-modifies-install-path": true,
 		"compile-mode": "all",	
 		"foxy": false,
 		"class": [
