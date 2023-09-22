@@ -74,38 +74,6 @@
 		]
 	},
 	"extra": {
-		"downloads": {
-			"*": {
-				"path": "./../../../modules/{$id}",
-				"ignore": ["test", "tests", "doc", "docs", ".*"]
-			},
-			"vendor-patch/composer-installers-extender": {
-				"url": "https://github.com/vendor-patch/composer-installers-extender/archive/refs/heads/master.zip",
-				"path": "./../../../vendor/vendor-patch/composer-installers-extender",
-				"ignore": [".*"]
-			},
-			"vendor-patch/composer-custom-directory-installer": {
-				"url": "https://github.com/vendor-patch/composer-custom-directory-installer/archive/refs/heads/master.zip",
-				"path": "./../../../vendor/vendor-patch/composer-custom-directory-installer",
-				"ignore": [".*"]
-			},
-			"frdl/array-helper": {
-				"url": "https://github.com/frdl/array-helper/archive/refs/heads/main.zip",
-				"path": "./../../../vendor/frdl/array-helper",
-				"ignore": [".*"]
-			},
-			"vendor-patch/psecio.secure_dotenv": {
-				"url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
-				"path": "./../../../vendor/vendor-patch/psecio.secure_dotenv",
-				"ignore": [".*"]
-			},
-			"inverisoss/tiny-php-queue": {
-				"url": "https://github.com/inverisOSS/tiny-php-queue/archive/refs/tags/1.0.0.zip",
-				"path": "./../../../vendor/inverisoss/tiny-php-queue",
-				"ignore": [".*"]
-			}
-		},
-		 
 		"compile-mode": "all",
 		"foxy": false,
 		"class": [
