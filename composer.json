@@ -160,7 +160,9 @@
 		"config-plugin-output-dir": "config",
 		"dependency-scripts": {
 			"run": true,
-			"trust": [
+			"trust": [			
+				"oomphinc\/composer-installers-extender",			
+				"danielmarschall\/*",
 				"airmad\/*",
 				"composer\/*",
 				"symfony",
@@ -183,10 +185,7 @@
 				"oiplus-plugin-objectTypes",
 				"oiplus-plugin-language",
 				"oiplus-plugin-design",
-				"oiplus-plugin-captcha",
-
-				"oiplus-plugin-bundle",
-				"oiplus-plugin-io4"
+				"oiplus-plugin-captcha"
 			]
 		}
 	},
