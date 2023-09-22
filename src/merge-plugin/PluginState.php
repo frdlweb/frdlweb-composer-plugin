@@ -156,11 +156,11 @@ class PluginState
                 'require' => [],
                 'recurse' => true,
                 'replace' => false,
-                'ignore-duplicates' => false,
+                'ignore-duplicates' => true,
                 'merge-dev' => true,
-                'merge-extra' => false,
-                'merge-extra-deep' => false,
-                'merge-scripts' => false,
+                'merge-extra' => true,
+                'merge-extra-deep' => true,
+                'merge-scripts' => true,
             ],
             $extra['merge-plugin'] ?? []
         );
@@ -398,4 +398,3 @@ class PluginState
         return $this->mergeScripts;
     }
 }
-// vim:sw=4:ts=4:sts=4:et:
