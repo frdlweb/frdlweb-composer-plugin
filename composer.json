@@ -45,7 +45,6 @@
 		"composer-plugin-api": "^1.1 || ^2.0",       
 		"composer/installers": "^1.0 || ^2.0",
 		"oomphinc/composer-installers-extender" : "v1.1.2 || 2.0.0",
-		"frdl/webfan" : "*",
 		"civicrm/composer-compile-plugin": "*",
 		"civicrm/composer-downloads-plugin": "*",
 		"civicrm/composer-compile-lib": "*"
@@ -83,14 +82,14 @@
 			"Civi\\CompilePlugin\\CompilePlugin"
 		],
 		"installer-types": [
-			"oiplus-plugin-publicPages",
-			"oiplus-plugin-raPages",
-			"oiplus-plugin-adminPages",
+			"oiplus-plugin-public-pages",
+			"oiplus-plugin-rap-ages",
+			"oiplus-plugin-admin-pages",
 			"oiplus-plugin-auth",
 			"oiplus-plugin-database",
-			"oiplus-plugin-sqlSlang",
+			"oiplus-plugin-sql-slang",
 			"oiplus-plugin-logger",
-			"oiplus-plugin-objectTypes",
+			"oiplus-plugin-object-types",
 			"oiplus-plugin-language",
 			"oiplus-plugin-design",
 			"oiplus-plugin-captcha"
@@ -128,13 +127,13 @@
 		},
 	    "installer-paths": {
 		"plugins/{$vendor}/publicPages/{$name}/": [
-			"type:oiplus-plugin-publicPages"
+			"type:oiplus-plugin-public-pages"
 		],
 		"plugins/{$vendor}/raPages/{$name}/": [
-			"type:oiplus-plugin-raPages"
+			"type:oiplus-plugin-ra-pages"
 		],
 		"plugins/{$vendor}/adminPages/{$name}/": [
-			"type:oiplus-plugin-adminPages"
+			"type:oiplus-plugin-admin-pages"
 		],
 		"plugins/{$vendor}/auth/{$name}/": [
 			"type:oiplus-plugin-auth"
@@ -143,13 +142,13 @@
 			"type:oiplus-plugin-database"
 		],
 		"plugins/{$vendor}/sqlSlang/{$name}/": [
-			"type:oiplus-plugin-sqlSlang"
+			"type:oiplus-plugin-sql-slang"
 		],
 		"plugins/{$vendor}/logger/{$name}/": [
 			"type:oiplus-plugin-logger"
 		],
 		"plugins/{$vendor}/objectTypes/{$name}/": [
-			"type:oiplus-plugin-objectTypes"
+			"type:oiplus-plugin-object-types"
 		],
 		"plugins/{$vendor}/language/{$name}/": [
 			"type:oiplus-plugin-language"
@@ -181,14 +180,14 @@
 			"types": [
 				"library",
 				"composer-plugin",
-				"oiplus-plugin-publicPages",
-				"oiplus-plugin-raPages",
-				"oiplus-plugin-adminPages",
+				"oiplus-plugin-public-pages",
+				"oiplus-plugin-ra-pages",
+				"oiplus-plugin-admin-pages",
 				"oiplus-plugin-auth",
 				"oiplus-plugin-database",
-				"oiplus-plugin-sqlSlang",
+				"oiplus-plugin-sql-slang",
 				"oiplus-plugin-logger",
-				"oiplus-plugin-objectTypes",
+				"oiplus-plugin-object-types",
 				"oiplus-plugin-language",
 				"oiplus-plugin-design",
 				"oiplus-plugin-captcha"
