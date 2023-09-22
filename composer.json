@@ -55,10 +55,7 @@
 		"wikimedia/composer-merge-plugin": "dev-master"
 	},
 	"autoload": {
-		"psr-4": {
-			"Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
-			"Webfan\\Module\\Webfantize\\": "src/modules/webfan/"
-		}
+		"classmap": ["src/*"]
 	},
 
 	"scripts-descriptions": {
@@ -98,15 +95,15 @@
 		],
 		"merge-plugin": {
 			"include": [
-				"./../../../composer.json",
 				"./../../../plugins/*/*/composer.json",
 				"./../../../vendor/webfan3/*/composer.json",
                                 "./../../../vendor/frdl/*/composer.json",
-				"./composer.json"
+				"./composer.json",
+				"./../../../composer.json"
 			],
 			"require": [
-				"./../../../composer.json",
-				"./composer.json"
+				"./composer.json",
+				"./../../../composer.json"
 			],
 			"recurse": true,
 			"replace": false,
@@ -162,7 +159,7 @@
 			"type:oiplus-plugin-captcha"
 		]
 	},
-	"config-plugin-output-dir": "config",
+	
 	"dependency-scripts": {
 			"run": true,
 			"trust": [			
@@ -170,13 +167,11 @@
 				"danielmarschall\/*",
 				"airmad\/*",
 				"composer\/*",
-				"symfony",
-				"symfony\/symfony",
-				"symfony\/console",
-				"frdl\/console",
+				"symfony\/*",
 				"frdl\/*",
 				"webfan3\/*",
-				"wehowski\/*"
+				"wehowski\/*",
+				"vendor-patch\/*"
 			],
 			"exclude": [],
 			"types": [
@@ -195,6 +190,8 @@
 		}
 	},
 	"config": {		
+		"optimize-autoloader": true,
+		"classmap-authoritative": false,
 		"preferred-install": "auto",
 		"prepend-autoloader": false,
 		"allow-plugins": {
