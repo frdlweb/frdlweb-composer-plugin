@@ -9,8 +9,7 @@
 	"support": {
 		"email": "co@weid.info",
 		"issues": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/issues",
-		"forum": "https://startforum.de/s/oidplus/",
-		"wiki": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/wiki",
+		"forum": "https://startforum.de/s/oidplus/"
 		"source": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/tree\/master"
 	},
 	"authors": [{
@@ -45,10 +44,11 @@
 		"php": ">=7.0 || >=8.0",    
 		"composer-plugin-api": "^1.1 || ^2.0",       
 		"composer/installers": "^1.0 || ^2.0",
+		"oomphinc/composer-installers-extender" : "v1.1.2 || 2.0.0",
+		"frdl/webfan" : "*",
 		"civicrm/composer-compile-plugin": "*",
 		"civicrm/composer-downloads-plugin": "*",
-		"civicrm/composer-compile-lib": "*",
-		"oomphinc/composer-installers-extender" : "^2.0"
+		"civicrm/composer-compile-lib": "*"
 	},
 
 	"provide": {
@@ -80,7 +80,6 @@
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
 			"OomphInc\\ComposerInstallersExtender\\Plugin",
 			"LastCall\\DownloadsPlugin\\Plugin",
-			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
 			"Civi\\CompilePlugin\\CompilePlugin"
 		],
 		"installer-types": [
@@ -99,7 +98,6 @@
 		"merge-plugin": {
 			"include": [
 				"./../../../composer.json",
-				"./composer.json",
 				"./../../../plugins/*/*/composer.json",
 				"./../../../vendor/webfan3/*/composer.json",
                                 "./../../../vendor/frdl/*/composer.json",
@@ -121,15 +119,14 @@
 			"*": {
 				"path": "./../../../vendor/{$id}",
 				"ignore": ["test", "tests", "doc", "docs", ".*"]
+			},
+			"frdl/webfan" : {
+				"url": "https://github.com/frdl/webfan/archive/refs/heads/master.zip",		
+				"path": "vendor/frdl/webfan",
+				"ignore": []
 			}
 		},
 	    "installer-paths": {
-		"includes/composer-plugins/{$vendor}/{$name}/": [
-			"type:composer-plugin"
-		],
-		"vendor/{$vendor}/{$name}/": [
-			"type:library"
-		],
 		"plugins/{$vendor}/publicPages/{$name}/": [
 			"type:oiplus-plugin-publicPages"
 		],
@@ -201,8 +198,7 @@
 	"config": {		
 		"preferred-install": "auto",
 		"cache-files-ttl": 3600,
-		"prepend-autoloader": true,
-		"sort-packages": true,
+		"prepend-autoloader": false,
 		"allow-plugins": {
 			"danielmarschall/*": true,
 			"airmad/*": true,
