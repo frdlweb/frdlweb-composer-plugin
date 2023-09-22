@@ -102,8 +102,7 @@
 			"Composer\\CustomDirectoryInstaller\\PluginPlugin",
 			"LastCall\\DownloadsPlugin\\Plugin",
 			"Civi\\CompilePlugin\\CompilePlugin",
-			"Smoren\\Composer\\Mushroom\\HookManager",
-			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin"
+			"Smoren\\Composer\\Mushroom\\HookManager"
 		],
 		"installer-types": [
 			"oiplus-plugin-public-pages",
@@ -120,11 +119,9 @@
 		],
 		"merge-plugin": {
 			"include": [
-				"./composer.json",
 				"./../../../plugins/*/*/composer.json",
 				"./composer.json",
-				"./../../../composer.json",
-				"./composer.json"
+				"./../../../composer.json"
 			],
 			"require": [
 				"./composer.json",
