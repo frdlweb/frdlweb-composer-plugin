@@ -103,7 +103,6 @@
 			"Composer\\CustomDirectoryInstaller\\LibraryPlugin",            
 			"Composer\\CustomDirectoryInstaller\\PearPlugin",           
 			"Composer\\CustomDirectoryInstaller\\PluginPlugin",	
-			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
 			"LastCall\\DownloadsPlugin\\Plugin",		  
 			"Civi\\CompilePlugin\\CompilePlugin",
 			"Smoren\\Composer\\Mushroom\\HookManager"
@@ -123,11 +122,11 @@
 		],
 		"merge-plugin": {
 			"include": [
-				"./../../../plugins/*/*/composer.json",
-				"./../../../vendor/webfan3/*/composer.json",
-                                "./../../../vendor/frdl/*/composer.json",
 				"./composer.json",
-				"./../../../composer.json"
+				"./../../../plugins/*/*/composer.json",
+				"./composer.json",
+				"./../../../composer.json",
+				"./composer.json"
 			],
 			"require": [
 				"./composer.json",
