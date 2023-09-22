@@ -31,7 +31,8 @@
 	],
 
 	"suggest": {
-		"danielmarschall/oidplus": "The main project! # Insert the repository section and require this composer-plugin in your projects root composer.json of OIDplus"
+		"danielmarschall/oidplus": "The main project! # Insert the repository section and require this composer-plugin in your projects root composer.json of OIDplus",
+		"frdl/oidplus-io4-bridge-plugin" : "OIDplus webfat/IO4 Bridge. Example for OIDplus composer package type (oiplus-plugin-ra-pages)"
 	},
 
 	"repositories": [
@@ -121,7 +122,7 @@
 			},
 			"frdl/webfan" : {
 				"url": "https://github.com/frdl/webfan/archive/refs/heads/master.zip",		
-				"path": "vendor/frdl/webfan",
+				"path": "./../../../vendor/frdl/webfan",
 				"ignore": []
 			}
 		},
@@ -178,8 +179,6 @@
 			],
 			"exclude": [],
 			"types": [
-				"library",
-				"composer-plugin",
 				"oiplus-plugin-public-pages",
 				"oiplus-plugin-ra-pages",
 				"oiplus-plugin-admin-pages",
@@ -196,7 +195,6 @@
 	},
 	"config": {		
 		"preferred-install": "auto",
-		"cache-files-ttl": 3600,
 		"prepend-autoloader": false,
 		"allow-plugins": {
 			"danielmarschall/*": true,
