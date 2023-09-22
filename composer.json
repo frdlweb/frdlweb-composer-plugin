@@ -201,20 +201,20 @@
 			]
 		}
 	},
-	"config": {
-		"allow-plugins": {
-			"danielmarschall/*": true,
-			"airmad/*": true,
-			"civicrm/*": true,
-			"composer/*": true,
-			"frdl/*": true,
-			"kylekatarnls/update-helper": true,
-			"vendor-patch/composer-custom-directory-installer": true,
-			"vendor-patch/composer-installers-extender": true,
-			"vendor-patch/oiplus-composer-plugin": true,
-			"smoren/mushroom-hook-manager": true,
-			"oomphinc/composer-installers-extender": true
-		}
-
+"config": {
+	"allow-plugins": {
+		"danielmarschall/*": true,
+		"airmad/*": true,
+		"civicrm/*": true,
+		"composer/*": true,
+		"frdl/*": true,
+		"kylekatarnls/update-helper": true,
+		"vendor-patch/composer-custom-directory-installer": true,
+		"vendor-patch/composer-installers-extender": true,
+		"vendor-patch/oiplus-composer-plugin": true,
+		"smoren/mushroom-hook-manager": true,
+		"oomphinc/composer-installers-extender": true
 	}
+
+}
 }
