@@ -79,6 +79,7 @@
 			"Composer\\CustomDirectoryInstaller\\PearPlugin",
 			"Composer\\CustomDirectoryInstaller\\PluginPlugin",
 			"LastCall\\DownloadsPlugin\\Plugin",
+			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
 			"Civi\\CompilePlugin\\CompilePlugin",
 			"Smoren\\Composer\\Mushroom\\HookManager"
 		],
@@ -179,7 +180,8 @@
 			]
 		}
 	},
-	"config": {
+    "config": {
+	"bin-dir": "./../../../bin",	
 	"optimize-autoloader" : true,
 	"classmap-authoritative" : false,  
 	"prepend-autoloader": true, 
@@ -196,6 +198,7 @@
 			"vendor-patch/composer-installers-extender": true,
 			"frdl/oiplus-composer-plugin": true,
 			"smoren/mushroom-hook-manager": true,
+		        "composer/installers": true,
 			"oomphinc/composer-installers-extender": true
 		}
 
