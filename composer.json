@@ -9,7 +9,7 @@
 	"support": {
 		"email": "co@weid.info",
 		"issues": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/issues",
-		"forum": "https://startforum.de/s/oidplus/"
+		"forum": "https://startforum.de/s/oidplus/",
 		"source": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/tree\/master"
 	},
 	"authors": [{
