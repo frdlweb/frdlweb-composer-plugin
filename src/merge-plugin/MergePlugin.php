@@ -337,11 +337,11 @@ class MergePlugin implements PluginInterface, EventSubscriberInterface
             $requirements = $this->getUpdateAllowList();
             if (empty($requirements)) { 
                     $this->logger->log(
-                    "\n".'<info>'.
+                    "\n".'<warning>'.
                     'No requirements in '.__METHOD__.'. Please review code at line '.__LINE__.'!'.
-                    '</info>'
+                    '</warning>'
                 );
-                 // return;
+                 return;
             }
 
             $this->logger->log("\n".'<info>Running composer update to apply merge settings</info>');
