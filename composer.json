@@ -105,7 +105,7 @@
 			"Composer\\CustomDirectoryInstaller\\PluginPlugin",
 			"LastCall\\DownloadsPlugin\\Plugin",
 			"Civi\\CompilePlugin\\CompilePlugin",
-			"\\Smoren\\Composer\\Mushroom\\HookManager"
+			"Smoren\\Composer\\Mushroom\\HookManager"
 		],
 		"installer-types": [
 			"oiplus-plugin-public-pages",
