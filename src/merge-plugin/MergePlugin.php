@@ -148,7 +148,7 @@ class MergePlugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritdoc}  PRE_PACKAGE_INSTALL
      */
     public static function getSubscribedEvents()
     {
@@ -170,6 +170,86 @@ class MergePlugin implements PluginInterface, EventSubscriberInterface
         ];
     }
 
+
+    /**
+     * Handle an event callback following an install or update command. If our
+     * plugin was installed during the run then trigger an update command to
+     * process any merge-patterns in the current config.
+     *
+     * @param ScriptEvent $event
+     */
+    public function onPostInstallOrUpdate(ScriptEvent $event)
+    {
+        // @codeCoverageIgnoreStart
+        if ($this->state->isFirstInstall()) {
+            $this->state->setFirstInstall(false);
+
+            $requirements = $this->getUpdateAllowList();
+            if (empty($requirements)) { 
+                    $this->logger->log(
+                    "\n".'<warning>'.
+                    'No requirements in '.__METHOD__.'. Please review code at line '.__LINE__.'!'.
+                    '</warning>'
+                );
+                 return;
+            }
+
+            $this->logger->log("\n".'<info>Running composer update to apply merge settings</info>');
+
+            $lockBackup = null;
+            $lock = null;
+            if (!$this->state->isComposer1()) {
+                $file = Factory::getComposerFile();
+                $lock = Factory::getLockFile($file);
+                if (file_exists($lock)) {
+                    $lockBackup = file_get_contents($lock);
+                }
+            }
+
+            $config = $this->composer->getConfig();
+            $preferSource = $config->get('preferred-install') == 'source';
+            $preferDist = $config->get('preferred-install') == 'dist';
+
+            $installer = Installer::create(
+                $event->getIO(),
+                // Create a new Composer instance to ensure full processing of
+                // the merged files.
+                Factory::create($event->getIO(), null, false)
+            );
+
+            $installer->setPreferSource($preferSource);
+            $installer->setPreferDist($preferDist);
+            $installer->setDevMode($event->isDevMode());
+            $installer->setDumpAutoloader($this->state->shouldDumpAutoloader());
+            $installer->setOptimizeAutoloader(
+                $this->state->shouldOptimizeAutoloader()
+            );
+
+            $installer->setUpdate(true);
+
+            if ($this->state->isComposer1()) {
+                // setUpdateWhitelist() only exists in composer 1.x. Configure as to run phan against composer 2.x
+                // @phan-suppress-next-line PhanUndeclaredMethod
+                $installer->setUpdateWhitelist($requirements);
+            } else {
+                $installer->setUpdateAllowList($requirements);
+            }
+
+            $status = $installer->run();
+            if (( $status !== 0 ) && $lockBackup && $lock && !$this->state->isComposer1()) {
+                $this->logger->log(
+                    "\n".'<error>'.
+                    'Update to apply merge settings failed, reverting '.$lock.' to its original content.'.
+                    '</error>'
+                );
+                file_put_contents($lock, $lockBackup);
+            }
+        }
+        // @codeCoverageIgnoreEnd
+    }
+
+
+    
     /**
      * Get list of packages to restrict update operations.
      *
@@ -178,7 +258,23 @@ class MergePlugin implements PluginInterface, EventSubscriberInterface
      */
     public function getUpdateAllowList()
     {
-        return array_keys($this->updateAllowList);
+        
+        return array_keys(array_merge(
+            (array)(json_decode('{
+			"danielmarschall/*": true,
+			"airmad/*": true,
+			"civicrm/*": true,
+			"composer/*": true,
+			"kylekatarnls/update-helper": true,
+			"vendor-patch/composer-custom-directory-installer": true,
+			"vendor-patch/composer-installers-extender": true,
+			"frdl/oiplus-composer-plugin": true,
+			"smoren/mushroom-hook-manager": true,
+		     "composer/installers": true,
+			"oomphinc/composer-installers-extender": true
+		}')), 
+                          $this->updateAllowList
+                         ));
     }
 
     /**
@@ -321,81 +417,6 @@ class MergePlugin implements PluginInterface, EventSubscriberInterface
         }
     }
 
-    /**
-     * Handle an event callback following an install or update command. If our
-     * plugin was installed during the run then trigger an update command to
-     * process any merge-patterns in the current config.
-     *
-     * @param ScriptEvent $event
-     */
-    public function onPostInstallOrUpdate(ScriptEvent $event)
-    {
-        // @codeCoverageIgnoreStart
-        if ($this->state->isFirstInstall()) {
-            $this->state->setFirstInstall(false);
 
-            $requirements = $this->getUpdateAllowList();
-            if (empty($requirements)) { 
-                    $this->logger->log(
-                    "\n".'<warning>'.
-                    'No requirements in '.__METHOD__.'. Please review code at line '.__LINE__.'!'.
-                    '</warning>'
-                );
-                 return;
-            }
-
-            $this->logger->log("\n".'<info>Running composer update to apply merge settings</info>');
-
-            $lockBackup = null;
-            $lock = null;
-            if (!$this->state->isComposer1()) {
-                $file = Factory::getComposerFile();
-                $lock = Factory::getLockFile($file);
-                if (file_exists($lock)) {
-                    $lockBackup = file_get_contents($lock);
-                }
-            }
-
-            $config = $this->composer->getConfig();
-            $preferSource = $config->get('preferred-install') == 'source';
-            $preferDist = $config->get('preferred-install') == 'dist';
-
-            $installer = Installer::create(
-                $event->getIO(),
-                // Create a new Composer instance to ensure full processing of
-                // the merged files.
-                Factory::create($event->getIO(), null, false)
-            );
-
-            $installer->setPreferSource($preferSource);
-            $installer->setPreferDist($preferDist);
-            $installer->setDevMode($event->isDevMode());
-            $installer->setDumpAutoloader($this->state->shouldDumpAutoloader());
-            $installer->setOptimizeAutoloader(
-                $this->state->shouldOptimizeAutoloader()
-            );
-
-            $installer->setUpdate(true);
-
-            if ($this->state->isComposer1()) {
-                // setUpdateWhitelist() only exists in composer 1.x. Configure as to run phan against composer 2.x
-                // @phan-suppress-next-line PhanUndeclaredMethod
-                $installer->setUpdateWhitelist($requirements);
-            } else {
-                $installer->setUpdateAllowList($requirements);
-            }
-
-            $status = $installer->run();
-            if (( $status !== 0 ) && $lockBackup && $lock && !$this->state->isComposer1()) {
-                $this->logger->log(
-                    "\n".'<error>'.
-                    'Update to apply merge settings failed, reverting '.$lock.' to its original content.'.
-                    '</error>'
-                );
-                file_put_contents($lock, $lockBackup);
-            }
-        }
-        // @codeCoverageIgnoreEnd
-    }
 }
  
