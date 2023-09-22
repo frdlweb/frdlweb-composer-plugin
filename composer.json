@@ -182,7 +182,8 @@
 				"webfan3\/*",
 				"wehowski\/*",
 				"vendor-patch\/*",
-				"smoren\/mushroom-hook-manager"
+				"smoren\/mushroom-hook-manager",
+				"oomphinc\/composer-installers-extender"
 			],
 			"exclude": [],
 			"types": [
@@ -211,7 +212,8 @@
 			"vendor-patch/composer-custom-directory-installer": true,
 			"vendor-patch/composer-installers-extender": true,
 			"vendor-patch/oiplus-composer-plugin": true,
-			"smoren/mushroom-hook-manager": true
+			"smoren/mushroom-hook-manager": true,
+			"oomphinc/composer-installers-extender": true
 		}
 
 	}
