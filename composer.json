@@ -33,7 +33,7 @@
 		"danielmarschall/oidplus": "The main project! # Insert the repository section and require this composer-plugin in your projects root composer.json of OIDplus",
 		"frdl/oidplus-io4-bridge-plugin": "OIDplus webfat/IO4 Bridge. Example for OIDplus composer package type (oiplus-plugin-ra-pages)"
 	},
-
+        "minimum-stability": "dev",
 	"repositories": [{
 		"type": "composer",
 		"url": "https://oidplus-plugins.repo.pkg.frdl.de"
