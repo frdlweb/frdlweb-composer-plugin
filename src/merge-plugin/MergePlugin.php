@@ -337,9 +337,9 @@ class MergePlugin implements PluginInterface, EventSubscriberInterface
             $requirements = $this->getUpdateAllowList();
             if (empty($requirements)) { 
                     $this->logger->log(
-                    "\n".'<notice>'.
+                    "\n".'<info>'.
                     'No requirements in '.__METHOD__.'. Please review code at line '.__LINE__.'!'.
-                    '</notice>'
+                    '</info>'
                 );
                  // return;
             }
