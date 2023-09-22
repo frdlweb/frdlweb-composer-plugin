@@ -98,7 +98,10 @@
 		"foxy": false,
 		"class": [
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
-			"OomphInc\\ComposerInstallersExtender\\Plugin",
+			"OomphInc\\ComposerInstallersExtender\\Plugin",			           
+			"Composer\\CustomDirectoryInstaller\\LibraryPlugin",            
+			"Composer\\CustomDirectoryInstaller\\PearPlugin",           
+			"Composer\\CustomDirectoryInstaller\\PluginPlugin"",
 			"LastCall\\DownloadsPlugin\\Plugin",
 			"Civi\\CompilePlugin\\CompilePlugin"
 		],
@@ -136,37 +139,37 @@
 			"merge-scripts": true
 		},
 	    "installer-paths": {
-		"plugins/{$vendor}/publicPages/{$name}/": [
+		"plugins/{$vendor}/publicPages/{$package_local_name}/": [
 			"type:oiplus-plugin-public-pages"
 		],
-		"plugins/{$vendor}/raPages/{$name}/": [
+		"plugins/{$vendor}/raPages/{$package_local_name}/": [
 			"type:oiplus-plugin-ra-pages"
 		],
-		"plugins/{$vendor}/adminPages/{$name}/": [
+		"plugins/{$vendor}/adminPages/{$package_local_name}/": [
 			"type:oiplus-plugin-admin-pages"
 		],
-		"plugins/{$vendor}/auth/{$name}/": [
+		"plugins/{$vendor}/auth/{$package_local_name}/": [
 			"type:oiplus-plugin-auth"
 		],
-		"plugins/{$vendor}/database/{$name}/": [
+		"plugins/{$vendor}/database/{$package_local_name}/": [
 			"type:oiplus-plugin-database"
 		],
-		"plugins/{$vendor}/sqlSlang/{$name}/": [
+		"plugins/{$vendor}/sqlSlang/{$package_local_name}/": [
 			"type:oiplus-plugin-sql-slang"
 		],
-		"plugins/{$vendor}/logger/{$name}/": [
+		"plugins/{$vendor}/logger/{$package_local_name}/": [
 			"type:oiplus-plugin-logger"
 		],
-		"plugins/{$vendor}/objectTypes/{$name}/": [
+		"plugins/{$vendor}/objectTypes/{$package_local_name}/": [
 			"type:oiplus-plugin-object-types"
 		],
-		"plugins/{$vendor}/language/{$name}/": [
+		"plugins/{$vendor}/language/{$package_local_name}/": [
 			"type:oiplus-plugin-language"
 		],
-		"plugins/{$vendor}/design/{$name}/": [
+		"plugins/{$vendor}/design/{$package_local_name}/": [
 			"type:oiplus-plugin-design"
 		],
-		"plugins/{$vendor}/captcha/{$name}/": [
+		"plugins/{$vendor}/captcha/{$package_local_name}/": [
 			"type:oiplus-plugin-captcha"
 		]
 	},
