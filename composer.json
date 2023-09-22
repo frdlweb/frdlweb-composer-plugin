@@ -49,7 +49,8 @@
 		"vendor-patch/composer-custom-directory-installer" : "dev-master",
 		"civicrm/composer-compile-plugin": "*",
 		"civicrm/composer-downloads-plugin": "*",
-		"civicrm/composer-compile-lib": "*"
+		"civicrm/composer-compile-lib": "*",
+		"smoren/mushroom-hook-manager": "1.0.0"
 	},
 
 	"provide": {
@@ -103,7 +104,8 @@
 			"Composer\\CustomDirectoryInstaller\\PearPlugin",           
 			"Composer\\CustomDirectoryInstaller\\PluginPlugin",
 			"LastCall\\DownloadsPlugin\\Plugin",
-			"Civi\\CompilePlugin\\CompilePlugin"
+			"Civi\\CompilePlugin\\CompilePlugin",
+			"\\Smoren\\Composer\\Mushroom\\HookManager"
 		],
 		"installer-types": [
 			"oiplus-plugin-public-pages",
