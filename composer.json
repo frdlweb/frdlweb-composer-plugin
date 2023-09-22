@@ -91,21 +91,21 @@
 			},
 			"frdl/array-helper": {
 				"url": "https://github.com/frdl/array-helper/archive/refs/heads/main.zip",
-				"path": "./../../../modules/frdl/array-helper",
+				"path": "./../../../vendor/frdl/array-helper",
 				"ignore": [".*"]
 			},
 			"vendor-patch/psecio.secure_dotenv": {
 				"url": "https://github.com/vendor-patch/secure_dotenv/archive/refs/heads/master.zip",
-				"path": "./../../../modules/vendor-patch/psecio.secure_dotenv",
+				"path": "./../../../vendor/vendor-patch/psecio.secure_dotenv",
 				"ignore": [".*"]
 			},
 			"inverisoss/tiny-php-queue": {
 				"url": "https://github.com/inverisOSS/tiny-php-queue/archive/refs/tags/1.0.0.zip",
-				"path": "./../../../modules/inverisoss/tiny-php-queue",
+				"path": "./../../../vendor/inverisoss/tiny-php-queue",
 				"ignore": [".*"]
 			}
 		},
-		"plugin-modifies-install-path": true,
+		 
 		"compile-mode": "all",
 		"foxy": false,
 		"class": [
@@ -216,6 +216,12 @@
 		}
 	},
 	"config": {
+	"optimize-autoloader" : true,
+	"classmap-authoritative" : false,  
+	"prepend-autoloader": false, 
+	"secure-http": false,
+	"preferred-install": "auto",
+	"autoloader-suffix": "OidPlusComposer", 		
 		"allow-plugins": {
 			"danielmarschall/*": true,
 			"airmad/*": true,
