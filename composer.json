@@ -3,19 +3,21 @@
 	"type": "composer-plugin",
 	"description": "Composer Plugin for OIDplus Installations",
 	"keywords": ["OIDplus", "Composer Plugin"],
-	"homepage": "https:\/\/www.oidplus.com\/",
-	"license": ["MIT"],
+        "homepage": "http://www.oidplus.com/",
+         "type": "composer-plugin",
+         "license": "MIT",
 	"support": {
 		"email": "co@weid.info",
 		"issues": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/issues",
-		"forum": "https:\/\/startforum.de\/s\/oiplus-composer-plugin\/",
+		"forum": "https://startforum.de/s/oidplus/",
 		"wiki": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/wiki",
 		"source": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/tree\/master"
 	},
 	"authors": [{
 			"name": "Daniel Marschall",
 			"email": "info@daniel-marschall.de",
-			"homepage": "https://www.daniel-marschall.de/"
+			"homepage": "https://www.daniel-marschall.de/",
+			"role": "Owner"
 		},
 		{
 			"name": "Till Wehowski",
@@ -33,18 +35,16 @@
 		"danielmarschall/oidplus": "The main project! # Insert the repository section and require this composer-plugin in your projects root composer.json of OIDplus"
 	},
 
-	"repositories": [{
-			"type": "composer",
-			"url": "https://oidplus-plugins.repo.pkg.frdl.de"
-		},
+	"repositories": [
 		{
 			"type": "composer",
-			"url": "https://frdl.repo.pkg.frdl.de"
+			"url": "https://oidplus-plugins.repo.pkg.frdl.de"
 		}
 	],
 	"require": {
-		"php": ">=7.0||>=8.0",
-		"composer-plugin-api": "^1.1||>=2.0",
+		"php": ">=7.0 || >=8.0",    
+		"composer-plugin-api": "^1.1 || ^2.0",       
+		"composer/installers": "^1.0 || ^2.0",
 		"civicrm/composer-compile-plugin": "*",
 		"civicrm/composer-downloads-plugin": "*",
 		"civicrm/composer-compile-lib": "*",
@@ -75,9 +75,10 @@
 	},
 	"extra": {	
 		"compile-mode": "all",	
-		"foxy": true,
+		"foxy": false,
 		"class": [
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
+			"OomphInc\\ComposerInstallersExtender\\Plugin",
 			"LastCall\\DownloadsPlugin\\Plugin",
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
 			"Civi\\CompilePlugin\\CompilePlugin"
@@ -93,16 +94,16 @@
 			"oiplus-plugin-objectTypes",
 			"oiplus-plugin-language",
 			"oiplus-plugin-design",
-			"oiplus-plugin-captcha",
-
-			"oiplus-plugin-bundle",
-			"oiplus-plugin-io4"
+			"oiplus-plugin-captcha"
 		],
 		"merge-plugin": {
 			"include": [
-				"./composer.json",
 				"./../../../composer.json",
-				"./../../../plugins/*/*/composer.json"
+				"./composer.json",
+				"./../../../plugins/*/*/composer.json",
+				"./../../../vendor/webfan3/*/composer.json",
+                                "./../../../vendor/frdl/*/composer.json",
+				"./composer.json"
 			],
 			"require": [
 				"./../../../composer.json",
@@ -110,7 +111,7 @@
 			],
 			"recurse": true,
 			"replace": false,
-			"ignore-duplicates": true,
+			"ignore-duplicates": false,
 			"merge-dev": true,
 			"merge-extra": true,
 			"merge-extra-deep": true,
@@ -122,43 +123,49 @@
 				"ignore": ["test", "tests", "doc", "docs", ".*"]
 			}
 		},
-		"installer-paths": {
-			"plugins\/{$vendor}\/publicPages\/{$name}\/": [
-				"type:oiplus-plugin-publicPages"
-			],
-			"plugins\/{$vendor}\/raPages\/{$name}\/": [
-				"type:oiplus-plugin-raPages"
-			],
-			"plugins\/{$vendor}\/adminPages\/{$name}\/": [
-				"type:oiplus-plugin-adminPages"
-			],
-			"plugins\/{$vendor}\/auth\/{$name}\/": [
-				"type:oiplus-plugin-auth"
-			],
-			"plugins\/{$vendor}\/database\/{$name}\/": [
-				"type:oiplus-plugin-database"
-			],
-			"plugins\/{$vendor}\/sqlSlang\/{$name}\/": [
-				"type:oiplus-plugin-sqlSlang"
-			],
-			"plugins\/{$vendor}\/logger\/{$name}\/": [
-				"type:oiplus-plugin-logger"
-			],
-			"plugins\/{$vendor}\/objectTypes\/{$name}\/": [
-				"type:oiplus-plugin-objectTypes"
-			],
-			"plugins\/{$vendor}\/language\/{$name}\/": [
-				"type:oiplus-plugin-language"
-			],
-			"plugins\/{$vendor}\/design\/{$name}\/": [
-				"type:oiplus-plugin-design"
-			],
-			"plugins\/{$vendor}\/captcha\/{$name}\/": [
-				"type:oiplus-plugin-captcha"
-			]
-		},
-		"config-plugin-output-dir": "config",
-		"dependency-scripts": {
+	    "installer-paths": {
+		"includes/composer-plugins/{$vendor}/{$name}/": [
+			"type:composer-plugin"
+		],
+		"vendor/{$vendor}/{$name}/": [
+			"type:library"
+		],
+		"plugins/{$vendor}/publicPages/{$name}/": [
+			"type:oiplus-plugin-publicPages"
+		],
+		"plugins/{$vendor}/raPages/{$name}/": [
+			"type:oiplus-plugin-raPages"
+		],
+		"plugins/{$vendor}/adminPages/{$name}/": [
+			"type:oiplus-plugin-adminPages"
+		],
+		"plugins/{$vendor}/auth/{$name}/": [
+			"type:oiplus-plugin-auth"
+		],
+		"plugins/{$vendor}/database/{$name}/": [
+			"type:oiplus-plugin-database"
+		],
+		"plugins/{$vendor}/sqlSlang/{$name}/": [
+			"type:oiplus-plugin-sqlSlang"
+		],
+		"plugins/{$vendor}/logger/{$name}/": [
+			"type:oiplus-plugin-logger"
+		],
+		"plugins/{$vendor}/objectTypes/{$name}/": [
+			"type:oiplus-plugin-objectTypes"
+		],
+		"plugins/{$vendor}/language/{$name}/": [
+			"type:oiplus-plugin-language"
+		],
+		"plugins/{$vendor}/design/{$name}/": [
+			"type:oiplus-plugin-design"
+		],
+		"plugins/{$vendor}/captcha/{$name}/": [
+			"type:oiplus-plugin-captcha"
+		]
+	},
+	"config-plugin-output-dir": "config",
+	"dependency-scripts": {
 			"run": true,
 			"trust": [			
 				"oomphinc\/composer-installers-extender",			
@@ -175,6 +182,8 @@
 			],
 			"exclude": [],
 			"types": [
+				"library",
+				"composer-plugin",
 				"oiplus-plugin-publicPages",
 				"oiplus-plugin-raPages",
 				"oiplus-plugin-adminPages",
@@ -193,6 +202,7 @@
 		"preferred-install": "auto",
 		"cache-files-ttl": 3600,
 		"prepend-autoloader": true,
+		"sort-packages": true,
 		"allow-plugins": {
 			"danielmarschall/*": true,
 			"airmad/*": true,
