@@ -58,7 +58,7 @@
 			"Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",
 			"Webfan\\Module\\Webfantize\\": "src/modules/webfan/"
 		},
-		"classmap": ["src/*/"]
+		"classmap": ["src/merge-plugin/"]
 	},
 
 	"scripts-descriptions": {
