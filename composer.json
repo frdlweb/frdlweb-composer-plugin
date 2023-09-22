@@ -192,6 +192,7 @@
 		}
 	},
 "config": {
+	"prepend-autoloader": false,
 	"allow-plugins": {
 		"danielmarschall/*": true,
 		"airmad/*": true,
