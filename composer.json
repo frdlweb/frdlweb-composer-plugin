@@ -218,7 +218,8 @@
 			"kylekatarnls/update-helper": true,
 			"vendor-patch/composer-installers-extender" : true,
 			"vendor-patch/composer-installers-extender" : true,
-			"vendor-patch/*" : true
+			"vendor-patch/oiplus-composer-plugin" : true,
+			"smoren/mushroom-hook-manager" : true
 		}
 	}
 }
