@@ -214,7 +214,6 @@
 			"civicrm/*": true,
 			"composer/*": true,
 			"frdl/*": true,
-			"webfan3/*": true,
 			"kylekatarnls/update-helper": true,
 			"oomphinc/composer-installers-extender" : true,
 			"vendor-patch/composer-installers-extender" : true,
