@@ -98,12 +98,13 @@
 		"compile-mode": "all",	
 		"foxy": false,
 		"class": [
-			"OomphInc\\ComposerInstallersExtender\\Plugin",	
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
-			"LastCall\\DownloadsPlugin\\Plugin",		           
+			"OomphInc\\ComposerInstallersExtender\\Plugin",	         
 			"Composer\\CustomDirectoryInstaller\\LibraryPlugin",            
 			"Composer\\CustomDirectoryInstaller\\PearPlugin",           
 			"Composer\\CustomDirectoryInstaller\\PluginPlugin",	
+			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
+			"LastCall\\DownloadsPlugin\\Plugin",		  
 			"Civi\\CompilePlugin\\CompilePlugin",
 			"Smoren\\Composer\\Mushroom\\HookManager"
 		],
