@@ -98,12 +98,12 @@
 		"compile-mode": "all",	
 		"foxy": false,
 		"class": [
+			"OomphInc\\ComposerInstallersExtender\\Plugin",	
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
-			"OomphInc\\ComposerInstallersExtender\\Plugin",			           
+			"LastCall\\DownloadsPlugin\\Plugin",		           
 			"Composer\\CustomDirectoryInstaller\\LibraryPlugin",            
 			"Composer\\CustomDirectoryInstaller\\PearPlugin",           
-			"Composer\\CustomDirectoryInstaller\\PluginPlugin",
-			"LastCall\\DownloadsPlugin\\Plugin",
+			"Composer\\CustomDirectoryInstaller\\PluginPlugin",	
 			"Civi\\CompilePlugin\\CompilePlugin",
 			"Smoren\\Composer\\Mushroom\\HookManager"
 		],
@@ -178,8 +178,7 @@
 	
 	"dependency-scripts": {
 			"run": true,
-			"trust": [			
-				"oomphinc\/composer-installers-extender",			
+			"trust": [						
 				"danielmarschall\/*",
 				"airmad\/*",
 				"composer\/*",
@@ -217,9 +216,9 @@
 			"composer/*": true,
 			"frdl/*": true,
 			"kylekatarnls/update-helper": true,
-			"oomphinc/composer-installers-extender" : true,
 			"vendor-patch/composer-installers-extender" : true,
-			"vendor-patch/composer-installers-extender" : true
+			"vendor-patch/composer-installers-extender" : true,
+			"vendor-patch/*" : true
 		}
 	}
 }
