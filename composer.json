@@ -101,7 +101,7 @@
 			"OomphInc\\ComposerInstallersExtender\\Plugin",			           
 			"Composer\\CustomDirectoryInstaller\\LibraryPlugin",            
 			"Composer\\CustomDirectoryInstaller\\PearPlugin",           
-			"Composer\\CustomDirectoryInstaller\\PluginPlugin"",
+			"Composer\\CustomDirectoryInstaller\\PluginPlugin",
 			"LastCall\\DownloadsPlugin\\Plugin",
 			"Civi\\CompilePlugin\\CompilePlugin"
 		],
