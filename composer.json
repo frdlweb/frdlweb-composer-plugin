@@ -79,16 +79,6 @@
 				"url": "https://github.com/frdl/webfan/archive/refs/heads/master.zip",
 				"path": "./../../../vendor/frdl/webfan",
 				"ignore": []
-			},
-			"vendor-patch/composer-installers-extender": {
-				"url": "https://github.com/vendor-patch/composer-installers-extender/archive/refs/heads/master.zip",
-				"path": "./../../../vendor/vendor-patch/composer-installers-extender",
-				"ignore": []
-			},
-			"vendor-patch/composer-custom-directory-installer": {
-				"url": "https://github.com/vendor-patch/composer-custom-directory-installer/archive/refs/heads/master.zip",
-				"path": "./../../../vendor/vendor-patch/composer-custom-directory-installer",
-				"ignore": []
 			}
 		},
 		"plugin-modifies-install-path": true,
