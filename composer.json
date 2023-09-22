@@ -45,7 +45,8 @@
 		"php": ">=7.0 || >=8.0",    
 		"composer-plugin-api": "^1.1 || ^2.0",       
 		"composer/installers": "^1.0 || ^2.0",
-		"oomphinc/composer-installers-extender" : "v1.1.2 || 2.0.0",
+		"vendor-patch/composer-installers-extender" : "dev-master",
+		"vendor-patch/composer-custom-directory-installer" : "dev-master",
 		"civicrm/composer-compile-plugin": "*",
 		"civicrm/composer-downloads-plugin": "*",
 		"civicrm/composer-compile-lib": "*"
@@ -70,7 +71,28 @@
 			"Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield"
 		]
 	},
-	"extra": {	
+	"extra": {			
+		"downloads": {
+			"*": {
+				"path": "./../../../vendor/{$id}",
+				"ignore": ["test", "tests", "doc", "docs", ".*"]
+			},
+			"frdl/webfan" : {
+				"url": "https://github.com/frdl/webfan/archive/refs/heads/master.zip",		
+				"path": "./../../../vendor/frdl/webfan",
+				"ignore": []
+			},
+			"vendor-patch/composer-installers-extender" : {
+				"url": "https://github.com/vendor-patch/composer-installers-extender/archive/refs/heads/master.zip",		
+				"path": "./../../../vendor/vendor-patch/composer-installers-extender",
+				"ignore": []
+			},
+			"vendor-patch/composer-custom-directory-installer" : {
+				"url": "https://github.com/vendor-patch/composer-custom-directory-installer/archive/refs/heads/master.zip",		
+				"path": "./../../../vendor/vendor-patch/composer-custom-directory-installer",
+				"ignore": []
+			}
+		},
 		"plugin-modifies-install-path": true,
 		"compile-mode": "all",	
 		"foxy": false,
@@ -112,17 +134,6 @@
 			"merge-extra": true,
 			"merge-extra-deep": true,
 			"merge-scripts": true
-		},
-		"downloads": {
-			"*": {
-				"path": "./../../../vendor/{$id}",
-				"ignore": ["test", "tests", "doc", "docs", ".*"]
-			},
-			"frdl/webfan" : {
-				"url": "https://github.com/frdl/webfan/archive/refs/heads/master.zip",		
-				"path": "./../../../vendor/frdl/webfan",
-				"ignore": []
-			}
 		},
 	    "installer-paths": {
 		"plugins/{$vendor}/publicPages/{$name}/": [
@@ -202,7 +213,9 @@
 			"frdl/*": true,
 			"webfan3/*": true,
 			"kylekatarnls/update-helper": true,
-			"oomphinc/composer-installers-extender" : true
+			"oomphinc/composer-installers-extender" : true,
+			"vendor-patch/composer-installers-extender" : true,
+			"vendor-patch/composer-installers-extender" : true
 		}
 	}
 }
