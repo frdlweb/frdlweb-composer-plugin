@@ -48,7 +48,7 @@
 		"civicrm/composer-compile-plugin": "*",
 		"civicrm/composer-downloads-plugin": "*",
 		"civicrm/composer-compile-lib": "*",
-		"oomphinc/composer-installers-extender" : "*"
+		"oomphinc/composer-installers-extender" : "^2.0"
 	},
 
 	"provide": {
