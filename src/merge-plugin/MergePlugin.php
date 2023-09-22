@@ -335,8 +335,13 @@ class MergePlugin implements PluginInterface, EventSubscriberInterface
             $this->state->setFirstInstall(false);
 
             $requirements = $this->getUpdateAllowList();
-            if (empty($requirements)) {
-                return;
+            if (empty($requirements)) { 
+                    $this->logger->log(
+                    "\n".'<notice>'.
+                    'No requirements in '.__METHOD__.'. Please review code at line '.__LINE__.'!'.
+                    '</notice>'
+                );
+                 // return;
             }
 
             $this->logger->log("\n".'<info>Running composer update to apply merge settings</info>');
