@@ -182,7 +182,7 @@
 	"config": {
 	"optimize-autoloader" : true,
 	"classmap-authoritative" : false,  
-	"prepend-autoloader": false, 
+	"prepend-autoloader": true, 
 	"secure-http": false,
 	"preferred-install": "auto",
 	"autoloader-suffix": "OidPlusComposer", 		
