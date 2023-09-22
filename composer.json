@@ -53,8 +53,12 @@
 	"provide": {
 		"wikimedia/composer-merge-plugin": "dev-master"
 	},
-	"autoload": {
-		"classmap": ["src/*/*", "src/*/*/*"]
+	"autoload": {		   
+		"psr-4": {                
+			"Wikimedia\\Composer\\Merge\\V2\\": "src/merge-plugin/",                 
+			"Webfan\\Module\\Webfantize\\" : "src/modules/webfan/"
+		},
+		"classmap": ["src/*/"]
 	},
 
 	"scripts-descriptions": {
