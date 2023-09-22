@@ -156,7 +156,7 @@ class PluginState
                 'require' => [],
                 'recurse' => true,
                 'replace' => false,
-                'ignore-duplicates' => true,
+                'ignore-duplicates' => false,
                 'merge-dev' => true,
                 'merge-extra' => true,
                 'merge-extra-deep' => true,
