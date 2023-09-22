@@ -97,7 +97,7 @@
 		],
 		"merge-plugin": {
 			"include": [
-				"./../../../plugins/*/*/composer.json",
+				"./../../../plugins/*/*/*/composer.json",
 				"./composer.json",
 				"./../../../composer.json"
 			],
