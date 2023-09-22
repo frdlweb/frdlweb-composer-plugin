@@ -3,9 +3,8 @@
 	"type": "composer-plugin",
 	"description": "Composer Plugin for OIDplus Installations",
 	"keywords": ["OIDplus", "Composer Plugin"],
-        "homepage": "http://www.oidplus.com/",
-         "type": "composer-plugin",
-         "license": "MIT",
+	"homepage": "http://www.oidplus.com/",
+	"license": "MIT",
 	"support": {
 		"email": "co@weid.info",
 		"issues": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/issues",
@@ -32,21 +31,19 @@
 
 	"suggest": {
 		"danielmarschall/oidplus": "The main project! # Insert the repository section and require this composer-plugin in your projects root composer.json of OIDplus",
-		"frdl/oidplus-io4-bridge-plugin" : "OIDplus webfat/IO4 Bridge. Example for OIDplus composer package type (oiplus-plugin-ra-pages)"
+		"frdl/oidplus-io4-bridge-plugin": "OIDplus webfat/IO4 Bridge. Example for OIDplus composer package type (oiplus-plugin-ra-pages)"
 	},
 
-	"repositories": [
-		{
-			"type": "composer",
-			"url": "https://oidplus-plugins.repo.pkg.frdl.de"
-		}
-	],
+	"repositories": [{
+		"type": "composer",
+		"url": "https://oidplus-plugins.repo.pkg.frdl.de"
+	}],
 	"require": {
-		"php": ">=7.0 || >=8.0",    
-		"composer-plugin-api": "^1.1 || ^2.0",       
+		"php": ">=7.0 || >=8.0",
+		"composer-plugin-api": "^1.1 || ^2.0",
 		"composer/installers": "^1.0 || ^2.0",
-		"vendor-patch/composer-installers-extender" : "dev-master",
-		"vendor-patch/composer-custom-directory-installer" : "dev-master",
+		"vendor-patch/composer-installers-extender": "dev-master",
+		"vendor-patch/composer-custom-directory-installer": "dev-master",
 		"civicrm/composer-compile-plugin": "*",
 		"civicrm/composer-downloads-plugin": "*",
 		"civicrm/composer-compile-lib": "*",
@@ -72,38 +69,38 @@
 			"Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield"
 		]
 	},
-	"extra": {			
+	"extra": {
 		"downloads": {
 			"*": {
 				"path": "./../../../vendor/{$id}",
 				"ignore": ["test", "tests", "doc", "docs", ".*"]
 			},
-			"frdl/webfan" : {
-				"url": "https://github.com/frdl/webfan/archive/refs/heads/master.zip",		
+			"frdl/webfan": {
+				"url": "https://github.com/frdl/webfan/archive/refs/heads/master.zip",
 				"path": "./../../../vendor/frdl/webfan",
 				"ignore": []
 			},
-			"vendor-patch/composer-installers-extender" : {
-				"url": "https://github.com/vendor-patch/composer-installers-extender/archive/refs/heads/master.zip",		
+			"vendor-patch/composer-installers-extender": {
+				"url": "https://github.com/vendor-patch/composer-installers-extender/archive/refs/heads/master.zip",
 				"path": "./../../../vendor/vendor-patch/composer-installers-extender",
 				"ignore": []
 			},
-			"vendor-patch/composer-custom-directory-installer" : {
-				"url": "https://github.com/vendor-patch/composer-custom-directory-installer/archive/refs/heads/master.zip",		
+			"vendor-patch/composer-custom-directory-installer": {
+				"url": "https://github.com/vendor-patch/composer-custom-directory-installer/archive/refs/heads/master.zip",
 				"path": "./../../../vendor/vendor-patch/composer-custom-directory-installer",
 				"ignore": []
 			}
 		},
 		"plugin-modifies-install-path": true,
-		"compile-mode": "all",	
+		"compile-mode": "all",
 		"foxy": false,
 		"class": [
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
-			"OomphInc\\ComposerInstallersExtender\\Plugin",	         
-			"Composer\\CustomDirectoryInstaller\\LibraryPlugin",            
-			"Composer\\CustomDirectoryInstaller\\PearPlugin",           
-			"Composer\\CustomDirectoryInstaller\\PluginPlugin",	
-			"LastCall\\DownloadsPlugin\\Plugin",		  
+			"OomphInc\\ComposerInstallersExtender\\Plugin",
+			"Composer\\CustomDirectoryInstaller\\LibraryPlugin",
+			"Composer\\CustomDirectoryInstaller\\PearPlugin",
+			"Composer\\CustomDirectoryInstaller\\PluginPlugin",
+			"LastCall\\DownloadsPlugin\\Plugin",
 			"Civi\\CompilePlugin\\CompilePlugin",
 			"Smoren\\Composer\\Mushroom\\HookManager",
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin"
@@ -141,45 +138,45 @@
 			"merge-extra-deep": true,
 			"merge-scripts": true
 		},
-	    "installer-paths": {
-		"plugins/{$vendor}/publicPages/{$package_local_name}/": [
-			"type:oiplus-plugin-public-pages"
-		],
-		"plugins/{$vendor}/raPages/{$package_local_name}/": [
-			"type:oiplus-plugin-ra-pages"
-		],
-		"plugins/{$vendor}/adminPages/{$package_local_name}/": [
-			"type:oiplus-plugin-admin-pages"
-		],
-		"plugins/{$vendor}/auth/{$package_local_name}/": [
-			"type:oiplus-plugin-auth"
-		],
-		"plugins/{$vendor}/database/{$package_local_name}/": [
-			"type:oiplus-plugin-database"
-		],
-		"plugins/{$vendor}/sqlSlang/{$package_local_name}/": [
-			"type:oiplus-plugin-sql-slang"
-		],
-		"plugins/{$vendor}/logger/{$package_local_name}/": [
-			"type:oiplus-plugin-logger"
-		],
-		"plugins/{$vendor}/objectTypes/{$package_local_name}/": [
-			"type:oiplus-plugin-object-types"
-		],
-		"plugins/{$vendor}/language/{$package_local_name}/": [
-			"type:oiplus-plugin-language"
-		],
-		"plugins/{$vendor}/design/{$package_local_name}/": [
-			"type:oiplus-plugin-design"
-		],
-		"plugins/{$vendor}/captcha/{$package_local_name}/": [
-			"type:oiplus-plugin-captcha"
-		]
-	},
-	
-	"dependency-scripts": {
+		"installer-paths": {
+			"plugins/{$vendor}/publicPages/{$package_local_name}/": [
+				"type:oiplus-plugin-public-pages"
+			],
+			"plugins/{$vendor}/raPages/{$package_local_name}/": [
+				"type:oiplus-plugin-ra-pages"
+			],
+			"plugins/{$vendor}/adminPages/{$package_local_name}/": [
+				"type:oiplus-plugin-admin-pages"
+			],
+			"plugins/{$vendor}/auth/{$package_local_name}/": [
+				"type:oiplus-plugin-auth"
+			],
+			"plugins/{$vendor}/database/{$package_local_name}/": [
+				"type:oiplus-plugin-database"
+			],
+			"plugins/{$vendor}/sqlSlang/{$package_local_name}/": [
+				"type:oiplus-plugin-sql-slang"
+			],
+			"plugins/{$vendor}/logger/{$package_local_name}/": [
+				"type:oiplus-plugin-logger"
+			],
+			"plugins/{$vendor}/objectTypes/{$package_local_name}/": [
+				"type:oiplus-plugin-object-types"
+			],
+			"plugins/{$vendor}/language/{$package_local_name}/": [
+				"type:oiplus-plugin-language"
+			],
+			"plugins/{$vendor}/design/{$package_local_name}/": [
+				"type:oiplus-plugin-design"
+			],
+			"plugins/{$vendor}/captcha/{$package_local_name}/": [
+				"type:oiplus-plugin-captcha"
+			]
+		},
+
+		"dependency-scripts": {
 			"run": true,
-			"trust": [						
+			"trust": [
 				"danielmarschall\/*",
 				"airmad\/*",
 				"composer\/*",
@@ -205,21 +202,20 @@
 				"oiplus-plugin-captcha"
 			]
 		}
-},
-  "config": {
-	"allow-plugins": {
-		"danielmarschall/*": true,
-		"airmad/*": true,
-		"civicrm/*": true,
-		"composer/*": true,
-		"frdl/*": true,
-		"kylekatarnls/update-helper": true,
-		"vendor-patch/composer-custom-directory-installer" : true,
-		"vendor-patch/composer-installers-extender" : true,
-		"vendor-patch/composer-installers-extender" : true,
-		"vendor-patch/oiplus-composer-plugin" : true,
-		"smoren/mushroom-hook-manager" : true
-	}
+	},
+	"config": {
+		"allow-plugins": {
+			"danielmarschall/*": true,
+			"airmad/*": true,
+			"civicrm/*": true,
+			"composer/*": true,
+			"frdl/*": true,
+			"kylekatarnls/update-helper": true,
+			"vendor-patch/composer-custom-directory-installer": true,
+			"vendor-patch/composer-installers-extender": true,
+			"vendor-patch/oiplus-composer-plugin": true,
+			"smoren/mushroom-hook-manager": true
+		}
 
-  }
+	}
 }
