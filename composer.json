@@ -207,7 +207,6 @@
 		"airmad/*": true,
 		"civicrm/*": true,
 		"composer/*": true,
-		"frdl/*": true,
 		"kylekatarnls/update-helper": true,
 		"vendor-patch/composer-custom-directory-installer": true,
 		"vendor-patch/composer-installers-extender": true,
