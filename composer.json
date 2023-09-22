@@ -105,7 +105,8 @@
 			"Composer\\CustomDirectoryInstaller\\PluginPlugin",	
 			"LastCall\\DownloadsPlugin\\Plugin",		  
 			"Civi\\CompilePlugin\\CompilePlugin",
-			"Smoren\\Composer\\Mushroom\\HookManager"
+			"Smoren\\Composer\\Mushroom\\HookManager",
+			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin"
 		],
 		"installer-types": [
 			"oiplus-plugin-public-pages",
@@ -186,7 +187,8 @@
 				"frdl\/*",
 				"webfan3\/*",
 				"wehowski\/*",
-				"vendor-patch\/*"
+				"vendor-patch\/*",
+				"smoren\/mushroom-hook-manager"
 			],
 			"exclude": [],
 			"types": [
