@@ -54,7 +54,7 @@
 		"wikimedia/composer-merge-plugin": "dev-master"
 	},
 	"autoload": {
-		"classmap": ["src/*"]
+		"classmap": ["src/*/*"]
 	},
 
 	"scripts-descriptions": {
