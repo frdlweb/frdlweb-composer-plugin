@@ -100,6 +100,7 @@
 			"merge-scripts": true
 		},
 		"installer-types": [
+			"oiplus-plugin",
 			"oiplus-plugin-public-pages",
 			"oiplus-plugin-rap-ages",
 			"oiplus-plugin-admin-pages",
@@ -115,6 +116,9 @@
 			"library"
 		],
 		"installer-paths": {
+			"plugins/{$vendor}/{$installer_name}/{$package_local_name}/": [
+				"type:oiplus-plugin"
+			],
 			"plugins/{$vendor}/publicPages/{$package_local_name}/": [
 				"type:oiplus-plugin-public-pages"
 			],
@@ -166,6 +170,7 @@
 			],
 			"exclude": [],
 			"types": [
+				"oiplus-plugin",
 				"oiplus-plugin-public-pages",
 				"oiplus-plugin-ra-pages",
 				"oiplus-plugin-admin-pages",
