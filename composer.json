@@ -115,37 +115,37 @@
 				"type:library",
 				"type:project"
 			], 
-			"plugins/{$vendor}/publicPages/{$package_local_name}/": [
+			"plugins/{$vendor}/publicPages/{$name}/": [
 				"type:oiplus-plugin-public-pages"
 			],
-			"plugins/{$vendor}/raPages/{$package_local_name}/": [
+			"plugins/{$vendor}/raPages/{$name}/": [
 				"type:oiplus-plugin-ra-pages"
 			],
-			"plugins/{$vendor}/adminPages/{$package_local_name}/": [
+			"plugins/{$vendor}/adminPages/{$name}/": [
 				"type:oiplus-plugin-admin-pages"
 			],
-			"plugins/{$vendor}/auth/{$package_local_name}/": [
+			"plugins/{$vendor}/auth/{$name}/": [
 				"type:oiplus-plugin-auth"
 			],
-			"plugins/{$vendor}/database/{$package_local_name}/": [
+			"plugins/{$vendor}/database/{$name}/": [
 				"type:oiplus-plugin-database"
 			],
-			"plugins/{$vendor}/sqlSlang/{$package_local_name}/": [
+			"plugins/{$vendor}/sqlSlang/{$name}/": [
 				"type:oiplus-plugin-sql-slang"
 			],
-			"plugins/{$vendor}/logger/{$package_local_name}/": [
+			"plugins/{$vendor}/logger/{$name}/": [
 				"type:oiplus-plugin-logger"
 			],
-			"plugins/{$vendor}/objectTypes/{$package_local_name}/": [
+			"plugins/{$vendor}/objectTypes/{$name}/": [
 				"type:oiplus-plugin-object-types"
 			],
-			"plugins/{$vendor}/language/{$package_local_name}/": [
+			"plugins/{$vendor}/language/{$name}/": [
 				"type:oiplus-plugin-language"
 			],
-			"plugins/{$vendor}/design/{$package_local_name}/": [
+			"plugins/{$vendor}/design/{$name}/": [
 				"type:oiplus-plugin-design"
 			],
-			"plugins/{$vendor}/captcha/{$package_local_name}/": [
+			"plugins/{$vendor}/captcha/{$name}/": [
 				"type:oiplus-plugin-captcha"
 			]
 		},
