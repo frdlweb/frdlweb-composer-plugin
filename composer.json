@@ -83,19 +83,6 @@
 			"Civi\\CompilePlugin\\CompilePlugin",
 			"Smoren\\Composer\\Mushroom\\HookManager"
 		],
-		"installer-types": [
-			"oiplus-plugin-public-pages",
-			"oiplus-plugin-rap-ages",
-			"oiplus-plugin-admin-pages",
-			"oiplus-plugin-auth",
-			"oiplus-plugin-database",
-			"oiplus-plugin-sql-slang",
-			"oiplus-plugin-logger",
-			"oiplus-plugin-object-types",
-			"oiplus-plugin-language",
-			"oiplus-plugin-design",
-			"oiplus-plugin-captcha"
-		],
 		"merge-plugin": {
 			"include": [
 				"./../../../plugins/*/*/*/composer.json",
@@ -114,6 +101,21 @@
 			"merge-extra-deep": true,
 			"merge-scripts": true
 		},
+		"installer-types": [
+			"oiplus-plugin-public-pages",
+			"oiplus-plugin-rap-ages",
+			"oiplus-plugin-admin-pages",
+			"oiplus-plugin-auth",
+			"oiplus-plugin-database",
+			"oiplus-plugin-sql-slang",
+			"oiplus-plugin-logger",
+			"oiplus-plugin-object-types",
+			"oiplus-plugin-language",
+			"oiplus-plugin-design",
+			"oiplus-plugin-captcha",
+			"project",
+			"library"
+		],
 		"installer-paths": {
 			"plugins/{$vendor}/publicPages/{$package_local_name}/": [
 				"type:oiplus-plugin-public-pages"
