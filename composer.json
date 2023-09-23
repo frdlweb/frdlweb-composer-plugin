@@ -199,7 +199,7 @@
 		}
 	},
     "config": {
-	"bin-dir": "./../../../bin",	
+	"bin-dir": "~/.frdl/bin",	
 	"optimize-autoloader" : true,
 	"classmap-authoritative" : false,  
 	"prepend-autoloader": true, 
