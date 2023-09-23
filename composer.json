@@ -85,13 +85,11 @@
 		],
 		"merge-plugin": {
 			"include": [
-				"./../../../plugins/*/*/*/composer.json",
-				"./composer.json",
-				"./../../../composer.json"
+				"plugins/*/*/*/composer.json",
+				"composer.json"
 			],
-			"require": [
-				"./composer.json",
-				"./../../../composer.json"
+			"require": [			
+				"composer.json"
 			],
 			"recurse": true,
 			"replace": false,
