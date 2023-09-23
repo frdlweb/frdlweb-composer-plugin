@@ -116,7 +116,7 @@
 				"type:library",
 				"type:project"
 			],
-			"plugins/{$vendor}/{$installer_name}/{$package_local_name}/": [
+			"plugins/{$vendor}/{$installer}/{$package_local_name}/": [
 				"type:oiplus-plugin"
 			],
 			"plugins/{$vendor}/publicPages/{$package_local_name}/": [
