@@ -1,38 +1,24 @@
 {
-	"name": "frdl/oiplus-composer-plugin",
+	"name": "frdlweb/frdlweb-composer-plugin",
 	"type": "composer-plugin",
-	"description": "Composer Plugin for OIDplus Installations",
+	"description": "Composer Plugin for Frdlweb Packages",
 	"keywords": ["OIDplus", "Composer Plugin"],
-	"homepage": "http://www.oidplus.com/",
+	"homepage": "http://frdlweb.de/",
 	"license": "MIT",
 	"support": {
-		"email": "co@weid.info",
+		"email": "software@frdl.de",
 		"issues": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/issues",
-		"forum": "https://startforum.de/s/oidplus/",
+		"forum": "https://frdl.de/groups/profile/97/frdlweb-software",
 		"source": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/tree\/master"
 	},
-	"authors": [{
-			"name": "Daniel Marschall",
-			"email": "info@daniel-marschall.de",
-			"homepage": "https://www.daniel-marschall.de/",
-			"role": "Owner"
-		},
+	"authors": [
 		{
 			"name": "Till Wehowski",
 			"email": "software@frdl.de",
 			"homepage": "https:\/\/webfan.de",
 			"role": "Developer"
-		},
-		{
-			"name": "Bryan Davis",
-			"email": "bd808@wikimedia.org"
 		}
 	],
-
-	"suggest": {
-		"danielmarschall/oidplus": "The main project! # Insert the repository section and require this composer-plugin in your projects root composer.json of OIDplus",
-		"frdl/oidplus-io4-bridge-plugin": "OIDplus webfat/IO4 Bridge. Example for OIDplus composer package type (oiplus-plugin-admin-pages)"
-	},
         "minimum-stability": "dev",
 	"require": {
 		"php": ">=7.0 || >=8.0",
@@ -81,7 +67,10 @@
 		],
 		"merge-plugin": {
 			"include": [
-				"plugins/*/*/*/composer.json",
+				"~/.frdl/shared/modules/*/*/composer.json",
+				"themes/*/*/composer.json",
+				"modules/*/*/*/composer.json",
+				"io4/*/*/*/composer.json",
 				"composer.json"
 			],
 			"require": [			
@@ -96,8 +85,19 @@
 			"merge-scripts": true
 		},
 		"installer-types": [
+			"webfan-theme",
+			"webfan-module",
+			"webfan-app",
+			"webfan-site",
+			"webfan-server",
+			"webfan-backend",
+			"io4-theme",
+			"io4-module",
+			"project",
+			"library",
+ 
 			"oiplus-plugin-public-pages",
-			"oiplus-plugin-rap-ages",
+			"oiplus-plugin-ra-pages",
 			"oiplus-plugin-admin-pages",
 			"oiplus-plugin-auth",
 			"oiplus-plugin-database",
@@ -106,17 +106,23 @@
 			"oiplus-plugin-object-types",
 			"oiplus-plugin-language",
 			"oiplus-plugin-design",
-			"oiplus-plugin-captcha",
-			"project",
-			"library"
+			"oiplus-plugin-captcha"			
 		],
 		"installer-paths": {					
-			"vendor/{$vendor}/{$name}/": [
-				"type:library",
+			"~/.frdl/shared/{$type}s/{$vendor}/{$name}/": [
 				"type:project"
+			], 			
+			"vendor/{$vendor}/{$name}/": [
+				"type:library"
 			], 
-			"plugins/{$vendor}/publicPages/{$name}/": [
-				"type:oiplus-plugin-public-pages"
+			"io4/{$type}s/{$vendor}/{$name}/": [							
+				"type:webfan-module",			
+				"type:webfan-app",			
+				"type:webfan-site",			
+				"type:webfan-server",			
+				"type:webfan-backend",			
+				"type:io4-theme",			
+				"type:io4-module"
 			],
 			"plugins/{$vendor}/raPages/{$name}/": [
 				"type:oiplus-plugin-ra-pages"
@@ -166,17 +172,29 @@
 			],
 			"exclude": [],
 			"types": [
-				"oiplus-plugin-public-pages",
-				"oiplus-plugin-ra-pages",
-				"oiplus-plugin-admin-pages",
-				"oiplus-plugin-auth",
-				"oiplus-plugin-database",
-				"oiplus-plugin-sql-slang",
-				"oiplus-plugin-logger",
-				"oiplus-plugin-object-types",
-				"oiplus-plugin-language",
-				"oiplus-plugin-design",
-				"oiplus-plugin-captcha"
+
+			"webfan-theme",
+			"webfan-module",
+			"webfan-app",
+			"webfan-site",
+			"webfan-server",
+			"webfan-backend",
+			"io4-theme",
+			"io4-module",
+			"project",
+			"library",
+ 
+			"oiplus-plugin-public-pages",
+			"oiplus-plugin-ra-pages",
+			"oiplus-plugin-admin-pages",
+			"oiplus-plugin-auth",
+			"oiplus-plugin-database",
+			"oiplus-plugin-sql-slang",
+			"oiplus-plugin-logger",
+			"oiplus-plugin-object-types",
+			   "oiplus-plugin-language",
+			   "oiplus-plugin-design",
+			   "oiplus-plugin-captcha"		
 			]
 		}
 	},
