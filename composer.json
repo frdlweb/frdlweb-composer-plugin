@@ -28,7 +28,10 @@
 		"civicrm/composer-compile-plugin": "*",
 		"civicrm/composer-downloads-plugin": "*",
 		"civicrm/composer-compile-lib": "*",
-		"smoren/mushroom-hook-manager": "1.0.0"
+		"smoren/mushroom-hook-manager": "1.0.0",
+		"laminas/laminas-component-installer": "*",
+                "frdl/oiplus-composer-plugin" : "*",	       
+                "comcast/php-legal-licenses": "*"
 	},
 
 	"provide": {
@@ -94,6 +97,7 @@
 			"webfan-package",
 			"webfan-assets",
 			"webfan-public",
+			"webfan-data",
 			
 			"io4-theme",
 			"io4-module",
@@ -114,9 +118,18 @@
 			"oiplus-plugin-design",
 			"oiplus-plugin-captcha"			
 		],
-		"installer-paths": {					
-			"~/.frdl/shared/{$type}s/{$vendor}/{$name}/": [
-				"type:project"
+		"installer-paths": {						
+			"~/": [
+			        "type:webfan-server"
+			], 					
+			"~/.frdl/shared/{$type}s/{$vendor}/{$name}/": [		
+				"type:io4-theme",					
+				"type:webfan-theme",
+			        "type:io4-adapter"	
+			], 						
+			"~/.frdl/data/{$type}s/{$vendor}/{$name}/": [
+			        "type:webfan-site",
+			         "type:webfan-data"
 			], 		
 			"vendor/{$vendor}/{$name}/": [
 				"type:library"
@@ -131,16 +144,19 @@
 			"public/": [							
 				"type:webfan-public"
 			],	
-			"modules/{$type}s/{$vendor}/{$name}/": [							
-				"type:webfan-module",			
-				"type:webfan-app",			
-				"type:webfan-site",			
-				"type:webfan-server",			
-				"type:webfan-backend",			
-				"type:io4-theme",			
-				"type:io4-module",
-			        "type:io4-adapter"
+			"app/{$type}s/{$vendor}/{$name}/": [				
+				"type:project",				
+				"type:webfan-app",					
+				"type:webfan-backend"
+			],	
+			"packages/{$type}s/{$vendor}/{$name}/": [							
+				"type:webfan-module", 		
+				"type:io4-module"
 			],
+
+
+
+			
 			"plugins/{$vendor}/raPages/{$name}/": [
 				"type:oiplus-plugin-ra-pages"
 			],
@@ -196,11 +212,17 @@
 			"webfan-site",
 			"webfan-server",
 			"webfan-backend",
+			"webfan-package",
+			"webfan-assets",
+			"webfan-public",
+			
 			"io4-theme",
 			"io4-module",
+			"io4-adapter",
+			"io4-package",
 			"project",
 			"library",
- 
+				
 			"oiplus-plugin-public-pages",
 			"oiplus-plugin-ra-pages",
 			"oiplus-plugin-admin-pages",
@@ -228,13 +250,16 @@
 			"airmad/*": true,
 			"civicrm/*": true,
 			"composer/*": true,
+			"frdl/*": true,
+			"frdlweb/*": true,
 			"kylekatarnls/update-helper": true,
 			"vendor-patch/composer-custom-directory-installer": true,
 			"vendor-patch/composer-installers-extender": true,
 			"frdl/oiplus-composer-plugin": true,
 			"smoren/mushroom-hook-manager": true,
 		        "composer/installers": true,
-			"oomphinc/composer-installers-extender": true
+			"oomphinc/composer-installers-extender": true,
+                        "laminas/*" : true
 		}
 
 	}
