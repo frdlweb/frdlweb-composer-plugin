@@ -91,8 +91,14 @@
 			"webfan-site",
 			"webfan-server",
 			"webfan-backend",
+			"webfan-package",
+			"webfan-assets",
+			"webfan-public",
+			
 			"io4-theme",
 			"io4-module",
+			"io4-adapter",
+			"io4-package",
 			"project",
 			"library",
  
@@ -111,18 +117,29 @@
 		"installer-paths": {					
 			"~/.frdl/shared/{$type}s/{$vendor}/{$name}/": [
 				"type:project"
-			], 			
+			], 		
 			"vendor/{$vendor}/{$name}/": [
 				"type:library"
-			], 
-			"io4/{$type}s/{$vendor}/{$name}/": [							
+			], 			
+			".": [
+				"type:webfan-package",
+				"type:io4-package"
+			], 	
+			"public/assets/{$type}s/{$vendor}/{$name}/": [							
+				"type:webfan-assets"
+			],	
+			"public/": [							
+				"type:webfan-public"
+			],	
+			"shared/{$type}s/{$vendor}/{$name}/": [							
 				"type:webfan-module",			
 				"type:webfan-app",			
 				"type:webfan-site",			
 				"type:webfan-server",			
 				"type:webfan-backend",			
 				"type:io4-theme",			
-				"type:io4-module"
+				"type:io4-module",
+			        "type:io4-adapter"
 			],
 			"plugins/{$vendor}/raPages/{$name}/": [
 				"type:oiplus-plugin-ra-pages"
