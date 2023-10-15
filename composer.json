@@ -18,7 +18,15 @@
 			"homepage": "https:\/\/webfan.de",
 			"role": "Developer"
 		}
-	],
+	],	
+  "repositories": [	
+    {"type": "composer", "url": "https://webfat.repo.pkg.frdl.de"},	
+    {"type": "composer", "url": "https://frdl.repo.pkg.frdl.de"},	
+    {"type": "composer", "url": "https://oidplus-plugins.repo.pkg.frdl.de"},	 
+    {"type": "composer", "url": "https://weid.repo.pkg.frdl.de"},    
+    {"type": "composer", "url": "https://repo.pkg.frdl.de"},
+    {"packagist": false}
+  ],	
         "minimum-stability": "dev",
 	"require": {
 		"php": ">=7.0 || >=8.0",
