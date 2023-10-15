@@ -131,7 +131,7 @@
 			"public/": [							
 				"type:webfan-public"
 			],	
-			"shared/{$type}s/{$vendor}/{$name}/": [							
+			"modules/{$type}s/{$vendor}/{$name}/": [							
 				"type:webfan-module",			
 				"type:webfan-app",			
 				"type:webfan-site",			
