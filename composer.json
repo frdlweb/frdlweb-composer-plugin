@@ -249,9 +249,7 @@
 	"optimize-autoloader" : true,
 	"classmap-authoritative" : false,  
 	"prepend-autoloader": true, 
-	"secure-http": false,
-	"preferred-install": "auto",
-	"autoloader-suffix": "OidPlusComposer", 		
+	"preferred-install": "auto",		
 		"allow-plugins": {
 			"danielmarschall/*": true,
 			"airmad/*": true,
