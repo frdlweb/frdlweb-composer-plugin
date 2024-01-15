@@ -140,6 +140,8 @@
 			"webfan-public",
 			"webfan-data",
 			"webfan-patch",
+			"webfan-frontend-endpoint", 
+			"webfan-well-known", 
 			
 			"io4-theme",
 			"io4-module",
@@ -178,6 +180,9 @@
 			], 		
 			"vendor/{$vendor}/{$name}/": [
 				"type:library"
+			], 		
+			"standalone/{$vendor}/{$name}/": [							
+				"type:project"			
 			], 			
 			".": [
 				"type:webfan-package",
@@ -186,11 +191,14 @@
 			"public/assets/{$name}/": [							
 				"type:webfan-assets"
 			],	
-			"public/": [							
-				"type:webfan-public"
+			"public/{$name}/": [							
+				"type:webfan-public",					
+				"type:webfan-frontend-endpoint"
 			],	
-			".protected/{$type}s/{$vendor}/{$name}/": [				
-				"type:project",				
+			"public/.well-known/{$name}/": [							
+				"type:webfan-well-known"
+			],	
+			".protected/{$type}s/{$vendor}/{$name}/": [	
 				"type:webfan-app",					
 				"type:webfan-backend"
 			],	
@@ -231,7 +239,8 @@
 			"webfan-public",
 			"webfan-patch",
 			"webfan-data",
-			
+			"webfan-frontend-endpoint",
+			"webfan-well-known",	
 			"io4-theme",
 			"io4-module",
 			"io4-adapter",
