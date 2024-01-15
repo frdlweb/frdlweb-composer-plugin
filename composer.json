@@ -2,14 +2,14 @@
 	"name": "frdlweb/frdlweb-composer-plugin",
 	"type": "composer-plugin",
 	"description": "Composer Plugin for Frdlweb Packages",
-	"keywords": ["OIDplus", "Composer Plugin"],
+	"keywords": ["Frdlweb", "Composer Plugin"],
 	"homepage": "http://frdlweb.de/",
 	"license": "MIT",
 	"support": {
 		"email": "software@frdl.de",
-		"issues": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/issues",
+		"issues": "https:\/\/github.com\/frdlweb\/frdlweb-composer-plugin\/issues",
 		"forum": "https://frdl.de/groups/profile/97/frdlweb-software",
-		"source": "https:\/\/github.com\/frdl\/oiplus-composer-plugin\/tree\/master"
+		"source": "https:\/\/github.com\/frdlweb\/frdlweb-composer-plugin\/tree\/master"
 	},
 	"authors": [
 		{
@@ -20,11 +20,30 @@
 		}
 	],	
   "repositories": [	
-    {"type": "composer", "url": "https://webfat.repo.pkg.frdl.de"},	
-    {"type": "composer", "url": "https://frdl.repo.pkg.frdl.de"},	
-    {"type": "composer", "url": "https://oidplus-plugins.repo.pkg.frdl.de"},	 
-    {"type": "composer", "url": "https://weid.repo.pkg.frdl.de"},    
-    {"type": "composer", "url": "https://repo.pkg.frdl.de"} 
+		{
+			"type": "composer", 
+			"url": "https://oidplus-plugins.repo.pkg.dev.frdl.de"
+		},
+		
+		{
+			"type": "composer", 
+			"url": "https://weid.repo.pkg.dev.frdl.de"
+		},
+		
+		{
+			"type": "composer", 
+			"url": "https://frdl.repo.pkg.dev.frdl.de"
+		},
+		
+		{
+			"type": "composer", 
+			"url": "https://webfat.repo.pkg.dev.frdl.de"
+		},
+		
+		{
+			"type": "composer", 
+			"url": "https://repo.pkg.dev.frdl.de"
+		}
   ],	
         "minimum-stability": "dev",
 	"require": {
@@ -64,7 +83,18 @@
 			"Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield"
 		]
 	},
-	"extra": {
+	"extra": {		
+		"downloads": {
+			"*": {
+				"path": "vendor/{$id}",
+				"ignore": ["test", "tests", "doc", "docs", ".*"]
+			},		
+			"yiisoft/config" : {
+				"url": "https://github.com/yiisoft/config/archive/refs/tags/1.5.0.zip",		
+				"path": "vendor/yiisoft/config",
+				"ignore": []
+			}			
+		},
 		"compile-mode": "all",
 		"foxy": false,
 		"class": [
@@ -73,6 +103,7 @@
 			"LastCall\\DownloadsPlugin\\Plugin",
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
 			"Civi\\CompilePlugin\\CompilePlugin",
+			"Yiisoft\\Config\\Composer\\EventHandler",
 			"Smoren\\Composer\\Mushroom\\HookManager"
 		],
 		"merge-plugin": {
@@ -80,7 +111,10 @@
 				"~/.frdl/shared/modules/*/*/composer.json",
 				"themes/*/*/composer.json",
 				"modules/*/*/*/composer.json",
-				"io4/*/*/*/composer.json",
+				"io4/*/*/*/composer.json",								
+				"plugins/*/*/*/composer.json",								
+				".protected/*/*/*/*/composer.json",								
+				".protected/*/*/*/composer.json",
 				"composer.json"
 			],
 			"require": [			
@@ -105,11 +139,15 @@
 			"webfan-assets",
 			"webfan-public",
 			"webfan-data",
+			"webfan-patch",
 			
 			"io4-theme",
 			"io4-module",
 			"io4-adapter",
 			"io4-package",
+			"io4-interface",
+			"io4-connection",
+			
 			"project",
 			"library",
  
@@ -145,55 +183,23 @@
 				"type:webfan-package",
 				"type:io4-package"
 			], 	
-			"public/assets/{$type}s/{$vendor}/{$name}/": [							
+			"public/assets/{$name}/": [							
 				"type:webfan-assets"
 			],	
 			"public/": [							
 				"type:webfan-public"
 			],	
-			"app/{$type}s/{$vendor}/{$name}/": [				
+			".protected/{$type}s/{$vendor}/{$name}/": [				
 				"type:project",				
 				"type:webfan-app",					
 				"type:webfan-backend"
 			],	
-			"packages/{$type}s/{$vendor}/{$name}/": [							
+			".protected/packages/{$type}s/{$vendor}/{$name}/": [							
 				"type:webfan-module", 		
 				"type:io4-module"
-			],
-
-
-
-			
-			"plugins/{$vendor}/raPages/{$name}/": [
-				"type:oiplus-plugin-ra-pages"
-			],
-			"plugins/{$vendor}/adminPages/{$name}/": [
-				"type:oiplus-plugin-admin-pages"
-			],
-			"plugins/{$vendor}/auth/{$name}/": [
-				"type:oiplus-plugin-auth"
-			],
-			"plugins/{$vendor}/database/{$name}/": [
-				"type:oiplus-plugin-database"
-			],
-			"plugins/{$vendor}/sqlSlang/{$name}/": [
-				"type:oiplus-plugin-sql-slang"
-			],
-			"plugins/{$vendor}/logger/{$name}/": [
-				"type:oiplus-plugin-logger"
-			],
-			"plugins/{$vendor}/objectTypes/{$name}/": [
-				"type:oiplus-plugin-object-types"
-			],
-			"plugins/{$vendor}/language/{$name}/": [
-				"type:oiplus-plugin-language"
-			],
-			"plugins/{$vendor}/design/{$name}/": [
-				"type:oiplus-plugin-design"
-			],
-			"plugins/{$vendor}/captcha/{$name}/": [
-				"type:oiplus-plugin-captcha"
 			]
+			
+
 		},
 
 		"dependency-scripts": {
@@ -208,7 +214,8 @@
 				"wehowski\/*",
 				"vendor-patch\/*",
 				"smoren\/mushroom-hook-manager",
-				"oomphinc\/composer-installers-extender"
+				"oomphinc\/composer-installers-extender",
+				"yiisoft\/*"
 			],
 			"exclude": [],
 			"types": [
@@ -222,11 +229,16 @@
 			"webfan-package",
 			"webfan-assets",
 			"webfan-public",
+			"webfan-patch",
+			"webfan-data",
 			
 			"io4-theme",
 			"io4-module",
 			"io4-adapter",
 			"io4-package",
+			"io4-interface",
+			"io4-connection",
+				
 			"project",
 			"library",
 				
@@ -238,10 +250,10 @@
 			"oiplus-plugin-sql-slang",
 			"oiplus-plugin-logger",
 			"oiplus-plugin-object-types",
-			   "oiplus-plugin-language",
-			   "oiplus-plugin-design",
-			   "oiplus-plugin-captcha"		
-			]
+		        "oiplus-plugin-language",
+			"oiplus-plugin-design",
+			"oiplus-plugin-captcha"		
+		  ]
 		}
 	},
     "config": {
@@ -264,7 +276,8 @@
 			"smoren/mushroom-hook-manager": true,
 		        "composer/installers": true,
 			"oomphinc/composer-installers-extender": true,
-                        "laminas/*" : true
+                        "laminas/*" : true,
+			"yiisoft/*" : true
 		}
 
 	}
