@@ -103,7 +103,6 @@
 			"LastCall\\DownloadsPlugin\\Plugin",
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
 			"Civi\\CompilePlugin\\CompilePlugin",
-			"Yiisoft\\Config\\Composer\\EventHandler",
 			"Smoren\\Composer\\Mushroom\\HookManager"
 		],
 		"merge-plugin": {
