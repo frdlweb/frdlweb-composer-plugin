@@ -106,7 +106,7 @@
 				"ignore": []
 			},		
 			"tenancy/framework" : {
-				"url": "https://github.com/tenancy/framework/archive/refs/heads/master.zip",		
+				"url": "https://github.com/vendor-patch/framework/archive/refs/heads/master.zip",		
 				"path": "vendor/tenancy/framework",
 				"ignore": []
 			},		
