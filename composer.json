@@ -109,6 +109,11 @@
 				"url": "https://github.com/tenancy/framework/archive/refs/heads/master.zip",		
 				"path": "vendor/tenancy/framework",
 				"ignore": []
+			},		
+			"tenancy/tenancy" : {
+				"url": "https://github.com/tenancy/tenancy/archive/refs/heads/master.zip",		
+				"path": "vendor/tenancy/tenancy",
+				"ignore": []
 			}					
 		},
 		"compile-mode": "all",
