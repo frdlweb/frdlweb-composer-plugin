@@ -23,26 +23,18 @@
 		{
 			"type": "composer", 
 			"url": "https://oidplus-plugins.repo.pkg.dev.frdl.de"
-		},
-		
+		},		
 		{
 			"type": "composer", 
 			"url": "https://weid.repo.pkg.dev.frdl.de"
-		},
-		
+		},		
 		{
 			"type": "composer", 
 			"url": "https://frdl.repo.pkg.dev.frdl.de"
-		},
-		
+		},		
 		{
 			"type": "composer", 
 			"url": "https://webfat.repo.pkg.dev.frdl.de"
-		},
-		
-		{
-			"type": "composer", 
-			"url": "https://repo.pkg.dev.frdl.de"
 		}
   ],	
         "minimum-stability": "dev",
@@ -83,12 +75,7 @@
 			"Webfan\\Module\\Webfantize\\Composer::runtimePreBootShield"
 		]
 	},
-	"extra": {		
-		"laravel": {           
-			"providers": [             
-				"ThisIsDevelopment\\LaravelTenants\\TenantsProvider"           
-			]      
-		},
+	"extra": {
 		"downloads": {
 			"*": {
 				"path": "vendor/{$id}",
