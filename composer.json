@@ -47,9 +47,9 @@
   ],	
         "minimum-stability": "dev",
 	"require": {
-		"php": ">=7.0 || >=8.0",
-		"composer-plugin-api": "^1.1 || ^2.0",
-		"composer/installers": "^1.0 || ^2.0",
+		"php": ">=7.0|>=8.0",
+		"composer-plugin-api": "^1.1|^2.0",
+		"composer/installers": "^1.0|^2.0",
 		"vendor-patch/composer-installers-extender": ">=v0.0.9",
 		"civicrm/composer-compile-plugin": "*",
 		"civicrm/composer-downloads-plugin": "*",
@@ -188,10 +188,12 @@
 			"~/": [
 			        "type:webfan-server"
 			], 					
-			"~/.frdl/shared/{$type}s/{$vendor}/{$name}/": [		
+			"~/.frdl/shared/{$type}s/{$vendor}/{$name}/": [	
+				"type:webfan-package",
 				"type:io4-theme",					
 				"type:webfan-theme",
-			        "type:io4-adapter"	
+			        "type:io4-adapter",
+				"type:io4-package"	
 			], 						
 			"~/.frdl/data/{$type}s/{$vendor}/{$name}/": [
 			        "type:webfan-site",
@@ -202,11 +204,7 @@
 			], 		
 			"standalone/{$vendor}/{$name}/": [							
 				"type:project"			
-			], 			
-			".": [
-				"type:webfan-package",
-				"type:io4-package"
-			], 	
+			], 	 
 			"public/assets/{$name}/": [							
 				"type:webfan-assets"
 			],	
