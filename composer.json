@@ -56,7 +56,8 @@
 		"civicrm/composer-compile-lib": "*",
 		"smoren/mushroom-hook-manager": "1.0.0",
 		"laminas/laminas-component-installer": "*",
-                "frdl/oiplus-composer-plugin" : "*",	       
+                "frdl/oiplus-composer-plugin" : "*",	 
+		"thisisdevelopment/laravel-tenants" : "*",	 
                 "comcast/php-legal-licenses": "*"
 	},
 
@@ -84,6 +85,11 @@
 		]
 	},
 	"extra": {		
+		"laravel": {           
+			"providers": [             
+				"ThisIsDevelopment\\LaravelTenants\\TenantsProvider"           
+			]      
+		},
 		"downloads": {
 			"*": {
 				"path": "vendor/{$id}",
@@ -133,6 +139,9 @@
 			"merge-scripts": true
 		},
 		"installer-types": [
+			"laravel-module", 
+			"laravel-domain",
+			
 			"webfan-theme",
 			"webfan-module",
 			"webfan-app",
@@ -169,7 +178,13 @@
 			"oiplus-plugin-design",
 			"oiplus-plugin-captcha"			
 		],
-		"installer-paths": {						
+		"installer-paths": {		    
+			"app/Module/{$name}/": [       
+				"type:laravel-module"     
+			],    
+			"app/Domain/vendor/{$name}/": [       
+				"type:laravel-domain"    
+			],			
 			"~/": [
 			        "type:webfan-server"
 			], 					
