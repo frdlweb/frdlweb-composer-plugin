@@ -98,11 +98,6 @@
 				"url": "https://github.com/yiisoft/config/archive/refs/tags/1.5.0.zip",		
 				"path": "vendor/yiisoft/config",
 				"ignore": []
-			},		
-			"webfan/website" : {
-				"url": "https://packages.frdl.de/webfan/website/archive/main.zip",		
-				"path": "website",
-				"ignore": []
 			}				
 		},
 		"compile-mode": "all",
