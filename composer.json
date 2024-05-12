@@ -57,7 +57,6 @@
 		"smoren/mushroom-hook-manager": "1.0.0",
 		"laminas/laminas-component-installer": "*",
                 "frdl/oiplus-composer-plugin" : "*",	 
-		"thisisdevelopment/laravel-tenants" : "*",	 
                 "comcast/php-legal-licenses": "*"
 	},
 
