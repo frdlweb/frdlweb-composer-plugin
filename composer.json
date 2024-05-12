@@ -111,7 +111,7 @@
 				"ignore": []
 			},		
 			"tenancy/tenancy" : {
-				"url": "https://github.com/tenancy/tenancy/archive/refs/heads/master.zip",		
+				"url": "https://github.com/vendor-patch/tenancy/archive/refs/heads/2.x.zip",		
 				"path": "vendor/tenancy/tenancy",
 				"ignore": []
 			}					
