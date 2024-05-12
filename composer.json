@@ -104,17 +104,7 @@
 				"url": "https://packages.frdl.de/webfan/website/archive/main.zip",		
 				"path": "website",
 				"ignore": []
-			},		
-			"tenancy/framework" : {
-				"url": "https://github.com/vendor-patch/framework/archive/refs/heads/master.zip",		
-				"path": "vendor/tenancy/framework",
-				"ignore": []
-			},		
-			"tenancy/tenancy" : {
-				"url": "https://github.com/vendor-patch/tenancy/archive/refs/heads/2.x.zip",		
-				"path": "vendor/tenancy/tenancy",
-				"ignore": []
-			}					
+			}				
 		},
 		"compile-mode": "all",
 		"foxy": false,
