@@ -181,11 +181,9 @@
 			         "type:webfan-data"
 			], 		
 			"vendor/{$vendor}/{$name}/": [
-				"type:library"
-			], 		
-			"standalone/{$vendor}/{$name}/": [							
+				"type:library",			        						
 				"type:project"			
-			], 	 
+			], 	
 			"public/assets/{$name}/": [							
 				"type:webfan-assets"
 			],	
