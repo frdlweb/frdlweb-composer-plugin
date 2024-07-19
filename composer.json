@@ -48,7 +48,8 @@
 		"civicrm/composer-compile-lib": "*",
 		"smoren/mushroom-hook-manager": "1.0.0",
 		"laminas/laminas-component-installer": "*",
-                "frdl/oiplus-composer-plugin" : "*",	 
+                "frdl/oiplus-composer-plugin" : "*",
+		"thecodingmachine/discovery": "*",	 
                 "comcast/php-legal-licenses": "*"
 	},
 
@@ -94,7 +95,8 @@
 			"VendorPatch\\OomphInc\\ComposerInstallersExtender\\Plugin",
 			"LastCall\\DownloadsPlugin\\Plugin",
 			"Wikimedia\\Composer\\Merge\\V2\\MergePlugin",
-			"Civi\\CompilePlugin\\CompilePlugin",
+			"Civi\\CompilePlugin\\CompilePlugin",			
+			"TheCodingMachine\\Discovery\\DiscoveryPlugin",
 			"Smoren\\Composer\\Mushroom\\HookManager"
 		],
 		"merge-plugin": {
@@ -219,7 +221,8 @@
 				"vendor-patch\/*",
 				"smoren\/mushroom-hook-manager",
 				"oomphinc\/composer-installers-extender",
-				"yiisoft\/*"
+				"yiisoft\/*",
+				"thecodingmachine\/*"
 			],
 			"exclude": [],
 			"types": [
@@ -282,7 +285,8 @@
 		        "composer/installers": true,
 			"oomphinc/composer-installers-extender": true,
                         "laminas/*" : true,
-			"yiisoft/*" : true
+			"yiisoft/*" : true,
+			"thecodingmachine/*" : true
 		}
 
 	}
